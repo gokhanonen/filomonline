@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Page } from "@/components/shared/Page";
 import { Button, Input, Select } from "@/components/ui";
 import { InfiniteSentinel } from "@/components/shared/InfiniteSentinel";
+import { DefinitionsNav } from "@/components/shared/DefinitionsNav";
 import { useInfiniteList } from "@/hooks/useInfiniteList";
 import { useAuthContext } from "@/app/contexts/auth/context";
 import {
@@ -73,41 +74,44 @@ export default function AccountsPage() {
   };
 
   return (
-    <Page title="Cariler">
-      <div className="w-full px-(--margin-x) py-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">Cariler</h2>
-            <p className="text-sm text-gray-400 dark:text-dark-300">{total} kayıt</p>
-          </div>
-          {canWrite && (
-            <Button
-              color="primary"
-              onClick={() => {
-                setEditing(null);
-                setFormOpen(true);
-              }}
-              className="gap-2"
-            >
-              <PlusIcon className="size-5" /> Yeni Cari
-            </Button>
-          )}
-        </div>
+    <Page title="Tanımlar - Cariler">
+      <div className="w-full px-(--margin-x) py-6 space-y-5">
+        <DefinitionsNav activeId="accounts" />
 
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <Input
-            placeholder="Ad, telefon, vergi no ara..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            prefix={<MagnifyingGlassIcon className="size-5" />}
-            className="sm:max-w-xs"
-          />
-          <Select
-            data={typeFilterOptions}
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as AccountType | "")}
-            className="sm:max-w-48"
-          />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-semibold text-gray-800 dark:text-dark-50">Cari Listesi</h3>
+            <span className="rounded-full bg-gray-100 dark:bg-dark-700 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:text-dark-300">
+              {total} kayıt
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Input
+              placeholder="Ad, telefon, vergi no ara..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              prefix={<MagnifyingGlassIcon className="size-4" />}
+              className="w-full sm:w-64"
+            />
+            <Select
+              data={typeFilterOptions}
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value as AccountType | "")}
+              className="w-full sm:w-40"
+            />
+            {canWrite && (
+              <Button
+                color="primary"
+                onClick={() => {
+                  setEditing(null);
+                  setFormOpen(true);
+                }}
+                className="gap-2"
+              >
+                <PlusIcon className="size-4" /> Yeni Cari
+              </Button>
+            )}
+          </div>
         </div>
 
         {items.length === 0 && !loading ? (

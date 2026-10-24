@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router";
+import { useSearchParams } from "react-router";
 import {
   PlusIcon,
   TrashIcon,
@@ -12,9 +12,6 @@ import {
   CubeIcon,
   XMarkIcon,
   SparklesIcon,
-  MapPinIcon,
-  UserGroupIcon,
-  BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
@@ -44,92 +41,38 @@ import {
   type SimpleEntitySlug,
 } from "@/services/catalogService";
 
+import { DefinitionsNav } from "@/components/shared/DefinitionsNav";
 import { DocumentCatalogPanel } from "./DocumentCatalogPanel";
-
-const SIMPLE_TABS: { slug: SimpleEntitySlug; label: string }[] = [
-  { slug: "colors", label: "Renkler" },
-  { slug: "body-types", label: "Kasa Tipleri" },
-  { slug: "vehicle-types", label: "Araç Tipleri" },
-];
 
 type Tab = "catalog" | "listing-sources" | "documents" | SimpleEntitySlug;
 
 export default function CatalogPage() {
-  const [tab, setTab] = useState<Tab>("catalog");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rawTab = searchParams.get("tab") as Tab | null;
+  const tab: Tab =
+    rawTab &&
+    ["catalog", "colors", "body-types", "vehicle-types", "listing-sources", "documents"].includes(
+      rawTab,
+    )
+      ? rawTab
+      : "catalog";
+
+  const handleTabChange = (newTab: string) => {
+    if (newTab === "catalog") {
+      setSearchParams({});
+    } else if (
+      ["colors", "body-types", "vehicle-types", "listing-sources", "documents"].includes(newTab)
+    ) {
+      setSearchParams({ tab: newTab });
+    }
+  };
 
   return (
     <Page title="Tanımlar">
-      <div className="w-full px-(--margin-x) py-6">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-dark-50">
-              Tanımlar (Katalog)
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-dark-300">
-              Kategori › Marka › Model hiyerarşisi, renkler, kasa, araç tipleri ve evrak tanımları
-            </p>
-          </div>
-        </div>
+      <div className="w-full px-(--margin-x) py-6 space-y-5">
+        <DefinitionsNav activeId={tab} onTabChange={handleTabChange} />
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          <TabBtn
-            active={tab === "catalog"}
-            onClick={() => setTab("catalog")}
-          >
-            Kategori / Marka / Model
-          </TabBtn>
-          {SIMPLE_TABS.map((t) => (
-            <TabBtn
-              key={t.slug}
-              active={tab === t.slug}
-              onClick={() => setTab(t.slug)}
-            >
-              {t.label}
-            </TabBtn>
-          ))}
-          <TabBtn
-            active={tab === "listing-sources"}
-            onClick={() => setTab("listing-sources")}
-          >
-            İlan Kaynakları
-          </TabBtn>
-          <TabBtn
-            active={tab === "documents"}
-            onClick={() => setTab("documents")}
-          >
-            Evrak Tanımları
-          </TabBtn>
-          <Link
-            to="/accounts"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-purple-500/50 transition shadow-xs"
-          >
-            <UserGroupIcon className="size-4 text-purple-500" />
-            Cariler
-          </Link>
-          <Link
-            to="/products"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-primary-500/50 transition shadow-xs"
-          >
-            <CubeIcon className="size-4 text-primary-500" />
-            Malzeme & Hizmetler
-          </Link>
-          <Link
-            to="/company"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-indigo-500/50 transition shadow-xs"
-          >
-            <BuildingOffice2Icon className="size-4 text-indigo-500" />
-            Firma
-          </Link>
-          <Link
-            to="/locations"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-emerald-500/50 transition shadow-xs"
-          >
-            <MapPinIcon className="size-4 text-emerald-500" />
-            Lokasyonlar
-          </Link>
-        </div>
-
-        <div className="mt-5">
+        <div>
           {tab === "catalog" ? (
             <RelationalCatalogExplorer />
           ) : tab === "listing-sources" ? (
@@ -142,30 +85,6 @@ export default function CatalogPage() {
         </div>
       </div>
     </Page>
-  );
-}
-
-function TabBtn({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${
-        active
-          ? "bg-primary-600 text-white shadow-xs"
-          : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-dark-200 dark:hover:bg-dark-500"
-      }`}
-    >
-      {children}
-    </button>
   );
 }
 
