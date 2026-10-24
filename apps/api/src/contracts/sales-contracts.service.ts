@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma, SalesContractStatus } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { Paginated } from "../common/dto/pagination.dto";
+import { ActivityService } from "../activity/activity.service";
 import {
   CreateSalesContractDto,
   QuerySalesContractsDto,
@@ -10,12 +11,15 @@ import {
 
 @Injectable()
 export class SalesContractsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly activity: ActivityService,
+  ) {}
 
   async create(companyId: string, userId: string, dto: CreateSalesContractDto) {
     const { installments, ...contractData } = dto;
 
-    return this.prisma.$transaction(async (tx) => {
+    const res = await this.prisma.$transaction(async (tx) => {
       const contract = await tx.salesContract.create({
         data: {
           companyId,
@@ -44,6 +48,19 @@ export class SalesContractsService {
 
       return this.enrichContract(contract);
     });
+
+    void this.activity.log({
+      companyId,
+      userId,
+      type: "CONTRACT_NEW",
+      title: `Sözleşme: ${res.documentNo || "Yeni Satış Sözleşmesi"}`,
+      description: `${res.customerName || "Müşteri"} için satış sözleşmesi düzenlendi`,
+      entityType: "contract",
+      entityId: res.id,
+      link: "/contracts",
+    });
+
+    return res;
   }
 
   async findAll(

@@ -50,8 +50,9 @@ describe("Contracts & Templates Engine", () => {
       }),
     };
 
+    const mockActivity = { log: jest.fn().mockResolvedValue({}) };
     templatesService = new ContractTemplatesService(mockPrisma as any);
-    salesService = new SalesContractsService(mockPrisma as any);
+    salesService = new SalesContractsService(mockPrisma as any, mockActivity as any);
   });
 
   describe("ContractTemplatesService", () => {

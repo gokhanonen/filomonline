@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { Paginated } from "../common/dto/pagination.dto";
+import { ActivityService } from "../activity/activity.service";
 import {
   CreateExpenseDto,
   ExpenseLineDto,
@@ -11,7 +12,10 @@ import {
 
 @Injectable()
 export class ExpensesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly activity: ActivityService,
+  ) {}
 
   /** Satırlardan dip toplam / KDV / genel toplam hesaplar. */
   private totals(lines: ExpenseLineDto[]) {
@@ -29,10 +33,10 @@ export class ExpensesService {
     };
   }
 
-  create(companyId: string, dto: CreateExpenseDto) {
+  async create(companyId: string, dto: CreateExpenseDto) {
     const { lines, ...header } = dto;
     const t = this.totals(lines);
-    return this.prisma.expense.create({
+    const expense = await this.prisma.expense.create({
       data: {
         ...header,
         companyId,
@@ -53,6 +57,18 @@ export class ExpensesService {
       },
       include: { lines: { orderBy: { sortOrder: "asc" } } },
     });
+
+    void this.activity.log({
+      companyId,
+      type: "EXPENSE_NEW",
+      title: `Masraf: ${expense.documentNo || "Yeni Masraf"}`,
+      description: `${expense.grandTotal} ₺ tutarında masraf faturası kaydedildi`,
+      entityType: "expense",
+      entityId: expense.id,
+      link: "/expenses",
+    });
+
+    return expense;
   }
 
   async findAll(

@@ -32,7 +32,8 @@ export interface LogInput {
   description: string;
   entityType: string; // vehicle, rental, expense, transfer, contract, account, user...
   entityId: string;
-  userId: string;
+  userId?: string;
+  userName?: string;
   link?: string;
 }
 
@@ -52,12 +53,26 @@ export class ActivityService {
   /** Hata fırlatmaz: log yazılamazsa ana iş akışı bozulmasın. */
   async log(input: LogInput) {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: input.userId },
-        select: { name: true },
-      });
+      let userName = input.userName ?? null;
+      if (!userName && input.userId) {
+        const user = await this.prisma.user.findUnique({
+          where: { id: input.userId },
+          select: { name: true },
+        });
+        userName = user?.name ?? null;
+      }
       const row = await this.prisma.activityLog.create({
-        data: { ...input, userName: user?.name ?? null },
+        data: {
+          companyId: input.companyId,
+          type: input.type,
+          title: input.title,
+          description: input.description,
+          entityType: input.entityType,
+          entityId: input.entityId,
+          userId: input.userId ?? "system",
+          userName: userName ?? "Sistem",
+          link: input.link ?? null,
+        },
       });
       this.realtime.toCompany(input.companyId, "activity", row);
       return row;

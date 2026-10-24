@@ -24,6 +24,7 @@ import {
 } from "./dto/vehicle-transfer.dto";
 import { CreateVehicleShareLinkDto } from "./dto/vehicle-share.dto";
 import { randomBytes } from "crypto";
+import { ActivityService } from "../activity/activity.service";
 
 const fullInclude = {
   photos: { orderBy: { sortOrder: "asc" } },
@@ -42,6 +43,7 @@ export class VehiclesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
+    private readonly activity: ActivityService,
   ) {}
 
   async create(companyId: string, dto: CreateVehicleDto) {
@@ -88,6 +90,16 @@ export class VehiclesService {
         })
         .catch(() => void 0);
     }
+
+    void this.activity.log({
+      companyId,
+      type: "VEHICLE_NEW",
+      title: `Yeni Araç: ${vehicle.plate || vehicle.brandName || "Araç"}`,
+      description: `${vehicle.brandName ?? ""} ${vehicle.modelName ?? ""} araç envanterine kaydedildi.`,
+      entityType: "vehicle",
+      entityId: vehicle.id,
+      link: `/vehicles/${vehicle.id}`,
+    });
 
     return vehicle;
   }
@@ -266,7 +278,19 @@ export class VehiclesService {
         createdById: userId,
       },
     });
-    return this.withName(companyId, created);
+    const result = await this.withName(companyId, created);
+    const v = await this.prisma.vehicle.findUnique({ where: { id }, select: { plate: true } });
+    void this.activity.log({
+      companyId,
+      userId,
+      type: "VEHICLE_OPTION",
+      title: `Araç Opsiyonlandı: ${v?.plate ?? id}`,
+      description: `${result.customerName ?? "Müşteri"} adına ${created.amount ? Number(created.amount).toLocaleString("tr-TR") + " ₺ ile " : ""}opsiyon oluşturuldu.`,
+      entityType: "vehicle",
+      entityId: id,
+      link: `/vehicles/${id}`,
+    });
+    return result;
   }
 
   /** Güncelleme: eski kayıt SUPERSEDED olur, yeni ACTIVE kayıt açılır (geçmiş korunur). */
@@ -321,6 +345,17 @@ export class VehiclesService {
         cancelledAt: new Date(),
         updatedById: userId,
       },
+    });
+    const v = await this.prisma.vehicle.findUnique({ where: { id }, select: { plate: true } });
+    void this.activity.log({
+      companyId,
+      userId,
+      type: "VEHICLE_OPTION_CANCEL",
+      title: `Opsiyon İptal Edildi: ${v?.plate ?? id}`,
+      description: `Aracın opsiyonu kaldırıldı ve araç tekrar boşa çıkarıldı.`,
+      entityType: "vehicle",
+      entityId: id,
+      link: `/vehicles/${id}`,
     });
     return { success: true };
   }
@@ -395,18 +430,41 @@ export class VehiclesService {
     void tramerSet;
     void listingUrls;
     void installments;
-    return this.prisma.vehicle.update({
+    const updated = await this.prisma.vehicle.update({
       where: { id },
       data: scalars,
       include: fullInclude,
     });
+    void this.activity.log({
+      companyId,
+      type: "VEHICLE_UPDATE",
+      title: `Araç Güncellendi: ${updated.plate || updated.brandName || "Araç"}`,
+      description: `${updated.brandName ?? ""} ${updated.modelName ?? ""} araç kartı bilgileri güncellendi.`,
+      entityType: "vehicle",
+      entityId: updated.id,
+      link: `/vehicles/${updated.id}`,
+    });
+    return updated;
   }
 
   async remove(companyId: string, id: string) {
-    await this.ensureExists(companyId, id);
+    const existing = await this.prisma.vehicle.findFirst({
+      where: { id, companyId },
+      select: { id: true, plate: true },
+    });
+    if (!existing) throw new NotFoundException("Araç bulunamadı");
     await this.prisma.vehicle.update({
       where: { id },
       data: { isActive: false },
+    });
+    void this.activity.log({
+      companyId,
+      type: "VEHICLE_UPDATE",
+      title: `Araç Pasife Alındı: ${existing.plate || "Araç"}`,
+      description: `Araç envanterden pasifleştirildi.`,
+      entityType: "vehicle",
+      entityId: id,
+      link: `/vehicles`,
     });
     return { success: true };
   }

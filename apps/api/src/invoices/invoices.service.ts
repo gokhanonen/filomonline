@@ -14,6 +14,7 @@ import {
   UpdateIntegrationStatusDto,
 } from "./dto/invoice.dto";
 
+import { ActivityService } from "../activity/activity.service";
 import { calculateSalesRegime } from "./sales-regime.util";
 
 const round = (n: number) => Number(n.toFixed(2));
@@ -23,6 +24,7 @@ export class InvoicesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly vehicles: VehiclesService,
+    private readonly activity: ActivityService,
   ) {}
 
   private async assertVehicle(companyId: string, vehicleId: string) {
@@ -81,6 +83,16 @@ export class InvoicesService {
         specialBaseAmount: specialBaseAmount || null,
         purchaseVatRate: vatRate,
       },
+    });
+
+    void this.activity.log({
+      companyId,
+      type: "VEHICLE_PURCHASE",
+      title: `Alış Faturası: ${invoice.invoiceNo}`,
+      description: `Araç alış faturası düzenlendi (Tutar: ${invoice.notaryAmount} ₺)`,
+      entityType: "invoice",
+      entityId: invoice.id,
+      link: "/invoices",
     });
 
     return invoice;
@@ -160,6 +172,16 @@ export class InvoicesService {
       dto.accountId,
       invoice.id,
     );
+
+    void this.activity.log({
+      companyId,
+      type: "VEHICLE_SALE",
+      title: `Satış Faturası: ${invoice.invoiceNo}`,
+      description: `Araç satıldı (${vehicle.plate || vehicle.brandName || "Araç"} - Tutar: ${invoice.saleAmount} ₺)`,
+      entityType: "invoice",
+      entityId: invoice.id,
+      link: "/invoices",
+    });
 
     return invoice;
   }

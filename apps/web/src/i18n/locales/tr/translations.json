@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "dashboards": {
+      "dashboards": "Dashboard",
+      "sales": "Satış",
+      "crm-analytics": "CRM Analitik",
+      "orders": "Siparişler"
+    },
+    "apps": {
+      "apps": "Uygulamalar",
+      "chat": "Sohbet"
+    }
+  },
+  "common": {
+    "search": "Burada ara...",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle"
+  }
+}

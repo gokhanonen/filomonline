@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { Paginated } from "../common/dto/pagination.dto";
+import { ActivityService } from "../activity/activity.service";
 import {
   CreateRentalContractDto,
   QueryRentalsDto,
@@ -10,10 +11,13 @@ import {
 
 @Injectable()
 export class RentalsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly activity: ActivityService,
+  ) {}
 
-  create(companyId: string, dto: CreateRentalContractDto) {
-    return this.prisma.rentalContract.create({
+  async create(companyId: string, dto: CreateRentalContractDto) {
+    const res = await this.prisma.rentalContract.create({
       data: {
         companyId,
         ...dto,
@@ -22,6 +26,18 @@ export class RentalsService {
         vatRate: dto.vatRate ?? 20,
       },
     });
+
+    void this.activity.log({
+      companyId,
+      type: "RENTAL_NEW",
+      title: `Kiralama Sözleşmesi: ${res.documentNo || "Yeni Kiralama"}`,
+      description: `${res.customerName || "Müşteri"} için kiralama sözleşmesi oluşturuldu`,
+      entityType: "rental",
+      entityId: res.id,
+      link: "/contracts",
+    });
+
+    return res;
   }
 
   async findAll(

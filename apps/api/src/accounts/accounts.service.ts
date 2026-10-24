@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { Paginated } from "../common/dto/pagination.dto";
+import { ActivityService } from "../activity/activity.service";
 import {
   CreateAccountDto,
   QueryAccountsDto,
@@ -10,10 +11,23 @@ import {
 
 @Injectable()
 export class AccountsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly activity: ActivityService,
+  ) {}
 
-  create(companyId: string, dto: CreateAccountDto) {
-    return this.prisma.account.create({ data: { ...dto, companyId } });
+  async create(companyId: string, dto: CreateAccountDto) {
+    const res = await this.prisma.account.create({ data: { ...dto, companyId } });
+    void this.activity.log({
+      companyId,
+      type: "ACCOUNT_NEW",
+      title: `Yeni Cari: ${res.name}`,
+      description: `${res.name} carisi sisteme eklendi`,
+      entityType: "account",
+      entityId: res.id,
+      link: "/accounts",
+    });
+    return res;
   }
 
   async findAll(

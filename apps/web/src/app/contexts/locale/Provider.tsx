@@ -3,16 +3,20 @@ import { useState, useCallback, ReactNode, useLayoutEffect } from "react";
 import dayjs from "dayjs";
 
 // Local Imports
-import i18n, { defaultLang } from "@/i18n/config";
+import i18n from "@/i18n/config";
 import { Dir, LocaleCode, locales } from "@/i18n/langs";
 import { LocaleContext } from "./context";
 
 // ----------------------------------------------------------------------
 
-// Set the initial language from i18n or fallback to the default theme language
+const saved =
+  typeof localStorage !== "undefined" ? localStorage.getItem("i18nextLng") : null;
 const initialLang: LocaleCode =
-  ((typeof localStorage !== "undefined" &&
-    localStorage.getItem("i18nextLng")) as LocaleCode) || defaultLang;
+  !saved || saved === "en" || !locales[saved as LocaleCode] ? "tr" : (saved as LocaleCode);
+
+if (typeof localStorage !== "undefined" && (!saved || saved === "en")) {
+  localStorage.setItem("i18nextLng", "tr");
+}
 
 const initialDir = i18n.dir(initialLang);
 

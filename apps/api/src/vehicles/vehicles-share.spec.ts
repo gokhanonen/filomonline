@@ -4,8 +4,14 @@ import { PrismaService } from "../prisma/prisma.service";
 import { StorageService } from "../storage/storage.service";
 import { NotFoundException } from "@nestjs/common";
 
+import { ActivityService } from "../activity/activity.service";
+
 describe("VehiclesService - Public Share Links", () => {
   let service: VehiclesService;
+
+  const mockActivity = {
+    log: jest.fn().mockResolvedValue({}),
+  };
 
   const mockPrisma = {
     vehicle: {
@@ -40,6 +46,7 @@ describe("VehiclesService - Public Share Links", () => {
         VehiclesService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: StorageService, useValue: mockStorage },
+        { provide: ActivityService, useValue: mockActivity },
       ],
     }).compile();
 

@@ -7,6 +7,7 @@ import {
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { StorageService } from "../storage/storage.service";
+import { ActivityService } from "../activity/activity.service";
 import { CreateDocumentDto, QueryDocumentsDto } from "./dto/document.dto";
 import {
   CreateDocumentCategoryDto,
@@ -81,6 +82,7 @@ export class DocumentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
+    private readonly activity: ActivityService,
   ) {}
 
   /** Kategori + tipleri (dropdown için, opsiyonel modül filtresiyle) */
@@ -241,10 +243,23 @@ export class DocumentsService {
     );
   }
 
-  create(companyId: string, userId: string, dto: CreateDocumentDto) {
-    return this.prisma.document.create({
+  async create(companyId: string, userId: string, dto: CreateDocumentDto) {
+    const doc = await this.prisma.document.create({
       data: { ...dto, companyId, uploadedById: userId },
     });
+
+    void this.activity.log({
+      companyId,
+      userId,
+      type: "DOCUMENT_NEW",
+      title: `Yeni Evrak: ${doc.title || "Evrak Yüklendi"}`,
+      description: `${doc.referenceType} (${doc.referenceId}) için evrak yüklendi`,
+      entityType: "document",
+      entityId: doc.id,
+      link: doc.referenceType === "VEHICLE" ? `/vehicles/${doc.referenceId}` : "/vehicles",
+    });
+
+    return doc;
   }
 
   async remove(companyId: string, id: string) {

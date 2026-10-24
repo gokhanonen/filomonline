@@ -8,8 +8,13 @@ import { type LocaleCode, supportedLanguages } from "./langs";
 
 // ----------------------------------------------------------------------
 
-export const defaultLang: LocaleCode = "en";
-export const fallbackLang: LocaleCode = "en";
+export const defaultLang: LocaleCode = "tr";
+export const fallbackLang: LocaleCode = "tr";
+
+const savedLng =
+  typeof localStorage !== "undefined" ? localStorage.getItem("i18nextLng") : null;
+const activeLng =
+  !savedLng || savedLng === "en" ? "tr" : (savedLng as LocaleCode);
 
 i18n
   .use(LanguageDetector)
@@ -21,7 +26,7 @@ i18n
       lookupSessionStorage: "i18nextLng",
     },
     fallbackLng: fallbackLang,
-    lng: localStorage.getItem("i18nextLng") || defaultLang,
+    lng: activeLng,
     supportedLngs: supportedLanguages,
     ns: ["translations"],
     defaultNS: "translations",

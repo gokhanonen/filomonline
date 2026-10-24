@@ -1,4 +1,12 @@
 export const locales = {
+  tr: {
+    label: "Türkçe",
+    dayjs: () => import("dayjs/locale/tr"),
+    flatpickr: () =>
+      import("flatpickr/dist/l10n/tr").then((module) => module.Turkish),
+    i18n: () => import("./locales/tr/translations.json"),
+    flag: "turkey",
+  },
   en: {
     label: "English",
     dayjs: () => import("dayjs/locale/en"),
