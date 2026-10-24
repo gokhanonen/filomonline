@@ -19,6 +19,7 @@ interface Props {
   error?: string;
   disabled?: boolean;
   className?: string;
+  buttonClassName?: string;
 }
 
 function trNormalize(text: string): string {
@@ -42,6 +43,7 @@ export function SearchableSelect({
   error,
   disabled = false,
   className,
+  buttonClassName,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -102,11 +104,12 @@ export function SearchableSelect({
           }
         }}
         className={clsx(
-          "flex h-9 w-full items-center justify-between rounded-lg border bg-white px-3 py-1.5 text-left text-sm transition shadow-xs",
-          "border-gray-200 hover:border-gray-300 dark:border-dark-500 dark:bg-dark-700 dark:hover:border-dark-400",
+          "flex h-10 w-full items-center justify-between rounded-lg border bg-white px-3 py-2 text-left text-xs transition shadow-2xs",
+          "border-gray-300 hover:border-gray-400 dark:border-dark-500 dark:bg-dark-700 dark:hover:border-dark-400",
           "focus:border-primary-500 focus:outline-hidden focus:ring-1 focus:ring-primary-500/20",
           error && "border-error! focus:border-error!",
-          disabled && "cursor-not-allowed bg-gray-100 opacity-60 dark:bg-dark-600"
+          disabled && "cursor-not-allowed bg-gray-100 opacity-60 dark:bg-dark-600",
+          buttonClassName,
         )}
       >
         <span className={clsx("truncate pr-2", !selectedOption && "text-gray-400 dark:text-dark-300")}>

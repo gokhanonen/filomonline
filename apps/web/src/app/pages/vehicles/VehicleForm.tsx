@@ -198,10 +198,10 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
   const reloadAccounts = async () => {
     try {
-      const res = await listAccounts({ onlyActive: true, pageSize: 500 });
+      const res = await listAccounts({ onlyActive: true, pageSize: 200 });
       setAccounts(res.items);
-    } catch {
-      // sessiz
+    } catch (err) {
+      console.error("Cari hesaplar yüklenemedi:", err);
     }
   };
 
@@ -330,16 +330,19 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
   }, [models, modelIdVal]);
 
   // Autocomplete Select Options
-  const supplierOptions = useMemo<SearchableOption[]>(
-    () =>
-      accounts.map((a) => ({
-        value: a.id,
-        label: a.name,
-        subLabel: [a.taxNumber || a.tckn, a.phone].filter(Boolean).join(" • "),
-        badge: a.type === "SUPPLIER" ? "Tedarikçi" : a.type === "CUSTOMER" ? "Müşteri" : "Cari",
-      })),
-    [accounts],
-  );
+  const supplierOptions = useMemo<SearchableOption[]>(() => {
+    const sorted = [...accounts].sort((a, b) => {
+      if (a.type === "SUPPLIER" && b.type !== "SUPPLIER") return -1;
+      if (a.type !== "SUPPLIER" && b.type === "SUPPLIER") return 1;
+      return a.name.localeCompare(b.name, "tr");
+    });
+    return sorted.map((a) => ({
+      value: a.id,
+      label: a.name,
+      subLabel: [a.taxNumber || a.tckn, a.phone].filter(Boolean).join(" • "),
+      badge: a.type === "SUPPLIER" ? "Tedarikçi" : a.type === "CUSTOMER" ? "Müşteri" : "Cari",
+    }));
+  }, [accounts]);
 
   const locationOptions = useMemo<SearchableOption[]>(
     () =>
@@ -650,27 +653,38 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
           <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
             {/* ADIM 0: Temel Bilgiler */}
             {activeStep === 0 && (
-              <div className="space-y-6">
-                {/* Genel Özellikler */}
+              <div className="space-y-5">
+                {/* Genel Araç Bilgileri */}
                 <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
                   <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Genel Özellikler
+                    Genel Araç Bilgileri
                   </h4>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <Input
-                      label="Plaka *"
-                      placeholder="34 ABC 123"
-                      {...register("plate")}
-                      error={errors.plate?.message}
-                    />
-
+                    {/* Plaka */}
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Durum *
-                      </label>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Plaka *
+                        </label>
+                      </div>
+                      <Input
+                        placeholder="34 ABC 123"
+                        className="h-10 text-xs font-bold uppercase tracking-wider font-mono"
+                        {...register("plate")}
+                        error={errors.plate?.message}
+                      />
+                    </div>
+
+                    {/* Durum */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Durum *
+                        </label>
+                      </div>
                       <select
                         {...register("status")}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="STOKTA">Stokta</option>
                         <option value="KIRALAMADA">Kiralamada</option>
@@ -680,8 +694,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                     {/* Kategori + Quick Add */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Kategori
                         </label>
                         <button
@@ -699,7 +713,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           setValue("brandId", "");
                           setValue("modelId", "");
                         }}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">Seçiniz</option>
                         {catalog?.vehicleCategories.map((c) => (
@@ -712,8 +726,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                     {/* Marka + Quick Add */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Marka
                         </label>
                         <button
@@ -735,7 +749,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                             if (b?.categoryId) setValue("categoryId", b.categoryId);
                           }
                         }}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">Seçiniz</option>
                         {filteredBrands.map((b) => (
@@ -748,8 +762,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                     {/* Model + Quick Add */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Model
                         </label>
                         <button
@@ -769,7 +783,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       <select
                         {...register("modelId")}
                         disabled={!brandIdVal}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden disabled:bg-gray-100 disabled:opacity-60 dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden disabled:bg-gray-100 disabled:opacity-60 dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">{brandIdVal ? "Seçiniz" : "Önce Marka Seçiniz"}</option>
                         {models.map((m) => (
@@ -782,8 +796,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                     {/* Araç Tipi + Quick Add */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Araç Tipi
                         </label>
                         <button
@@ -796,7 +810,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       </div>
                       <select
                         {...register("vehicleTypeId")}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">Seçiniz</option>
                         {catalog?.vehicleTypes.map((t) => (
@@ -807,39 +821,91 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       </select>
                     </div>
 
-                    <Input
-                      label="Yıl"
-                      type="number"
-                      placeholder="2024"
-                      {...register("year", { valueAsNumber: true })}
-                      error={errors.year?.message}
-                    />
-
-                    <Input
-                      label="ERP Kodu"
-                      placeholder="ERP Stok / Referans Kodu"
-                      {...register("erpCode")}
-                    />
-
-                    <Input
-                      label="Ruhsat Model Adı"
-                      placeholder="Ruhsatta yazan tam model adı"
-                      {...register("registrationModel")}
-                    />
-
-                    <Input
-                      label="Şase No"
-                      placeholder="WBA..."
-                      {...register("chassisNo")}
-                    />
-
-                    <Input
-                      label="Motor No"
-                      placeholder="Motor Numarası"
-                      {...register("engineNo")}
-                    />
-
+                    {/* Yıl */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Yıl
+                        </label>
+                      </div>
+                      <Input
+                        type="number"
+                        placeholder="2024"
+                        className="h-10 text-xs"
+                        {...register("year", { valueAsNumber: true })}
+                        error={errors.year?.message}
+                      />
                     </div>
+
+                    {/* ERP Kodu */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          ERP Kodu
+                        </label>
+                      </div>
+                      <Input
+                        placeholder="ERP Stok / Referans Kodu"
+                        className="h-10 text-xs font-mono"
+                        {...register("erpCode")}
+                      />
+                    </div>
+
+                    {/* Ruhsat Model Adı */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Ruhsat Model Adı
+                        </label>
+                      </div>
+                      <Input
+                        placeholder="Ruhsatta yazan tam model adı"
+                        className="h-10 text-xs"
+                        {...register("registrationModel")}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Şase ve Motor Tanımlayıcıları - Geniş 2 Kolon */}
+                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="mb-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                      Şase ve Motor Tanımlayıcıları
+                    </h4>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      17 haneli şase numarası (VIN) ve motor seri numarası
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Şase No (VIN)
+                        </label>
+                        <span className="text-[11px] text-gray-400 font-mono">17 Hane</span>
+                      </div>
+                      <Input
+                        placeholder="WBA31AY00PFP12345"
+                        className="h-10 text-xs font-mono font-semibold uppercase tracking-wider"
+                        {...register("chassisNo")}
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Motor No
+                        </label>
+                        <span className="text-[11px] text-gray-400 font-mono">Motor Seri</span>
+                      </div>
+                      <Input
+                        placeholder="ENG200009"
+                        className="h-10 text-xs font-mono font-semibold uppercase tracking-wider"
+                        {...register("engineNo")}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -852,29 +918,40 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                     Teknik Özellikler
                   </h4>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <Controller
-                      name="km"
-                      control={control}
-                      render={({ field }) => (
-                        <NumericInput
-                          label="KM"
-                          suffix="km"
-                          placeholder="0"
-                          options={{ numeralDecimalScale: 0 }}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          error={errors.km?.message}
-                        />
-                      )}
-                    />
-
+                    {/* KM */}
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Yakıt
-                      </label>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          KM
+                        </label>
+                      </div>
+                      <Controller
+                        name="km"
+                        control={control}
+                        render={({ field }) => (
+                          <NumericInput
+                            suffix="km"
+                            placeholder="0"
+                            options={{ numeralDecimalScale: 0 }}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            className="h-10 text-xs font-mono"
+                            error={errors.km?.message}
+                          />
+                        )}
+                      />
+                    </div>
+
+                    {/* Yakıt */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Yakıt
+                        </label>
+                      </div>
                       <select
                         {...register("fuelType")}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">Seçiniz</option>
                         {Object.entries(FUEL_LABELS).map(([k, v]) => (
@@ -885,13 +962,16 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       </select>
                     </div>
 
+                    {/* Vites */}
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Vites
-                      </label>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Vites
+                        </label>
+                      </div>
                       <select
                         {...register("transmission")}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">Seçiniz</option>
                         {Object.entries(TRANSMISSION_LABELS).map(([k, v]) => (
@@ -904,8 +984,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                     {/* Kasa Tipi + Quick Add */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Kasa Tipi
                         </label>
                         <button
@@ -918,7 +998,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       </div>
                       <select
                         {...register("bodyTypeId")}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">Seçiniz</option>
                         {catalog?.bodyTypes.map((bt) => (
@@ -929,34 +1009,61 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       </select>
                     </div>
 
-                    <Input
-                      label="Motor Gücü (kW)"
-                      type="number"
-                      placeholder="kW"
-                      {...register("enginePower", { valueAsNumber: true })}
-                    />
-
-                    <Input
-                      label="Motor Gücü (HP)"
-                      type="number"
-                      placeholder="HP"
-                      {...register("horsePower", { valueAsNumber: true })}
-                    />
-
-                    <Input
-                      label="Motor Hacmi (cc)"
-                      type="number"
-                      placeholder="1600"
-                      {...register("engineVolume", { valueAsNumber: true })}
-                    />
-
+                    {/* Motor Gücü (kW) */}
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Çekiş
-                      </label>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Motor Gücü (kW)
+                        </label>
+                      </div>
+                      <Input
+                        type="number"
+                        placeholder="kW"
+                        className="h-10 text-xs font-mono"
+                        {...register("enginePower", { valueAsNumber: true })}
+                      />
+                    </div>
+
+                    {/* Motor Gücü (HP) */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Motor Gücü (HP)
+                        </label>
+                      </div>
+                      <Input
+                        type="number"
+                        placeholder="HP"
+                        className="h-10 text-xs font-mono"
+                        {...register("horsePower", { valueAsNumber: true })}
+                      />
+                    </div>
+
+                    {/* Motor Hacmi (cc) */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Motor Hacmi (cc)
+                        </label>
+                      </div>
+                      <Input
+                        type="number"
+                        placeholder="1600"
+                        className="h-10 text-xs font-mono"
+                        {...register("engineVolume", { valueAsNumber: true })}
+                      />
+                    </div>
+
+                    {/* Çekiş */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Çekiş
+                        </label>
+                      </div>
                       <select
                         {...register("driveType")}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                       >
                         <option value="">Seçiniz</option>
                         {Object.entries(DRIVE_LABELS).map(([k, v]) => (
@@ -973,211 +1080,24 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
             {/* ADIM 2: Finans */}
             {activeStep === 2 && (
-              <div className="space-y-6">
-                {/* Satış & Liste Fiyatlandırması */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Satış & Liste Fiyatlandırması
-                  </h4>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Controller
-                      name="listPrice"
-                      control={control}
-                      render={({ field }) => (
-                        <NumericInput
-                          label="Liste Fiyatı (₺)"
-                          placeholder="0,00"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          error={errors.listPrice?.message}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="tensf"
-                      control={control}
-                      render={({ field }) => (
-                        <NumericInput
-                          label="TENSF (₺)"
-                          placeholder="0,00"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          error={errors.tensf?.message}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-
-                {/* 4 Alım Rejimi Seçimi & Bilgi Paneli */}
-                <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-4 dark:border-dark-600 dark:bg-dark-800/50">
-                  <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Alım Rejimi ve KDV Yapılandırması
-                  </h4>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Alım Rejimi *
-                      </label>
-                      <select
-                        value={currentRegime}
-                        onChange={(e) => handleRegimeChange(e.target.value as PurchaseRegime)}
-                        className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
-                      >
-                        <option value="sahis">Şahıstan (Özel Matrah Yok)</option>
-                        <option value="sirket_1">Şirketten (%1 KDV)</option>
-                        <option value="sirket_20">Şirketten (%20 KDV)</option>
-                        <option value="galeri_ozel">Galeriden (Özel Matrahlı)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Alış KDV Oranı (Kilitli)
-                      </label>
-                      <div className="flex h-9 items-center rounded-lg border border-gray-200 bg-gray-100 px-3 text-xs font-bold text-gray-700 dark:border-dark-500 dark:bg-dark-800 dark:text-dark-200">
-                        %{regimeConfig.purchaseVatRate}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Satış KDV Yansıması
-                      </label>
-                      <div className="flex h-9 items-center truncate rounded-lg border border-gray-200 bg-gray-100 px-3 text-xs font-bold text-primary-700 dark:border-dark-500 dark:bg-dark-800 dark:text-primary-400">
-                        {regimeConfig.salesVatEffect}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="mt-2.5 text-[11px] text-gray-500 dark:text-dark-300">
-                    {regimeConfig.description}
-                  </p>
-
-                  {/* Fatura Bilgileri (Şirket & Galeri için) */}
-                  {(currentRegime === "sirket_1" ||
-                    currentRegime === "sirket_20" ||
-                    currentRegime === "galeri_ozel") && (
-                    <div className="mt-3.5 border-t border-gray-200 pt-3 dark:border-dark-600">
-                      <p className="mb-2 text-xs font-bold text-gray-700 dark:text-dark-200">
-                        Alış Fatura Bilgileri
-                      </p>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <Input
-                          label="Fatura No"
-                          placeholder="ABC20240000123"
-                          {...register("purchaseInvoiceNo")}
-                        />
-                        <Input
-                          label="Fatura Tarihi"
-                          type="date"
-                          {...register("purchaseInvoiceDate")}
-                        />
-                        <Input
-                          label="Fatura Açıklaması"
-                          placeholder="Fatura açıklaması..."
-                          {...register("purchaseInvoiceDescription")}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Özel Matrah Tutarı */}
-                  {currentRegime === "galeri_ozel" && (
-                    <div className="mt-3.5 border-t border-gray-200 pt-3 dark:border-dark-600">
-                      <div className="max-w-xs">
-                        <Controller
-                          name="specialBaseAmount"
-                          control={control}
-                          render={({ field }) => (
-                            <NumericInput
-                              label="Alış Özel Matrah Tutarı (₺) *"
-                              placeholder="0,00"
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              error={errors.specialBaseAmount?.message}
-                            />
-                          )}
-                        />
-                        <p className="mt-1 text-[11px] text-gray-400">
-                          Önceki galerinin faturasında belirtilen özel matrah tutarı
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Fiyat ve Cari Alanları */}
+              <div className="space-y-5">
+                {/* 1. Alış ve Satıcı Bilgileri (Tedarikçi en üstte) */}
                 <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Alış Fiyatları ve Satıcı Bilgileri
-                  </h4>
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <Controller
-                      name="purchasePrice"
-                      control={control}
-                      render={({ field }) => (
-                        <NumericInput
-                          label="Alış Fiyatı (₺)"
-                          placeholder="0,00"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          error={errors.purchasePrice?.message}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="purchaseNotaryPrice"
-                      control={control}
-                      render={({ field }) => (
-                        <NumericInput
-                          label="Alış Noter Fiyatı (₺)"
-                          placeholder="0,00"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          error={errors.purchaseNotaryPrice?.message}
-                        />
-                      )}
-                    />
-
-                    {/* Canlı Fark Göstergesi */}
-                    <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Fark (Alış - Noter)
-                      </label>
-                      <div
-                        className={`flex h-9 items-center justify-end rounded-lg border px-3 text-xs font-bold font-mono ${
-                          priceDiff === 0
-                            ? "border-gray-200 bg-gray-50 text-gray-600 dark:border-dark-500 dark:bg-dark-800 dark:text-dark-300"
-                            : priceDiff > 0
-                              ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-300"
-                              : "border-red-200 bg-red-50 text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300"
-                        }`}
-                      >
-                        {priceDiff > 0 ? "+" : ""}
-                        {priceDiff.toLocaleString("tr-TR", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}{" "}
-                        ₺
-                      </div>
-                    </div>
-
-                    <Input
-                      label="Alış Tarihi"
-                      type="date"
-                      {...register("purchaseDate")}
-                    />
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                      Satıcı Cari ve Alış Bilgileri
+                    </h4>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      Aracın satın alındığı cari hesap, başlangıç lokasyonu ve alım bedelleri
+                    </p>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 pt-2">
+                  {/* Satıcı Cari + Lokasyon + Tarih */}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {/* Satıcı Cari with SearchableSelect + Quick Add */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Satıcı Cari (Tedarikçi)
                         </label>
                         <button
@@ -1205,9 +1125,11 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                     {/* Başlangıç Lokasyonu with SearchableSelect */}
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Başlangıç Lokasyonu
-                      </label>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Başlangıç Lokasyonu
+                        </label>
+                      </div>
                       <Controller
                         name="purchaseLocationId"
                         control={control}
@@ -1218,6 +1140,324 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                             onChange={field.onChange}
                             onClear={() => field.onChange("")}
                             placeholder="Lokasyon seçiniz..."
+                          />
+                        )}
+                      />
+                    </div>
+
+                    {/* Alış Tarihi */}
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Alış Tarihi
+                        </label>
+                      </div>
+                      <Input
+                        type="date"
+                        className="h-10 text-xs"
+                        {...register("purchaseDate")}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Alış Fiyatları + Noter + Canlı Fark (3 Kolon) */}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 pt-3 border-t border-gray-100 dark:border-dark-600">
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Alış Fiyatı (₺)
+                        </label>
+                      </div>
+                      <Controller
+                        name="purchasePrice"
+                        control={control}
+                        render={({ field }) => (
+                          <NumericInput
+                            placeholder="0,00"
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            className="h-10 text-xs font-mono"
+                            error={errors.purchasePrice?.message}
+                          />
+                        )}
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Alış Noter Fiyatı (₺)
+                        </label>
+                      </div>
+                      <Controller
+                        name="purchaseNotaryPrice"
+                        control={control}
+                        render={({ field }) => (
+                          <NumericInput
+                            placeholder="0,00"
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            className="h-10 text-xs font-mono"
+                            error={errors.purchaseNotaryPrice?.message}
+                          />
+                        )}
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Fark (Alış - Noter)
+                        </label>
+                      </div>
+                      <div
+                        className={`flex h-10 items-center justify-end rounded-lg border px-3 text-xs font-bold font-mono ${
+                          priceDiff === 0
+                            ? "border-gray-200 bg-gray-50 text-gray-600 dark:border-dark-500 dark:bg-dark-800 dark:text-dark-300"
+                            : priceDiff > 0
+                              ? "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-300"
+                              : "border-red-200 bg-red-50 text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300"
+                        }`}
+                      >
+                        {priceDiff > 0 ? "+" : ""}
+                        {priceDiff.toLocaleString("tr-TR", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        ₺
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Alım Rejimi ve KDV Yapılandırması */}
+                <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-4.5 dark:border-dark-600 dark:bg-dark-800/50 space-y-4">
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                      Alım Rejimi ve KDV Yapılandırması
+                    </h4>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      Vergi mevzuatı, alış KDV oranı ve satış faturası yansıması
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Alım Rejimi *
+                        </label>
+                      </div>
+                      <select
+                        value={currentRegime}
+                        onChange={(e) => handleRegimeChange(e.target.value as PurchaseRegime)}
+                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                      >
+                        <option value="sahis">Şahıstan (Özel Matrah Yok)</option>
+                        <option value="sirket_1">Şirketten (%1 KDV)</option>
+                        <option value="sirket_20">Şirketten (%20 KDV)</option>
+                        <option value="galeri_ozel">Galeriden (Özel Matrahlı)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Alış KDV Oranı (Kilitli)
+                        </label>
+                      </div>
+                      <div className="flex h-10 items-center rounded-lg border border-gray-200 bg-gray-100 px-3 text-xs font-bold text-gray-700 dark:border-dark-500 dark:bg-dark-800 dark:text-dark-200">
+                        %{regimeConfig.purchaseVatRate}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Satış KDV Yansıması
+                        </label>
+                      </div>
+                      <div className="flex h-10 items-center truncate rounded-lg border border-gray-200 bg-gray-100 px-3 text-xs font-bold text-primary-700 dark:border-dark-500 dark:bg-dark-800 dark:text-primary-400">
+                        {regimeConfig.salesVatEffect}
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-gray-500 dark:text-dark-300">
+                    {regimeConfig.description}
+                  </p>
+
+                  {/* Fatura Bilgileri (Şirket Alımları için) */}
+                  {(currentRegime === "sirket_1" || currentRegime === "sirket_20") && (
+                    <div className="border-t border-gray-200 pt-3 dark:border-dark-600">
+                      <p className="mb-2.5 text-xs font-bold text-gray-700 dark:text-dark-200">
+                        Alış Fatura Bilgileri
+                      </p>
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div>
+                          <div className="flex items-center justify-between h-5 mb-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                              Fatura No
+                            </label>
+                          </div>
+                          <Input
+                            placeholder="ABC20240000123"
+                            className="h-10 text-xs font-mono uppercase"
+                            {...register("purchaseInvoiceNo")}
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between h-5 mb-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                              Fatura Tarihi
+                            </label>
+                          </div>
+                          <Input
+                            type="date"
+                            className="h-10 text-xs"
+                            {...register("purchaseInvoiceDate")}
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between h-5 mb-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                              Fatura Açıklaması
+                            </label>
+                          </div>
+                          <Input
+                            placeholder="Fatura açıklaması..."
+                            className="h-10 text-xs"
+                            {...register("purchaseInvoiceDescription")}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Galeri Özel Matrah - 4 Kolonlu Tam Hizalı Düzen */}
+                  {currentRegime === "galeri_ozel" && (
+                    <div className="border-t border-gray-200 pt-3 dark:border-dark-600">
+                      <p className="mb-2.5 text-xs font-bold text-gray-700 dark:text-dark-200">
+                        Alış Fatura ve Özel Matrah Bilgileri
+                      </p>
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <div>
+                          <div className="flex items-center justify-between h-5 mb-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                              Fatura No
+                            </label>
+                          </div>
+                          <Input
+                            placeholder="ABC20240000123"
+                            className="h-10 text-xs font-mono uppercase"
+                            {...register("purchaseInvoiceNo")}
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between h-5 mb-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                              Fatura Tarihi
+                            </label>
+                          </div>
+                          <Input
+                            type="date"
+                            className="h-10 text-xs"
+                            {...register("purchaseInvoiceDate")}
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between h-5 mb-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                              Özel Matrah Tutarı (₺) *
+                            </label>
+                          </div>
+                          <Controller
+                            name="specialBaseAmount"
+                            control={control}
+                            render={({ field }) => (
+                              <NumericInput
+                                placeholder="0,00"
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                className="h-10 text-xs font-mono"
+                                error={errors.specialBaseAmount?.message}
+                              />
+                            )}
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between h-5 mb-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                              Fatura Açıklaması
+                            </label>
+                          </div>
+                          <Input
+                            placeholder="Fatura açıklaması..."
+                            className="h-10 text-xs"
+                            {...register("purchaseInvoiceDescription")}
+                          />
+                        </div>
+                      </div>
+                      <p className="mt-2 text-[11px] text-gray-400">
+                        * Önceki galerinin faturasında belirtilen özel matrah tutarı
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Satış & Liste Fiyatlandırması (Dengeli Genişlik) */}
+                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="mb-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                      Satış & Liste Fiyatlandırması
+                    </h4>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      Araç vitrin liste fiyatı ve tavsiye edilen noter satış fiyatı
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 max-w-2xl">
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Liste Fiyatı (₺)
+                        </label>
+                      </div>
+                      <Controller
+                        name="listPrice"
+                        control={control}
+                        render={({ field }) => (
+                          <NumericInput
+                            placeholder="0,00"
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            className="h-10 text-xs font-mono"
+                            error={errors.listPrice?.message}
+                          />
+                        )}
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          TENSF (₺)
+                        </label>
+                      </div>
+                      <Controller
+                        name="tensf"
+                        control={control}
+                        render={({ field }) => (
+                          <NumericInput
+                            placeholder="0,00"
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            className="h-10 text-xs font-mono"
+                            error={errors.tensf?.message}
                           />
                         )}
                       />
