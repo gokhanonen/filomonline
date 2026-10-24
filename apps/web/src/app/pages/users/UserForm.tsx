@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { toast } from "sonner";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 
-import { Button, Checkbox, Input, Select } from "@/components/ui";
+import { Avatar, Button, Checkbox, Input, Select } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
 import { useAuthContext } from "@/app/contexts/auth/context";
+import { uploadBlob, useFileUrl } from "@/services/storageService";
 import type {
   AdminRole,
   AdminUser,
@@ -19,6 +21,16 @@ import {
   setUserMemberships,
   updateUser,
 } from "@/services/userService";
+
+function initialsOf(name?: string | null): string {
+  if (!name) return "?";
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 interface Props {
   open: boolean;
@@ -38,6 +50,9 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
   const { companies } = useAuthContext();
   const [roles, setRoles] = useState<AdminRole[]>([]);
   const [rows, setRows] = useState<Record<string, MembershipRow>>({});
+  const [avatarKey, setAvatarKey] = useState<string>("");
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarPreviewUrl = useFileUrl(avatarKey);
 
   const schema = useMemo(
     () =>
@@ -57,11 +72,14 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<UserFormValues>({
     resolver: yupResolver(schema) as never,
     defaultValues: { name: "", email: "" },
   });
+
+  const watchedName = watch("name");
 
   useEffect(() => {
     if (open && roles.length === 0) {
@@ -71,6 +89,7 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
 
   useEffect(() => {
     if (!open) return;
+    setAvatarKey(user?.avatarUrl ?? "");
     reset({
       name: user?.name ?? "",
       email: user?.email ?? "",
@@ -103,6 +122,22 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
     }));
   };
 
+  const onAvatarFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setIsUploadingAvatar(true);
+      const key = await uploadBlob(file, file.name, "avatars");
+      setAvatarKey(key);
+      toast.success("Fotoğraf yüklendi");
+    } catch (err) {
+      toast.error((err as Error).message || "Fotoğraf yüklenemedi");
+    } finally {
+      setIsUploadingAvatar(false);
+      e.target.value = "";
+    }
+  };
+
   const onSubmit = async (values: UserFormValues) => {
     const memberships = buildMemberships();
     if (!isEdit && memberships.length === 0) {
@@ -115,13 +150,14 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
           name: values.name,
           phone: values.phone,
           extension: values.extension,
+          avatarUrl: avatarKey || undefined,
         };
         if (values.password) basic.password = values.password;
         await updateUser(user!.id, basic);
         await setUserMemberships(user!.id, memberships);
         toast.success("Kullanıcı güncellendi");
       } else {
-        await createUser({ ...values, memberships });
+        await createUser({ ...values, avatarUrl: avatarKey || undefined, memberships });
         toast.success("Kullanıcı oluşturuldu");
       }
       onSaved();
@@ -139,6 +175,48 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? "Kullanıcı Düzenle" : "Yeni Kullanıcı"}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Avatar Yükleme Alanı */}
+        <div className="flex items-center gap-4 rounded-xl border border-gray-150 p-3 bg-gray-50/50 dark:border-dark-600 dark:bg-dark-800/40">
+          <Avatar
+            size={14}
+            src={avatarPreviewUrl}
+            initialColor="primary"
+            alt={watchedName || user?.name || "Profil"}
+            className="ring-2 ring-primary-500/20 shadow-xs"
+          >
+            {initialsOf(watchedName || user?.name)}
+          </Avatar>
+          <div className="flex flex-col gap-1.5 min-w-0">
+            <div className="flex items-center gap-2">
+              <label className="cursor-pointer">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition shadow-xs">
+                  <PhotoIcon className="size-3.5" />
+                  {isUploadingAvatar ? "Yükleniyor..." : avatarKey ? "Fotoğrafı Değiştir" : "Fotoğraf Yükle"}
+                </span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  disabled={isUploadingAvatar}
+                  onChange={onAvatarFileChange}
+                />
+              </label>
+              {avatarKey && (
+                <button
+                  type="button"
+                  onClick={() => setAvatarKey("")}
+                  className="px-2.5 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition"
+                >
+                  Kaldır
+                </button>
+              )}
+            </div>
+            <p className="text-tiny text-gray-400 dark:text-dark-300">
+              Profil avatarı (JPG, PNG veya WebP)
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input label="Ad Soyad" {...register("name")} error={errors.name?.message} />
           <Input

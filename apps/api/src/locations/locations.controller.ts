@@ -71,6 +71,12 @@ export class LocationsController {
   }
 
   @RequirePermissions("locations.read")
+  @Get("locations/pending-transfers")
+  listPendingTransfers(@CompanyId() companyId: string) {
+    return this.locations.listPendingTransfers(companyId);
+  }
+
+  @RequirePermissions("locations.read")
   @Get("locations/:id")
   findOne(@CompanyId() companyId: string, @Param("id") id: string) {
     return this.locations.findOne(companyId, id);

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { TbZoomIn } from "react-icons/tb";
 
 export interface RadialAction {
   icon: React.ElementType;
@@ -14,9 +15,11 @@ interface Props {
   actions: RadialAction[];
   onClose: () => void;
   title?: string; // merkezde gösterilecek (örn. plaka)
+  imageUrl?: string | null;
+  onCenterClick?: () => void;
 }
 
-const RADIUS = 120;
+const RADIUS = 125;
 const BTN = 56; // buton çapı
 
 /**
@@ -24,9 +27,18 @@ const BTN = 56; // buton çapı
  * Anchor'un (kartın) merkezine konumlanır; ikonlar merkezden dışa yayılır,
  * hover'da büyür, tıklayınca aksiyonu çalıştırıp kapanır.
  */
-export function RadialMenu({ open, anchorRef, actions, onClose, title }: Props) {
+export function RadialMenu({
+  open,
+  anchorRef,
+  actions,
+  onClose,
+  title,
+  imageUrl,
+  onCenterClick,
+}: Props) {
   const [center, setCenter] = useState<{ x: number; y: number } | null>(null);
   const [spread, setSpread] = useState(false);
+  const [hoveredAction, setHoveredAction] = useState<RadialAction | null>(null);
 
   useLayoutEffect(() => {
     if (open && anchorRef.current) {
@@ -50,9 +62,11 @@ export function RadialMenu({ open, anchorRef, actions, onClose, title }: Props) 
         cancelAnimationFrame(id);
         window.removeEventListener("keydown", onKey);
         setSpread(false);
+        setHoveredAction(null);
       };
     }
     setSpread(false);
+    setHoveredAction(null);
   }, [open, onClose]);
 
   if (!open || !center) return null;
@@ -61,18 +75,66 @@ export function RadialMenu({ open, anchorRef, actions, onClose, title }: Props) 
   return createPortal(
     // Şeffaf katman: sayfa görünür kalır, sadece dışarı tıklamayı yakalar.
     <div className="fixed inset-0 z-[200]" onClick={onClose}>
-      {/* Merkez plaka rozeti — siyah zemin, beyaz yazı, iki satır eşit font */}
+      {/* Merkez rozet — büyütülmüş yuvarlak alan; araç fotosu / plaka ve üzerine gelinen aksiyon adı burada gösterilir */}
       <div
-        className="pointer-events-none absolute flex size-16 items-center justify-center rounded-full bg-gray-900 text-center text-xs font-bold leading-tight text-white shadow-lg ring-4 ring-white/70 dark:ring-black/50"
+        onClick={(e) => {
+          if (!hoveredAction && onCenterClick) {
+            e.stopPropagation();
+            onCenterClick();
+          }
+        }}
+        className={`absolute flex size-24 items-center justify-center rounded-full text-center text-white shadow-2xl ring-4 ring-white/80 transition-all duration-200 ease-out backdrop-blur-md overflow-hidden dark:ring-white/20 ${
+          !hoveredAction && onCenterClick
+            ? "pointer-events-auto cursor-pointer group hover:scale-105 hover:ring-primary-400"
+            : "pointer-events-none"
+        } ${imageUrl && !hoveredAction ? "bg-black" : "bg-gray-900/95 dark:bg-dark-900/95"}`}
         style={{
           left: center.x,
           top: center.y,
           transform: `translate(-50%, -50%) scale(${spread ? 1 : 0.4})`,
           opacity: spread ? 1 : 0,
-          transition: "transform 200ms ease-out, opacity 200ms ease-out",
         }}
+        title={!hoveredAction && onCenterClick ? "Fotoğraf galerisini aç" : undefined}
       >
-        {title}
+        {hoveredAction ? (
+          <div className="flex flex-col items-center justify-center text-center px-2 select-none animate-in fade-in zoom-in-95 duration-150">
+            {(() => {
+              const HoverIcon = hoveredAction.icon;
+              return (
+                <HoverIcon
+                  className={`size-6 mb-1 ${hoveredAction.color ?? "text-white"}`}
+                />
+              );
+            })()}
+            <span className="text-[11px] font-bold leading-tight text-white line-clamp-2">
+              {hoveredAction.label}
+            </span>
+          </div>
+        ) : imageUrl ? (
+          <div className="relative size-full select-none">
+            <img
+              src={imageUrl}
+              alt={title || "Araç"}
+              className="size-full object-cover transition-transform duration-300 group-hover:scale-110"
+            />
+            {/* Alt gradyan ve plaka */}
+            <div className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-gradient-to-t from-black/90 via-black/50 to-transparent pb-1 pt-3">
+              <span className="font-mono text-[10px] font-black tracking-wider text-white uppercase drop-shadow-sm px-1 truncate">
+                {title}
+              </span>
+            </div>
+            {/* Hover overlay — Büyüteç ikonu */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+              <TbZoomIn className="size-6 text-white drop-shadow-lg" />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center px-2 select-none">
+            <span className="font-mono text-xs sm:text-sm font-black tracking-wider text-white uppercase leading-snug">
+              {title}
+            </span>
+          </div>
+        )}
       </div>
 
       {actions.map((a, i) => {
@@ -80,16 +142,11 @@ export function RadialMenu({ open, anchorRef, actions, onClose, title }: Props) 
         const dx = spread ? Math.cos(angle) * RADIUS : 0;
         const dy = spread ? Math.sin(angle) * RADIUS : 0;
         const Icon = a.icon;
+        const isHovered = hoveredAction === a;
         return (
-          <button
+          <div
             key={i}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              a.onClick();
-              onClose();
-            }}
-            className="group absolute flex items-center justify-center rounded-full bg-white shadow-xl ring-1 ring-black/10 transition-all duration-300 ease-out hover:z-10 hover:scale-125 dark:bg-dark-600 dark:ring-white/10"
+            className="absolute z-10 hover:z-30"
             style={{
               left: center.x,
               top: center.y,
@@ -99,14 +156,30 @@ export function RadialMenu({ open, anchorRef, actions, onClose, title }: Props) 
               marginTop: -BTN / 2,
               transform: `translate(${dx}px, ${dy}px) scale(${spread ? 1 : 0.2})`,
               opacity: spread ? 1 : 0,
-              transitionDelay: `${i * 35}ms`,
+              transition: "transform 260ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease-out",
+              transitionDelay: spread ? `${i * 25}ms` : "0ms",
+              pointerEvents: spread ? "auto" : "none",
             }}
           >
-            <Icon className={`size-6 ${a.color ?? "text-gray-600 dark:text-dark-100"}`} />
-            <span className="pointer-events-none absolute -bottom-7 whitespace-nowrap rounded bg-black/70 px-2 py-0.5 text-tiny text-white opacity-0 transition group-hover:opacity-100">
-              {a.label}
-            </span>
-          </button>
+            <button
+              type="button"
+              onMouseEnter={() => setHoveredAction(a)}
+              onMouseLeave={() => setHoveredAction(null)}
+              onClick={(e) => {
+                e.stopPropagation();
+                a.onClick();
+                onClose();
+              }}
+              className={`group relative flex size-full items-center justify-center rounded-full bg-white shadow-xl ring-1 ring-black/10 transition-transform duration-150 ease-out hover:scale-120 hover:shadow-2xl hover:ring-2 hover:ring-primary-500/40 dark:bg-dark-600 dark:ring-white/10 ${
+                isHovered ? "ring-2 ring-primary-500/50 shadow-2xl" : ""
+              }`}
+              style={{
+                transformOrigin: "center center",
+              }}
+            >
+              <Icon className={`size-6 ${a.color ?? "text-gray-600 dark:text-dark-100"} transition-transform duration-150 group-hover:scale-110`} />
+            </button>
+          </div>
         );
       })}
     </div>,

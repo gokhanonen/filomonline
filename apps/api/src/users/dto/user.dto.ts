@@ -38,6 +38,7 @@ export class CreateUserDto {
 
   @IsOptional() @IsString() phone?: string;
   @IsOptional() @IsString() extension?: string;
+  @IsOptional() @IsString() avatarUrl?: string;
 
   @IsOptional()
   @IsArray()
@@ -50,6 +51,7 @@ export class UpdateUserDto {
   @IsOptional() @IsString() @MinLength(2) name?: string;
   @IsOptional() @IsString() phone?: string;
   @IsOptional() @IsString() extension?: string;
+  @IsOptional() @IsString() avatarUrl?: string;
   @IsOptional() @IsBoolean() isActive?: boolean;
   @IsOptional() @IsString() @MinLength(6) password?: string;
 }

@@ -48,7 +48,34 @@ export class CompaniesService {
 
   async update(id: string, dto: UpdateCompanyDto) {
     await this.ensureExists(id);
-    return this.prisma.company.update({ where: { id }, data: dto });
+    const updated = await this.prisma.company.update({ where: { id }, data: dto });
+
+    try {
+      const existingSetting = await this.prisma.setting.findUnique({
+        where: { companyId_key: { companyId: id, key: "company.info" } },
+      });
+      const currentVal = (existingSetting?.value as Record<string, unknown>) ?? {};
+      const nextVal = {
+        ...currentVal,
+        ...(dto.name !== undefined ? { title: dto.name } : {}),
+        ...(dto.legalName !== undefined ? { legalName: dto.legalName } : {}),
+        ...(dto.taxOffice !== undefined ? { taxOffice: dto.taxOffice } : {}),
+        ...(dto.taxNumber !== undefined ? { taxNumber: dto.taxNumber } : {}),
+        ...(dto.address !== undefined ? { address: dto.address } : {}),
+        ...(dto.phone !== undefined ? { phone: dto.phone } : {}),
+        ...(dto.email !== undefined ? { email: dto.email } : {}),
+        ...(dto.logoUrl !== undefined ? { logoKey: dto.logoUrl, logoUrl: dto.logoUrl } : {}),
+      };
+      await this.prisma.setting.upsert({
+        where: { companyId_key: { companyId: id, key: "company.info" } },
+        create: { companyId: id, key: "company.info", value: nextVal as Prisma.InputJsonValue },
+        update: { value: nextVal as Prisma.InputJsonValue },
+      });
+    } catch {
+      // Opsiyonel senkronizasyon
+    }
+
+    return updated;
   }
 
   private async ensureExists(id: string) {

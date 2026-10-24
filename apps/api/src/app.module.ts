@@ -26,6 +26,7 @@ import { ActivityModule } from "./activity/activity.module";
 import { SettingsModule } from "./settings/settings.module";
 import { ChatModule } from "./chat/chat.module";
 import { AddressModule } from "./address/address.module";
+import { SearchModule } from "./search/search.module";
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { AddressModule } from "./address/address.module";
     InvoicesModule,
     DocumentsModule,
     AddressModule,
+    SearchModule,
   ],
   controllers: [HealthController],
   providers: [

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
@@ -52,11 +53,23 @@ function fmtDate(d: string): string {
 export default function InvoicesPage() {
   const { can } = useAuthContext();
   const canWrite = can("invoices.write");
+  const [searchParams] = useSearchParams();
 
-  const [type, setType] = useState<InvoiceType | "">("");
+  const urlType = searchParams.get("type") as InvoiceType | null;
+  const urlSearch = searchParams.get("search") || "";
+
+  const [type, setType] = useState<InvoiceType | "">(urlType || "");
+  const [search, setSearch] = useState(urlSearch);
   const [refreshKey, setRefreshKey] = useState(0);
   const [formOpen, setFormOpen] = useState(false);
   const [plateMap, setPlateMap] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const qType = searchParams.get("type") as InvoiceType | null;
+    const qSearch = searchParams.get("search") || "";
+    if (qType) setType(qType);
+    if (qSearch) setSearch(qSearch);
+  }, [searchParams]);
 
   useEffect(() => {
     listVehicles({ pageSize: 300 })
@@ -71,9 +84,14 @@ export default function InvoicesPage() {
   const fetchPage = useCallback(
     (page: number) => {
       void refreshKey;
-      return listInvoices({ page, pageSize: PAGE_SIZE, type: type || undefined });
+      return listInvoices({
+        page,
+        pageSize: PAGE_SIZE,
+        type: type || undefined,
+        search: search || undefined,
+      } as any);
     },
-    [type, refreshKey],
+    [type, search, refreshKey],
   );
 
   const { items, total, loading, hasMore, loadMore } = useInfiniteList<InvoiceRow>(fetchPage);

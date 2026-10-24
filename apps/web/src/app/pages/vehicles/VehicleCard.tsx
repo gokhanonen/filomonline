@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   TbCalendar,
   TbGauge,
@@ -17,6 +18,7 @@ import {
   TbCashBanknote,
   TbLink,
   TbBrandWhatsapp,
+  TbFileCheck,
 } from "react-icons/tb";
 
 import {
@@ -27,6 +29,7 @@ import {
 } from "@/@types/vehicle";
 import { listingSourceIcon, matchListingSource, type ListingSource } from "@/@types/catalog";
 import { RadialMenu, type RadialAction } from "@/components/shared/RadialMenu";
+import { VehiclePhotoGalleryModal } from "./VehiclePhotoGalleryModal";
 
 const STATUS_BADGE: Record<string, string> = {
   STOKTA: "bg-success",
@@ -52,9 +55,13 @@ interface Props {
   onEdit: () => void;
   onAddExpense?: () => void;
   onSale?: () => void;
+  onContract?: () => void;
   onLinks?: () => void;
   onOption?: () => void;
   onWhatsApp?: () => void;
+  onDocuments?: () => void;
+  onCopy?: () => void;
+  onTransfer?: () => void;
   onDelete?: () => void;
 }
 
@@ -65,15 +72,20 @@ export function VehicleCard({
   onEdit,
   onAddExpense,
   onSale,
+  onContract,
   onLinks,
   onOption,
   onWhatsApp,
+  onDocuments,
+  onCopy,
+  onTransfer,
   onDelete,
 }: Props) {
   const fuel = v.fuelType ? FUEL_LABELS[v.fuelType] : null;
   const trans = v.transmission ? TRANSMISSION_LABELS[v.transmission] : null;
   const cardRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   const firstLink = v.listingUrls?.[0];
   const firstSource = firstLink
@@ -83,20 +95,33 @@ export function VehicleCard({
   const option = v.activeOption ?? null;
 
   const actions: RadialAction[] = [
-    { icon: TbEye, label: "Detay", color: "text-info", onClick: onView },
+    { icon: TbEye, label: "Önizle", color: "text-info", onClick: onView },
     { icon: TbPencil, label: "Düzenle", color: "text-primary-600", onClick: onEdit },
     { icon: TbReceipt2, label: "Masraf Ekle", color: "text-warning", onClick: onAddExpense ?? onView },
     ...(v.status !== "SATILDI"
       ? [{ icon: TbCashBanknote, label: "Satış Yap", color: "text-success", onClick: onSale ?? onView }]
       : []),
-    ...(v.status === "STOKTA" && onOption
+    ...(onOption
       ? [{ icon: TbTag, label: option ? "Opsiyonu Düzenle" : "Opsiyon Ekle", color: "text-amber-500", onClick: onOption }]
+      : []),
+    ...(onContract
+      ? [{ icon: TbFileCheck, label: "Sözleşme", color: "text-blue-600 dark:text-blue-400", onClick: onContract }]
       : []),
     { icon: TbBrandWhatsapp, label: "WhatsApp Gönder", color: "text-green-500", onClick: onWhatsApp ?? onView },
     { icon: TbLink, label: firstLink ? "İlan Linkleri" : "İlan Linki Ekle", color: "text-fuchsia-500", onClick: onLinks ?? onView },
-    { icon: TbFileText, label: "Evraklar", color: "text-secondary", onClick: onView },
-    { icon: TbMapPin, label: "Lokasyon", color: "text-error", onClick: onView },
-    { icon: TbCopy, label: "Kopyala", onClick: onView },
+    { icon: TbFileText, label: "Evraklar", color: "text-secondary", onClick: onDocuments ?? onView },
+    {
+      icon: TbCopy,
+      label: "Kopyala",
+      color: "text-indigo-600 dark:text-indigo-400",
+      onClick: onCopy ?? (() => toast.info("Araç kopyalama yakında aktif olacak")),
+    },
+    {
+      icon: TbMapPin,
+      label: "Lokasyon",
+      color: "text-amber-500",
+      onClick: onTransfer ?? (() => toast.info("Lokasyon transferi yakında aktif olacak")),
+    },
     ...(onDelete ? [{ icon: TbTrash, label: "Pasifleştir", color: "text-error", onClick: onDelete }] : []),
   ];
 
@@ -193,6 +218,17 @@ export function VehicleCard({
         actions={actions}
         onClose={() => setMenuOpen(false)}
         title={v.plate}
+        imageUrl={v.coverUrl}
+        onCenterClick={() => {
+          setMenuOpen(false);
+          setGalleryOpen(true);
+        }}
+      />
+
+      <VehiclePhotoGalleryModal
+        open={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+        vehicle={v}
       />
     </>
   );

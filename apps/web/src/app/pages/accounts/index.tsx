@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
@@ -30,8 +31,9 @@ export default function AccountsPage() {
   const { can } = useAuthContext();
   const canWrite = can("accounts.write");
   const canDelete = can("accounts.delete");
+  const [searchParams] = useSearchParams();
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(() => searchParams.get("search") || "");
   const [debounced, setDebounced] = useState("");
   const [typeFilter, setTypeFilter] = useState<AccountType | "">("");
   const [refreshKey, setRefreshKey] = useState(0);

@@ -3,6 +3,21 @@ import { BuildingOffice2Icon, CheckIcon, ChevronUpDownIcon } from "@heroicons/re
 import clsx from "clsx";
 
 import { useAuthContext } from "@/app/contexts/auth/context";
+import { useFileUrl } from "@/services/storageService";
+
+function CompanyLogo({ logoUrl, className }: { logoUrl?: string | null; className?: string }) {
+  const url = useFileUrl(logoUrl);
+  if (url) {
+    return (
+      <img
+        src={url}
+        alt="Logo"
+        className={clsx("rounded object-contain shrink-0 bg-white dark:bg-dark-800 p-0.5 border border-gray-200 dark:border-dark-500", className)}
+      />
+    );
+  }
+  return <BuildingOffice2Icon className={clsx("shrink-0 text-primary-600 dark:text-primary-400", className)} />;
+}
 
 /**
  * Sağ üstteki firma değiştir combobox'ı.
@@ -26,7 +41,7 @@ export function CompanySwitcher() {
           !single && "hover:border-gray-400 dark:hover:border-dark-400",
         )}
       >
-        <BuildingOffice2Icon className="size-4 shrink-0 text-primary-600 dark:text-primary-400" />
+        <CompanyLogo logoUrl={active?.logoUrl} className="size-5" />
         <span className="max-w-40 truncate">{active?.name}</span>
         {!single && <ChevronUpDownIcon className="size-4 shrink-0 text-gray-400" />}
       </MenuButton>
@@ -53,7 +68,10 @@ export function CompanySwitcher() {
                       : "text-gray-700 dark:text-dark-100",
                   )}
                 >
-                  <span className="truncate">{c.name}</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <CompanyLogo logoUrl={c.logoUrl} className="size-5" />
+                    <span className="truncate">{c.name}</span>
+                  </div>
                   {c.id === active?.id && <CheckIcon className="size-4 shrink-0" />}
                 </button>
               )}

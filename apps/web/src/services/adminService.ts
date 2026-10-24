@@ -52,7 +52,35 @@ export async function createCompany(tenantId: string, name: string): Promise<Adm
   const { data } = await axios.post<AdminCompany>("/companies", { tenantId, name });
   return data;
 }
-export async function updateCompany(id: string, patch: { name?: string; isActive?: boolean }) {
+export async function updateCompany(id: string, patch: { name?: string; isActive?: boolean; logoUrl?: string }) {
   const { data } = await axios.patch<AdminCompany>(`/companies/${id}`, patch);
+  return data;
+}
+
+export interface CompanyDetails {
+  id: string;
+  tenantId: string;
+  name: string;
+  legalName?: string | null;
+  taxOffice?: string | null;
+  taxNumber?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  logoUrl?: string | null;
+  isActive: boolean;
+  createdAt: string;
+  tenant?: { id: string; name: string };
+}
+
+export async function getCurrentCompany(): Promise<CompanyDetails> {
+  const { data } = await axios.get<CompanyDetails>("/companies/current");
+  return data;
+}
+
+export async function updateCurrentCompany(
+  patch: Partial<Omit<CompanyDetails, "id" | "tenantId" | "createdAt">>
+): Promise<CompanyDetails> {
+  const { data } = await axios.patch<CompanyDetails>("/companies/current", patch);
   return data;
 }

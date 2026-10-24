@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { Button, Input, NumericInput, Select } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
+import { SearchableSelect, type SearchableOption } from "@/components/shared/SearchableSelect";
 import {
   RENTAL_STATUS_LABELS,
   type RentalContract,
@@ -33,6 +34,7 @@ interface Props {
   onClose: () => void;
   onSaved: () => void;
   rental?: RentalContract | null;
+  initialVehicleId?: string;
 }
 
 const statusOpts = Object.keys(RENTAL_STATUS_LABELS).map((k) => ({
@@ -40,7 +42,7 @@ const statusOpts = Object.keys(RENTAL_STATUS_LABELS).map((k) => ({
   label: RENTAL_STATUS_LABELS[k as keyof typeof RENTAL_STATUS_LABELS],
 }));
 
-export function RentalForm({ open, onClose, onSaved, rental }: Props) {
+export function RentalForm({ open, onClose, onSaved, rental, initialVehicleId }: Props) {
   const isEdit = !!rental;
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [customers, setCustomers] = useState<Account[]>([]);
@@ -55,7 +57,7 @@ export function RentalForm({ open, onClose, onSaved, rental }: Props) {
   } = useForm<RentalFormValues>({
     resolver: yupResolver(schema) as never,
     defaultValues: {
-      vehicleId: "",
+      vehicleId: initialVehicleId ?? "",
       customerName: "",
       durationMonths: 12,
       monthlyPrice: 0,
@@ -77,7 +79,7 @@ export function RentalForm({ open, onClose, onSaved, rental }: Props) {
   useEffect(() => {
     if (!open) return;
     reset({
-      vehicleId: rental?.vehicleId ?? "",
+      vehicleId: rental?.vehicleId ?? initialVehicleId ?? "",
       customerId: rental?.customerId ?? "",
       customerName: rental?.customerName ?? "",
       customerPhone: rental?.customerPhone ?? "",
@@ -92,7 +94,7 @@ export function RentalForm({ open, onClose, onSaved, rental }: Props) {
       documentNo: rental?.documentNo ?? "",
       status: rental?.status ?? "DRAFT",
     });
-  }, [open, rental, reset]);
+  }, [open, rental, initialVehicleId, reset]);
 
   const onSubmit = async (values: RentalFormValues) => {
     try {
@@ -110,36 +112,61 @@ export function RentalForm({ open, onClose, onSaved, rental }: Props) {
     }
   };
 
+  const vehicleOptions: SearchableOption[] = vehicles.map((v) => ({
+    value: v.id,
+    label: v.plate,
+    subLabel: [v.brandName, v.modelName, v.year].filter(Boolean).join(" "),
+  }));
+
+  const customerOptions: SearchableOption[] = customers.map((c) => ({
+    value: c.id,
+    label: c.name,
+    subLabel: c.phone ?? (c.city ? `${c.city}${c.district ? ` / ${c.district}` : ""}` : undefined),
+    badge: c.entityType === "CORPORATE" ? "Firma" : undefined,
+  }));
+
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? "Kira Sözleşmesi Düzenle" : "Yeni Kira Sözleşmesi"} className="max-w-3xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Controller name="vehicleId" control={control} render={({ field }) => (
-            <Select
-              label="Araç"
-              data={[{ value: "", label: "Seçiniz" }, ...vehicles.map((v) => ({ value: v.id, label: `${v.plate} ${v.brandName ?? ""}`.trim() }))]}
-              value={field.value}
-              onChange={field.onChange}
-              name={field.name}
-              error={errors.vehicleId?.message}
-            />
-          )} />
-          <Controller name="customerId" control={control} render={({ field }) => (
-            <Select
-              label="Müşteri (cari)"
-              data={[{ value: "", label: "Seçiniz / elle gir" }, ...customers.map((c) => ({ value: c.id, label: c.name }))]}
-              value={field.value ?? ""}
-              onChange={(e) => {
-                field.onChange(e);
-                const c = customers.find((x) => x.id === e.target.value);
-                if (c) {
-                  setValue("customerName", c.name);
-                  setValue("customerPhone", c.phone ?? "");
-                }
-              }}
-              name={field.name}
-            />
-          )} />
+          <Controller
+            name="vehicleId"
+            control={control}
+            render={({ field }) => (
+              <SearchableSelect
+                label="Araç *"
+                placeholder="Plaka veya model ara..."
+                options={vehicleOptions}
+                value={field.value}
+                onChange={field.onChange}
+                onClear={() => field.onChange("")}
+                error={errors.vehicleId?.message}
+              />
+            )}
+          />
+          <Controller
+            name="customerId"
+            control={control}
+            render={({ field }) => (
+              <SearchableSelect
+                label="Müşteri (cari)"
+                placeholder="Müşteri ara..."
+                options={customerOptions}
+                value={field.value ?? ""}
+                onChange={(val) => {
+                  field.onChange(val);
+                  const c = customers.find((x) => x.id === val);
+                  if (c) {
+                    setValue("customerName", c.name);
+                    setValue("customerPhone", c.phone ?? "");
+                  }
+                }}
+                onClear={() => {
+                  field.onChange("");
+                }}
+              />
+            )}
+          />
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

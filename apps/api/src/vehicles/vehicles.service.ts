@@ -17,6 +17,11 @@ import {
   VehiclePhotoDto,
 } from "./dto/vehicle.dto";
 import { AddListingUrlDto, CreateVehicleOptionDto } from "./dto/vehicle-extras.dto";
+import {
+  CreateVehicleTransferDto,
+  ReturnFromExternalDto,
+  SetInitialLocationDto,
+} from "./dto/vehicle-transfer.dto";
 
 const fullInclude = {
   photos: { orderBy: { sortOrder: "asc" } },
@@ -37,9 +42,9 @@ export class VehiclesService {
     private readonly storage: StorageService,
   ) {}
 
-  create(companyId: string, dto: CreateVehicleDto) {
+  async create(companyId: string, dto: CreateVehicleDto) {
     const { photos, tramerSet, listingUrls, installments, ...scalars } = dto;
-    return this.prisma.vehicle.create({
+    const vehicle = await this.prisma.vehicle.create({
       data: {
         ...scalars,
         companyId,
@@ -52,6 +57,37 @@ export class VehiclesService {
       },
       include: fullInclude,
     });
+
+    if (dto.purchaseLocationId) {
+      await this.prisma.vehicleLocationState
+        .create({
+          data: {
+            companyId,
+            vehicleId: vehicle.id,
+            currentLocationId: dto.purchaseLocationId,
+            status: "AT_LOCATION",
+          },
+        })
+        .catch(() => void 0);
+
+      await this.prisma.vehicleTransfer
+        .create({
+          data: {
+            companyId,
+            vehicleId: vehicle.id,
+            fromLocationId: "",
+            toLocationId: dto.purchaseLocationId,
+            status: "CONFIRMED",
+            initiatedById: "system",
+            confirmedById: "system",
+            confirmedAt: new Date(),
+            notes: "Başlangıç lokasyonu ataması",
+          },
+        })
+        .catch(() => void 0);
+    }
+
+    return vehicle;
   }
 
   async findAll(
@@ -418,6 +454,513 @@ export class VehiclesService {
     if (!tramer) throw new NotFoundException("Tramer kaydı bulunamadı");
     await this.prisma.vehicleTramerRecord.delete({ where: { id: tramerId } });
     return { success: true };
+  }
+
+  // --- Lokasyon & Transfer Modülü ---
+
+  async getVehicleLocation(companyId: string, vehicleId: string) {
+    await this.ensureExists(companyId, vehicleId);
+
+    let state = await this.prisma.vehicleLocationState.findUnique({
+      where: { vehicleId },
+    });
+
+    // Eğer henüz state kaydı yoksa ama araçta purchaseLocationId varsa, otomatik state oluştur
+    if (!state) {
+      const vehicle = await this.prisma.vehicle.findUnique({
+        where: { id: vehicleId },
+        select: { purchaseLocationId: true },
+      });
+      if (vehicle?.purchaseLocationId) {
+        const locExists = await this.prisma.location.findFirst({
+          where: { id: vehicle.purchaseLocationId, companyId },
+        });
+        if (locExists) {
+          state = await this.prisma.vehicleLocationState.create({
+            data: {
+              companyId,
+              vehicleId,
+              currentLocationId: vehicle.purchaseLocationId,
+              status: "AT_LOCATION",
+            },
+          });
+          await this.prisma.vehicleTransfer
+            .create({
+              data: {
+                companyId,
+                vehicleId,
+                fromLocationId: "",
+                toLocationId: vehicle.purchaseLocationId,
+                status: "CONFIRMED",
+                initiatedById: "system",
+                confirmedById: "system",
+                confirmedAt: new Date(),
+                notes: "Başlangıç lokasyonu ataması",
+              },
+            })
+            .catch(() => void 0);
+        }
+      }
+    }
+
+    if (!state) {
+      return { status: "NO_LOCATION" as const };
+    }
+
+    const [currentLocation, pendingTransfer] = await Promise.all([
+      this.prisma.location.findFirst({
+        where: { id: state.currentLocationId, companyId },
+      }),
+      state.pendingTransferId
+        ? this.prisma.vehicleTransfer.findFirst({
+            where: { id: state.pendingTransferId, companyId },
+          })
+        : null,
+    ]);
+
+    let targetLocation = null;
+    let supplier = null;
+    let returnLocation = null;
+
+    if (pendingTransfer) {
+      if (pendingTransfer.toLocationId) {
+        targetLocation = await this.prisma.location.findFirst({
+          where: { id: pendingTransfer.toLocationId, companyId },
+        });
+      }
+      if (pendingTransfer.supplierId) {
+        supplier = await this.prisma.account.findFirst({
+          where: { id: pendingTransfer.supplierId, companyId },
+          select: { id: true, name: true, phone: true },
+        });
+      }
+      if (pendingTransfer.returnLocationId) {
+        returnLocation = await this.prisma.location.findFirst({
+          where: { id: pendingTransfer.returnLocationId, companyId },
+        });
+      }
+    } else if (state.supplierId) {
+      supplier = await this.prisma.account.findFirst({
+        where: { id: state.supplierId, companyId },
+        select: { id: true, name: true, phone: true },
+      });
+    }
+
+    return {
+      status: state.status,
+      currentLocation,
+      targetLocation,
+      supplier,
+      returnLocation,
+      pendingTransfer,
+    };
+  }
+
+  async getTransferHistory(companyId: string, vehicleId: string) {
+    await this.ensureExists(companyId, vehicleId);
+
+    const transfers = await this.prisma.vehicleTransfer.findMany({
+      where: { companyId, vehicleId },
+      orderBy: { initiatedAt: "desc" },
+    });
+
+    const locationIds = Array.from(
+      new Set(
+        transfers
+          .flatMap((t) => [t.fromLocationId, t.toLocationId, t.returnLocationId])
+          .filter(Boolean) as string[],
+      ),
+    );
+    const userIds = Array.from(
+      new Set(
+        transfers
+          .flatMap((t) => [t.initiatedById, t.confirmedById, t.cancelledById])
+          .filter((x): x is string => !!x && x !== "system"),
+      ),
+    );
+    const supplierIds = Array.from(
+      new Set(transfers.map((t) => t.supplierId).filter(Boolean) as string[]),
+    );
+
+    const [locations, users, accounts] = await Promise.all([
+      locationIds.length
+        ? this.prisma.location.findMany({
+            where: { id: { in: locationIds }, companyId },
+            select: { id: true, name: true, code: true, city: true, isExternal: true },
+          })
+        : [],
+      userIds.length
+        ? this.prisma.user.findMany({
+            where: { id: { in: userIds } },
+            select: { id: true, name: true, email: true },
+          })
+        : [],
+      supplierIds.length
+        ? this.prisma.account.findMany({
+            where: { id: { in: supplierIds }, companyId },
+            select: { id: true, name: true, phone: true },
+          })
+        : [],
+    ]);
+
+    const locMap = new Map(locations.map((l) => [l.id, l]));
+    const userMap = new Map(users.map((u) => [u.id, u]));
+    const accMap = new Map(accounts.map((a) => [a.id, a]));
+
+    return transfers.map((t) => ({
+      ...t,
+      fromLocation: t.fromLocationId ? locMap.get(t.fromLocationId) ?? null : null,
+      toLocation: locMap.get(t.toLocationId) ?? null,
+      returnLocation: t.returnLocationId ? locMap.get(t.returnLocationId) ?? null : null,
+      supplier: t.supplierId ? accMap.get(t.supplierId) ?? null : null,
+      initiatedByUser:
+        t.initiatedById === "system"
+          ? { id: "system", name: "Sistem", email: "" }
+          : userMap.get(t.initiatedById) ?? null,
+      confirmedByUser:
+        t.confirmedById === "system"
+          ? { id: "system", name: "Sistem", email: "" }
+          : t.confirmedById
+            ? userMap.get(t.confirmedById) ?? null
+            : null,
+      cancelledByUser: t.cancelledById ? userMap.get(t.cancelledById) ?? null : null,
+    }));
+  }
+
+  async createTransfer(
+    companyId: string,
+    userId: string,
+    vehicleId: string,
+    dto: CreateVehicleTransferDto,
+  ) {
+    await this.ensureExists(companyId, vehicleId);
+
+    const targetLoc = await this.prisma.location.findFirst({
+      where: { id: dto.toLocationId, companyId },
+    });
+    if (!targetLoc) {
+      throw new BadRequestException("Hedef lokasyon bulunamadı");
+    }
+
+    let state = await this.prisma.vehicleLocationState.findUnique({
+      where: { vehicleId },
+    });
+
+    // İlk atama (araçta henüz kayıtlı lokasyon yoksa)
+    if (!state) {
+      state = await this.prisma.vehicleLocationState.create({
+        data: {
+          companyId,
+          vehicleId,
+          currentLocationId: dto.toLocationId,
+          status: "AT_LOCATION",
+        },
+      });
+
+      const transfer = await this.prisma.vehicleTransfer.create({
+        data: {
+          companyId,
+          vehicleId,
+          fromLocationId: "",
+          toLocationId: dto.toLocationId,
+          status: "CONFIRMED",
+          initiatedById: userId,
+          initiatedAt: new Date(),
+          confirmedById: userId,
+          confirmedAt: new Date(),
+          notes: dto.notes ?? "İlk lokasyon ataması",
+          isExternalTransfer: false,
+        },
+      });
+
+      await this.prisma.vehicle
+        .update({
+          where: { id: vehicleId },
+          data: { purchaseLocationId: dto.toLocationId },
+        })
+        .catch(() => void 0);
+
+      return {
+        success: true,
+        isInitial: true,
+        transferId: transfer.id,
+        currentLocationId: dto.toLocationId,
+        message: "İlk lokasyon başarıyla atandı",
+      };
+    }
+
+    if (state.status === "IN_TRANSFER") {
+      throw new BadRequestException(
+        "Bu araç için bekleyen bir transfer var. Önce mevcut transferi tamamlayın veya iptal edin.",
+      );
+    }
+    if (state.status === "AT_EXTERNAL") {
+      throw new BadRequestException(
+        "Araç şu anda dış lokasyonda. Önce dönüş işlemini gerçekleştirin.",
+      );
+    }
+    if (state.currentLocationId === dto.toLocationId) {
+      throw new BadRequestException("Araç zaten seçilen lokasyonda.");
+    }
+
+    // Hedef lokasyon dış lokasyon ise (kaporta, boyacı vs.)
+    if (targetLoc.isExternal) {
+      if (!dto.supplierId) {
+        throw new BadRequestException(
+          "Dış lokasyon için tedarikçi / cari seçimi zorunludur",
+        );
+      }
+      if (!dto.returnLocationId) {
+        throw new BadRequestException(
+          "Dış lokasyon için dönüş lokasyonu zorunludur",
+        );
+      }
+
+      const transfer = await this.prisma.vehicleTransfer.create({
+        data: {
+          companyId,
+          vehicleId,
+          fromLocationId: state.currentLocationId,
+          toLocationId: dto.toLocationId,
+          status: "CONFIRMED", // Dış lokasyona gönderim otomatik onaylanır
+          initiatedById: userId,
+          initiatedAt: new Date(),
+          confirmedById: userId,
+          confirmedAt: new Date(),
+          notes: dto.notes,
+          isExternalTransfer: true,
+          supplierId: dto.supplierId,
+          returnLocationId: dto.returnLocationId,
+        },
+      });
+
+      await this.prisma.vehicleLocationState.update({
+        where: { vehicleId },
+        data: {
+          currentLocationId: dto.toLocationId,
+          status: "AT_EXTERNAL",
+          pendingTransferId: transfer.id,
+          supplierId: dto.supplierId,
+        },
+      });
+
+      return {
+        success: true,
+        transferId: transfer.id,
+        status: "AT_EXTERNAL",
+        message: "Araç dış lokasyona sevk edildi",
+      };
+    }
+
+    // İç lokasyon transferi - Doğrudan taşıma
+    if (dto.isDirect) {
+      const transfer = await this.prisma.vehicleTransfer.create({
+        data: {
+          companyId,
+          vehicleId,
+          fromLocationId: state.currentLocationId,
+          toLocationId: dto.toLocationId,
+          status: "CONFIRMED",
+          initiatedById: userId,
+          initiatedAt: new Date(),
+          confirmedById: userId,
+          confirmedAt: new Date(),
+          notes: dto.notes,
+          isExternalTransfer: false,
+        },
+      });
+
+      await this.prisma.vehicleLocationState.update({
+        where: { vehicleId },
+        data: {
+          currentLocationId: dto.toLocationId,
+          status: "AT_LOCATION",
+          pendingTransferId: null,
+          supplierId: null,
+        },
+      });
+
+      return {
+        success: true,
+        transferId: transfer.id,
+        status: "AT_LOCATION",
+        message: "Araç yeni lokasyona doğrudan taşındı",
+      };
+    }
+
+    // Normal teslim-tesellüm onay süreci
+    const transfer = await this.prisma.vehicleTransfer.create({
+      data: {
+        companyId,
+        vehicleId,
+        fromLocationId: state.currentLocationId,
+        toLocationId: dto.toLocationId,
+        status: "PENDING",
+        initiatedById: userId,
+        initiatedAt: new Date(),
+        notes: dto.notes,
+        isExternalTransfer: false,
+      },
+    });
+
+    await this.prisma.vehicleLocationState.update({
+      where: { vehicleId },
+      data: {
+        status: "IN_TRANSFER",
+        pendingTransferId: transfer.id,
+      },
+    });
+
+    return {
+      success: true,
+      transferId: transfer.id,
+      status: "IN_TRANSFER",
+      message: "Transfer süreci başlatıldı (Teslim alma onayı bekliyor)",
+    };
+  }
+
+  async confirmTransfer(
+    companyId: string,
+    userId: string,
+    vehicleId: string,
+    transferId: string,
+  ) {
+    await this.ensureExists(companyId, vehicleId);
+
+    const transfer = await this.prisma.vehicleTransfer.findFirst({
+      where: { id: transferId, companyId, vehicleId },
+    });
+    if (!transfer) {
+      throw new NotFoundException("Transfer kaydı bulunamadı");
+    }
+    if (transfer.status !== "PENDING") {
+      throw new BadRequestException("Bu transfer zaten sonuçlandırılmış");
+    }
+
+    await this.prisma.vehicleTransfer.update({
+      where: { id: transferId },
+      data: {
+        status: "CONFIRMED",
+        confirmedById: userId,
+        confirmedAt: new Date(),
+      },
+    });
+
+    await this.prisma.vehicleLocationState.update({
+      where: { vehicleId },
+      data: {
+        currentLocationId: transfer.toLocationId,
+        status: "AT_LOCATION",
+        pendingTransferId: null,
+      },
+    });
+
+    return { success: true, message: "Araç teslim alındı ve transfer onaylandı" };
+  }
+
+  async cancelTransfer(
+    companyId: string,
+    userId: string,
+    vehicleId: string,
+    transferId: string,
+  ) {
+    await this.ensureExists(companyId, vehicleId);
+
+    const transfer = await this.prisma.vehicleTransfer.findFirst({
+      where: { id: transferId, companyId, vehicleId },
+    });
+    if (!transfer) {
+      throw new NotFoundException("Transfer kaydı bulunamadı");
+    }
+    if (transfer.status !== "PENDING") {
+      throw new BadRequestException("Bu transfer zaten sonuçlandırılmış");
+    }
+
+    await this.prisma.vehicleTransfer.update({
+      where: { id: transferId },
+      data: {
+        status: "CANCELLED",
+        cancelledById: userId,
+        cancelledAt: new Date(),
+      },
+    });
+
+    await this.prisma.vehicleLocationState.update({
+      where: { vehicleId },
+      data: {
+        status: "AT_LOCATION",
+        pendingTransferId: null,
+      },
+    });
+
+    return { success: true, message: "Transfer iptal edildi" };
+  }
+
+  async returnFromExternal(
+    companyId: string,
+    userId: string,
+    vehicleId: string,
+    dto: ReturnFromExternalDto,
+  ) {
+    await this.ensureExists(companyId, vehicleId);
+
+    const state = await this.prisma.vehicleLocationState.findUnique({
+      where: { vehicleId },
+    });
+    if (!state || state.status !== "AT_EXTERNAL") {
+      throw new BadRequestException("Araç dış lokasyonda değil");
+    }
+
+    let returnLocId = dto.returnLocationId;
+    if (!returnLocId && state.pendingTransferId) {
+      const orig = await this.prisma.vehicleTransfer.findUnique({
+        where: { id: state.pendingTransferId },
+      });
+      returnLocId = orig?.returnLocationId ?? undefined;
+    }
+
+    if (!returnLocId) {
+      throw new BadRequestException("Dönüş lokasyonu belirtilmelidir");
+    }
+
+    const returnLoc = await this.prisma.location.findFirst({
+      where: { id: returnLocId, companyId },
+    });
+    if (!returnLoc) {
+      throw new BadRequestException("Dönüş lokasyonu bulunamadı");
+    }
+
+    const returnTransfer = await this.prisma.vehicleTransfer.create({
+      data: {
+        companyId,
+        vehicleId,
+        fromLocationId: state.currentLocationId,
+        toLocationId: returnLocId,
+        status: "CONFIRMED",
+        initiatedById: userId,
+        initiatedAt: new Date(),
+        confirmedById: userId,
+        confirmedAt: new Date(),
+        notes: dto.notes ?? "Dış lokasyondan dönüş",
+        isExternalTransfer: false,
+      },
+    });
+
+    await this.prisma.vehicleLocationState.update({
+      where: { vehicleId },
+      data: {
+        currentLocationId: returnLocId,
+        status: "AT_LOCATION",
+        pendingTransferId: null,
+        supplierId: null,
+      },
+    });
+
+    return {
+      success: true,
+      transferId: returnTransfer.id,
+      message: "Araç dış lokasyondan başarıyla teslim alındı",
+    };
   }
 
   private async ensureExists(companyId: string, id: string) {

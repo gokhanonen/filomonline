@@ -6,8 +6,10 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
 import { createHash, randomBytes } from "crypto";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { JwtPayload } from "./auth.types";
+import { UpdateProfileDto } from "./dto/auth.dto";
 
 const sha256 = (value: string) =>
   createHash("sha256").update(value).digest("hex");
@@ -94,6 +96,23 @@ export class AuthService {
       },
     });
     return user;
+  }
+
+  /** Kullanıcının kendi profilini (avatarUrl, name, phone vb.) güncellemesi */
+  async updateProfile(userId: string, dto: UpdateProfileDto) {
+    const data: Prisma.UserUpdateInput = {};
+    if (dto.name !== undefined) data.name = dto.name;
+    if (dto.phone !== undefined) data.phone = dto.phone;
+    if (dto.extension !== undefined) data.extension = dto.extension;
+    if (dto.avatarUrl !== undefined) data.avatarUrl = dto.avatarUrl;
+    if (dto.password) {
+      data.passwordHash = await argon2.hash(dto.password);
+    }
+    await this.prisma.user.update({
+      where: { id: userId },
+      data,
+    });
+    return this.me(userId);
   }
 
   private async issueTokens(

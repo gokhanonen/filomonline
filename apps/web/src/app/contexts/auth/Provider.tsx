@@ -178,6 +178,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [permissions],
   );
 
+  const isCompanyAdmin = useMemo(() => {
+    if (!state.user) return false;
+    if (state.user.isSuperAdmin) return true;
+    const m = state.user.memberships.find((mm) => mm.company.id === state.activeCompanyId);
+    return m?.isAdmin ?? false;
+  }, [state.user, state.activeCompanyId]);
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const { user, activeCompanyId } = await loadMe();
+      dispatch({ type: "INITIALIZE", user, activeCompanyId });
+    } catch (err) {
+      console.error("Failed to refresh user:", err);
+    }
+  }, [loadMe]);
+
   const value: AuthContextType = {
     isAuthenticated: state.isAuthenticated,
     isLoading: state.isLoading,
@@ -188,9 +204,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     activeCompanyId: state.activeCompanyId,
     permissions,
     isSuperAdmin: state.user?.isSuperAdmin ?? false,
+    isCompanyAdmin,
     login,
     logout,
     switchCompany,
+    refreshUser,
     can,
   };
 

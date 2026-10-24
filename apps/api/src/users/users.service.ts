@@ -50,6 +50,7 @@ export class UsersService {
           name: dto.name,
           phone: dto.phone,
           extension: dto.extension,
+          avatarUrl: dto.avatarUrl,
           tenantId,
           memberships: dto.memberships?.length
             ? { create: dto.memberships.map((m) => this.membershipCreate(m)) }
@@ -91,6 +92,7 @@ export class UsersService {
       name: dto.name,
       phone: dto.phone,
       extension: dto.extension,
+      avatarUrl: dto.avatarUrl,
       isActive: dto.isActive,
     };
     if (dto.password) {

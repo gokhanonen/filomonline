@@ -15,7 +15,7 @@ const Search = () => {
   return (
     <div className="px-3 py-1">
       <Input
-        placeholder="Search here..."
+        placeholder="Burada ara..."
         unstyled
         className="h-8 rounded-lg bg-gray-150 px-9 py-2 text-xs-plus ring-primary-500/50 placeholder:text-gray-400 focus:ring-3 dark:bg-dark-900 dark:placeholder:text-dark-200/70"
         value={search}

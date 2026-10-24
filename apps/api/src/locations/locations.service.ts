@@ -119,4 +119,62 @@ export class LocationsService {
     });
     if (!ok) throw new BadRequestException("Geçersiz lokasyon");
   }
+
+  // --- Bekleyen Transferler ---
+
+  async listPendingTransfers(companyId: string) {
+    const transfers = await this.prisma.vehicleTransfer.findMany({
+      where: { companyId, status: "PENDING" },
+      orderBy: { initiatedAt: "desc" },
+    });
+
+    const vehicleIds = Array.from(new Set(transfers.map((t) => t.vehicleId)));
+    const locationIds = Array.from(
+      new Set(
+        transfers
+          .flatMap((t) => [t.fromLocationId, t.toLocationId])
+          .filter(Boolean) as string[],
+      ),
+    );
+    const userIds = Array.from(new Set(transfers.map((t) => t.initiatedById)));
+
+    const [vehicles, locations, users] = await Promise.all([
+      vehicleIds.length
+        ? this.prisma.vehicle.findMany({
+            where: { id: { in: vehicleIds }, companyId },
+            select: {
+              id: true,
+              plate: true,
+              brandName: true,
+              modelName: true,
+              status: true,
+            },
+          })
+        : [],
+      locationIds.length
+        ? this.prisma.location.findMany({
+            where: { id: { in: locationIds }, companyId },
+            select: { id: true, name: true, code: true, isExternal: true },
+          })
+        : [],
+      userIds.length
+        ? this.prisma.user.findMany({
+            where: { id: { in: userIds } },
+            select: { id: true, name: true, email: true },
+          })
+        : [],
+    ]);
+
+    const vehMap = new Map(vehicles.map((v) => [v.id, v]));
+    const locMap = new Map(locations.map((l) => [l.id, l]));
+    const userMap = new Map(users.map((u) => [u.id, u]));
+
+    return transfers.map((t) => ({
+      ...t,
+      vehicle: vehMap.get(t.vehicleId) ?? null,
+      fromLocation: t.fromLocationId ? locMap.get(t.fromLocationId) ?? null : null,
+      toLocation: locMap.get(t.toLocationId) ?? null,
+      initiatedByUser: userMap.get(t.initiatedById) ?? null,
+    }));
+  }
 }

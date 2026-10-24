@@ -6,6 +6,8 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { AuthUser } from "../auth/auth.types";
 import { StorageService } from "./storage.service";
 import { PresignDownloadDto, PresignUploadDto } from "./dto/presign.dto";
 
@@ -22,13 +24,18 @@ export class StorageController {
     return this.storage.presignUpload(key, dto.contentType);
   }
 
-  /** Nesneyi okumak için imzalı URL. Yalnızca kendi şirketinin anahtarı. */
+  /** Nesneyi okumak için imzalı URL. */
   @Post("presign-download")
   async presignDownload(
+    @CurrentUser() user: AuthUser,
     @CompanyId() companyId: string,
     @Body() dto: PresignDownloadDto,
   ) {
-    if (!dto.key.startsWith(`${companyId}/`)) {
+    const parts = dto.key.split("/");
+    const scope = parts[1];
+    const isPublicScope = scope === "logos" || scope === "avatars";
+
+    if (!user.isSuperAdmin && !dto.key.startsWith(`${companyId}/`) && !isPublicScope) {
       throw new ForbiddenException("Bu dosyaya erişim yetkiniz yok");
     }
     const url = await this.storage.presignDownload(dto.key);

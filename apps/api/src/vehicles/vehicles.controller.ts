@@ -22,6 +22,10 @@ import {
   VehiclePhotoDto,
 } from "./dto/vehicle.dto";
 import { AddListingUrlDto, CreateVehicleOptionDto } from "./dto/vehicle-extras.dto";
+import {
+  CreateVehicleTransferDto,
+  ReturnFromExternalDto,
+} from "./dto/vehicle-transfer.dto";
 
 @ApiTags("vehicles")
 @ApiBearerAuth()
@@ -180,4 +184,63 @@ export class VehiclesController {
   ) {
     return this.vehicles.cancelOption(companyId, user.id, id, optionId);
   }
+
+  // --- Lokasyon & Transfer Modülü ---
+
+  @RequirePermissions("vehicles.read")
+  @Get(":id/location")
+  getLocation(@CompanyId() companyId: string, @Param("id") id: string) {
+    return this.vehicles.getVehicleLocation(companyId, id);
+  }
+
+  @RequirePermissions("vehicles.read")
+  @Get(":id/transfers")
+  listTransfers(@CompanyId() companyId: string, @Param("id") id: string) {
+    return this.vehicles.getTransferHistory(companyId, id);
+  }
+
+  @RequirePermissions("vehicles.write")
+  @Post(":id/transfers")
+  createTransfer(
+    @CompanyId() companyId: string,
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Body() dto: CreateVehicleTransferDto,
+  ) {
+    return this.vehicles.createTransfer(companyId, user.id, id, dto);
+  }
+
+  @RequirePermissions("vehicles.write")
+  @Post(":id/transfers/:transferId/confirm")
+  confirmTransfer(
+    @CompanyId() companyId: string,
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Param("transferId") transferId: string,
+  ) {
+    return this.vehicles.confirmTransfer(companyId, user.id, id, transferId);
+  }
+
+  @RequirePermissions("vehicles.write")
+  @Post(":id/transfers/:transferId/cancel")
+  cancelTransfer(
+    @CompanyId() companyId: string,
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Param("transferId") transferId: string,
+  ) {
+    return this.vehicles.cancelTransfer(companyId, user.id, id, transferId);
+  }
+
+  @RequirePermissions("vehicles.write")
+  @Post(":id/transfers/return-external")
+  returnFromExternal(
+    @CompanyId() companyId: string,
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Body() dto: ReturnFromExternalDto,
+  ) {
+    return this.vehicles.returnFromExternal(companyId, user.id, id, dto);
+  }
 }
+

@@ -19,6 +19,7 @@ export interface AdminUser {
   name: string;
   phone?: string | null;
   extension?: string | null;
+  avatarUrl?: string | null;
   isActive: boolean;
   isSuperAdmin: boolean;
   createdAt: string;
@@ -38,5 +39,6 @@ export interface UserFormValues {
   password?: string;
   phone?: string;
   extension?: string;
+  avatarUrl?: string;
   isActive?: boolean;
 }

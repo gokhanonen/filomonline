@@ -57,7 +57,7 @@ export function Header() {
                 <div className="flex items-center gap-2">
                   <MagnifyingGlassIcon className="size-4" />
                   <span className="text-gray-400 dark:text-dark-300">
-                    Search here...
+                    Burada ara...
                   </span>
                 </div>
                 <SlashIcon />

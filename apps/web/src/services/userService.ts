@@ -40,3 +40,16 @@ export async function listRoles(): Promise<AdminRole[]> {
   const { data } = await axios.get<AdminRole[]>("/roles");
   return data;
 }
+
+export interface UpdateProfileInput {
+  name?: string;
+  phone?: string;
+  extension?: string;
+  avatarUrl?: string;
+  password?: string;
+}
+
+export async function updateProfile(values: UpdateProfileInput) {
+  const { data } = await axios.patch("/auth/profile", values);
+  return data;
+}

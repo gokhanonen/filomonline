@@ -20,10 +20,13 @@ export interface AuthContextType {
   /** Aktif şirkette geçerli izin anahtarları (süper admin/şirket admini → ["*"]) */
   permissions: string[];
   isSuperAdmin: boolean;
+  isCompanyAdmin: boolean;
 
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
   switchCompany: (companyId: string) => void;
+  /** Kullanıcı ve firma bilgilerini API'den tekrar yükler */
+  refreshUser: () => Promise<void>;
   /** Belirli bir izne sahip mi (["*"] her şeye izin verir) */
   can: (permission: string) => boolean;
 }

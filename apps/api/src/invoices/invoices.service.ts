@@ -236,6 +236,10 @@ export class InvoicesService {
     ];
 
     if (q.type) rows = rows.filter((r) => r.type === q.type);
+    if (q.search) {
+      const s = q.search.toLowerCase();
+      rows = rows.filter((r) => r.invoiceNo.toLowerCase().includes(s));
+    }
     rows.sort((a, b) => b.invoiceDate.getTime() - a.invoiceDate.getTime());
 
     const total = rows.length;

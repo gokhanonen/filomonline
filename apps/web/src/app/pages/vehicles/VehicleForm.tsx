@@ -30,7 +30,7 @@ import {
   type Vehicle,
   type VehicleFormValues,
 } from "@/@types/vehicle";
-import type { CatalogAll } from "@/@types/catalog";
+import type { CatalogAll, SimpleCatalog } from "@/@types/catalog";
 import type { Account } from "@/@types/account";
 import type { Location } from "@/@types/location";
 import {
@@ -53,22 +53,56 @@ import { resizeWithThumbnail, DOCUMENT_PHOTO_MAX_BYTES } from "@/utils/imageResi
 import { VehiclePhotos } from "./VehiclePhotos";
 import { DocumentManager } from "@/components/shared/DocumentManager";
 
+const currentYear = new Date().getFullYear();
+
+// Katalog yüklenene kadar veya veri eksikliğinde garantili renk havuzu
+export const DEFAULT_COLORS: SimpleCatalog[] = [
+  { id: "cmvl9c2iu0059ibcgfvn1evl1", name: "Beyaz", hex: "#FFFFFF" },
+  { id: "cmvl9c2kj005bibcgdi698k4f", name: "Siyah", hex: "#000000" },
+  { id: "cmvl9c2m2005dibcg8oh8in1l", name: "Gri", hex: "#808080" },
+  { id: "cmvl9c2nn005fibcgplcwof4m", name: "Gümüş", hex: "#C0C0C0" },
+  { id: "cmvl9c2pr005hibcg6zs4oolk", name: "Kırmızı", hex: "#D32F2F" },
+  { id: "cmvl9c2r3005jibcgsd2v9844", name: "Mavi", hex: "#1976D2" },
+  { id: "cmvl9c2st005libcga1ospnj7", name: "Lacivert", hex: "#1A237E" },
+  { id: "cmvm6disa001bibpoaw3qpto6", name: "Bordo", hex: "#800020" },
+  { id: "cmvm6diy8001fibpohwy4zwq9", name: "Kahverengi", hex: "#795548" },
+  { id: "cmvm6dizn001hibpobgjia73q", name: "Bej", hex: "#F5F5DC" },
+  { id: "cmvm6diww001dibpov94gyo39", name: "Yeşil", hex: "#2E7D32" },
+  { id: "cmvm6dj0z001jibpobf2phmaq", name: "Turuncu", hex: "#FF9800" },
+  { id: "cmvm6dj2c001libpo09wkdkfe", name: "Sarı", hex: "#FFEB3B" },
+  { id: "cmvm6dj3o001nibpovy9gwwxt", name: "Mor", hex: "#9C27B0" },
+  { id: "cmvm6dj58001pibpotqj9mf6x", name: "Beyaz Siyah", hex: "#ECEFF1" },
+  { id: "cmvm6dj6r001ribpof6ke9dpo", name: "Mavi Siyah", hex: "#0D47A1" },
+];
+
 const schema = Yup.object().shape({
-  plate: Yup.string().trim().required("Plaka zorunlu"),
-  status: Yup.string().oneOf(["STOKTA", "KIRALAMADA", "SATILDI"]).required(),
+  plate: Yup.string()
+    .trim()
+    .required("Plaka zorunludur")
+    .min(3, "Plaka en az 3 karakter olmalıdır"),
+  status: Yup.string()
+    .oneOf(["STOKTA", "KIRALAMADA", "SATILDI"], "Geçerli bir durum seçiniz")
+    .required("Durum seçimi zorunludur"),
   categoryId: Yup.string().optional(),
   vehicleTypeId: Yup.string().optional(),
-  brandId: Yup.string().optional(),
-  modelId: Yup.string().optional(),
-  year: Yup.number().min(1950).max(2100).optional().nullable(),
+  brandId: Yup.string().trim().required("Marka seçimi zorunludur"),
+  modelId: Yup.string().trim().required("Model seçimi zorunludur"),
+  year: Yup.number()
+    .typeError("Model yılı sayı olmalıdır")
+    .required("Model yılı zorunludur")
+    .min(1950, "Model yılı en az 1950 olabilir")
+    .max(currentYear + 1, `Model yılı en fazla ${currentYear + 1} olabilir`),
   chassisNo: Yup.string().trim().optional(),
   engineNo: Yup.string().trim().optional(),
   erpCode: Yup.string().trim().optional(),
   registrationModel: Yup.string().trim().optional(),
-  fuelType: Yup.string().optional(),
-  transmission: Yup.string().optional(),
+  fuelType: Yup.string().trim().required("Yakıt tipi seçimi zorunludur"),
+  transmission: Yup.string().trim().required("Vites tipi seçimi zorunludur"),
   driveType: Yup.string().optional(),
-  km: Yup.number().min(0).optional().nullable(),
+  km: Yup.number()
+    .typeError("Kilometre sayı olmalıdır")
+    .required("Kilometre bilgisi zorunludur")
+    .min(0, "Kilometre negatif olamaz"),
   bodyTypeId: Yup.string().optional(),
   colorId: Yup.string().optional(),
   horsePower: Yup.number().min(0).optional().nullable(),
@@ -82,7 +116,10 @@ const schema = Yup.object().shape({
   purchasePrice: Yup.number().min(0).optional().nullable(),
   purchaseNotaryPrice: Yup.number().min(0).optional().nullable(),
   purchaseDate: Yup.string().optional(),
-  purchaseRegime: Yup.string().oneOf(["sahis", "sirket_1", "sirket_20", "galeri_ozel"]).default("sahis"),
+  purchaseRegime: Yup.string()
+    .oneOf(["sahis", "sirket_1", "sirket_20", "galeri_ozel"], "Geçersiz alım rejimi")
+    .required("Alım rejimi zorunludur")
+    .default("sahis"),
   specialBase: Yup.boolean().optional(),
   specialBaseAmount: Yup.number().min(0).optional().nullable(),
   purchaseVatRate: Yup.number().optional().nullable(),
@@ -94,11 +131,68 @@ const schema = Yup.object().shape({
   notes: Yup.string().trim().optional(),
 });
 
+const FIELD_STEP_MAP: Record<string, number> = {
+  plate: 0,
+  status: 0,
+  categoryId: 0,
+  vehicleTypeId: 0,
+  brandId: 0,
+  modelId: 0,
+  year: 0,
+  erpCode: 0,
+  registrationModel: 0,
+  chassisNo: 0,
+  engineNo: 0,
+
+  km: 1,
+  fuelType: 1,
+  transmission: 1,
+  driveType: 1,
+  bodyTypeId: 1,
+  colorId: 1,
+  enginePower: 1,
+  horsePower: 1,
+  engineVolume: 1,
+  warranty: 1,
+  heavyDamage: 1,
+  spareKey: 1,
+
+  purchaseRegime: 2,
+  purchasePrice: 2,
+  purchaseNotaryPrice: 2,
+  purchaseDate: 2,
+  purchaseVatRate: 2,
+  specialBase: 2,
+  specialBaseAmount: 2,
+  purchaseInvoiceNo: 2,
+  purchaseInvoiceDate: 2,
+  purchaseInvoiceDescription: 2,
+  supplierId: 2,
+  purchaseLocationId: 2,
+  listPrice: 2,
+  tensf: 2,
+
+  notes: 4,
+};
+
+const FIELD_LABELS: Record<string, string> = {
+  plate: "Plaka",
+  status: "Durum",
+  brandId: "Marka",
+  modelId: "Model",
+  year: "Model Yılı",
+  km: "Kilometre",
+  fuelType: "Yakıt",
+  transmission: "Vites",
+  purchaseRegime: "Alım Rejimi",
+};
+
 interface Props {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
   vehicle?: Vehicle | null;
+  isClone?: boolean;
 }
 
 const STEPS = [
@@ -110,8 +204,8 @@ const STEPS = [
   { id: 5, label: "Evrak Yükleme", icon: TbFileText },
 ];
 
-export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
-  const isEdit = !!vehicle;
+export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }: Props) {
+  const isEdit = !!vehicle && !isClone;
   const [activeStep, setActiveStep] = useState(0);
 
   // Veri kaynakları
@@ -188,10 +282,10 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
   const reloadCatalog = async () => {
     try {
       const data = await getCatalog();
-      setCatalog(data);
+      if (data) setCatalog(data);
       return data;
-    } catch {
-      toast.error("Katalog yüklenemedi");
+    } catch (err) {
+      console.warn("Katalog yüklenemedi:", err);
       return null;
     }
   };
@@ -214,6 +308,14 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
     }
   };
 
+  // Bileşen mount edildiğinde önceden yükle
+  useEffect(() => {
+    reloadCatalog();
+    reloadAccounts();
+    reloadLocations();
+  }, []);
+
+  // Modal açıldığında kontrol et ve yenile
   useEffect(() => {
     if (open) {
       setActiveStep(0);
@@ -244,16 +346,16 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
       const cfg = PURCHASE_REGIME_CONFIG[determinedRegime];
 
       reset({
-        plate: vehicle?.plate ?? "",
-        status: vehicle?.status ?? "STOKTA",
+        plate: isClone ? "" : (vehicle?.plate ?? ""),
+        status: isClone ? "STOKTA" : (vehicle?.status ?? "STOKTA"),
         categoryId: initialCatId,
         vehicleTypeId: vehicle?.vehicleTypeId ?? "",
         brandId: vehicle?.brandId ?? "",
         modelId: vehicle?.modelId ?? "",
         year: vehicle?.year ?? undefined,
-        chassisNo: vehicle?.chassisNo ?? "",
-        engineNo: vehicle?.engineNo ?? "",
-        erpCode: vehicle?.erpCode ?? "",
+        chassisNo: isClone ? "" : (vehicle?.chassisNo ?? ""),
+        engineNo: isClone ? "" : (vehicle?.engineNo ?? ""),
+        erpCode: isClone ? "" : (vehicle?.erpCode ?? ""),
         registrationModel: vehicle?.registrationModel ?? "",
         fuelType: vehicle?.fuelType ?? "",
         transmission: vehicle?.transmission ?? "",
@@ -271,21 +373,21 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
         tensf: vehicle?.tensf ? Number(vehicle.tensf) : undefined,
         purchasePrice: vehicle?.purchasePrice ? Number(vehicle.purchasePrice) : undefined,
         purchaseNotaryPrice: vehicle?.purchaseNotaryPrice ? Number(vehicle.purchaseNotaryPrice) : undefined,
-        purchaseDate: vehicle?.purchaseDate ? vehicle.purchaseDate.slice(0, 10) : "",
+        purchaseDate: isClone ? "" : (vehicle?.purchaseDate ? vehicle.purchaseDate.slice(0, 10) : ""),
         purchaseRegime: determinedRegime,
         purchaseVatRate: vehicle?.purchaseVatRate != null ? Number(vehicle.purchaseVatRate) : cfg.purchaseVatRate,
         specialBase: vehicle?.specialBase != null ? vehicle.specialBase : cfg.specialBase,
         specialBaseAmount: vehicle?.specialBaseAmount ? Number(vehicle.specialBaseAmount) : undefined,
-        purchaseInvoiceNo: vehicle?.purchaseInvoiceNo ?? "",
-        purchaseInvoiceDate: vehicle?.purchaseInvoiceDate ? vehicle.purchaseInvoiceDate.slice(0, 10) : "",
-        purchaseInvoiceDescription: vehicle?.purchaseInvoiceDescription ?? "",
+        purchaseInvoiceNo: isClone ? "" : (vehicle?.purchaseInvoiceNo ?? ""),
+        purchaseInvoiceDate: isClone ? "" : (vehicle?.purchaseInvoiceDate ? vehicle.purchaseInvoiceDate.slice(0, 10) : ""),
+        purchaseInvoiceDescription: isClone ? "" : (vehicle?.purchaseInvoiceDescription ?? ""),
         supplierId: vehicle?.supplierId ?? "",
         purchaseLocationId: vehicle?.purchaseLocationId ?? "",
-        notes: vehicle?.notes ?? "",
+        notes: isClone ? "" : (vehicle?.notes ?? ""),
       });
 
-      // Tramer kayıtları
-      if (vehicle?.tramerSet) {
+      // Tramer kayıtları (Klonlanan araç için sıfırlanır)
+      if (!isClone && vehicle?.tramerSet) {
         setTramerList(
           vehicle.tramerSet.map((t) => ({
             id: t.id,
@@ -299,7 +401,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
         setTramerList([]);
       }
     }
-  }, [open, vehicle, catalog, reset]);
+  }, [open, vehicle, catalog, reset, isClone]);
 
   const handleRegimeChange = (regime: PurchaseRegime) => {
     setValue("purchaseRegime", regime);
@@ -353,6 +455,34 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
       })),
     [locations],
   );
+
+  const colorOptions = useMemo<SearchableOption[]>(() => {
+    const source =
+      catalog?.colors && catalog.colors.length > 0 ? catalog.colors : DEFAULT_COLORS;
+    const list = [...source];
+    if (vehicle?.colorId && !list.some((c) => c.id === vehicle.colorId)) {
+      list.unshift({
+        id: vehicle.colorId,
+        name: vehicle.colorName || "Mevcut Renk",
+        hex: "#6B7280",
+      });
+    } else if (
+      !vehicle?.colorId &&
+      vehicle?.colorName &&
+      !list.some((c) => c.name.toLowerCase() === vehicle.colorName!.toLowerCase())
+    ) {
+      list.unshift({
+        id: vehicle.colorName,
+        name: vehicle.colorName,
+        hex: "#6B7280",
+      });
+    }
+    return list.map((c) => ({
+      value: c.id,
+      label: c.name,
+      colorHex: c.hex ?? undefined,
+    }));
+  }, [catalog?.colors, vehicle?.colorId, vehicle?.colorName]);
 
   // Quick Add Eylemleri
   const handleOpenQuickAdd = (
@@ -527,14 +657,16 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
   const onSubmit = async (values: VehicleFormValues) => {
     const brand = catalog?.brands.find((b) => b.id === values.brandId);
     const model = models.find((m) => m.id === values.modelId);
-    const color = catalog?.colors.find((c) => c.id === values.colorId);
+    const selectedColor = colorOptions.find((c) => c.value === values.colorId);
+    const color = (catalog?.colors ?? DEFAULT_COLORS).find((c) => c.id === values.colorId);
+    const resolvedColorName = color?.name || selectedColor?.label || vehicle?.colorName;
 
     const payload: VehicleFormValues & { tramerSet?: any[] } = {
       ...values,
       plate: values.plate.toUpperCase().trim(),
-      brandName: brand?.name,
-      modelName: model?.name,
-      colorName: color?.name,
+      brandName: (brand?.name ?? vehicle?.brandName) || undefined,
+      modelName: (model?.name ?? vehicle?.modelName) || undefined,
+      colorName: resolvedColorName || undefined,
     };
 
     // Yeni araç oluştururken yerel tramer kayıtlarını dahil et
@@ -562,6 +694,32 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
     }
   };
 
+  const onInvalid = (fieldErrors: Record<string, any>) => {
+    const errorKeys = Object.keys(fieldErrors);
+    if (errorKeys.length === 0) return;
+
+    let minStep = 5;
+    const errorNames: string[] = [];
+
+    for (const key of errorKeys) {
+      const step = FIELD_STEP_MAP[key] ?? 0;
+      if (step < minStep) {
+        minStep = step;
+      }
+      const label = FIELD_LABELS[key] || key;
+      if (!errorNames.includes(label)) {
+        errorNames.push(label);
+      }
+    }
+
+    setActiveStep(minStep);
+    toast.error(
+      `Zorunlu alanlar doldurulmalıdır: ${errorNames.slice(0, 4).join(", ")}${
+        errorNames.length > 4 ? ` (+${errorNames.length - 4})` : ""
+      }`,
+    );
+  };
+
   return (
     <Modal
       open={open}
@@ -575,11 +733,11 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
         <div className="flex items-center gap-3">
           <div className="flex flex-col">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-              {isEdit ? "Araç Düzenleme" : "Yeni Araç Kaydı"}
+              {isClone ? "Araç Kopyalama (Yeni Kayıt)" : isEdit ? "Araç Düzenleme" : "Yeni Araç Kaydı"}
             </span>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="rounded-md border border-gray-300 bg-white px-2 py-0.5 font-mono text-sm font-bold text-gray-900 shadow-2xs dark:border-dark-500 dark:bg-dark-700 dark:text-dark-50">
-                {plateVal || "PLAKA GİRİLMEDİ"}
+                {plateVal || (isClone ? "YENİ PLAKA GİRİNİZ" : "PLAKA GİRİLMEDİ")}
               </span>
               {(currentBrand?.name || currentModel?.name) && (
                 <span className="hidden text-xs font-semibold text-gray-700 dark:text-dark-100 sm:inline-block">
@@ -610,7 +768,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
       </div>
 
       {/* Main Container: Stepper Sidebar + Steps Content */}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 min-h-0 flex-col overflow-hidden">
+      <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="flex flex-1 min-h-0 flex-col overflow-hidden">
         <div className="flex flex-1 min-h-0 flex-col md:flex-row overflow-hidden">
           {/* Stepper Sidebar */}
           <div className="w-full md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50/60 p-2.5 overflow-y-auto dark:border-dark-600 dark:bg-dark-800/40">
@@ -618,37 +776,45 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
               {STEPS.map((step) => {
                 const Icon = step.icon;
                 const isCurrent = activeStep === step.id;
-                const isPassed = activeStep > step.id || isEdit;
+                const isPassed = activeStep > step.id || isEdit || isClone;
+                const hasError = Object.keys(errors).some((key) => FIELD_STEP_MAP[key] === step.id);
                 return (
                   <button
                     key={step.id}
                     type="button"
                     onClick={() => {
-                      if (isEdit || step.id <= activeStep + 1) {
+                      if (isEdit || isClone || step.id <= activeStep + 1) {
                         setActiveStep(step.id);
                       }
                     }}
                     className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs font-semibold transition shrink-0 md:w-full ${
                       isCurrent
                         ? "bg-primary-50 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300 shadow-2xs"
-                        : isPassed
-                          ? "text-gray-700 hover:bg-gray-100 dark:text-dark-200 dark:hover:bg-dark-700/60"
-                          : "text-gray-400 opacity-60 cursor-not-allowed dark:text-dark-400"
+                        : hasError
+                          ? "bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400"
+                          : isPassed
+                            ? "text-gray-700 hover:bg-gray-100 dark:text-dark-200 dark:hover:bg-dark-700/60"
+                            : "text-gray-400 opacity-60 cursor-not-allowed dark:text-dark-400"
                     }`}
                   >
                     <div
                       className={`flex size-5.5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-                        isCurrent
-                          ? "bg-primary-600 text-white"
-                          : isPassed
-                            ? "bg-emerald-600 text-white"
-                            : "border border-gray-300 text-gray-500 dark:border-dark-500 dark:text-dark-400"
+                        hasError
+                          ? "bg-red-600 text-white"
+                          : isCurrent
+                            ? "bg-primary-600 text-white"
+                            : isPassed
+                              ? "bg-emerald-600 text-white"
+                              : "border border-gray-300 text-gray-500 dark:border-dark-500 dark:text-dark-400"
                       }`}
                     >
-                      {isPassed && !isCurrent ? <TbCheck className="size-3" /> : step.id + 1}
+                      {hasError ? "!" : isPassed && !isCurrent ? <TbCheck className="size-3" /> : step.id + 1}
                     </div>
                     <Icon className="size-3.5 shrink-0" />
                     <span className="truncate">{step.label}</span>
+                    {hasError && (
+                      <span className="ml-auto flex size-2 rounded-full bg-red-600" />
+                    )}
                   </button>
                 );
               })}
@@ -690,12 +856,19 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       </div>
                       <select
                         {...register("status")}
-                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className={`block h-10 w-full rounded-lg border bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-2xs focus:outline-hidden dark:bg-dark-700 dark:text-dark-100 ${
+                          errors.status
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:border-primary-500 dark:border-dark-500"
+                        }`}
                       >
                         <option value="STOKTA">Stokta</option>
                         <option value="KIRALAMADA">Kiralamada</option>
                         <option value="SATILDI">Satıldı</option>
                       </select>
+                      {errors.status && (
+                        <p className="mt-1 text-[11px] font-medium text-red-500">{errors.status.message}</p>
+                      )}
                     </div>
 
                     {/* Kategori + Quick Add */}
@@ -734,7 +907,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
-                          Marka
+                          Marka *
                         </label>
                         <button
                           type="button"
@@ -748,14 +921,18 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                         {...register("brandId")}
                         onChange={(e) => {
                           const newBrandId = e.target.value;
-                          setValue("brandId", newBrandId);
-                          setValue("modelId", "");
+                          setValue("brandId", newBrandId, { shouldValidate: true });
+                          setValue("modelId", "", { shouldValidate: true });
                           if (!categoryIdVal && newBrandId) {
                             const b = catalog?.brands.find((x) => x.id === newBrandId);
                             if (b?.categoryId) setValue("categoryId", b.categoryId);
                           }
                         }}
-                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className={`block h-10 w-full rounded-lg border bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:outline-hidden dark:bg-dark-700 dark:text-dark-100 ${
+                          errors.brandId
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:border-primary-500 dark:border-dark-500"
+                        }`}
                       >
                         <option value="">Seçiniz</option>
                         {filteredBrands.map((b) => (
@@ -764,13 +941,16 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           </option>
                         ))}
                       </select>
+                      {errors.brandId && (
+                        <p className="mt-1 text-[11px] font-medium text-red-500">{errors.brandId.message}</p>
+                      )}
                     </div>
 
                     {/* Model + Quick Add */}
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
-                          Model
+                          Model *
                         </label>
                         <button
                           type="button"
@@ -788,8 +968,13 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       </div>
                       <select
                         {...register("modelId")}
+                        onChange={(e) => setValue("modelId", e.target.value, { shouldValidate: true })}
                         disabled={!brandIdVal}
-                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden disabled:bg-gray-100 disabled:opacity-60 dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className={`block h-10 w-full rounded-lg border bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:outline-hidden disabled:bg-gray-100 disabled:opacity-60 dark:bg-dark-700 dark:text-dark-100 ${
+                          errors.modelId
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:border-primary-500 dark:border-dark-500"
+                        }`}
                       >
                         <option value="">{brandIdVal ? "Seçiniz" : "Önce Marka Seçiniz"}</option>
                         {models.map((m) => (
@@ -798,6 +983,9 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           </option>
                         ))}
                       </select>
+                      {errors.modelId && (
+                        <p className="mt-1 text-[11px] font-medium text-red-500">{errors.modelId.message}</p>
+                      )}
                     </div>
 
                     {/* Araç Tipi + Quick Add */}
@@ -831,7 +1019,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
-                          Yıl
+                          Model Yılı *
                         </label>
                       </div>
                       <Input
@@ -929,7 +1117,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
-                          KM
+                          Kilometre *
                         </label>
                       </div>
                       <Controller
@@ -953,12 +1141,16 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
-                          Yakıt
+                          Yakıt Tipi *
                         </label>
                       </div>
                       <select
                         {...register("fuelType")}
-                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className={`block h-10 w-full rounded-lg border bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:outline-hidden dark:bg-dark-700 dark:text-dark-100 ${
+                          errors.fuelType
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:border-primary-500 dark:border-dark-500"
+                        }`}
                       >
                         <option value="">Seçiniz</option>
                         {Object.entries(FUEL_LABELS).map(([k, v]) => (
@@ -967,18 +1159,25 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           </option>
                         ))}
                       </select>
+                      {errors.fuelType && (
+                        <p className="mt-1 text-[11px] font-medium text-red-500">{errors.fuelType.message}</p>
+                      )}
                     </div>
 
                     {/* Vites */}
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
-                          Vites
+                          Vites Tipi *
                         </label>
                       </div>
                       <select
                         {...register("transmission")}
-                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className={`block h-10 w-full rounded-lg border bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:outline-hidden dark:bg-dark-700 dark:text-dark-100 ${
+                          errors.transmission
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:border-primary-500 dark:border-dark-500"
+                        }`}
                       >
                         <option value="">Seçiniz</option>
                         {Object.entries(TRANSMISSION_LABELS).map(([k, v]) => (
@@ -987,6 +1186,9 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           </option>
                         ))}
                       </select>
+                      {errors.transmission && (
+                        <p className="mt-1 text-[11px] font-medium text-red-500">{errors.transmission.message}</p>
+                      )}
                     </div>
 
                     {/* Kasa Tipi + Quick Add */}
@@ -1022,12 +1224,32 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Motor Gücü (kW)
                         </label>
+                        <span className="text-[10px] text-gray-400 font-mono">1 kW ≈ 1.36 HP</span>
                       </div>
-                      <Input
-                        type="number"
-                        placeholder="kW"
-                        className="h-10 text-xs font-mono"
-                        {...register("enginePower", { valueAsNumber: true })}
+                      <Controller
+                        name="enginePower"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            type="number"
+                            placeholder="kW"
+                            className="h-10 text-xs font-mono"
+                            value={field.value ?? ""}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              if (raw === "") {
+                                field.onChange(undefined);
+                                setValue("horsePower", undefined, { shouldDirty: true });
+                              } else {
+                                const kw = Number(raw);
+                                field.onChange(isNaN(kw) ? undefined : kw);
+                                if (!isNaN(kw) && kw > 0) {
+                                  setValue("horsePower", Math.round(kw * 1.35962), { shouldDirty: true });
+                                }
+                              }
+                            }}
+                          />
+                        )}
                       />
                     </div>
 
@@ -1037,12 +1259,32 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                           Motor Gücü (HP)
                         </label>
+                        <span className="text-[10px] text-gray-400 font-mono">Beygir Gücü</span>
                       </div>
-                      <Input
-                        type="number"
-                        placeholder="HP"
-                        className="h-10 text-xs font-mono"
-                        {...register("horsePower", { valueAsNumber: true })}
+                      <Controller
+                        name="horsePower"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            type="number"
+                            placeholder="HP"
+                            className="h-10 text-xs font-mono"
+                            value={field.value ?? ""}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              if (raw === "") {
+                                field.onChange(undefined);
+                                setValue("enginePower", undefined, { shouldDirty: true });
+                              } else {
+                                const hp = Number(raw);
+                                field.onChange(isNaN(hp) ? undefined : hp);
+                                if (!isNaN(hp) && hp > 0) {
+                                  setValue("enginePower", Math.round(hp / 1.35962), { shouldDirty: true });
+                                }
+                              }
+                            }}
+                          />
+                        )}
                       />
                     </div>
 
@@ -1255,13 +1497,20 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       <select
                         value={currentRegime}
                         onChange={(e) => handleRegimeChange(e.target.value as PurchaseRegime)}
-                        className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                        className={`block h-10 w-full rounded-lg border bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-2xs focus:outline-hidden dark:bg-dark-700 dark:text-dark-100 ${
+                          errors.purchaseRegime
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:border-primary-500 dark:border-dark-500"
+                        }`}
                       >
                         <option value="sahis">Şahıstan (Özel Matrah Yok)</option>
                         <option value="sirket_1">Şirketten (%1 KDV)</option>
                         <option value="sirket_20">Şirketten (%20 KDV)</option>
                         <option value="galeri_ozel">Galeriden (Özel Matrahlı)</option>
                       </select>
+                      {errors.purchaseRegime && (
+                        <p className="mt-1 text-[11px] font-medium text-red-500">{errors.purchaseRegime.message}</p>
+                      )}
                     </div>
 
                     <div>
@@ -1511,17 +1760,20 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                         <TbPlus className="size-3.5" /> Ekle
                       </button>
                     </div>
-                    <select
-                      {...register("colorId")}
-                      className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
-                    >
-                      <option value="">Renk Seçiniz</option>
-                      {catalog?.colors.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
+                    <Controller
+                      name="colorId"
+                      control={control}
+                      render={({ field }) => (
+                        <SearchableSelect
+                          options={colorOptions}
+                          value={field.value || ""}
+                          onChange={(val) => {
+                            field.onChange(val);
+                          }}
+                          placeholder="Renk Seçiniz..."
+                        />
+                      )}
+                    />
                   </div>
 
                   {/* Switch Toggles */}
@@ -1842,7 +2094,13 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
               className="px-4 py-1.5 text-xs font-semibold"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Kaydediliyor..." : isEdit ? "Güncelle" : "Aracı Kaydet"}
+              {isSubmitting
+                ? "Kaydediliyor..."
+                : isEdit
+                  ? "Güncelle"
+                  : isClone
+                    ? "Kopyayı Kaydet"
+                    : "Aracı Kaydet"}
             </Button>
           </div>
         </div>

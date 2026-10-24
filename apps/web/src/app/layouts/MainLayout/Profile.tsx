@@ -57,11 +57,14 @@ function initialsOf(name?: string | null): string {
     .join("");
 }
 
+import { useFileUrl } from "@/services/storageService";
+
 // ----------------------------------------------------------------------
 
 export function Profile() {
   const { user, logout, isSuperAdmin } = useAuthContext();
   const navigate = useNavigate();
+  const avatarUrl = useFileUrl(user?.avatarUrl);
 
   const handleLogout = async () => {
     await logout();
@@ -73,6 +76,7 @@ export function Profile() {
       <PopoverButton
         as={Avatar}
         size={12}
+        src={avatarUrl}
         role="button"
         initialColor="primary"
         alt="Profil"
@@ -96,7 +100,7 @@ export function Profile() {
             <>
               {/* Kullanıcı bilgisi */}
               <div className="flex items-center gap-4 rounded-t-lg bg-gray-100 px-4 py-5 dark:bg-dark-800">
-                <Avatar size={14} initialColor="primary" alt="Profil">
+                <Avatar size={14} src={avatarUrl} initialColor="primary" alt="Profil">
                   {initialsOf(user?.name)}
                 </Avatar>
                 <div className="min-w-0">

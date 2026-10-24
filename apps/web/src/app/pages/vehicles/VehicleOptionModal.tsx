@@ -3,8 +3,9 @@ import { toast } from "sonner";
 import { ClockIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { TbTag } from "react-icons/tb";
 
-import { Button, Input, NumericInput, Select, Textarea } from "@/components/ui";
+import { Button, Input, NumericInput, Textarea } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
+import { SearchableSelect, type SearchableOption } from "@/components/shared/SearchableSelect";
 import type { Account } from "@/@types/account";
 import { OPTION_STATUS_LABELS, type Vehicle, type VehicleOption } from "@/@types/vehicle";
 import { listAccounts } from "@/services/accountService";
@@ -122,13 +123,12 @@ export function VehicleOptionModal({ open, onClose, vehicle, onChanged }: Props)
     }
   };
 
-  const customerOpts = [
-    { value: "", label: "Müşteri seç" },
-    ...customers.map((c) => ({
-      value: c.id,
-      label: c.isPotential ? `${c.name} (potansiyel)` : c.name,
-    })),
-  ];
+  const customerOptions: SearchableOption[] = customers.map((c) => ({
+    value: c.id,
+    label: c.name,
+    subLabel: c.phone ?? (c.city ? `${c.city}${c.district ? ` / ${c.district}` : ""}` : undefined),
+    badge: c.isPotential ? "Potansiyel" : c.entityType === "CORPORATE" ? "Firma" : undefined,
+  }));
   const today = new Date().toISOString().slice(0, 10);
 
   return (
@@ -162,7 +162,14 @@ export function VehicleOptionModal({ open, onClose, vehicle, onChanged }: Props)
             </div>
           )}
 
-          <Select label="Müşteri *" data={customerOpts} value={customerId} onChange={(e) => setCustomerId(e.target.value)} />
+          <SearchableSelect
+            label="Müşteri *"
+            placeholder="Müşteri ara (isim veya telefon)..."
+            options={customerOptions}
+            value={customerId}
+            onChange={setCustomerId}
+            onClear={() => setCustomerId("")}
+          />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input label="Geçerlilik Tarihi *" type="date" min={today} value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
             <NumericInput

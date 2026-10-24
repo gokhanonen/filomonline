@@ -6,6 +6,7 @@ const SCOPES = [
   "logos",
   "contracts",
   "tramer",
+  "avatars",
 ] as const;
 
 export class PresignUploadDto {

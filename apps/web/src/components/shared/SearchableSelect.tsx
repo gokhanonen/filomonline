@@ -7,6 +7,7 @@ export interface SearchableOption {
   label: string;
   subLabel?: string;
   badge?: string;
+  colorHex?: string;
 }
 
 interface Props {
@@ -114,7 +115,13 @@ export function SearchableSelect({
       >
         <span className={clsx("truncate pr-2", !selectedOption && "text-gray-400 dark:text-dark-300")}>
           {selectedOption ? (
-            <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-2">
+              {selectedOption.colorHex && (
+                <span
+                  className="size-3.5 shrink-0 rounded-full border border-black/20 shadow-2xs"
+                  style={{ backgroundColor: selectedOption.colorHex }}
+                />
+              )}
               <span className="font-medium text-gray-800 dark:text-dark-100">{selectedOption.label}</span>
               {selectedOption.subLabel && (
                 <span className="text-xs text-gray-400 dark:text-dark-300">({selectedOption.subLabel})</span>
@@ -200,10 +207,16 @@ export function SearchableSelect({
                         : "text-gray-700 hover:bg-gray-100 dark:text-dark-200 dark:hover:bg-dark-600/70"
                     )}
                   >
-                    <div className="truncate">
+                    <div className="flex items-center gap-2 truncate">
+                      {opt.colorHex && (
+                        <span
+                          className="size-3 shrink-0 rounded-full border border-black/20 shadow-2xs"
+                          style={{ backgroundColor: opt.colorHex }}
+                        />
+                      )}
                       <span>{opt.label}</span>
                       {opt.subLabel && (
-                        <span className="ml-1.5 text-[11px] text-gray-400 dark:text-dark-400">
+                        <span className="text-[11px] text-gray-400 dark:text-dark-400">
                           {opt.subLabel}
                         </span>
                       )}

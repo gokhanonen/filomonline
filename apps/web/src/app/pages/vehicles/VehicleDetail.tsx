@@ -13,6 +13,7 @@ import {
   TbKey,
   TbShieldCheck,
   TbAlertTriangle,
+  TbMapPin,
 } from "react-icons/tb";
 import { toast } from "sonner";
 
@@ -36,6 +37,7 @@ import { VehicleForm } from "./VehicleForm";
 import { ListingLinksModal } from "./ListingLinksModal";
 import { VehicleOptionModal } from "./VehicleOptionModal";
 import { WhatsAppModal } from "./WhatsAppModal";
+import { VehicleTransferModal } from "./VehicleTransferModal";
 
 function money(v?: string | null): string {
   if (!v) return "—";
@@ -57,10 +59,14 @@ export default function VehicleDetailPage() {
   const [linksOpen, setLinksOpen] = useState(false);
   const [optionOpen, setOptionOpen] = useState(false);
   const [waOpen, setWaOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!id) return;
     setLoading(true);
+    setError(null);
     try {
       const v = await getVehicle(id);
       setVehicle(v);
@@ -70,6 +76,7 @@ export default function VehicleDetailPage() {
       setPhotoUrls(urls.filter(Boolean));
       setActivePhoto(0);
     } catch {
+      setError("Araç bilgileri yüklenemedi");
       toast.error("Araç yüklenemedi");
     } finally {
       setLoading(false);
@@ -81,10 +88,32 @@ export default function VehicleDetailPage() {
     getCatalog().then(setCatalog).catch(() => void 0);
   }, [load]);
 
-  if (loading || !vehicle) {
+  const totalTramer = useMemo(() => {
+    return (vehicle?.tramerSet ?? []).reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
+  }, [vehicle?.tramerSet]);
+
+  if (loading) {
     return (
       <Page title="Araç Detayı">
         <div className="flex justify-center py-20"><Spinner className="size-9" /></div>
+      </Page>
+    );
+  }
+
+  if (error || !vehicle) {
+    return (
+      <Page title="Araç Detayı">
+        <div className="mx-auto max-w-md py-20 text-center">
+          <p className="text-gray-500 dark:text-dark-300">{error || "Araç bulunamadı"}</p>
+          <div className="mt-4 flex justify-center gap-3">
+            <Button variant="outlined" onClick={() => navigate("/vehicles")}>
+              Araçlara Dön
+            </Button>
+            <Button color="primary" onClick={load}>
+              Tekrar Dene
+            </Button>
+          </div>
+        </div>
       </Page>
     );
   }
@@ -123,10 +152,6 @@ export default function VehicleDetailPage() {
     ["Motor No", v.engineNo ?? "—"],
   ];
 
-  const totalTramer = useMemo(() => {
-    return (v.tramerSet ?? []).reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
-  }, [v.tramerSet]);
-
   return (
     <Page title={`${v.plate} — Detay`}>
       <div className="w-full px-(--margin-x) py-6">
@@ -139,7 +164,9 @@ export default function VehicleDetailPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-50">{v.plate}</h2>
-                <Tag color={STATUS_TAG_COLOR[v.status]}>{VEHICLE_STATUS_LABELS[v.status]}</Tag>
+                <Tag color={STATUS_TAG_COLOR[v.status] ?? "neutral"}>
+                  {VEHICLE_STATUS_LABELS[v.status] ?? v.status}
+                </Tag>
 
                 {/* Status Badges */}
                 <div className="hidden sm:flex items-center gap-1.5 ml-2">
@@ -187,6 +214,14 @@ export default function VehicleDetailPage() {
                 <TbTag className="size-5" /> {v.activeOption ? "Opsiyonu Düzenle" : "Opsiyon Ekle"}
               </Button>
             )}
+            <Button
+              color="warning"
+              variant="soft"
+              className="gap-2 text-amber-700 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-300"
+              onClick={() => setTransferOpen(true)}
+            >
+              <TbMapPin className="size-5" /> Lokasyon
+            </Button>
             <Button color="primary" className="gap-2" onClick={() => setFormOpen(true)}>
               <PencilSquareIcon className="size-5" /> Düzenle
             </Button>
@@ -396,6 +431,12 @@ export default function VehicleDetailPage() {
         onChanged={(active) => setVehicle((cur) => (cur ? { ...cur, activeOption: active } : cur))}
       />
       <WhatsAppModal open={waOpen} onClose={() => setWaOpen(false)} vehicle={v} />
+      <VehicleTransferModal
+        open={transferOpen}
+        onClose={() => setTransferOpen(false)}
+        vehicle={v}
+        onSuccess={load}
+      />
     </Page>
   );
 }

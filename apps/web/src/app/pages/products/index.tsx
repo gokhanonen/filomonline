@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
@@ -30,8 +31,9 @@ export default function ProductsPage() {
   const { can } = useAuthContext();
   const canWrite = can("products.write");
   const canDelete = can("products.delete");
+  const [searchParams] = useSearchParams();
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(() => searchParams.get("search") || "");
   const [debounced, setDebounced] = useState("");
   const [typeFilter, setTypeFilter] = useState<ProductType | "">("");
   const [refreshKey, setRefreshKey] = useState(0);

@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import {
   MagnifyingGlassIcon,
   PencilSquareIcon,
@@ -53,18 +54,33 @@ export default function ExpensesPage() {
   const { can } = useAuthContext();
   const canWrite = can("expenses.write");
   const canDelete = can("expenses.delete");
+  const [searchParams] = useSearchParams();
+  const urlSearch = searchParams.get("search") || "";
 
   const [invoiceType, setInvoiceType] = useState<ExpenseInvoiceType | "">("");
+  const [search, setSearch] = useState(urlSearch);
   const [refreshKey, setRefreshKey] = useState(0);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
 
+  useEffect(() => {
+    const s = searchParams.get("search");
+    if (s !== null) {
+      setSearch(s);
+    }
+  }, [searchParams]);
+
   const fetchPage = useCallback(
     (page: number) => {
       void refreshKey;
-      return listExpenses({ page, pageSize: PAGE_SIZE, invoiceType: invoiceType || undefined });
+      return listExpenses({
+        page,
+        pageSize: PAGE_SIZE,
+        invoiceType: invoiceType || undefined,
+        search: search || undefined,
+      });
     },
-    [invoiceType, refreshKey],
+    [invoiceType, search, refreshKey],
   );
 
   const { items, total, loading, hasMore, loadMore, removeItem } =

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { buildWhatsAppMessage, normalizePhone } from "./WhatsAppModal";
+import {
+  buildWhatsAppMessage,
+  findFirstListingUrl,
+  normalizePhone,
+} from "./WhatsAppModal";
 import type { Vehicle } from "@/@types/vehicle";
 
 describe("normalizePhone", () => {
@@ -14,6 +18,24 @@ describe("normalizePhone", () => {
   });
   it("00 ile uluslararası öneki kırpar", () => {
     expect(normalizePhone("0090 532 123 45 67")).toBe("905321234567");
+  });
+});
+
+describe("findFirstListingUrl", () => {
+  it("listingUrls dizisindeki ilk geçerli URL'i döner", () => {
+    const v: Partial<Vehicle> = {
+      listingUrls: [
+        { id: "1", vehicleId: "v1", url: "https://sahibinden.com/123", createdAt: "" },
+        { id: "2", vehicleId: "v1", url: "https://arabam.com/456", createdAt: "" },
+      ],
+    };
+    expect(findFirstListingUrl(v)).toBe("https://sahibinden.com/123");
+  });
+
+  it("boş veya tanımsız ise null döner", () => {
+    expect(findFirstListingUrl(null)).toBeNull();
+    expect(findFirstListingUrl({})).toBeNull();
+    expect(findFirstListingUrl({ listingUrls: [] })).toBeNull();
   });
 });
 
@@ -60,5 +82,10 @@ describe("buildWhatsAppMessage", () => {
     expect(m).toContain("Tramer: Yok");
     expect(m).not.toContain("İlan Linki");
     expect(m).not.toContain("Garanti:");
+  });
+
+  it("overrideUrl verilirse onu kullanır", () => {
+    const m = buildWhatsAppMessage(base, "https://arabam.com/ozel-link");
+    expect(m).toContain("İlan Linki: https://arabam.com/ozel-link");
   });
 });

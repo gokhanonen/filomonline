@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { TbBrandWhatsapp } from "react-icons/tb";
+import { TbBrandWhatsapp, TbLink } from "react-icons/tb";
 
-import { Button, Input, Select, Textarea } from "@/components/ui";
+import { Button, Input, Textarea } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
+import { SearchableSelect, type SearchableOption } from "@/components/shared/SearchableSelect";
 import type { Account } from "@/@types/account";
 import {
   FUEL_LABELS,
@@ -12,7 +13,7 @@ import {
   type Vehicle,
 } from "@/@types/vehicle";
 import { listAccounts } from "@/services/accountService";
-import { getVehicle } from "@/services/vehicleService";
+import { getVehicle, listListingUrls } from "@/services/vehicleService";
 
 interface Props {
   open: boolean;
@@ -29,8 +30,34 @@ export function normalizePhone(raw: string): string {
   return d;
 }
 
-/** Eski projedeki WhatsApp paylaşım metninin aynısı (araç bilgileri + ilan linki). */
-export function buildWhatsAppMessage(v: Vehicle): string {
+/** Araca ait ilk geçerli ilan linkini bulur (listingUrls dizisi veya doğrudan alanlar). */
+export function findFirstListingUrl(v?: Partial<Vehicle> | null): string | null {
+  if (!v) return null;
+  // 1. listingUrls dizisi içinden ilk dolu URL
+  if (Array.isArray(v.listingUrls) && v.listingUrls.length > 0) {
+    for (const item of v.listingUrls) {
+      if (typeof item === "string") {
+        const s = (item as string).trim();
+        if (s) return s;
+      } else if (item && typeof item === "object") {
+        const u = (item as { url?: string }).url;
+        if (typeof u === "string" && u.trim()) return u.trim();
+      }
+    }
+  }
+  // 2. Olası doğrudan string alanlar
+  const rec = v as Record<string, unknown>;
+  for (const key of ["listingUrl", "ilanLinki", "ilanUrl", "link", "url"]) {
+    const val = rec[key];
+    if (typeof val === "string" && val.trim().startsWith("http")) {
+      return val.trim();
+    }
+  }
+  return null;
+}
+
+/** Eski projedeki WhatsApp paylaşım metninin aynısı (araç bilgileri + ilk bulunan ilan linki). */
+export function buildWhatsAppMessage(v: Vehicle, overrideUrl?: string | null): string {
   const money = (x?: string | null) =>
     x ? Number(x).toLocaleString("tr-TR", { maximumFractionDigits: 0 }) : "0";
   const tramer =
@@ -47,7 +74,8 @@ export function buildWhatsAppMessage(v: Vehicle): string {
     .filter(Boolean)
     .join("\n");
   const warranty = v.warranty ? "\nGaranti: Garanti Dahilinde" : "";
-  const link = v.listingUrls?.[0] ? `\n\nİlan Linki: ${v.listingUrls[0].url}` : "";
+  const firstUrl = overrideUrl !== undefined ? overrideUrl : findFirstListingUrl(v);
+  const link = firstUrl ? `\n\nİlan Linki: ${firstUrl}` : "";
   const name = [v.brandName, v.modelName].filter(Boolean).join(" ");
 
   return `Merhaba, ${name} (${v.plate}) aracı hakkında bilgi vermek isterim.
@@ -67,6 +95,7 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
   const [customers, setCustomers] = useState<Account[]>([]);
   const [customerId, setCustomerId] = useState("");
   const [phone, setPhone] = useState("");
+  const [listingUrl, setListingUrl] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -74,24 +103,44 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
     setCustomerId("");
     setPhone("");
     setFull(vehicle);
-    setMessage(buildWhatsAppMessage(vehicle));
-    // Tramer + güncel ilan linkleri için tam kaydı çek
-    getVehicle(vehicle.id)
-      .then((v) => {
-        setFull(v);
-        setMessage(buildWhatsAppMessage(v));
-      })
-      .catch(() => void 0);
+
+    const initialUrl = findFirstListingUrl(vehicle) ?? "";
+    setListingUrl(initialUrl);
+    setMessage(buildWhatsAppMessage(vehicle, initialUrl || undefined));
+
+    // Tramer + güncel ilan linklerini çek (aracın ilk ilan linkini garantiye al)
+    Promise.all([
+      getVehicle(vehicle.id).catch(() => null),
+      listListingUrls(vehicle.id).catch(() => []),
+    ]).then(([fullV, urls]) => {
+      const mergedUrls =
+        urls && urls.length > 0
+          ? urls
+          : fullV?.listingUrls ?? vehicle.listingUrls ?? [];
+      const updatedVehicle: Vehicle = {
+        ...(fullV ?? vehicle),
+        listingUrls: mergedUrls,
+      };
+      setFull(updatedVehicle);
+
+      const foundUrl = findFirstListingUrl(updatedVehicle) || initialUrl;
+      setListingUrl(foundUrl);
+      setMessage(buildWhatsAppMessage(updatedVehicle, foundUrl || undefined));
+    });
+
     listAccounts({ type: "CUSTOMER", onlyActive: true, pageSize: 300 })
       .then((r) => setCustomers(r.items.filter((a) => !!a.phone)))
       .catch(() => void 0);
   }, [open, vehicle]);
 
-  const customerOpts = useMemo(
-    () => [
-      { value: "", label: "Müşteri seç (telefonu olanlar)" },
-      ...customers.map((c) => ({ value: c.id, label: `${c.name} — ${c.phone}` })),
-    ],
+  const customerOptions: SearchableOption[] = useMemo(
+    () =>
+      customers.map((c) => ({
+        value: c.id,
+        label: c.name,
+        subLabel: c.phone ?? undefined,
+        badge: c.entityType === "CORPORATE" ? "Firma" : undefined,
+      })),
     [customers],
   );
 
@@ -99,6 +148,14 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
     setCustomerId(id);
     const c = customers.find((x) => x.id === id);
     if (c?.phone) setPhone(c.phone);
+  };
+
+  const handleUrlChange = (newUrl: string) => {
+    setListingUrl(newUrl);
+    const cur = full ?? vehicle;
+    if (cur) {
+      setMessage(buildWhatsAppMessage(cur, newUrl.trim() || null));
+    }
   };
 
   const number = normalizePhone(phone);
@@ -128,7 +185,17 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
     >
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Select label="Müşteri" data={customerOpts} value={customerId} onChange={(e) => pickCustomer(e.target.value)} />
+          <SearchableSelect
+            label="Müşteri"
+            placeholder="Müşteri ara (isim veya tel)..."
+            options={customerOptions}
+            value={customerId}
+            onChange={(val) => pickCustomer(val)}
+            onClear={() => {
+              setCustomerId("");
+              setPhone("");
+            }}
+          />
           <Input
             label="Telefon *"
             placeholder="0532 123 45 67"
@@ -138,9 +205,17 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
           />
         </div>
 
+        <Input
+          label="İlan Linki (İlk link otomatik eklenir)"
+          placeholder="https://www.sahibinden.com/ilan/..."
+          value={listingUrl}
+          onChange={(e) => handleUrlChange(e.target.value)}
+          prefix={<TbLink className="size-4 text-gray-400" />}
+        />
+
         <Textarea
           label="Mesaj"
-          rows={12}
+          rows={11}
           value={message}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
           classNames={{ input: "font-mono text-xs" }}
