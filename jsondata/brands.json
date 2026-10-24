@@ -1,0 +1,1196 @@
+[
+  {
+    "id": "016nekx7eXa6T9Eu9Blg",
+    "name": "Daewoo",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:49.791Z"
+  },
+  {
+    "id": "0ASooJfHJVT2sdkZpQRT",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:50.246Z",
+    "name": "DFSK"
+  },
+  {
+    "id": "0VH1RIa47bRmoGe6gQCq",
+    "createdAt": "2026-01-02T21:01:27.846Z",
+    "category": "otomobil",
+    "name": "Lamborghini"
+  },
+  {
+    "id": "17Lvbt1kuwoTAb0Ay0c1",
+    "createdAt": "2026-01-18T10:12:28.216Z",
+    "name": "Smart",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "1xwZqz7UVXqmSuNelP1H",
+    "name": "MG",
+    "createdAt": "2026-01-18T09:42:00.229Z",
+    "category": "suv"
+  },
+  {
+    "id": "1yY9XIqJXQO9T86gZAPv",
+    "createdAt": "2026-01-02T21:01:28.440Z",
+    "name": "Lancia",
+    "category": "otomobil"
+  },
+  {
+    "id": "21gkec3Uvzsg5P4c8YBP",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:56.703Z",
+    "name": "Tofaş"
+  },
+  {
+    "id": "3FvukhEpISO3Xn5rionK",
+    "name": "TOGG",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:29.338Z"
+  },
+  {
+    "id": "3ILw68caJVPlyX25anlf",
+    "category": "suv",
+    "name": "Infiniti",
+    "createdAt": "2026-01-18T09:41:55.066Z"
+  },
+  {
+    "id": "3Ws5KGNDBQomd1Mx347z",
+    "category": "otomobil",
+    "name": "Lincoln",
+    "createdAt": "2026-01-02T21:01:30.373Z"
+  },
+  {
+    "id": "49O5Z3BmWN1VBic9Vp7Q",
+    "category": "suv",
+    "name": "Nissan",
+    "createdAt": "2026-01-18T09:42:01.399Z"
+  },
+  {
+    "id": "4ORSXM7ILMqq3Oj5dtzP",
+    "category": "otomobil",
+    "name": "XEV",
+    "createdAt": "2026-01-02T21:02:02.542Z"
+  },
+  {
+    "id": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:00.736Z",
+    "name": "Volvo",
+    "category": "otomobil"
+  },
+  {
+    "id": "4vBpI94Xsxt9DQWZq2Es",
+    "category": "suv",
+    "name": "Bentley",
+    "createdAt": "2026-01-18T09:41:45.038Z"
+  },
+  {
+    "id": "4ysgaJQj9Jb3uHgfrqlM",
+    "createdAt": "2026-01-18T09:42:08.785Z",
+    "category": "suv",
+    "name": "Volkswagen"
+  },
+  {
+    "id": "4zHDTUlyQakGFw0o3lCl",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:24.505Z",
+    "name": "Joyce"
+  },
+  {
+    "id": "5s0l7UsE6Slv56a3PCiC",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:46.984Z",
+    "name": "Regal Raptor"
+  },
+  {
+    "id": "637uOo41EcHm8xn1lM9L",
+    "name": "RENAULT",
+    "createdAt": "2026-03-18T13:08:05.401Z",
+    "category": "ticari"
+  },
+  {
+    "id": "6FxN1j9LcYyjmkj80rYU",
+    "category": "elektrikli_ara_",
+    "name": "Renault",
+    "createdAt": "2026-01-18T10:12:27.202Z"
+  },
+  {
+    "id": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:18.875Z",
+    "name": "Honda",
+    "category": "otomobil"
+  },
+  {
+    "id": "6uB4IxYYLASEAIGVikci",
+    "createdAt": "2026-01-18T09:41:53.322Z",
+    "name": "Foton",
+    "category": "suv"
+  },
+  {
+    "id": "7LLL0s0fcg8K9Nd0vgO9",
+    "name": "Audi",
+    "createdAt": "2026-01-18T09:41:43.763Z",
+    "category": "suv"
+  },
+  {
+    "id": "7N6zIMET2lpGjKsPsy3b",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:46.492Z",
+    "name": "BYD"
+  },
+  {
+    "id": "7oDnUHEBD518f8EmzFUy",
+    "category": "suv",
+    "name": "SWM",
+    "createdAt": "2026-01-18T09:42:07.630Z"
+  },
+  {
+    "id": "7tfZeuep0y2oWgQ8nwi0",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:20.105Z",
+    "name": "Buick"
+  },
+  {
+    "id": "88bHP7y0bmc2fCDaH5uO",
+    "createdAt": "2026-01-02T21:01:44.898Z",
+    "category": "otomobil",
+    "name": "Pontiac"
+  },
+  {
+    "id": "8bw7mt6Xk5Xk3tKXq1t4",
+    "createdAt": "2026-01-18T09:42:03.865Z",
+    "category": "suv",
+    "name": "Porsche"
+  },
+  {
+    "id": "8e2OXyO2uXBtYw3L5aCK",
+    "createdAt": "2026-01-18T09:41:50.838Z",
+    "category": "suv",
+    "name": "Dodge"
+  },
+  {
+    "id": "8eFVKn7sIn4SrfR8LSIm",
+    "category": "otomobil",
+    "name": "Renault",
+    "createdAt": "2026-01-02T21:01:47.571Z"
+  },
+  {
+    "id": "92iE3wNkm4pehCEy1Cgt",
+    "category": "suv",
+    "name": "Suzuki",
+    "createdAt": "2026-01-18T09:42:07.121Z"
+  },
+  {
+    "id": "93J57mw3fq9mxoOVLBv2",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:40.616Z",
+    "name": "Opel"
+  },
+  {
+    "id": "9912diSF2H8sNsgUZa1K",
+    "name": "DS Automobiles",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:32.270Z"
+  },
+  {
+    "id": "9bTvLKorZVEjL1Gp8pw3",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:21.086Z",
+    "name": "Ferrari"
+  },
+  {
+    "id": "9xLdlw2Vz0vNHp05cPdf",
+    "category": "otomobil",
+    "name": "Saab",
+    "createdAt": "2026-01-02T21:01:50.911Z"
+  },
+  {
+    "id": "AdKMPvYng3ocNHXjTKhD",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:31.637Z",
+    "name": "Marcos"
+  },
+  {
+    "id": "AhBMPIUnFCVIhzHeXGng",
+    "createdAt": "2026-01-02T21:01:36.873Z",
+    "name": "Mini",
+    "category": "otomobil"
+  },
+  {
+    "id": "AuObstQU7Vne3qQvLQts",
+    "category": "suv",
+    "name": "Jaguar",
+    "createdAt": "2026-01-18T09:41:55.936Z"
+  },
+  {
+    "id": "BT5sQuTBeVE4qbXgM9cv",
+    "createdAt": "2026-01-18T10:12:19.843Z",
+    "name": "BYD",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "Bk6dbf1BDTN9nGyqDPWq",
+    "category": "suv",
+    "name": "Alfa Romeo",
+    "createdAt": "2026-01-18T09:41:43.393Z"
+  },
+  {
+    "id": "CQPhErsvMlHD0b5g6e62",
+    "createdAt": "2026-01-02T21:01:58.652Z",
+    "category": "otomobil",
+    "name": "Vanderhall"
+  },
+  {
+    "id": "Ch9jH69iTglbIYgNpqh5",
+    "name": "Suzuki",
+    "createdAt": "2026-01-02T21:01:54.490Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "CrD06cYqPe4WGq6EErMp",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:26.628Z",
+    "name": "Lada"
+  },
+  {
+    "id": "D6FGNB0EZfdHmQmDWwLb",
+    "category": "otomobil",
+    "name": "Seat",
+    "createdAt": "2026-01-02T21:01:51.448Z"
+  },
+  {
+    "id": "DXR4i6gJJ2YE0qCEKZnP",
+    "name": "Mercedes - Benz",
+    "createdAt": "2026-01-18T09:41:59.640Z",
+    "category": "suv"
+  },
+  {
+    "id": "DaaqVIe6TZ20HEwDaH4n",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:46.682Z",
+    "name": "Rainwoll"
+  },
+  {
+    "id": "Dhcz6ucGDrE57dXlhfsO",
+    "createdAt": "2026-01-02T21:01:26.223Z",
+    "name": "Kuba",
+    "category": "otomobil"
+  },
+  {
+    "id": "DyxhoBNfjPjXaAyeTcGU",
+    "createdAt": "2026-01-18T09:41:56.225Z",
+    "category": "suv",
+    "name": "Jeep"
+  },
+  {
+    "id": "EJym8bCsmUASk1ffjd0N",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:20.307Z",
+    "name": "Citroen"
+  },
+  {
+    "id": "FdTzowYCUT2Y7g5QofdP",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:26.427Z",
+    "name": "Rainwoll"
+  },
+  {
+    "id": "Fma6cmw7xqKKPKP4Jx5M",
+    "category": "suv",
+    "name": "Voyah",
+    "createdAt": "2026-01-18T09:42:10.092Z"
+  },
+  {
+    "id": "GDmig9uQClWV06FEunFx",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:55.794Z",
+    "name": "Jaecoo"
+  },
+  {
+    "id": "GIOrEUyhI3FR15wdMB4G",
+    "createdAt": "2026-01-18T09:41:52.132Z",
+    "name": "Ford",
+    "category": "suv"
+  },
+  {
+    "id": "GZz5rSqMYkSY9hWd1cmP",
+    "category": "otomobil",
+    "name": "Alfa Romeo",
+    "createdAt": "2026-01-02T20:44:11.096Z"
+  },
+  {
+    "id": "GqEYPh6tEhp1nspsIe6M",
+    "createdAt": "2026-01-18T09:42:00.968Z",
+    "name": "Mitsubishi",
+    "category": "suv"
+  },
+  {
+    "id": "Hj6FwqhKw0YIzUfQzFaU",
+    "name": "Subaru",
+    "createdAt": "2026-01-18T09:42:06.838Z",
+    "category": "suv"
+  },
+  {
+    "id": "HmXrFRVrGGCRbbFSAFnn",
+    "createdAt": "2026-01-02T21:01:29.566Z",
+    "category": "otomobil",
+    "name": "Lexus"
+  },
+  {
+    "id": "HrbxIpRmszsrYSSOyxip",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:58.521Z",
+    "name": "Lincoln"
+  },
+  {
+    "id": "IddnnWWyU2KztqST371W",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:10.528Z",
+    "name": "Aion"
+  },
+  {
+    "id": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Volkswagen",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:58.959Z"
+  },
+  {
+    "id": "J1T0lOeeGrDlU46tMzFO",
+    "name": "Chrysler",
+    "createdAt": "2026-01-02T20:44:25.370Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "JJcZn7tUag55uzMGmalp",
+    "category": "otomobil",
+    "name": "Rover",
+    "createdAt": "2026-01-02T21:01:49.841Z"
+  },
+  {
+    "id": "JVr1LFqHr9NqSzTPCbG5",
+    "createdAt": "2026-01-18T10:12:22.347Z",
+    "category": "elektrikli_ara_",
+    "name": "Kuba"
+  },
+  {
+    "id": "JXWCl4hYYMnO1l09cS3b",
+    "createdAt": "2026-01-18T09:42:08.062Z",
+    "name": "TOGG",
+    "category": "suv"
+  },
+  {
+    "id": "JbWSvGWzMiN9mJavL9N9",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:20.815Z",
+    "name": "Cupra"
+  },
+  {
+    "id": "JmiQxhwDluNKEh6S8PIM",
+    "name": "Land Rover",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:57.593Z"
+  },
+  {
+    "id": "JpBtTOJYOFxvbxH3Enny",
+    "category": "minivanpanelvan",
+    "name": "Mercedes -Benz",
+    "createdAt": "2026-03-30T12:01:12.534Z"
+  },
+  {
+    "id": "K55wijyvS6KLetUk4Dn8",
+    "name": "Geely",
+    "createdAt": "2026-01-02T21:01:18.242Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "K9Ph3wExh82Fhq2HR6W0",
+    "createdAt": "2026-01-18T09:41:51.220Z",
+    "name": "DS Automobiles",
+    "category": "suv"
+  },
+  {
+    "id": "KQMjnV9qF6fUh527HGhd",
+    "createdAt": "2026-01-02T21:01:36.726Z",
+    "name": "Micro",
+    "category": "otomobil"
+  },
+  {
+    "id": "KY8qbFKU55KhZFUH4XgS",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:42:05.216Z",
+    "name": "Seres"
+  },
+  {
+    "id": "LUQGt8VizymCdt6iFWM9",
+    "name": "Hyundai",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:21.732Z"
+  },
+  {
+    "id": "LcPFLHcPej2ysDbjiyO4",
+    "category": "elektrikli_ara_",
+    "name": "Nieve",
+    "createdAt": "2026-01-18T10:12:24.447Z"
+  },
+  {
+    "id": "LfGSs9WeV8mZqvuoLl62",
+    "category": "otomobil",
+    "name": "Alpine",
+    "createdAt": "2026-01-02T20:44:12.780Z"
+  },
+  {
+    "id": "Li3SWXkcU9dKVEvNZqHx",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:53.490Z",
+    "name": "GMC"
+  },
+  {
+    "id": "MDvbIXz6mBWkpaj5lIQs",
+    "name": "BMW",
+    "createdAt": "2026-01-18T10:12:18.557Z",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "MJ9rA0VBKfzMYHA0Vv37",
+    "category": "otomobil",
+    "name": "Tesla",
+    "createdAt": "2026-01-02T21:01:56.192Z"
+  },
+  {
+    "id": "MJA03uLxDfvLpTVhjxdJ",
+    "name": "Tata",
+    "createdAt": "2026-01-02T21:01:55.595Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "MVfDiUte5lEkRo7UWJpo",
+    "createdAt": "2026-01-18T09:41:58.969Z",
+    "category": "suv",
+    "name": "Maserati"
+  },
+  {
+    "id": "N1QkEFvqdkDj81x5vsZb",
+    "category": "otomobil",
+    "name": "Jaguar",
+    "createdAt": "2026-01-02T21:01:23.772Z"
+  },
+  {
+    "id": "NDLMUMqA4drTIJfhQ21z",
+    "category": "otomobil",
+    "name": "Orti",
+    "createdAt": "2026-01-02T21:01:42.319Z"
+  },
+  {
+    "id": "NLNOb3DLywuJFfpe7hxB",
+    "category": "otomobil",
+    "name": "Hyundai",
+    "createdAt": "2026-01-02T21:01:19.997Z"
+  },
+  {
+    "id": "Nx1h3wCMuaRP91WRDYds",
+    "createdAt": "2026-01-18T10:12:22.913Z",
+    "category": "elektrikli_ara_",
+    "name": "Lexus"
+  },
+  {
+    "id": "NyLlPf9p0ADPT4DQz1lW",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:23.321Z",
+    "name": "Chevrolet"
+  },
+  {
+    "id": "NywooeRrDjD174A38ZNh",
+    "createdAt": "2026-01-02T20:44:14.057Z",
+    "name": "Aston Martin",
+    "category": "otomobil"
+  },
+  {
+    "id": "O3HHc7s6ZI1HaNj6tYDy",
+    "name": "Lamborghini",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:57.445Z"
+  },
+  {
+    "id": "Of3JDvSfM4QeL9VCWfdc",
+    "name": "Citroën",
+    "category": "minivanpanelvan",
+    "createdAt": "2026-03-30T08:02:18.385Z"
+  },
+  {
+    "id": "PBVwMeoJbo8GP6d16x4S",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:54.181Z",
+    "name": "Hummer"
+  },
+  {
+    "id": "Q7Tu0dNdQavK3mmSiZ7I",
+    "category": "otomobil",
+    "name": "Relive",
+    "createdAt": "2026-01-02T21:01:47.281Z"
+  },
+  {
+    "id": "QkaBwMwCsdKzP8LkbtWI",
+    "category": "otomobil",
+    "name": "Luqi",
+    "createdAt": "2026-01-02T21:01:31.402Z"
+  },
+  {
+    "id": "R74Aku6ydGfGHKxaR879",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:22.267Z",
+    "name": "Cenntro"
+  },
+  {
+    "id": "ReqTGzWjSZa52Kf5uMeq",
+    "createdAt": "2026-01-18T09:42:06.023Z",
+    "name": "Ssangyong",
+    "category": "suv"
+  },
+  {
+    "id": "RoIFIre8jvz7HSVvq923",
+    "category": "suv",
+    "name": "Mahindra",
+    "createdAt": "2026-01-18T09:41:58.749Z"
+  },
+  {
+    "id": "RsFApN6KzxzPbVUkpqdS",
+    "category": "suv",
+    "name": "Lexus",
+    "createdAt": "2026-01-18T09:41:58.237Z"
+  },
+  {
+    "id": "SA9BYR31mfNnshZiFqfd",
+    "createdAt": "2026-01-18T09:42:05.879Z",
+    "name": "Skywell",
+    "category": "suv"
+  },
+  {
+    "id": "SLp6YyxqKfNaFoGjTVEg",
+    "name": "Nieve",
+    "createdAt": "2026-01-02T21:01:38.918Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "SMoZyZtFj56vFGdgfWIq",
+    "createdAt": "2026-01-02T21:01:21.955Z",
+    "name": "I-GO",
+    "category": "otomobil"
+  },
+  {
+    "id": "SOlsacCfOCqtNGIsNuHN",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:42:02.333Z",
+    "name": "Opel"
+  },
+  {
+    "id": "SYnzOc0eY20LLIU1ayBz",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:55.507Z",
+    "name": "Isuzu"
+  },
+  {
+    "id": "SyDEhmr2uoeGn9FwnC3P",
+    "createdAt": "2026-01-02T21:01:53.461Z",
+    "category": "otomobil",
+    "name": "Smart"
+  },
+  {
+    "id": "TLfmwtcUt7odbYYjggwh",
+    "createdAt": "2026-01-02T21:01:22.214Z",
+    "name": "Ikco",
+    "category": "otomobil"
+  },
+  {
+    "id": "TWk8088ce6ViBtCdIQ7m",
+    "category": "suv",
+    "name": "Cadillac",
+    "createdAt": "2026-01-18T09:41:46.870Z"
+  },
+  {
+    "id": "TbqZx7F0gthAcaEQPGim",
+    "name": "BMW",
+    "category": "motosiklet",
+    "createdAt": "2026-06-02T09:27:09.540Z"
+  },
+  {
+    "id": "TtzCcYuk2mQOtBsGB08f",
+    "category": "otomobil",
+    "name": "Yuki",
+    "createdAt": "2026-01-02T21:02:02.688Z"
+  },
+  {
+    "id": "TzzfchbBXkfz5do91G9c",
+    "createdAt": "2026-01-02T20:44:26.183Z",
+    "category": "otomobil",
+    "name": "Citroen"
+  },
+  {
+    "id": "UCWrrfSmGxyisH1HGR8T",
+    "createdAt": "2026-01-02T21:01:45.338Z",
+    "category": "otomobil",
+    "name": "Porsche"
+  },
+  {
+    "id": "UspTzMXHcf2K1YTz1LnE",
+    "createdAt": "2026-01-18T10:12:22.057Z",
+    "name": "Kia",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "UvhJ9HCdW1E5aMlHzJ4o",
+    "name": "Saipa",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:51.279Z"
+  },
+  {
+    "id": "VHOZQzstpfxPnD1K1Vv4",
+    "name": "Polestar",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:44.611Z"
+  },
+  {
+    "id": "VRLbv4IHrzpOEnRPpcFy",
+    "createdAt": "2026-01-18T10:12:24.128Z",
+    "category": "elektrikli_ara_",
+    "name": "Mini"
+  },
+  {
+    "id": "WhEbqxPovlAFrC5juxNq",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:28.368Z",
+    "name": "Tesla"
+  },
+  {
+    "id": "Wm3xx6vmfRIidxsliWqk",
+    "createdAt": "2026-01-02T21:02:00.392Z",
+    "name": "Volta",
+    "category": "otomobil"
+  },
+  {
+    "id": "XX8e3430thbOUrWQeMV5",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:59.198Z",
+    "name": "Mazda"
+  },
+  {
+    "id": "Xq3OfSjm0KkkF3X0awio",
+    "name": "Relive",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:26.928Z"
+  },
+  {
+    "id": "Y0PErCHuzqGGItc6O87T",
+    "category": "elektrikli_ara_",
+    "name": "Regal Raptor",
+    "createdAt": "2026-01-18T10:12:26.607Z"
+  },
+  {
+    "id": "YFBvrEQgvOSGKSP5Xpa8",
+    "createdAt": "2026-01-18T10:12:30.253Z",
+    "category": "elektrikli_ara_",
+    "name": "Volta"
+  },
+  {
+    "id": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:37.453Z",
+    "category": "otomobil",
+    "name": "Mitsubishi"
+  },
+  {
+    "id": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "Ferrari",
+    "createdAt": "2026-01-02T20:44:33.068Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "Yyecu846x7An7DTHjEAN",
+    "createdAt": "2026-01-02T20:44:30.336Z",
+    "name": "Daihatsu",
+    "category": "otomobil"
+  },
+  {
+    "id": "ZDJuW8D5OOj52ulbwYHg",
+    "name": "Plymouth",
+    "createdAt": "2026-01-02T21:01:44.316Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "Zd247fK6y0OVen5TmWx4",
+    "createdAt": "2026-01-18T10:12:17.948Z",
+    "category": "elektrikli_ara_",
+    "name": "Audi"
+  },
+  {
+    "id": "aASgy3UAnSk2qfRdSUHi",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:53.702Z",
+    "name": "Honda"
+  },
+  {
+    "id": "bFAVyaetxbNutkZiFyzs",
+    "name": "Reeder",
+    "createdAt": "2026-01-02T21:01:46.832Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "bGVLbhhjx9Yz40KQzKkK",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:32.827Z",
+    "name": "Eagle"
+  },
+  {
+    "id": "bnktqz9yxXnuLzPIxXBO",
+    "name": "Skoda",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:52.428Z"
+  },
+  {
+    "id": "bq1iWORT8A4lt1Y2fHJ1",
+    "name": "Mini",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:42:00.679Z"
+  },
+  {
+    "id": "cEJWbOHANgL94xcNNI8j",
+    "createdAt": "2026-01-18T09:41:49.486Z",
+    "name": "Dacia",
+    "category": "suv"
+  },
+  {
+    "id": "cFcmWPu6L1OzsgfblQuF",
+    "createdAt": "2026-01-18T09:41:47.688Z",
+    "name": "Chevrolet",
+    "category": "suv"
+  },
+  {
+    "id": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Fiat",
+    "createdAt": "2026-01-02T21:01:12.756Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "chOLaI3nTKPnptkTOxbR",
+    "name": "Opel",
+    "category": "minivanpanelvan",
+    "createdAt": "2026-06-10T09:33:13.748Z"
+  },
+  {
+    "id": "cmHLEwz1BCHU7PuhbtIm",
+    "createdAt": "2026-01-02T21:01:46.146Z",
+    "category": "otomobil",
+    "name": "Proton"
+  },
+  {
+    "id": "dC0Q8IRN4FPKscqWxeRx",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:23.269Z",
+    "name": "Mercedes - Benz"
+  },
+  {
+    "id": "dMStfGgO8FfNjpPVGGag",
+    "createdAt": "2026-01-02T20:44:13.122Z",
+    "name": "Anadol",
+    "category": "otomobil"
+  },
+  {
+    "id": "dXbQUBzP3uCFbr7cVtkE",
+    "name": "Toyota",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:57.290Z"
+  },
+  {
+    "id": "deYLWqG4eeu69p4PEvH4",
+    "category": "otomobil",
+    "name": "Ford",
+    "createdAt": "2026-01-02T21:01:16.170Z"
+  },
+  {
+    "id": "e3ptBuAQU9dYGmhxVIsb",
+    "createdAt": "2026-01-18T09:41:45.185Z",
+    "name": "BMW",
+    "category": "suv"
+  },
+  {
+    "id": "eHBgU0aBcJghpxK9VZP1",
+    "name": "The London Taxi",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:29.155Z"
+  },
+  {
+    "id": "eIorYBhW7TC17qK98dX5",
+    "name": "Abarth",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:09.704Z"
+  },
+  {
+    "id": "eXED7TjVzsQU393jlhei",
+    "name": "Kia",
+    "createdAt": "2026-01-02T21:01:24.672Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "eXbUFvB8NHm8215JUIO9",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:47.115Z",
+    "name": "Chery"
+  },
+  {
+    "id": "eq8fN6dDk0hudLJY3lyD",
+    "name": "Rolls-Royce",
+    "createdAt": "2026-01-18T09:42:04.792Z",
+    "category": "suv"
+  },
+  {
+    "id": "exj31seYdWAzIkyu9z7e",
+    "name": "The London Taxi",
+    "createdAt": "2026-01-02T21:01:56.557Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "fDr5idEGAVWSw38SdKoT",
+    "name": "Daewoo",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:29.421Z"
+  },
+  {
+    "id": "fQtYbXQQLHtxkGvOI6VB",
+    "name": "Volkswagen",
+    "createdAt": "2026-05-06T11:29:54.176Z",
+    "category": "minivanpanelvan"
+  },
+  {
+    "id": "fduU6Elc3uDKmWiSJ56S",
+    "name": "Peugeot",
+    "createdAt": "2026-01-02T21:01:42.466Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "fewLgy1kDeDakme4odts",
+    "name": "Fiat",
+    "createdAt": "2026-01-18T10:12:21.270Z",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "ffnILVAQmc8QJjTKPDDu",
+    "category": "suv",
+    "name": "Fiat",
+    "createdAt": "2026-01-18T09:41:51.523Z"
+  },
+  {
+    "id": "fhzmjuvae8A0e57o9kAD",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:38.605Z",
+    "name": "Morgan"
+  },
+  {
+    "id": "fuLescmODkyHSPpaS7zI",
+    "createdAt": "2026-01-02T21:01:57.141Z",
+    "category": "otomobil",
+    "name": "TOGG"
+  },
+  {
+    "id": "g6l0e4w0ANIaHvYuoD8A",
+    "category": "minivanpanelvan",
+    "createdAt": "2026-03-31T10:26:37.555Z",
+    "name": "Ford"
+  },
+  {
+    "id": "gBgsbJ666y32E1f8hF51",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:31.879Z",
+    "name": "Maserati"
+  },
+  {
+    "id": "hUfAcqegkPcAeyD24DqS",
+    "name": "Rolls-Royce",
+    "createdAt": "2026-01-18T10:12:28.062Z",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "hW1aTyDwzNPj2RPmkDWM",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:42:04.152Z",
+    "name": "Renault"
+  },
+  {
+    "id": "hdxMsveBlVdderTYeMfl",
+    "category": "otomobil",
+    "name": "McLaren",
+    "createdAt": "2026-01-02T21:01:34.035Z"
+  },
+  {
+    "id": "hipmofIxcL2KV7yvH8ye",
+    "createdAt": "2026-01-18T09:42:05.431Z",
+    "name": "Skoda",
+    "category": "suv"
+  },
+  {
+    "id": "iIcsGnyJWeoLdpWhhQwG",
+    "category": "elektrikli_ara_",
+    "name": "Opel",
+    "createdAt": "2026-01-18T10:12:24.702Z"
+  },
+  {
+    "id": "iMgOqZ5Np1P1hb2dYXmd",
+    "name": "Dacia",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:28.705Z"
+  },
+  {
+    "id": "iaNJFrqPM9XLrXz9vvYN",
+    "name": "Cupra",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:49.173Z"
+  },
+  {
+    "id": "iuvRzDI7lUwvphEb2u5j",
+    "name": "Lotus",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:30.809Z"
+  },
+  {
+    "id": "ixviW4kG4ARlOzt9uly3",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:25.177Z",
+    "name": "Peugeot"
+  },
+  {
+    "id": "jES7oj5TVpoxp8827UWJ",
+    "name": "Rolls-Royce",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:49.275Z"
+  },
+  {
+    "id": "jGp6IIvDUD3TalvDrzDV",
+    "name": "Mazda",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:32.718Z"
+  },
+  {
+    "id": "jY17KrahXCk7zu8TwFN2",
+    "category": "elektrikli_ara_",
+    "name": "Volkswagen",
+    "createdAt": "2026-01-18T10:12:29.690Z"
+  },
+  {
+    "id": "jZlHQ0xS08pNJFAkCHZO",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:18.123Z",
+    "name": "BMW"
+  },
+  {
+    "id": "kyBS5O2bEuJA7d3X4K1W",
+    "name": "İstoç Şube",
+    "createdAt": "2026-05-12T10:20:12.082Z",
+    "category": "ube"
+  },
+  {
+    "id": "lAkycWxDUZkPXXkB98CO",
+    "name": "Infiniti",
+    "createdAt": "2026-01-02T21:01:22.603Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "lW31uM62KPt1gFKnl0Kb",
+    "createdAt": "2026-01-18T10:12:30.661Z",
+    "name": "Yuki",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "m94YtGeYldZsXHqPbY0M",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:42:08.203Z",
+    "name": "Toyota"
+  },
+  {
+    "id": "mS0gw27zWhVyfuLDo5kx",
+    "name": "Cadillac",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:21.268Z"
+  },
+  {
+    "id": "ms4M50ZrkrCCzLUSSCA4",
+    "createdAt": "2026-01-18T09:42:09.575Z",
+    "name": "Volvo",
+    "category": "suv"
+  },
+  {
+    "id": "myFLHq3VbA4Eblp4P7cl",
+    "createdAt": "2026-01-02T20:44:31.229Z",
+    "category": "otomobil",
+    "name": "Dodge"
+  },
+  {
+    "id": "nT2Ov7jIgiNnL4sWRfOO",
+    "name": "BYD",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:20.687Z"
+  },
+  {
+    "id": "neycb6XCnRERo3jPDPFJ",
+    "createdAt": "2026-05-12T11:17:22.338Z",
+    "category": "ube",
+    "name": "Etiler Şube"
+  },
+  {
+    "id": "nxmVyZEAzYbSyzDOuILu",
+    "name": "Renault",
+    "category": "minivanpanelvan",
+    "createdAt": "2026-07-04T09:31:46.635Z"
+  },
+  {
+    "id": "oV17MOLG6Zw9cU0uhtmF",
+    "category": "elektrikli_ara_",
+    "createdAt": "2026-01-18T10:12:27.720Z",
+    "name": "RKS"
+  },
+  {
+    "id": "ocomMmAH8go1gAp2Rrhq",
+    "createdAt": "2026-01-18T09:42:07.842Z",
+    "category": "suv",
+    "name": "Tata"
+  },
+  {
+    "id": "orEW9ovgl2QgzTsBkJCf",
+    "name": "Porsche",
+    "createdAt": "2026-01-18T10:12:25.810Z",
+    "category": "elektrikli_ara_"
+  },
+  {
+    "id": "os9Yjbb7kF4PG91PoCSB",
+    "category": "elektrikli_ara_",
+    "name": "Arora",
+    "createdAt": "2026-01-18T10:12:17.393Z"
+  },
+  {
+    "id": "pQ7oA2LF4DYe4h9XgnnC",
+    "category": "minivanpanelvan",
+    "createdAt": "2026-03-29T16:06:21.263Z",
+    "name": "Peugeot"
+  },
+  {
+    "id": "qCGYFf5nR2zLUC8maEGu",
+    "category": "suv",
+    "name": "DFM",
+    "createdAt": "2026-01-18T09:41:50.099Z"
+  },
+  {
+    "id": "qEnvUARXYLwK26ongeAZ",
+    "createdAt": "2026-01-18T09:41:48.473Z",
+    "category": "suv",
+    "name": "Citroen"
+  },
+  {
+    "id": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:15.056Z",
+    "category": "otomobil",
+    "name": "Audi"
+  },
+  {
+    "id": "qs0YgsdsQRjHOVp7y70i",
+    "name": "RKS",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T21:01:48.906Z"
+  },
+  {
+    "id": "rikeCqkizgnmmDcxr7lo",
+    "category": "minivanpanelvan",
+    "createdAt": "2026-03-30T10:23:37.068Z",
+    "name": "FIAT"
+  },
+  {
+    "id": "ssJTL4P0rHJvdh4HOFeu",
+    "name": "Hyundai",
+    "createdAt": "2026-01-18T09:41:54.397Z",
+    "category": "suv"
+  },
+  {
+    "id": "tVE23itxm5FQgLGahlez",
+    "createdAt": "2026-01-02T21:01:36.283Z",
+    "name": "MG",
+    "category": "otomobil"
+  },
+  {
+    "id": "tYHEapQnq9bXzZDbE5JQ",
+    "createdAt": "2026-01-02T20:44:17.534Z",
+    "name": "Bentley",
+    "category": "otomobil"
+  },
+  {
+    "id": "tmq3NVi598n6gi6d5bhZ",
+    "name": "Nissan",
+    "createdAt": "2026-01-02T21:01:39.355Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "tt5vGKep7Xzk2tXYyoG3",
+    "category": "suv",
+    "name": "Kia",
+    "createdAt": "2026-01-18T09:41:56.788Z"
+  },
+  {
+    "id": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:34.186Z",
+    "name": "Mercedes-Benz",
+    "category": "otomobil"
+  },
+  {
+    "id": "uHBL48nmpMqecLflbAvC",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:57.298Z",
+    "name": "Lada"
+  },
+  {
+    "id": "uTXRCXkqbGL7DBHwXYXw",
+    "createdAt": "2026-01-02T20:44:13.717Z",
+    "name": "Arora",
+    "category": "otomobil"
+  },
+  {
+    "id": "uxDpotUxT6TDKiMURqt5",
+    "createdAt": "2026-01-02T20:44:22.526Z",
+    "name": "Chery",
+    "category": "otomobil"
+  },
+  {
+    "id": "vHDKj6OH68oXN3LCucOX",
+    "category": "suv",
+    "createdAt": "2026-01-18T09:41:49.952Z",
+    "name": "Daihatsu"
+  },
+  {
+    "id": "w3ALimSaUVUMeHEgrvus",
+    "name": "Cupra",
+    "category": "otomobil",
+    "createdAt": "2026-01-02T20:44:28.275Z"
+  },
+  {
+    "id": "w7lIyQAd98lec4Qs7DYr",
+    "createdAt": "2026-01-18T09:42:03.208Z",
+    "name": "Peugeot",
+    "category": "suv"
+  },
+  {
+    "id": "wVD6FQhyHe7A7i8cetVz",
+    "createdAt": "2026-01-02T21:01:29.272Z",
+    "category": "otomobil",
+    "name": "Leapmotor"
+  },
+  {
+    "id": "yhThrhGwlQemPo7UbwsH",
+    "category": "otomobil",
+    "name": "Subaru",
+    "createdAt": "2026-01-02T21:01:53.758Z"
+  },
+  {
+    "id": "ypIR51W1A2B4dKq8B6JN",
+    "name": "Niğmer",
+    "createdAt": "2026-01-02T21:01:39.211Z",
+    "category": "otomobil"
+  },
+  {
+    "id": "yr8zCaDGhJuVVtjSFOPn",
+    "category": "suv",
+    "name": "Seat",
+    "createdAt": "2026-01-18T09:42:04.936Z"
+  }
+]

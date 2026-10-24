@@ -1,0 +1,45 @@
+[
+  
+  {
+    "id": "AyfYkwEFJmduhDabLYxN",
+    "createdAt": "2026-03-29T16:06:02.661Z",
+    "label": "Minivan&Panelvan",
+    "order": 5,
+    "value": "minivanpanelvan"
+  },
+  {
+    "id": "J0kMbjZjR2Qv8EowTWm6",
+    "label": "Motosiklet",
+    "order": 7,
+    "createdAt": "2026-06-02T09:26:56.559Z",
+    "value": "motosiklet"
+  },
+  {
+    "id": "ZK27V6RduxU0nZk09VEK",
+    "order": 1,
+    "label": "Otomobil",
+    "value": "otomobil",
+    "createdAt": "2026-01-02T20:40:17.860Z"
+  },
+  {
+    "id": "b27tbU3KRxgkcgW7wbwk",
+    "createdAt": "2026-03-18T13:07:55.533Z",
+    "label": "TİCARİ",
+    "order": 4,
+    "value": "ticari"
+  },
+  {
+    "id": "fNYa0bNnDKM0YxDfLljn",
+    "createdAt": "2026-01-02T20:40:18.170Z",
+    "value": "suv",
+    "order": 2,
+    "label": "SUV"
+  },
+  {
+    "id": "mD1XVHLGysGdyeTeHu10",
+    "value": "elektrikli_ara_",
+    "createdAt": "2026-01-02T20:40:18.424Z",
+    "order": 3,
+    "label": "Elektrikli Araç"
+  }
+]

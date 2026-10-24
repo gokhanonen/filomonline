@@ -1,0 +1,7700 @@
+[
+  {
+    "id": "00PzBsHy8QGrCxmR0yCr",
+    "createdAt": "2026-01-02T20:44:31.873Z",
+    "brandId": "myFLHq3VbA4Eblp4P7cl",
+    "name": "Magnum"
+  },
+  {
+    "id": "02XVpZol6BB2B5jF8O6E",
+    "createdAt": "2026-01-18T09:42:03.936Z",
+    "brandId": "8bw7mt6Xk5Xk3tKXq1t4",
+    "name": "Cayenne"
+  },
+  {
+    "id": "0A2Vy1WxaHsEw0nP8mTH",
+    "brandId": "g6l0e4w0ANIaHvYuoD8A",
+    "createdAt": "2026-06-30T15:03:04.958Z",
+    "name": "Custom"
+  },
+  {
+    "id": "0AHF8iL0mrhqNqAuitFE",
+    "brandId": "iIcsGnyJWeoLdpWhhQwG",
+    "createdAt": "2026-01-18T10:12:24.785Z",
+    "name": "Corsa-e"
+  },
+  {
+    "id": "0CfASboVfdrkTNKNVCEb",
+    "brandId": "K55wijyvS6KLetUk4Dn8",
+    "createdAt": "2026-01-02T21:01:18.483Z",
+    "name": "Emgrand"
+  },
+  {
+    "id": "0E6pChjurMmOtvYo8rg8",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "T-Roc",
+    "createdAt": "2026-01-02T21:02:00.083Z"
+  },
+  {
+    "id": "0K6vWKwTPgOEH3oMSIR2",
+    "createdAt": "2026-01-02T20:44:26.825Z",
+    "name": "C3 Aircross",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "0NxKtb9qgJwzMXkbMRHW",
+    "brandId": "CQPhErsvMlHD0b5g6e62",
+    "createdAt": "2026-01-02T21:01:58.883Z",
+    "name": "Venice"
+  },
+  {
+    "id": "0OBBE0KA8vAeTO7VUrZr",
+    "createdAt": "2026-01-02T20:44:28.865Z",
+    "name": "Duster",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd"
+  },
+  {
+    "id": "0PCtpJlbNSSWgEW0ZnZB",
+    "createdAt": "2026-01-02T20:44:35.695Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "Mondial"
+  },
+  {
+    "id": "0S7dSGBcdrLXPMMNWSln",
+    "createdAt": "2026-01-02T20:44:30.016Z",
+    "brandId": "fDr5idEGAVWSw38SdKoT",
+    "name": "Nexia"
+  },
+  {
+    "id": "0UpJlRkdMT0QJhC1ouSY",
+    "name": "Q8 e-tron",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:17.456Z"
+  },
+  {
+    "id": "0VuENwIlVMppKUDK7fhM",
+    "createdAt": "2026-01-18T09:42:08.134Z",
+    "name": "T10X",
+    "brandId": "JXWCl4hYYMnO1l09cS3b"
+  },
+  {
+    "id": "0W1qxTXeyHOhEVvq4PKt",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "name": "Legend",
+    "createdAt": "2026-01-02T21:01:19.604Z"
+  },
+  {
+    "id": "0ipIDbtrHszmtzbiEQhJ",
+    "createdAt": "2026-01-02T21:01:47.499Z",
+    "brandId": "Q7Tu0dNdQavK3mmSiZ7I",
+    "name": "Urban"
+  },
+  {
+    "id": "0jURQVQKgaq2tgGUgfUe",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:34.538Z",
+    "name": "575"
+  },
+  {
+    "id": "0meZ5fxyi5wfgrKPVwTB",
+    "createdAt": "2026-01-02T20:44:27.480Z",
+    "name": "C6",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "0mnUBvmsKLxZv5AUVzmw",
+    "createdAt": "2026-01-02T20:44:25.695Z",
+    "name": "Concorde",
+    "brandId": "J1T0lOeeGrDlU46tMzFO"
+  },
+  {
+    "id": "0pw3GUucnoZn0Al2Nlx6",
+    "brandId": "TLfmwtcUt7odbYYjggwh",
+    "createdAt": "2026-01-02T21:01:22.360Z",
+    "name": "Runna"
+  },
+  {
+    "id": "0qNi4VmySgWaxFH3awOC",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "name": "i3",
+    "createdAt": "2026-01-02T20:44:19.612Z"
+  },
+  {
+    "id": "15kvBm4DWYVmnCxiq0zZ",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "createdAt": "2026-01-02T21:01:52.722Z",
+    "name": "Felicia"
+  },
+  {
+    "id": "19d9XEj7aWIgtJllx3P7",
+    "brandId": "AuObstQU7Vne3qQvLQts",
+    "createdAt": "2026-01-18T09:41:56.080Z",
+    "name": "F-Pace"
+  },
+  {
+    "id": "1ACeRi1KkS7TTUTGNQFg",
+    "createdAt": "2026-01-02T21:02:00.962Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "440"
+  },
+  {
+    "id": "1CBW3cO3KD3Pe5zHm5wq",
+    "createdAt": "2026-01-02T21:01:27.337Z",
+    "name": "2106",
+    "brandId": "CrD06cYqPe4WGq6EErMp"
+  },
+  {
+    "id": "1CG2S2TxKN8b98AB05hs",
+    "name": "Transit",
+    "createdAt": "2026-01-02T21:01:18.171Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "1EoSSglln1mK6E8BZOTY",
+    "name": "SX4",
+    "createdAt": "2026-01-02T21:01:55.374Z",
+    "brandId": "Ch9jH69iTglbIYgNpqh5"
+  },
+  {
+    "id": "1FPnUh7zB4pd3Dj9Je0R",
+    "createdAt": "2026-01-18T10:12:30.176Z",
+    "brandId": "jY17KrahXCk7zu8TwFN2",
+    "name": "e-Golf"
+  },
+  {
+    "id": "1MGFIDFglH8qFKBuQNyq",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Omega",
+    "createdAt": "2026-01-02T21:01:41.792Z"
+  },
+  {
+    "id": "1MKhwKPJYb44Zjv3UjAd",
+    "brandId": "aASgy3UAnSk2qfRdSUHi",
+    "createdAt": "2026-01-18T09:41:53.791Z",
+    "name": "CR-V"
+  },
+  {
+    "id": "1Q5ibpvdHglFg7PGKuKx",
+    "name": "Spring",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd",
+    "createdAt": "2026-01-02T20:44:29.264Z"
+  },
+  {
+    "id": "1URBtaEKlcGIBOlpjSjN",
+    "name": "Escalade",
+    "createdAt": "2026-01-18T09:41:46.942Z",
+    "brandId": "TWk8088ce6ViBtCdIQ7m"
+  },
+  {
+    "id": "1YRbTSmU3p3t7hzaTu89",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "createdAt": "2026-01-18T09:42:02.043Z",
+    "name": "Rally Raid"
+  },
+  {
+    "id": "1YkdRJfJsBaRUt3H1bJM",
+    "name": "Mokka",
+    "createdAt": "2026-01-18T09:42:02.992Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN"
+  },
+  {
+    "id": "1eBICliGMBCIdQ9ibvgg",
+    "brandId": "XX8e3430thbOUrWQeMV5",
+    "createdAt": "2026-01-18T09:41:59.341Z",
+    "name": "CX-3"
+  },
+  {
+    "id": "1eKcBSwubs3J6nxBMfTS",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:58.196Z",
+    "name": "Prius"
+  },
+  {
+    "id": "1eZ4GmquJZET0ZHgOpTR",
+    "name": "Exeo",
+    "createdAt": "2026-01-02T21:01:51.884Z",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb"
+  },
+  {
+    "id": "1kKLc8iVwRWO03FrXnCt",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:40.027Z",
+    "name": "Note"
+  },
+  {
+    "id": "1lxgSIZV1J1blAU1QI4i",
+    "brandId": "AhBMPIUnFCVIhzHeXGng",
+    "name": "Cooper",
+    "createdAt": "2026-01-02T21:01:37.021Z"
+  },
+  {
+    "id": "1nGs1CSLCGW80hiSw4HM",
+    "brandId": "eIorYBhW7TC17qK98dX5",
+    "name": "695",
+    "createdAt": "2026-01-02T20:44:10.259Z"
+  },
+  {
+    "id": "1tg6o3rTtFLNuq6xIm8v",
+    "brandId": "yhThrhGwlQemPo7UbwsH",
+    "name": "BRZ",
+    "createdAt": "2026-01-02T21:01:53.830Z"
+  },
+  {
+    "id": "1xEalFKa9DllEMLFJDVc",
+    "createdAt": "2026-01-02T21:01:27.701Z",
+    "name": "Samara",
+    "brandId": "CrD06cYqPe4WGq6EErMp"
+  },
+  {
+    "id": "1xVkRbZqlqqUgHcR3QYv",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:58.345Z",
+    "name": "Starlet"
+  },
+  {
+    "id": "1yUBysnxhgqExLlfxASD",
+    "createdAt": "2026-01-18T09:41:47.361Z",
+    "name": "Tiggo 4 Pro",
+    "brandId": "eXbUFvB8NHm8215JUIO9"
+  },
+  {
+    "id": "1yVY2NBoGrCAxsX16MT0",
+    "createdAt": "2026-01-02T21:01:53.610Z",
+    "brandId": "SyDEhmr2uoeGn9FwnC3P",
+    "name": "ForTwo"
+  },
+  {
+    "id": "1yxD56sZP5oyLmd0elWr",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "name": "Excursion",
+    "createdAt": "2026-01-18T09:41:52.550Z"
+  },
+  {
+    "id": "1zIEiYexxgu3AeqWs55l",
+    "name": "GLS",
+    "createdAt": "2026-01-18T09:42:00.084Z",
+    "brandId": "DXR4i6gJJ2YE0qCEKZnP"
+  },
+  {
+    "id": "29LelTAFy6fVsSzD9PE8",
+    "createdAt": "2026-01-02T20:44:22.925Z",
+    "brandId": "uxDpotUxT6TDKiMURqt5",
+    "name": "Tiggo 2"
+  },
+  {
+    "id": "2IwHkiDofG2mPbIq5IZE",
+    "createdAt": "2026-01-18T09:42:08.424Z",
+    "brandId": "m94YtGeYldZsXHqPbY0M",
+    "name": "FJ Cruiser"
+  },
+  {
+    "id": "2KvxLJvg09TyUOIqPFNp",
+    "createdAt": "2026-01-02T21:01:37.993Z",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "name": "Colt"
+  },
+  {
+    "id": "2S4N1ogp5rI0Umal42iv",
+    "name": "626",
+    "createdAt": "2026-01-02T21:01:33.227Z",
+    "brandId": "jGp6IIvDUD3TalvDrzDV"
+  },
+  {
+    "id": "2V6Yz7gzTuOaeYwHxntg",
+    "createdAt": "2026-01-18T10:12:25.258Z",
+    "brandId": "ixviW4kG4ARlOzt9uly3",
+    "name": "e-208"
+  },
+  {
+    "id": "2XisrYZdUujLysLZpChq",
+    "name": "V60",
+    "createdAt": "2026-01-02T21:02:02.081Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm"
+  },
+  {
+    "id": "2cjWgBPB05g98HMFRg41",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "createdAt": "2026-01-02T20:44:22.102Z",
+    "name": "XT5"
+  },
+  {
+    "id": "2e79GR8D8cnc1ctxv5QI",
+    "name": "V40",
+    "createdAt": "2026-01-02T21:02:01.849Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm"
+  },
+  {
+    "id": "2emj4QQmtMTtYuPMsj2q",
+    "name": "Fiesta",
+    "createdAt": "2026-01-02T21:01:17.008Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "2g2wmVCB7zngkjcjf3E1",
+    "createdAt": "2026-01-18T09:41:50.596Z",
+    "name": "Glory 580",
+    "brandId": "0ASooJfHJVT2sdkZpQRT"
+  },
+  {
+    "id": "2jl1c1jDrTTzgPNDTrO1",
+    "brandId": "GqEYPh6tEhp1nspsIe6M",
+    "name": "Eclipse Cross",
+    "createdAt": "2026-01-18T09:42:01.108Z"
+  },
+  {
+    "id": "2lbZThgToYFkIEGjDopf",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Eos",
+    "createdAt": "2026-01-02T21:01:59.407Z"
+  },
+  {
+    "id": "2oRWciVLAILRC9C3kma9",
+    "createdAt": "2026-01-02T21:01:24.577Z",
+    "brandId": "4zHDTUlyQakGFw0o3lCl",
+    "name": "Electric"
+  },
+  {
+    "id": "2qqbnxvpwvl1JA3odWbq",
+    "name": "458",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:34.220Z"
+  },
+  {
+    "id": "2rzFabfoHcDtCuH3ADLv",
+    "createdAt": "2026-01-02T20:44:13.637Z",
+    "brandId": "dMStfGgO8FfNjpPVGGag",
+    "name": "SV-1600"
+  },
+  {
+    "id": "31qb8db3sM1hIUwYO6QA",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "name": "Range Rover Sport",
+    "createdAt": "2026-01-18T09:41:58.090Z"
+  },
+  {
+    "id": "341tOwupsRraQzo9qlxI",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:17.322Z",
+    "name": "Ka"
+  },
+  {
+    "id": "37rsl5YPkB1BCnR1tf4G",
+    "createdAt": "2026-01-02T21:01:32.026Z",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "name": "Coupe"
+  },
+  {
+    "id": "39uHqttZPyGHe6u8DFCi",
+    "name": "Persona",
+    "createdAt": "2026-01-02T21:01:46.387Z",
+    "brandId": "cmHLEwz1BCHU7PuhbtIm"
+  },
+  {
+    "id": "3DE0jBw1VxykGzDFBpIh",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb",
+    "name": "Arona",
+    "createdAt": "2026-01-02T21:01:51.666Z"
+  },
+  {
+    "id": "3ECcDObfscSaSLH9diKK",
+    "brandId": "Bk6dbf1BDTN9nGyqDPWq",
+    "createdAt": "2026-01-18T09:41:43.596Z",
+    "name": "Junior Ibrida"
+  },
+  {
+    "id": "3EhMWFFdPpzSXZkZPdFA",
+    "name": "Zafira-e Life",
+    "brandId": "iIcsGnyJWeoLdpWhhQwG",
+    "createdAt": "2026-01-18T10:12:25.097Z"
+  },
+  {
+    "id": "3FgfMOUSQtpVXkYANoSG",
+    "name": "Q5",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "createdAt": "2026-01-18T09:41:44.418Z"
+  },
+  {
+    "id": "3H7ia1u8ZK2vDQNZsVYJ",
+    "name": "3",
+    "createdAt": "2026-01-18T09:42:05.290Z",
+    "brandId": "KY8qbFKU55KhZFUH4XgS"
+  },
+  {
+    "id": "3HMoD7ynxJKE4noWjVwO",
+    "brandId": "aASgy3UAnSk2qfRdSUHi",
+    "createdAt": "2026-01-18T09:41:53.861Z",
+    "name": "HR-V"
+  },
+  {
+    "id": "3Hg4V3PP7OjEZnMQbe5w",
+    "name": "Broadway",
+    "createdAt": "2026-01-02T21:01:47.645Z",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm"
+  },
+  {
+    "id": "3Me2IMR7iSimQJSZ3GIl",
+    "brandId": "eXbUFvB8NHm8215JUIO9",
+    "name": "Tiggo 7 Pro",
+    "createdAt": "2026-01-18T09:41:47.431Z"
+  },
+  {
+    "id": "3USAfAvJOk2WPVmr0R81",
+    "name": "Corvette",
+    "createdAt": "2026-01-02T20:44:24.001Z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "3XNgw0w3W5of1u6jx2Mn",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "301",
+    "createdAt": "2026-01-02T21:01:43.147Z"
+  },
+  {
+    "id": "3Y1bmBNhnPbfMAeDNREs",
+    "createdAt": "2026-01-02T21:01:33.666Z",
+    "name": "MX-3",
+    "brandId": "jGp6IIvDUD3TalvDrzDV"
+  },
+  {
+    "id": "3cCWhUPdebl9kg4BMa3r",
+    "name": "CR-Z",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.287Z"
+  },
+  {
+    "id": "3cmOkNWQc9WSg9jWj3BH",
+    "brandId": "w7lIyQAd98lec4Qs7DYr",
+    "name": "3008",
+    "createdAt": "2026-01-18T09:42:03.354Z"
+  },
+  {
+    "id": "3dlwzqJUqkKe4gwQe1mJ",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.241Z",
+    "name": "Laguna"
+  },
+  {
+    "id": "3dwbMSg0jQp8M19L1GnT",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "412",
+    "createdAt": "2026-01-02T20:44:34.055Z"
+  },
+  {
+    "id": "3fS3vlrpCCYAcd0cqFVa",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "Evasion",
+    "createdAt": "2026-01-02T20:44:27.800Z"
+  },
+  {
+    "id": "3fykvhvE9vtUvZ0t3TaW",
+    "createdAt": "2026-01-18T09:41:50.317Z",
+    "name": "C31",
+    "brandId": "0ASooJfHJVT2sdkZpQRT"
+  },
+  {
+    "id": "3o2tdgRewr21NluutmvV",
+    "createdAt": "2026-01-02T21:01:33.083Z",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "5"
+  },
+  {
+    "id": "3odPtzJx4iYOK3jHlb2Y",
+    "createdAt": "2026-01-02T20:44:35.878Z",
+    "name": "Roma",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "42RvdQa3IS1rTpbMcHXA",
+    "name": "X5 M",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "createdAt": "2026-01-18T09:41:46.140Z"
+  },
+  {
+    "id": "45nBTY4VH8fbtoBsXDjY",
+    "createdAt": "2026-01-18T09:41:54.556Z",
+    "name": "Creta",
+    "brandId": "ssJTL4P0rHJvdh4HOFeu"
+  },
+  {
+    "id": "48ESG1HhuvqIbmzToDXn",
+    "createdAt": "2026-01-18T09:41:52.693Z",
+    "name": "Explorer",
+    "brandId": "GIOrEUyhI3FR15wdMB4G"
+  },
+  {
+    "id": "4AZit6J8mwbtBmbWmCih",
+    "name": "H2",
+    "brandId": "PBVwMeoJbo8GP6d16x4S",
+    "createdAt": "2026-01-18T09:41:54.253Z"
+  },
+  {
+    "id": "4AhDGyncN3nCNB3NrKJD",
+    "createdAt": "2026-01-02T20:44:34.786Z",
+    "name": "California",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "4BRYrZBuv7D55VZgIfVg",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:24.411Z",
+    "name": "Lacetti"
+  },
+  {
+    "id": "4Dz52Ea0nI9x94fin3nH",
+    "brandId": "K55wijyvS6KLetUk4Dn8",
+    "name": "Echo",
+    "createdAt": "2026-01-02T21:01:18.390Z"
+  },
+  {
+    "id": "4EIjMJpcNuKmpUSBDweZ",
+    "brandId": "orEW9ovgl2QgzTsBkJCf",
+    "createdAt": "2026-01-18T10:12:26.141Z",
+    "name": "Taycan Turbo"
+  },
+  {
+    "id": "4LSGsGy2dkMkWqNa1Eue",
+    "createdAt": "2026-01-02T21:01:52.648Z",
+    "name": "Favorit",
+    "brandId": "bnktqz9yxXnuLzPIxXBO"
+  },
+  {
+    "id": "4OrejGCAXMJUEkRi6nmi",
+    "name": "EQE 350",
+    "createdAt": "2026-01-18T10:12:23.650Z",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx"
+  },
+  {
+    "id": "4QQ1s2zrwrmMbIs8oJCT",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "createdAt": "2026-01-02T21:01:53.313Z",
+    "name": "Superb"
+  },
+  {
+    "id": "4UQUXCCGRzgbs6cnnPK1",
+    "createdAt": "2026-01-02T20:44:30.816Z",
+    "name": "Gran Move",
+    "brandId": "Yyecu846x7An7DTHjEAN"
+  },
+  {
+    "id": "4V9vmNai9rOBsgxG8fHx",
+    "createdAt": "2026-01-02T21:01:45.045Z",
+    "brandId": "88bHP7y0bmc2fCDaH5uO",
+    "name": "Firebird"
+  },
+  {
+    "id": "4XGYd65cL9M4ZRDKvGzH",
+    "name": "Berlingo",
+    "createdAt": "2026-01-02T20:44:26.421Z",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "4efnfThqTDQRZ7ezaSAL",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "createdAt": "2026-01-18T09:41:46.057Z",
+    "name": "X5"
+  },
+  {
+    "id": "4hdilkGwvBddopkhd8wr",
+    "name": "City",
+    "createdAt": "2026-01-02T21:01:38.992Z",
+    "brandId": "SLp6YyxqKfNaFoGjTVEg"
+  },
+  {
+    "id": "4iRp7RlVySvNalhspvXa",
+    "createdAt": "2026-01-02T21:01:50.687Z",
+    "name": "600",
+    "brandId": "JJcZn7tUag55uzMGmalp"
+  },
+  {
+    "id": "4lOF3gAB5gr90wQieQmD",
+    "name": "Atos",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:20.235Z"
+  },
+  {
+    "id": "4nGs19NQCXcHZy2tvMfP",
+    "brandId": "yr8zCaDGhJuVVtjSFOPn",
+    "name": "Tarraco",
+    "createdAt": "2026-01-18T09:42:05.144Z"
+  },
+  {
+    "id": "4pkWhTOcJ8qpSW5Xs3Qh",
+    "createdAt": "2026-01-02T21:01:51.131Z",
+    "brandId": "9xLdlw2Vz0vNHp05cPdf",
+    "name": "9-3"
+  },
+  {
+    "id": "4vt1usxThtTwcLcOOdhv",
+    "name": "Cayman",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "createdAt": "2026-01-02T21:01:45.850Z"
+  },
+  {
+    "id": "4yicn2yMHnnrrLRWiysX",
+    "name": "Rio",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.427Z"
+  },
+  {
+    "id": "4zBUm067EA8fow0p7GR7",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:35.208Z",
+    "name": "F40"
+  },
+  {
+    "id": "50QVdjccuS6POrNn4Ai7",
+    "createdAt": "2026-01-02T21:01:31.103Z",
+    "name": "Esprit",
+    "brandId": "iuvRzDI7lUwvphEb2u5j"
+  },
+  {
+    "id": "53ls8yrEgjpZ3LzOHYM7",
+    "createdAt": "2026-01-02T20:44:13.875Z",
+    "brandId": "uTXRCXkqbGL7DBHwXYXw",
+    "name": "E-Scooter"
+  },
+  {
+    "id": "58ZLn0xu3RC0bIyPz5rd",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "createdAt": "2026-01-02T21:01:50.137Z",
+    "name": "216"
+  },
+  {
+    "id": "591j42VuY4H2lcTg5DDP",
+    "createdAt": "2026-01-18T09:41:57.736Z",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "name": "Discovery"
+  },
+  {
+    "id": "5A6U8IzrsBQbIsQH9hVN",
+    "name": "Marvel R",
+    "createdAt": "2026-01-18T09:42:00.462Z",
+    "brandId": "1xwZqz7UVXqmSuNelP1H"
+  },
+  {
+    "id": "5AOdXYOwEz6YbxdDnZDU",
+    "brandId": "ffnILVAQmc8QJjTKPDDu",
+    "name": "Freemont",
+    "createdAt": "2026-01-18T09:41:51.836Z"
+  },
+  {
+    "id": "5G3YPY87C0n5YFoUysIU",
+    "brandId": "w3ALimSaUVUMeHEgrvus",
+    "createdAt": "2026-01-02T20:44:28.522Z",
+    "name": "Formentor"
+  },
+  {
+    "id": "5HD1s9ukUq8NRxRCakRV",
+    "createdAt": "2026-01-18T09:42:08.859Z",
+    "name": "Amarok",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM"
+  },
+  {
+    "id": "5KOnyEQzA7KxeuwFCbkl",
+    "name": "DS4",
+    "createdAt": "2026-01-02T20:44:27.639Z",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "5NtzrtxwiBA55o86fmo1",
+    "name": "Tucson",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:21.795Z"
+  },
+  {
+    "id": "5cLTapRrSVdFwHp7RsTu",
+    "createdAt": "2026-01-18T09:42:06.571Z",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq",
+    "name": "Rexton"
+  },
+  {
+    "id": "5ivWZ6ZtknU2bx8GDZzG",
+    "createdAt": "2026-01-02T21:01:29.199Z",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Ypsilon"
+  },
+  {
+    "id": "5j2E3WV5VHHFCnfh1vns",
+    "createdAt": "2026-01-18T10:12:19.743Z",
+    "name": "iX M60",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs"
+  },
+  {
+    "id": "5n10X574148IyaRrOxIl",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM",
+    "createdAt": "2026-01-18T09:42:04.721Z",
+    "name": "Scenic RX4"
+  },
+  {
+    "id": "5qzkr8wwATCz61ZdxZsE",
+    "brandId": "CQPhErsvMlHD0b5g6e62",
+    "createdAt": "2026-01-02T21:01:58.811Z",
+    "name": "Laguna"
+  },
+  {
+    "id": "630dT7fB1C6Keae6qYCE",
+    "brandId": "wVD6FQhyHe7A7i8cetVz",
+    "name": "C01",
+    "createdAt": "2026-01-02T21:01:29.347Z"
+  },
+  {
+    "id": "63dkglXdgCkzBI6Kpt1u",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:58.503Z",
+    "name": "Verso"
+  },
+  {
+    "id": "64D87Q8Uq1sdDmqLYuIZ",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "createdAt": "2026-01-02T21:01:53.093Z",
+    "name": "Rapid"
+  },
+  {
+    "id": "67mKaeOdqUvZvl2eh1s2",
+    "createdAt": "2026-04-30T11:08:17.987Z",
+    "name": "X1 XDRIVE25E",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs"
+  },
+  {
+    "id": "6CTglMUX5JilKYBIoZJp",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "name": "MC20",
+    "createdAt": "2026-01-02T21:01:32.475Z"
+  },
+  {
+    "id": "6CrgSrm5HQi1VtLc3ukT",
+    "createdAt": "2026-01-02T21:01:40.690Z",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Adam"
+  },
+  {
+    "id": "6EFYkSu8DoIVdhsxpdnP",
+    "name": "Seville",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "createdAt": "2026-01-02T20:44:21.856Z"
+  },
+  {
+    "id": "6LimDfn0iCUtZdFuC4aZ",
+    "createdAt": "2026-01-02T21:01:55.891Z",
+    "name": "Safari",
+    "brandId": "MJA03uLxDfvLpTVhjxdJ"
+  },
+  {
+    "id": "6O00iBS8Mq6CFFgxauAZ",
+    "createdAt": "2026-01-18T09:41:47.290Z",
+    "name": "Tiggo 4",
+    "brandId": "eXbUFvB8NHm8215JUIO9"
+  },
+  {
+    "id": "6WNEtCUG5k2ezUrmHzcC",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "createdAt": "2026-01-02T21:01:26.861Z",
+    "name": "112"
+  },
+  {
+    "id": "6aivRmeeQjayTqqe25MU",
+    "name": "Sirion",
+    "brandId": "Yyecu846x7An7DTHjEAN",
+    "createdAt": "2026-01-02T20:44:30.981Z"
+  },
+  {
+    "id": "6gDPlXqZoBx9OYQk9Eg0",
+    "createdAt": "2026-01-18T09:42:05.075Z",
+    "brandId": "yr8zCaDGhJuVVtjSFOPn",
+    "name": "Ateca"
+  },
+  {
+    "id": "6jriks99vgPk5npicoGB",
+    "name": "GL",
+    "createdAt": "2026-01-02T21:01:35.178Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "6sJoqCMHs6Nhxn4Q9o9A",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "createdAt": "2026-01-18T09:41:57.665Z",
+    "name": "Defender"
+  },
+  {
+    "id": "6tMuhwVN60llFN6aYAOU",
+    "brandId": "O3HHc7s6ZI1HaNj6tYDy",
+    "createdAt": "2026-01-18T09:41:57.520Z",
+    "name": "Urus"
+  },
+  {
+    "id": "6tNs26i7ZyQW2Q9DCA5c",
+    "createdAt": "2026-01-18T10:12:25.964Z",
+    "name": "Taycan 4S",
+    "brandId": "orEW9ovgl2QgzTsBkJCf"
+  },
+  {
+    "id": "6ubVL0HSLaI2biWSeDLE",
+    "brandId": "4ORSXM7ILMqq3Oj5dtzP",
+    "createdAt": "2026-01-02T21:02:02.615Z",
+    "name": "YOYO"
+  },
+  {
+    "id": "6yoFm27BPqwRJv1bsFmB",
+    "brandId": "Dhcz6ucGDrE57dXlhfsO",
+    "name": "E-Car",
+    "createdAt": "2026-01-02T21:01:26.392Z"
+  },
+  {
+    "id": "72Pxbcnh0iSjJfPVcS8L",
+    "brandId": "oV17MOLG6Zw9cU0uhtmF",
+    "name": "RK5",
+    "createdAt": "2026-01-18T10:12:27.911Z"
+  },
+  {
+    "id": "794VJhiB7bqUNNPSFCN3",
+    "name": "LS",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "createdAt": "2026-01-02T21:01:30.004Z"
+  },
+  {
+    "id": "79r02zzs9xQLtgDmnBoH",
+    "createdAt": "2026-01-18T10:12:19.920Z",
+    "name": "Atto 3",
+    "brandId": "BT5sQuTBeVE4qbXgM9cv"
+  },
+  {
+    "id": "7BNkr4zR8OVLTMkd23rQ",
+    "name": "S40",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:01.475Z"
+  },
+  {
+    "id": "7DrBMp1wfW8mN7iWZfyY",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd",
+    "name": "Sandero",
+    "createdAt": "2026-01-02T20:44:29.183Z"
+  },
+  {
+    "id": "7NCh2RvOPgnln3SUZrwE",
+    "name": "Taigo",
+    "createdAt": "2026-01-18T09:42:09.173Z",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM"
+  },
+  {
+    "id": "7QvQvTi7xMdHnlIH7sMc",
+    "brandId": "DXR4i6gJJ2YE0qCEKZnP",
+    "name": "GLB",
+    "createdAt": "2026-01-18T09:41:59.855Z"
+  },
+  {
+    "id": "7TnaYzVlRQTRMGMWXASb",
+    "name": "CT",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "createdAt": "2026-01-02T21:01:29.639Z"
+  },
+  {
+    "id": "7VvSeGFfjpzdbgBjLaoF",
+    "name": "i4 M50",
+    "createdAt": "2026-01-18T10:12:19.177Z",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs"
+  },
+  {
+    "id": "7WnfFLxY74q3AA2p6aAe",
+    "name": "Tiggo 8 Pro Max",
+    "brandId": "eXbUFvB8NHm8215JUIO9",
+    "createdAt": "2026-01-18T09:41:47.617Z"
+  },
+  {
+    "id": "7fYMtWUxP5UEDoocYLYm",
+    "brandId": "wVD6FQhyHe7A7i8cetVz",
+    "createdAt": "2026-01-02T21:01:29.494Z",
+    "name": "T03"
+  },
+  {
+    "id": "7iXMJx0Sdud8zkz9JgZw",
+    "createdAt": "2026-01-18T09:41:52.838Z",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "name": "Flex"
+  },
+  {
+    "id": "7jLaxSqnaqcfA9ZJ5yBW",
+    "name": "Tipo",
+    "createdAt": "2026-01-02T21:01:16.008Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX"
+  },
+  {
+    "id": "7k5cibmPnTC2W3Oahlb3",
+    "createdAt": "2026-01-18T09:41:45.114Z",
+    "name": "Bentayga",
+    "brandId": "4vBpI94Xsxt9DQWZq2Es"
+  },
+  {
+    "id": "7mgngsnw41UWj0ZM4ygN",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:15.686Z",
+    "name": "A8"
+  },
+  {
+    "id": "7s3AZfCjHoShYja7ACzS",
+    "createdAt": "2026-01-18T09:41:50.410Z",
+    "brandId": "0ASooJfHJVT2sdkZpQRT",
+    "name": "C32"
+  },
+  {
+    "id": "7tGo6iJTkGoigd104POq",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "name": "e-tron Sportback",
+    "createdAt": "2026-01-18T09:41:43.973Z"
+  },
+  {
+    "id": "7u619MMLqo82SgqgPVyI",
+    "brandId": "7tfZeuep0y2oWgQ8nwi0",
+    "createdAt": "2026-01-02T20:44:20.437Z",
+    "name": "LeSabre"
+  },
+  {
+    "id": "7vxwws2r3Zca1n6NLTX6",
+    "name": "Sandero Stepway",
+    "createdAt": "2026-01-18T09:41:49.719Z",
+    "brandId": "cEJWbOHANgL94xcNNI8j"
+  },
+  {
+    "id": "7xWl1L83iXvRry30pxzI",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:21.203Z",
+    "name": "ix35"
+  },
+  {
+    "id": "7yMinTUWynR6Is4XgQ1x",
+    "brandId": "bGVLbhhjx9Yz40KQzKkK",
+    "createdAt": "2026-01-02T20:44:32.904Z",
+    "name": "Talon"
+  },
+  {
+    "id": "7zvYKywyiR4C5yCEOQAH",
+    "name": "Caliber",
+    "brandId": "myFLHq3VbA4Eblp4P7cl",
+    "createdAt": "2026-01-02T20:44:31.387Z"
+  },
+  {
+    "id": "80TEX932TqAzKzkEzyWl",
+    "brandId": "eXbUFvB8NHm8215JUIO9",
+    "name": "Omoda 5",
+    "createdAt": "2026-01-18T09:41:47.205Z"
+  },
+  {
+    "id": "81bUiB7uwE4Tz4sEDFD0",
+    "brandId": "K9Ph3wExh82Fhq2HR6W0",
+    "createdAt": "2026-01-18T09:41:51.450Z",
+    "name": "DS 7 Crossback"
+  },
+  {
+    "id": "82l6yUZY1sMNU0o7j135",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "Q2",
+    "createdAt": "2026-01-02T20:44:15.766Z"
+  },
+  {
+    "id": "85fEDv3ANu7XmB5XCG9R",
+    "name": "Waja",
+    "brandId": "cmHLEwz1BCHU7PuhbtIm",
+    "createdAt": "2026-01-02T21:01:46.608Z"
+  },
+  {
+    "id": "8D0DL7PgegRMVYORlf6c",
+    "createdAt": "2026-01-02T21:01:41.866Z",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Rekord"
+  },
+  {
+    "id": "8D9VxG52HQQjJPscTidP",
+    "brandId": "LcPFLHcPej2ysDbjiyO4",
+    "createdAt": "2026-01-18T10:12:24.544Z",
+    "name": "N3"
+  },
+  {
+    "id": "8FczcsuWjiaT5sj88loi",
+    "createdAt": "2026-01-02T21:01:57.071Z",
+    "brandId": "21gkec3Uvzsg5P4c8YBP",
+    "name": "Şahin"
+  },
+  {
+    "id": "8GwtGa7mJQtaJ1JYDMjr",
+    "brandId": "IddnnWWyU2KztqST371W",
+    "createdAt": "2026-01-02T20:44:10.708Z",
+    "name": "LX"
+  },
+  {
+    "id": "8Hg0qzyPtEWOeBmaMBta",
+    "name": "ID.3",
+    "createdAt": "2026-01-18T10:12:29.793Z",
+    "brandId": "jY17KrahXCk7zu8TwFN2"
+  },
+  {
+    "id": "8MiHS5bnt4FBiTkyp4vC",
+    "createdAt": "2026-01-02T20:44:33.419Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "288 GTO"
+  },
+  {
+    "id": "8ONgvFIBczmh2pOnywdR",
+    "name": "Caddy",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "createdAt": "2026-01-02T21:01:59.259Z"
+  },
+  {
+    "id": "8VlKsrBwLmnQureTxObf",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "name": "Aveo",
+    "createdAt": "2026-01-02T20:44:23.401Z"
+  },
+  {
+    "id": "8WqkceYhE4SiCJSh1xhi",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "createdAt": "2026-01-02T20:44:21.605Z",
+    "name": "DeVille"
+  },
+  {
+    "id": "8es15SnQLbefYGYLueF8",
+    "createdAt": "2026-01-02T21:01:36.064Z",
+    "name": "Sprinter",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "8fwqBlgyQEBceXrhYE6A",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd",
+    "createdAt": "2026-01-02T20:44:29.103Z",
+    "name": "Logan"
+  },
+  {
+    "id": "8kFnwds0OgjQlLyxdAlP",
+    "brandId": "fDr5idEGAVWSw38SdKoT",
+    "createdAt": "2026-01-02T20:44:29.673Z",
+    "name": "Lacetti"
+  },
+  {
+    "id": "8qrjp3HOzGRqK6TagCav",
+    "name": "Carisma",
+    "createdAt": "2026-01-02T21:01:37.921Z",
+    "brandId": "YmndY5fMO2ffTBR53xzG"
+  },
+  {
+    "id": "8wryT1LoApBjGDUucv7F",
+    "name": "G Serisi",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:35.106Z"
+  },
+  {
+    "id": "90xfi8dswLT2F4Cz9xn0",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "500X",
+    "createdAt": "2026-01-02T21:01:13.929Z"
+  },
+  {
+    "id": "96fSa7bFMYN4rOPIPRvs",
+    "brandId": "5s0l7UsE6Slv56a3PCiC",
+    "createdAt": "2026-01-02T21:01:47.058Z",
+    "name": "K5"
+  },
+  {
+    "id": "972CQaGD6gK9VBBpLV2i",
+    "name": "HR-V",
+    "createdAt": "2026-01-02T21:01:19.362Z",
+    "brandId": "6aDIyyolXQTccALJw3QT"
+  },
+  {
+    "id": "97ZzFNN5KAAm7OcvY3xg",
+    "createdAt": "2026-01-02T21:01:52.575Z",
+    "name": "Fabia",
+    "brandId": "bnktqz9yxXnuLzPIxXBO"
+  },
+  {
+    "id": "980LYA2PTwRAbaFHua92",
+    "name": "Combo",
+    "createdAt": "2026-06-10T09:34:04.491Z",
+    "brandId": "chOLaI3nTKPnptkTOxbR"
+  },
+  {
+    "id": "9HvE0oJLaEzeQv3IHPI4",
+    "createdAt": "2026-01-18T09:41:58.308Z",
+    "brandId": "RsFApN6KzxzPbVUkpqdS",
+    "name": "NX"
+  },
+  {
+    "id": "9IAcH03wLrdk0in4wsrI",
+    "name": "Delta",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "createdAt": "2026-01-02T21:01:28.586Z"
+  },
+  {
+    "id": "9N8JmKRWtIUnH9Go4khR",
+    "createdAt": "2026-01-02T21:01:41.428Z",
+    "name": "Insignia",
+    "brandId": "93J57mw3fq9mxoOVLBv2"
+  },
+  {
+    "id": "9N8Z8eqvkPgEkXtFRBlv",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "name": "147",
+    "createdAt": "2026-01-02T20:44:11.351Z"
+  },
+  {
+    "id": "9S92MDloNW3jFXVbMX7z",
+    "createdAt": "2026-01-02T21:01:22.053Z",
+    "name": "Life",
+    "brandId": "SMoZyZtFj56vFGdgfWIq"
+  },
+  {
+    "id": "9SAF3h5H7uif3l3YRu2Y",
+    "createdAt": "2026-01-02T21:01:27.257Z",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "name": "2105"
+  },
+  {
+    "id": "9a8w53utiMKrO2aBUVAm",
+    "name": "Formentor",
+    "brandId": "iaNJFrqPM9XLrXz9vvYN",
+    "createdAt": "2026-01-18T09:41:49.325Z"
+  },
+  {
+    "id": "9ftASpASIPbYu2WEP0jA",
+    "createdAt": "2026-01-02T20:44:26.580Z",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "C1"
+  },
+  {
+    "id": "9gtou31Vdtha0lcUGeeq",
+    "name": "Kadjar",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.016Z"
+  },
+  {
+    "id": "9hVZBtGNtLJQ3MdFZT2h",
+    "name": "500",
+    "createdAt": "2026-01-02T21:01:13.747Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX"
+  },
+  {
+    "id": "9iDoymJ6X4IRVKSlGTjw",
+    "createdAt": "2026-01-02T20:44:30.176Z",
+    "brandId": "fDr5idEGAVWSw38SdKoT",
+    "name": "Racer"
+  },
+  {
+    "id": "9mcvvZfUR35O2oTsQyvI",
+    "name": "HS",
+    "brandId": "tVE23itxm5FQgLGahlez",
+    "createdAt": "2026-01-02T21:01:36.500Z"
+  },
+  {
+    "id": "9q3O1FebPEEmlMiTE9Nn",
+    "name": "Justy",
+    "brandId": "yhThrhGwlQemPo7UbwsH",
+    "createdAt": "2026-01-02T21:01:54.054Z"
+  },
+  {
+    "id": "9tx0LiU2dY78I7gQ3J0W",
+    "brandId": "JbWSvGWzMiN9mJavL9N9",
+    "createdAt": "2026-01-18T10:12:20.915Z",
+    "name": "Born"
+  },
+  {
+    "id": "9w4XhGDWL7jInvwNU5Wq",
+    "createdAt": "2026-01-02T20:44:20.860Z",
+    "name": "Dolphin",
+    "brandId": "nT2Ov7jIgiNnL4sWRfOO"
+  },
+  {
+    "id": "9wMGMq0bujWoD96YL5uy",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "name": "Baleno",
+    "createdAt": "2026-01-02T21:01:54.635Z"
+  },
+  {
+    "id": "9wXwKaAr5jB3W4yuzXOf",
+    "name": "Grande Punto",
+    "createdAt": "2026-01-02T21:01:14.877Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX"
+  },
+  {
+    "id": "9yasM3Wuc5NlpAvNRJrG",
+    "brandId": "YFBvrEQgvOSGKSP5Xpa8",
+    "createdAt": "2026-01-18T10:12:30.424Z",
+    "name": "EV2"
+  },
+  {
+    "id": "A25wSnwrrZPywD6Lz7Cd",
+    "createdAt": "2026-01-02T21:01:56.045Z",
+    "brandId": "MJA03uLxDfvLpTVhjxdJ",
+    "name": "Telcoline"
+  },
+  {
+    "id": "AB70u2LnQZMvPLwycuCP",
+    "brandId": "jES7oj5TVpoxp8827UWJ",
+    "name": "Phantom",
+    "createdAt": "2026-01-02T21:01:49.575Z"
+  },
+  {
+    "id": "ADkrhTBQTq3FELXG98RE",
+    "name": "Blazer",
+    "brandId": "cFcmWPu6L1OzsgfblQuF",
+    "createdAt": "2026-01-18T09:41:47.761Z"
+  },
+  {
+    "id": "AFL5UDwxyvRVkWdK6IKs",
+    "name": "Primera",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:40.176Z"
+  },
+  {
+    "id": "AFpdGalKWafcRwrkIOzz",
+    "name": "Qubo",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:15.502Z"
+  },
+  {
+    "id": "AIAVwfWU74AHLnGM26id",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:58.121Z",
+    "name": "Land Cruiser"
+  },
+  {
+    "id": "ALGkJPtvTRrtkHaVRziX",
+    "createdAt": "2026-01-02T20:44:31.307Z",
+    "name": "Avenger",
+    "brandId": "myFLHq3VbA4Eblp4P7cl"
+  },
+  {
+    "id": "ALbivdjhkClNIFQT25Fs",
+    "brandId": "uxDpotUxT6TDKiMURqt5",
+    "name": "Omoda 5",
+    "createdAt": "2026-01-02T20:44:22.845Z"
+  },
+  {
+    "id": "AR0BprTZtcRhkiIfLabq",
+    "createdAt": "2026-01-18T10:12:17.645Z",
+    "name": "Skyjet Pro",
+    "brandId": "os9Yjbb7kF4PG91PoCSB"
+  },
+  {
+    "id": "AWddPfEVmetbMgUobc5O",
+    "createdAt": "2026-01-02T21:01:41.577Z",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Manta"
+  },
+  {
+    "id": "AXzj0mQ0SZ2JTazObVZH",
+    "brandId": "VRLbv4IHrzpOEnRPpcFy",
+    "createdAt": "2026-01-18T10:12:24.366Z",
+    "name": "Countryman SE All4"
+  },
+  {
+    "id": "Abpjgn3JuOQy5jp9XF8s",
+    "createdAt": "2026-01-02T21:01:36.648Z",
+    "name": "ZS",
+    "brandId": "tVE23itxm5FQgLGahlez"
+  },
+  {
+    "id": "AfctZ8mc5oqBzi3CmRii",
+    "createdAt": "2026-01-03T09:26:47.485Z",
+    "brandId": "QNKi092N4lDaLnB58Yme",
+    "name": "T10X"
+  },
+  {
+    "id": "AkpKjcFe7y9hlhFFFaZR",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-04-21T07:42:43.391Z",
+    "name": "Accent"
+  },
+  {
+    "id": "AmOCbQIumi9PxoAZ7UgG",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "name": "Matrix",
+    "createdAt": "2026-01-02T21:01:21.462Z"
+  },
+  {
+    "id": "ApedwGb89fFqCkmJv6Yz",
+    "createdAt": "2026-01-02T21:01:41.648Z",
+    "name": "Meriva",
+    "brandId": "93J57mw3fq9mxoOVLBv2"
+  },
+  {
+    "id": "AqGzSJ2HzHHhlqtsferi",
+    "createdAt": "2026-01-02T21:01:15.067Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Linea"
+  },
+  {
+    "id": "Ax35rMruusU41fr3GwFJ",
+    "name": "Journey",
+    "brandId": "8e2OXyO2uXBtYw3L5aCK",
+    "createdAt": "2026-01-18T09:41:50.984Z"
+  },
+  {
+    "id": "B35hydQBOJ1cX89ELAQh",
+    "name": "Qashqai",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "createdAt": "2026-01-18T09:42:01.903Z"
+  },
+  {
+    "id": "B3dbwSvbGRuplnlDuIiF",
+    "createdAt": "2026-01-02T21:01:39.065Z",
+    "brandId": "SLp6YyxqKfNaFoGjTVEg",
+    "name": "Mini"
+  },
+  {
+    "id": "B73CIlQ7hnGwspsyqJZm",
+    "createdAt": "2026-01-18T10:12:29.230Z",
+    "brandId": "eHBgU0aBcJghpxK9VZP1",
+    "name": "TX Electric"
+  },
+  {
+    "id": "BBMjyQDvhcvid6ZLFpMH",
+    "createdAt": "2026-01-02T20:44:15.243Z",
+    "name": "A3",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "BFOLb9BbnWfoBUvmlz4D",
+    "name": "Rich 6",
+    "brandId": "0ASooJfHJVT2sdkZpQRT",
+    "createdAt": "2026-01-18T09:41:50.667Z"
+  },
+  {
+    "id": "BFRRihp6Yx9rTJd6mHwK",
+    "createdAt": "2026-01-02T21:01:56.486Z",
+    "brandId": "MJ9rA0VBKfzMYHA0Vv37",
+    "name": "Model Y"
+  },
+  {
+    "id": "BIBToZXHXSHDITglLu3W",
+    "name": "Sorento",
+    "createdAt": "2026-01-02T21:01:25.580Z",
+    "brandId": "eXED7TjVzsQU393jlhei"
+  },
+  {
+    "id": "BM7UvYOvVb42dOz1RN1r",
+    "name": "Vision",
+    "createdAt": "2026-01-02T20:44:32.991Z",
+    "brandId": "bGVLbhhjx9Yz40KQzKkK"
+  },
+  {
+    "id": "BaBLX1GAe1jRhkLvQ64a",
+    "brandId": "IddnnWWyU2KztqST371W",
+    "createdAt": "2026-01-02T20:44:10.628Z",
+    "name": "ES"
+  },
+  {
+    "id": "BaoVNAvYgjEWyQeXpl0I",
+    "name": "E-Pace",
+    "brandId": "AuObstQU7Vne3qQvLQts",
+    "createdAt": "2026-01-18T09:41:56.008Z"
+  },
+  {
+    "id": "BcqDyrcGF5Hzc950hjHL",
+    "brandId": "FdTzowYCUT2Y7g5QofdP",
+    "createdAt": "2026-01-18T10:12:26.516Z",
+    "name": "R1"
+  },
+  {
+    "id": "BgMoIM4baknYg6VcwB4t",
+    "name": "R8",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:17.215Z"
+  },
+  {
+    "id": "BiiFISxbHsQYGPlw9LsI",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "name": "Leaf",
+    "createdAt": "2026-01-02T21:01:39.651Z"
+  },
+  {
+    "id": "BkbUZWY7gcCVKK5rNnDm",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:41.208Z",
+    "name": "Corsa"
+  },
+  {
+    "id": "Bsl3eTvJcUoQeaLzEUli",
+    "createdAt": "2026-01-02T20:44:22.350Z",
+    "brandId": "R74Aku6ydGfGHKxaR879",
+    "name": "Logistar LS200"
+  },
+  {
+    "id": "BwdhQsXHisAtxxqUdwoE",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "name": "Navara",
+    "createdAt": "2026-01-02T21:01:39.953Z"
+  },
+  {
+    "id": "BzC0acjvedCnSe2mBCKW",
+    "name": "Karoq",
+    "createdAt": "2026-01-02T21:01:52.871Z",
+    "brandId": "bnktqz9yxXnuLzPIxXBO"
+  },
+  {
+    "id": "C0AxOLpP0PGSHErDGQAz",
+    "createdAt": "2026-01-18T09:41:52.979Z",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "name": "Mustang Mach-E"
+  },
+  {
+    "id": "C0sJLCkJWP8L2H2opCXn",
+    "brandId": "nxmVyZEAzYbSyzDOuILu",
+    "name": "Kangoo",
+    "createdAt": "2026-07-04T09:31:59.897Z"
+  },
+  {
+    "id": "C2kLcncoFcWnHb0k3aLv",
+    "name": "Idea",
+    "createdAt": "2026-01-02T21:01:14.969Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX"
+  },
+  {
+    "id": "C66mAOb6iHhgtViPmRJe",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:24.891Z",
+    "name": "Carnival"
+  },
+  {
+    "id": "C7BT0TshmB3yFqfHHANS",
+    "createdAt": "2026-01-18T09:41:59.128Z",
+    "name": "Levante",
+    "brandId": "MVfDiUte5lEkRo7UWJpo"
+  },
+  {
+    "id": "CEatEoszXNLHGVPrPGUw",
+    "createdAt": "2026-01-02T21:01:57.216Z",
+    "name": "T10X",
+    "brandId": "fuLescmODkyHSPpaS7zI"
+  },
+  {
+    "id": "CJTvsLMRQMzsk4lDRwCf",
+    "brandId": "Bk6dbf1BDTN9nGyqDPWq",
+    "createdAt": "2026-01-18T09:41:43.492Z",
+    "name": "Junior Elettrica"
+  },
+  {
+    "id": "CLatWNfZtvaqKnbJp4c6",
+    "name": "X4",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:19.126Z"
+  },
+  {
+    "id": "CMfpssKjCeMI4MJ87XEl",
+    "name": "Sebring",
+    "createdAt": "2026-01-02T20:44:26.022Z",
+    "brandId": "J1T0lOeeGrDlU46tMzFO"
+  },
+  {
+    "id": "CSehugjqjYcF3KaK4kqi",
+    "name": "Ram",
+    "createdAt": "2026-01-02T20:44:32.111Z",
+    "brandId": "myFLHq3VbA4Eblp4P7cl"
+  },
+  {
+    "id": "CUoQqKR0YCqAdkDqSGAL",
+    "name": "Marvel R",
+    "createdAt": "2026-01-02T21:01:36.574Z",
+    "brandId": "tVE23itxm5FQgLGahlez"
+  },
+  {
+    "id": "CWGMVTZkGzNG2L1SUjUC",
+    "name": "Kamiq",
+    "createdAt": "2026-01-18T09:42:05.585Z",
+    "brandId": "hipmofIxcL2KV7yvH8ye"
+  },
+  {
+    "id": "CXdeHLhF8M238uYMownm",
+    "name": "One",
+    "brandId": "SMoZyZtFj56vFGdgfWIq",
+    "createdAt": "2026-01-02T21:01:22.137Z"
+  },
+  {
+    "id": "CcIOQeA5vqkjQB1tjPjz",
+    "createdAt": "2026-01-02T21:01:16.932Z",
+    "name": "Explorer",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "CdzwUV70WElKYaHm2r18",
+    "name": "Espero",
+    "createdAt": "2026-01-02T20:44:29.503Z",
+    "brandId": "fDr5idEGAVWSw38SdKoT"
+  },
+  {
+    "id": "CkBeGOgSjPSd4zLieyDD",
+    "createdAt": "2026-01-02T21:01:48.168Z",
+    "name": "Koleos",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm"
+  },
+  {
+    "id": "ClslAiZMmJGFZVQGlpRJ",
+    "createdAt": "2026-01-02T21:01:38.824Z",
+    "name": "Plus 8",
+    "brandId": "fhzmjuvae8A0e57o9kAD"
+  },
+  {
+    "id": "CqbghYbYFqh7rH2oZa0G",
+    "createdAt": "2026-01-02T21:01:24.744Z",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "name": "Besta"
+  },
+  {
+    "id": "Cs2iNGENXh3yLvCUvDQk",
+    "brandId": "hipmofIxcL2KV7yvH8ye",
+    "name": "Kodiaq",
+    "createdAt": "2026-01-18T09:42:05.731Z"
+  },
+  {
+    "id": "CvM5FKKV6fLGNmTKUrlj",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "S90",
+    "createdAt": "2026-01-02T21:02:01.773Z"
+  },
+  {
+    "id": "CyEygbZUkeHQdXC9JNTZ",
+    "createdAt": "2026-01-02T21:01:30.737Z",
+    "name": "Town Car",
+    "brandId": "3Ws5KGNDBQomd1Mx347z"
+  },
+  {
+    "id": "CyGs5zZ57TXDsEE0jDYu",
+    "name": "Galaxy",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:17.249Z"
+  },
+  {
+    "id": "D18rh1yDvI0XXh49j0Np",
+    "createdAt": "2026-01-18T09:41:52.768Z",
+    "name": "F",
+    "brandId": "GIOrEUyhI3FR15wdMB4G"
+  },
+  {
+    "id": "D2wsoneAUiNxG8CgLSyA",
+    "name": "Etiler",
+    "createdAt": "2026-05-12T11:19:33.439Z",
+    "brandId": "neycb6XCnRERo3jPDPFJ"
+  },
+  {
+    "id": "D4nMtE0bz5QuiaBUgIqb",
+    "createdAt": "2026-01-18T09:42:00.389Z",
+    "brandId": "1xwZqz7UVXqmSuNelP1H",
+    "name": "HS"
+  },
+  {
+    "id": "D6kroOZoE9tnCMheTQxi",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Senator",
+    "createdAt": "2026-01-02T21:01:41.939Z"
+  },
+  {
+    "id": "D732ZBSeyFLt1gAeem7c",
+    "createdAt": "2026-01-02T20:44:16.387Z",
+    "name": "RS5",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "DAz3OHE97BrQq8kylddk",
+    "name": "EV9",
+    "brandId": "UspTzMXHcf2K1YTz1LnE",
+    "createdAt": "2026-01-18T10:12:22.244Z"
+  },
+  {
+    "id": "DBqdzW0kPwanFf9jd0GW",
+    "createdAt": "2026-01-02T20:44:32.669Z",
+    "brandId": "9912diSF2H8sNsgUZa1K",
+    "name": "DS 7 Crossback"
+  },
+  {
+    "id": "DCI2ZeCP7aU0QTur9ydl",
+    "createdAt": "2026-01-18T09:41:51.149Z",
+    "name": "Ram",
+    "brandId": "8e2OXyO2uXBtYw3L5aCK"
+  },
+  {
+    "id": "DFr7g4gRGMAXfK266G0O",
+    "createdAt": "2026-01-02T20:44:29.755Z",
+    "brandId": "fDr5idEGAVWSw38SdKoT",
+    "name": "Lanos"
+  },
+  {
+    "id": "DMq8EdeYf5rw0TFfwF6s",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "createdAt": "2026-01-02T20:44:26.661Z",
+    "name": "C2"
+  },
+  {
+    "id": "DNZhriuunTrlVBgH4dzT",
+    "name": "Range Rover Velar",
+    "createdAt": "2026-01-18T09:41:58.162Z",
+    "brandId": "JmiQxhwDluNKEh6S8PIM"
+  },
+  {
+    "id": "DOm9iNnxit7SjD8BgkeH",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "name": "1200",
+    "createdAt": "2026-01-02T21:01:26.935Z"
+  },
+  {
+    "id": "DPa6hwnLsCdRbnSUY0mb",
+    "name": "Colorado",
+    "brandId": "cFcmWPu6L1OzsgfblQuF",
+    "createdAt": "2026-01-18T09:41:47.923Z"
+  },
+  {
+    "id": "DYa47bRHt0zJ8k0704pF",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:14.375Z",
+    "name": "Croma"
+  },
+  {
+    "id": "DYbB27lYOG9kvHBaxvMY",
+    "createdAt": "2026-01-18T10:12:26.057Z",
+    "brandId": "orEW9ovgl2QgzTsBkJCf",
+    "name": "Taycan 4S Performance Plus"
+  },
+  {
+    "id": "DZMCOWgC736O2iZKUYfv",
+    "brandId": "KY8qbFKU55KhZFUH4XgS",
+    "createdAt": "2026-01-18T09:42:05.362Z",
+    "name": "5"
+  },
+  {
+    "id": "DZjYrS75HfJlkilxQTDH",
+    "createdAt": "2026-01-02T21:01:44.096Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "Partner"
+  },
+  {
+    "id": "DfVVhFg5RAkfu0UR0ZX7",
+    "createdAt": "2026-01-18T09:41:55.436Z",
+    "brandId": "3ILw68caJVPlyX25anlf",
+    "name": "QX70"
+  },
+  {
+    "id": "DghBKZD5fHleuAduyKyU",
+    "name": "Model X",
+    "createdAt": "2026-01-02T21:01:56.408Z",
+    "brandId": "MJ9rA0VBKfzMYHA0Vv37"
+  },
+  {
+    "id": "DhmWgS0NtWwUy3T9iYWv",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "name": "Spyder",
+    "createdAt": "2026-01-02T21:01:32.643Z"
+  },
+  {
+    "id": "Dj1vgWNWpdKUli8Fa6nb",
+    "brandId": "cmHLEwz1BCHU7PuhbtIm",
+    "name": "Preve",
+    "createdAt": "2026-01-02T21:01:46.460Z"
+  },
+  {
+    "id": "DjYtvhJzVFJdl0Ie9Aeg",
+    "name": "EV2",
+    "createdAt": "2026-01-02T21:02:00.586Z",
+    "brandId": "Wm3xx6vmfRIidxsliWqk"
+  },
+  {
+    "id": "DllIDAQzu67wEnKBXja8",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Phaeton",
+    "createdAt": "2026-01-02T21:01:59.710Z"
+  },
+  {
+    "id": "DnSb2NMbsLZ2S3o5rr3s",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:39.880Z",
+    "name": "Murano"
+  },
+  {
+    "id": "DoXMHLZUjymKwHCU1NmO",
+    "name": "Electric",
+    "brandId": "DaaqVIe6TZ20HEwDaH4n",
+    "createdAt": "2026-01-02T21:01:46.757Z"
+  },
+  {
+    "id": "DpBGzQ2T1eJaX08ctPMM",
+    "createdAt": "2026-01-02T20:44:14.369Z",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "name": "DB11"
+  },
+  {
+    "id": "DqGY8hOGxVDXQFA8sEl5",
+    "name": "Urban",
+    "createdAt": "2026-01-02T21:01:49.199Z",
+    "brandId": "qs0YgsdsQRjHOVp7y70i"
+  },
+  {
+    "id": "DqVbgR5suZ01gDFDgS4a",
+    "name": "EQS",
+    "createdAt": "2026-01-02T21:01:35.033Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "DrFKac8eAFMkAjJk4CTD",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx",
+    "createdAt": "2026-01-18T10:12:23.953Z",
+    "name": "EQS SUV 450+"
+  },
+  {
+    "id": "DrunHSknGFSwp7wJCYMj",
+    "name": "Arona",
+    "createdAt": "2026-01-18T09:42:05.005Z",
+    "brandId": "yr8zCaDGhJuVVtjSFOPn"
+  },
+  {
+    "id": "Dtc3ZC5G0MQlOz3xdBUH",
+    "name": "512",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:34.377Z"
+  },
+  {
+    "id": "DvFoc7NPUr4US6sp5ezZ",
+    "createdAt": "2026-01-18T09:41:58.822Z",
+    "name": "Pick Up",
+    "brandId": "RoIFIre8jvz7HSVvq923"
+  },
+  {
+    "id": "DwosEIys2anqe9K7ZzUu",
+    "brandId": "MJA03uLxDfvLpTVhjxdJ",
+    "createdAt": "2026-01-02T21:01:55.820Z",
+    "name": "Marina"
+  },
+  {
+    "id": "DyV5NxFH3pG9hvUEcFOW",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Coupe",
+    "createdAt": "2026-01-02T21:01:14.301Z"
+  },
+  {
+    "id": "E3kUKy1eOyzKt90CO2hT",
+    "createdAt": "2026-01-18T09:42:09.940Z",
+    "brandId": "ms4M50ZrkrCCzLUSSCA4",
+    "name": "XC60"
+  },
+  {
+    "id": "E4peDZbpxUetCeOhtt3Z",
+    "createdAt": "2026-01-18T09:41:52.909Z",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "name": "Kuga"
+  },
+  {
+    "id": "E4rRiB5KiVdfRfzq0qN6",
+    "brandId": "ixviW4kG4ARlOzt9uly3",
+    "createdAt": "2026-01-18T10:12:25.418Z",
+    "name": "e-2008"
+  },
+  {
+    "id": "EE8oKZr6HD82SfzKyEzr",
+    "createdAt": "2026-01-02T21:01:24.817Z",
+    "name": "Carens",
+    "brandId": "eXED7TjVzsQU393jlhei"
+  },
+  {
+    "id": "EFy0i0K5oeR8beZKi0ze",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "name": "Ignis",
+    "createdAt": "2026-01-02T21:01:54.937Z"
+  },
+  {
+    "id": "EHQIYqBiITbrW1BsqvYs",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM",
+    "createdAt": "2026-01-18T09:42:09.007Z",
+    "name": "T-Cross"
+  },
+  {
+    "id": "EIAs3omyphEGTaKzySzT",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "createdAt": "2026-01-02T21:01:33.518Z",
+    "name": "CX-7"
+  },
+  {
+    "id": "EIMZtSPU8t87i3HKFJ8B",
+    "name": "Seltos",
+    "createdAt": "2026-01-18T09:41:57.010Z",
+    "brandId": "tt5vGKep7Xzk2tXYyoG3"
+  },
+  {
+    "id": "EJc1Ln5EOt0TKUbChdBn",
+    "brandId": "Yyecu846x7An7DTHjEAN",
+    "name": "Applause",
+    "createdAt": "2026-01-02T20:44:30.415Z"
+  },
+  {
+    "id": "EONQSGtIaGb4Rd5ogfXF",
+    "createdAt": "2026-01-18T09:41:52.478Z",
+    "name": "Edge",
+    "brandId": "GIOrEUyhI3FR15wdMB4G"
+  },
+  {
+    "id": "ETN9kz4kkXpuOP3WsxAW",
+    "name": "Wrangler",
+    "createdAt": "2026-01-18T09:41:56.718Z",
+    "brandId": "DyxhoBNfjPjXaAyeTcGU"
+  },
+  {
+    "id": "EXoo3YX9areLrPZzjMR5",
+    "createdAt": "2026-01-02T20:44:31.141Z",
+    "name": "YRV",
+    "brandId": "Yyecu846x7An7DTHjEAN"
+  },
+  {
+    "id": "EZjHUaGUXRbHmhfUVlMi",
+    "createdAt": "2026-01-02T21:01:42.173Z",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Vectra"
+  },
+  {
+    "id": "EdtmYcuL52J0UeyaOWlM",
+    "brandId": "ixviW4kG4ARlOzt9uly3",
+    "createdAt": "2026-01-18T10:12:25.653Z",
+    "name": "e-Partner"
+  },
+  {
+    "id": "Egl29LKfFc6oRfNebGpQ",
+    "brandId": "lW31uM62KPt1gFKnl0Kb",
+    "name": "Vega Pro",
+    "createdAt": "2026-01-18T10:12:30.816Z"
+  },
+  {
+    "id": "EnWmoVvp65JcaCyLIRLE",
+    "createdAt": "2026-01-02T21:01:53.020Z",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "name": "Octavia"
+  },
+  {
+    "id": "Enx0GkOtuRVK03iWubI1",
+    "createdAt": "2026-01-18T09:42:09.794Z",
+    "brandId": "ms4M50ZrkrCCzLUSSCA4",
+    "name": "EX90"
+  },
+  {
+    "id": "EoBlzKRb3FiLPr1zH9ft",
+    "name": "Clubman",
+    "brandId": "AhBMPIUnFCVIhzHeXGng",
+    "createdAt": "2026-01-02T21:01:36.948Z"
+  },
+  {
+    "id": "EpvrbYMveo4fRWHDqHP8",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Thesis",
+    "createdAt": "2026-01-02T21:01:29.128Z"
+  },
+  {
+    "id": "F0GjvQkJgw3hidczZV1R",
+    "name": "Bronco Sport",
+    "createdAt": "2026-01-18T09:41:52.220Z",
+    "brandId": "GIOrEUyhI3FR15wdMB4G"
+  },
+  {
+    "id": "F3kqGmZUY6XNsRaCBDyu",
+    "brandId": "tt5vGKep7Xzk2tXYyoG3",
+    "createdAt": "2026-01-18T09:41:56.936Z",
+    "name": "Niro"
+  },
+  {
+    "id": "F8lp6ucqJ18nmlFKPrCD",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Kadett",
+    "createdAt": "2026-01-02T21:01:41.505Z"
+  },
+  {
+    "id": "F9YqZ8gVJw8MAVkpl0EU",
+    "name": "Roadster",
+    "createdAt": "2026-01-02T21:01:37.377Z",
+    "brandId": "AhBMPIUnFCVIhzHeXGng"
+  },
+  {
+    "id": "F9o2L2PZqCtTtqgOQNlC",
+    "createdAt": "2026-01-18T09:41:56.367Z",
+    "brandId": "DyxhoBNfjPjXaAyeTcGU",
+    "name": "Commander"
+  },
+  {
+    "id": "FIAjMIjARZebZdUF4uCc",
+    "brandId": "92iE3wNkm4pehCEy1Cgt",
+    "createdAt": "2026-01-18T09:42:07.409Z",
+    "name": "SJ"
+  },
+  {
+    "id": "FR6kJCxBD7C23QrCHGSR",
+    "brandId": "g6l0e4w0ANIaHvYuoD8A",
+    "name": "Transit Custom",
+    "createdAt": "2026-08-06T15:36:49.993Z"
+  },
+  {
+    "id": "FSfSoKSFBbj6ztNlUkmI",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:13.833Z",
+    "name": "500L"
+  },
+  {
+    "id": "FVjJ7paYS1wArloBLbVV",
+    "createdAt": "2026-01-18T09:41:45.279Z",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "name": "iX"
+  },
+  {
+    "id": "FWd7KzxYllrQkQ5vXguI",
+    "createdAt": "2026-01-02T21:01:44.538Z",
+    "brandId": "ZDJuW8D5OOj52ulbwYHg",
+    "name": "Valiant"
+  },
+  {
+    "id": "FWo7qOx4NszBPvrfUFLC",
+    "createdAt": "2026-01-18T10:12:18.247Z",
+    "name": "Q4 e-tron",
+    "brandId": "Zd247fK6y0OVen5TmWx4"
+  },
+  {
+    "id": "FYtRZWbpReRFy6StmmWV",
+    "name": "Trailblazer",
+    "createdAt": "2026-01-18T09:41:48.272Z",
+    "brandId": "cFcmWPu6L1OzsgfblQuF"
+  },
+  {
+    "id": "Fby1OEWJnJbpggfqo6WX",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "GLE",
+    "createdAt": "2026-01-02T21:01:35.479Z"
+  },
+  {
+    "id": "FbzrVXmAbmEpQo5bR2wZ",
+    "brandId": "pQ7oA2LF4DYe4h9XgnnC",
+    "name": "Rifter  1.5 BlueHDI GT",
+    "createdAt": "2026-03-29T16:06:49.266Z"
+  },
+  {
+    "id": "Fc4S93OLH64nyoMoYVS1",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "name": "i40",
+    "createdAt": "2026-01-02T21:01:20.952Z"
+  },
+  {
+    "id": "FvrVZnQTCdBR6XhDyAnS",
+    "name": "5008",
+    "createdAt": "2026-01-02T21:01:44.024Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "FxuQZIgwD4ikTUuCWzNr",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Touareg",
+    "createdAt": "2026-01-02T21:02:00.244Z"
+  },
+  {
+    "id": "G34wjRQxY0mqckb8CtJv",
+    "name": "Roadster",
+    "brandId": "SyDEhmr2uoeGn9FwnC3P",
+    "createdAt": "2026-01-02T21:01:53.685Z"
+  },
+  {
+    "id": "GA62SCn6BdYrQIOe1vd3",
+    "createdAt": "2026-01-02T21:01:23.474Z",
+    "name": "QX50",
+    "brandId": "lAkycWxDUZkPXXkB98CO"
+  },
+  {
+    "id": "GBIWuQczvoPoMt3bgqfx",
+    "createdAt": "2026-01-02T21:01:28.890Z",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Phedra"
+  },
+  {
+    "id": "GCwd7J1e8N1u4b4hWj7w",
+    "createdAt": "2026-01-02T21:01:21.369Z",
+    "name": "Lantra",
+    "brandId": "NLNOb3DLywuJFfpe7hxB"
+  },
+  {
+    "id": "GCzsXTGyaBgfSZWiwTkG",
+    "name": "Continental",
+    "brandId": "tYHEapQnq9bXzZDbE5JQ",
+    "createdAt": "2026-01-02T20:44:17.861Z"
+  },
+  {
+    "id": "GEywC3TdjHnAhc4eFxO6",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "106",
+    "createdAt": "2026-01-02T21:01:42.631Z"
+  },
+  {
+    "id": "GFkIwncBwHQZoxNsmh9o",
+    "createdAt": "2026-01-02T21:01:32.865Z",
+    "name": "2",
+    "brandId": "jGp6IIvDUD3TalvDrzDV"
+  },
+  {
+    "id": "GHEhzmj3uqjAsUp7xHuK",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "createdAt": "2026-01-02T21:01:33.740Z",
+    "name": "MX-5"
+  },
+  {
+    "id": "GMD2e9TTGGzG0ABtOAHH",
+    "name": "Cooper Countryman",
+    "createdAt": "2026-01-18T09:42:00.753Z",
+    "brandId": "bq1iWORT8A4lt1Y2fHJ1"
+  },
+  {
+    "id": "GPTngz2Q89WnSXqOylpo",
+    "createdAt": "2026-04-28T12:59:56.349Z",
+    "name": "Berlingo",
+    "brandId": "Of3JDvSfM4QeL9VCWfdc"
+  },
+  {
+    "id": "GPWSsFU6MJ8abixM4Dmy",
+    "name": "X-Class",
+    "createdAt": "2026-01-18T09:42:00.158Z",
+    "brandId": "DXR4i6gJJ2YE0qCEKZnP"
+  },
+  {
+    "id": "GT4HUmiIHe9RaBFnkCDN",
+    "name": "YXE",
+    "createdAt": "2026-01-18T10:12:30.911Z",
+    "brandId": "lW31uM62KPt1gFKnl0Kb"
+  },
+  {
+    "id": "GTcqP1DjK0jARqIY5xpo",
+    "brandId": "RoIFIre8jvz7HSVvq923",
+    "name": "Scorpio",
+    "createdAt": "2026-01-18T09:41:58.896Z"
+  },
+  {
+    "id": "GU4iGrp4AL9QQGj60xOD",
+    "createdAt": "2026-01-02T21:01:50.984Z",
+    "brandId": "9xLdlw2Vz0vNHp05cPdf",
+    "name": "900"
+  },
+  {
+    "id": "GdXNlOSV8D68DzlxZVB7",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "name": "GranTurismo",
+    "createdAt": "2026-01-02T21:01:32.325Z"
+  },
+  {
+    "id": "GfS55Rd31lX7K4npqYmt",
+    "createdAt": "2026-01-02T21:01:43.221Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "306"
+  },
+  {
+    "id": "Gfzngko1jwzvma70DfMm",
+    "name": "Ateca",
+    "brandId": "iaNJFrqPM9XLrXz9vvYN",
+    "createdAt": "2026-01-18T09:41:49.242Z"
+  },
+  {
+    "id": "Ggg3ifDAkZ062CtdjxTP",
+    "name": "5",
+    "createdAt": "2026-01-02T21:01:36.428Z",
+    "brandId": "tVE23itxm5FQgLGahlez"
+  },
+  {
+    "id": "GiYDMdkCnpcxJG0YU59S",
+    "name": "C4 Cactus",
+    "createdAt": "2026-01-18T09:41:48.833Z",
+    "brandId": "qEnvUARXYLwK26ongeAZ"
+  },
+  {
+    "id": "Gjxo79ioX80SO1kGpNCs",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Scirocco",
+    "createdAt": "2026-01-02T21:01:59.857Z"
+  },
+  {
+    "id": "Gk2RWWNShvGpE7fl51ID",
+    "brandId": "kyBS5O2bEuJA7d3X4K1W",
+    "name": "Etiler",
+    "createdAt": "2026-05-12T11:13:46.127Z"
+  },
+  {
+    "id": "GsvBN2RS1TBJdDmPtv7P",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:19.692Z",
+    "name": "i4"
+  },
+  {
+    "id": "GtUM5nOlhQgqOur8laqt",
+    "createdAt": "2026-01-02T21:01:21.536Z",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "name": "Santa Fe"
+  },
+  {
+    "id": "GwYhN5tQmH4PJPv2gOWZ",
+    "name": "ATS",
+    "createdAt": "2026-01-02T20:44:21.354Z",
+    "brandId": "mS0gw27zWhVyfuLDo5kx"
+  },
+  {
+    "id": "Gye3qutp6dVTOPcRv5zE",
+    "createdAt": "2026-01-02T21:01:51.205Z",
+    "brandId": "9xLdlw2Vz0vNHp05cPdf",
+    "name": "9-5"
+  },
+  {
+    "id": "H17IH90EsCw1xysOr81T",
+    "name": "Captiva",
+    "createdAt": "2026-01-18T09:41:47.852Z",
+    "brandId": "cFcmWPu6L1OzsgfblQuF"
+  },
+  {
+    "id": "H5rj4gve2yMlhlje7kzF",
+    "name": "SF90 Stradale",
+    "createdAt": "2026-01-02T20:44:35.957Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "HBBKzGfm92ZBy0nfITPJ",
+    "createdAt": "2026-01-18T09:42:06.711Z",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq",
+    "name": "Tivoli"
+  },
+  {
+    "id": "HD4wLVRQHXd3LFUoSHnD",
+    "createdAt": "2026-01-02T21:02:02.917Z",
+    "brandId": "TtzCcYuk2mQOtBsGB08f",
+    "name": "Urban"
+  },
+  {
+    "id": "HFEX0OQy8zqBSkhQkFvw",
+    "name": "Fullback",
+    "brandId": "ffnILVAQmc8QJjTKPDDu",
+    "createdAt": "2026-01-18T09:41:51.911Z"
+  },
+  {
+    "id": "HHZdRqBnOfaIoGFjFyeO",
+    "name": "Hilux",
+    "createdAt": "2026-01-18T09:42:08.495Z",
+    "brandId": "m94YtGeYldZsXHqPbY0M"
+  },
+  {
+    "id": "HLWfi9iGBb4f0Qb7LGTo",
+    "name": "X3",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "createdAt": "2026-01-18T09:41:45.729Z"
+  },
+  {
+    "id": "HLeFreGHEJRodR0sopOu",
+    "brandId": "oV17MOLG6Zw9cU0uhtmF",
+    "createdAt": "2026-01-18T10:12:27.986Z",
+    "name": "RK Cargo"
+  },
+  {
+    "id": "HLjLRbzgRIRAu29HqDmQ",
+    "name": "Grandland X",
+    "brandId": "SOlsacCfOCqtNGIsNuHN",
+    "createdAt": "2026-01-18T09:42:02.846Z"
+  },
+  {
+    "id": "HP4jk2GAfxzOzUvVlJbY",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "name": "400",
+    "createdAt": "2026-01-02T21:01:50.392Z"
+  },
+  {
+    "id": "HRNfe71xisCGW9CM6TnD",
+    "name": "Range Rover",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "createdAt": "2026-01-18T09:41:57.950Z"
+  },
+  {
+    "id": "HSxOP2yr2RHJLhbFW5eg",
+    "name": "Materia",
+    "createdAt": "2026-01-02T20:44:30.895Z",
+    "brandId": "Yyecu846x7An7DTHjEAN"
+  },
+  {
+    "id": "HbxUT7VsroDz2o18R8ul",
+    "createdAt": "2026-01-02T21:01:21.871Z",
+    "name": "Veloster",
+    "brandId": "NLNOb3DLywuJFfpe7hxB"
+  },
+  {
+    "id": "Hdu9BGtojSCUWdimwte7",
+    "name": "Terrano",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "createdAt": "2026-01-18T09:42:02.185Z"
+  },
+  {
+    "id": "HetmGBJ5ro6AZISWzzhK",
+    "name": "Stelvio",
+    "createdAt": "2026-01-02T20:44:12.594Z",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP"
+  },
+  {
+    "id": "HjxIwVTJ0WNDiMDiiM2H",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "name": "BLS",
+    "createdAt": "2026-01-02T20:44:21.437Z"
+  },
+  {
+    "id": "Hl2EnbdbSFrhKwXdo5JB",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "246 Dino",
+    "createdAt": "2026-01-02T20:44:33.230Z"
+  },
+  {
+    "id": "HuoO2ollbqPYECKK7eYv",
+    "createdAt": "2026-01-02T21:01:23.076Z",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "name": "M"
+  },
+  {
+    "id": "HvVgWRphwyahJQ6BVAuJ",
+    "name": "GLA",
+    "createdAt": "2026-01-18T09:41:59.783Z",
+    "brandId": "DXR4i6gJJ2YE0qCEKZnP"
+  },
+  {
+    "id": "Hw6vpLXKH5lKYzllaEMK",
+    "name": "Aviator",
+    "brandId": "HrbxIpRmszsrYSSOyxip",
+    "createdAt": "2026-01-18T09:41:58.590Z"
+  },
+  {
+    "id": "Hz2esEwuwqsRQRC0xiTz",
+    "brandId": "qs0YgsdsQRjHOVp7y70i",
+    "createdAt": "2026-01-02T21:01:49.126Z",
+    "name": "Mini"
+  },
+  {
+    "id": "HzKW038HdFrMNnIxf8ib",
+    "createdAt": "2026-01-18T10:12:29.437Z",
+    "brandId": "3FvukhEpISO3Xn5rionK",
+    "name": "T10X"
+  },
+  {
+    "id": "I93JA8fAltGpu6ZZMLw1",
+    "createdAt": "2026-01-02T21:01:23.295Z",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "name": "Q60"
+  },
+  {
+    "id": "IDIuRJ8GLmfPUpVwnMYi",
+    "name": "iX3",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "createdAt": "2026-01-18T09:41:45.456Z"
+  },
+  {
+    "id": "IDzdsm4PMvLDlDm3AU1I",
+    "name": "207",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "createdAt": "2026-01-02T21:01:42.999Z"
+  },
+  {
+    "id": "IIEwUzTxvTSmWWsWl95M",
+    "createdAt": "2026-01-02T21:01:51.738Z",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb",
+    "name": "Arosa"
+  },
+  {
+    "id": "IRNAz9jR36YhfbLbncey",
+    "brandId": "21gkec3Uvzsg5P4c8YBP",
+    "name": "Doğan",
+    "createdAt": "2026-01-02T21:01:56.777Z"
+  },
+  {
+    "id": "ISKJzFIh5AodFeJy3Azr",
+    "name": "C35",
+    "brandId": "0ASooJfHJVT2sdkZpQRT",
+    "createdAt": "2026-01-18T09:41:50.504Z"
+  },
+  {
+    "id": "IUfOzDkqwhpVfy4E8fqF",
+    "createdAt": "2026-01-18T10:12:18.970Z",
+    "name": "i4 eDrive40",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs"
+  },
+  {
+    "id": "IVAGCTQz7rlMcSO3rLLY",
+    "createdAt": "2026-01-02T21:01:23.920Z",
+    "brandId": "N1QkEFvqdkDj81x5vsZb",
+    "name": "F-Pace"
+  },
+  {
+    "id": "IfnIu3gs1y7G8tVaeI9I",
+    "createdAt": "2026-01-02T21:01:55.447Z",
+    "name": "Vitara",
+    "brandId": "Ch9jH69iTglbIYgNpqh5"
+  },
+  {
+    "id": "IivTqlnfsJuYfgyDW3xB",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "name": "Cayenne",
+    "createdAt": "2026-01-02T21:01:45.776Z"
+  },
+  {
+    "id": "IjVApWYPbcCTZ8zmvR6G",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "XC60",
+    "createdAt": "2026-01-02T21:02:02.394Z"
+  },
+  {
+    "id": "J0DSbqhSVa91LjV9nEpJ",
+    "brandId": "TtzCcYuk2mQOtBsGB08f",
+    "createdAt": "2026-01-02T21:02:02.842Z",
+    "name": "Mini"
+  },
+  {
+    "id": "J0KJqJUckBQX1Ljo9Tw4",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "createdAt": "2026-01-02T21:01:27.773Z",
+    "name": "Vega"
+  },
+  {
+    "id": "J3QkX3XXnKYQa3gp83Yb",
+    "brandId": "9912diSF2H8sNsgUZa1K",
+    "name": "DS 9",
+    "createdAt": "2026-01-02T20:44:32.747Z"
+  },
+  {
+    "id": "J4Q0rxaHo4B0z9Oc8b97",
+    "name": "SX4 S-Cross",
+    "createdAt": "2026-01-18T09:42:07.482Z",
+    "brandId": "92iE3wNkm4pehCEy1Cgt"
+  },
+  {
+    "id": "JBUMlbl5Ojg9O5938bxE",
+    "name": "Mark",
+    "brandId": "3Ws5KGNDBQomd1Mx347z",
+    "createdAt": "2026-01-02T21:01:30.590Z"
+  },
+  {
+    "id": "JCaZ9BQBXTcWzoOankc0",
+    "createdAt": "2026-01-02T21:01:32.938Z",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "3"
+  },
+  {
+    "id": "JCyYKPByhP1HmrVhYDLr",
+    "brandId": "myFLHq3VbA4Eblp4P7cl",
+    "name": "Dakota",
+    "createdAt": "2026-01-02T20:44:31.636Z"
+  },
+  {
+    "id": "JFO51Q47nYTWv3rQDwtc",
+    "name": "E-Ulysse",
+    "createdAt": "2026-01-18T10:12:21.442Z",
+    "brandId": "fewLgy1kDeDakme4odts"
+  },
+  {
+    "id": "JG71rnuKsuQwhsDurhXJ",
+    "createdAt": "2026-01-02T21:01:43.939Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "4007"
+  },
+  {
+    "id": "JIj5Uc93FMaL3J1ZPQGm",
+    "name": "EV6",
+    "brandId": "UspTzMXHcf2K1YTz1LnE",
+    "createdAt": "2026-01-18T10:12:22.141Z"
+  },
+  {
+    "id": "JJncPglOY6i4hy6d5csi",
+    "name": "LaFerrari",
+    "createdAt": "2026-01-02T20:44:35.617Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "JLRh2EGQ7inYmu4sYuaf",
+    "name": "Patrol",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "createdAt": "2026-01-18T09:42:01.758Z"
+  },
+  {
+    "id": "JNlwTno1TL0SY3yb1eYP",
+    "createdAt": "2026-01-02T21:01:39.139Z",
+    "name": "Urban",
+    "brandId": "SLp6YyxqKfNaFoGjTVEg"
+  },
+  {
+    "id": "JQsnO1PAJyrNXvNsiAZh",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "name": "ix20",
+    "createdAt": "2026-01-02T21:01:21.130Z"
+  },
+  {
+    "id": "JWacG9c0lE61Z7W8UO7p",
+    "name": "ET5",
+    "createdAt": "2026-01-18T09:42:05.950Z",
+    "brandId": "SA9BYR31mfNnshZiFqfd"
+  },
+  {
+    "id": "Ja89f7ILfGV8biyXdhfr",
+    "createdAt": "2026-01-02T21:01:51.058Z",
+    "name": "9000",
+    "brandId": "9xLdlw2Vz0vNHp05cPdf"
+  },
+  {
+    "id": "JaAv4iN2i8MKf6EiIAaL",
+    "createdAt": "2026-01-18T10:12:27.307Z",
+    "name": "Zoe",
+    "brandId": "6FxN1j9LcYyjmkj80rYU"
+  },
+  {
+    "id": "Jf15R5lZsFPWO7bsKMsf",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "createdAt": "2026-01-18T09:41:57.807Z",
+    "name": "Discovery Sport"
+  },
+  {
+    "id": "JhrjswRgcMgHYg8F8A1R",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:01.400Z",
+    "name": "C70"
+  },
+  {
+    "id": "JiGKfk0Zzt4IwRheMGdL",
+    "createdAt": "2026-01-18T09:42:02.477Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN",
+    "name": "Crossland"
+  },
+  {
+    "id": "JibnYqygrD7j7DzKPEht",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "name": "Avensis",
+    "createdAt": "2026-01-02T21:01:57.437Z"
+  },
+  {
+    "id": "JypfkqkBfk8h8kqwKV0J",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "createdAt": "2026-01-02T21:01:27.411Z",
+    "name": "2107"
+  },
+  {
+    "id": "JzB28g2l3q4jWxIkwVGQ",
+    "brandId": "K55wijyvS6KLetUk4Dn8",
+    "name": "Vision",
+    "createdAt": "2026-01-02T21:01:18.802Z"
+  },
+  {
+    "id": "K6FS6Brb7FATVoH3mtoT",
+    "name": "S2000",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.753Z"
+  },
+  {
+    "id": "KABlh3RjeUL8x5tTuOTM",
+    "name": "Tunland G7",
+    "brandId": "6uB4IxYYLASEAIGVikci",
+    "createdAt": "2026-01-18T09:41:53.412Z"
+  },
+  {
+    "id": "KAZ6o86diEXicUx9GJRN",
+    "createdAt": "2026-01-02T20:44:21.690Z",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "name": "Escalade"
+  },
+  {
+    "id": "KEFIhYdIFmCpIpm97St8",
+    "name": "Macan",
+    "createdAt": "2026-01-18T09:42:04.079Z",
+    "brandId": "8bw7mt6Xk5Xk3tKXq1t4"
+  },
+  {
+    "id": "KLzXTuNck1fsDEmybQ5I",
+    "createdAt": "2026-01-02T21:01:27.556Z",
+    "name": "Niva",
+    "brandId": "CrD06cYqPe4WGq6EErMp"
+  },
+  {
+    "id": "KPptUXaDfLklOjfJcHdy",
+    "createdAt": "2026-01-02T21:01:34.262Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "A Serisi"
+  },
+  {
+    "id": "KQZgpAoGmRpvK25z7fKk",
+    "name": "iX xDrive40",
+    "createdAt": "2026-01-18T10:12:19.563Z",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs"
+  },
+  {
+    "id": "KSdWTlgWbk9LQOP8hr4n",
+    "name": "Nitro",
+    "createdAt": "2026-01-02T20:44:32.032Z",
+    "brandId": "myFLHq3VbA4Eblp4P7cl"
+  },
+  {
+    "id": "KV0gItzV3dmeg9iRUxK1",
+    "brandId": "oV17MOLG6Zw9cU0uhtmF",
+    "name": "RK3",
+    "createdAt": "2026-01-18T10:12:27.821Z"
+  },
+  {
+    "id": "KXAFSsl2VxmgLhm18U5q",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "createdAt": "2026-01-02T21:01:53.387Z",
+    "name": "Yeti"
+  },
+  {
+    "id": "KZtQK591hTtp8cLTQh3W",
+    "name": "DS 3 Crossback",
+    "brandId": "9912diSF2H8sNsgUZa1K",
+    "createdAt": "2026-01-02T20:44:32.430Z"
+  },
+  {
+    "id": "KbGyg7x1ABDgBK1xqy7Y",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "createdAt": "2026-01-18T10:12:28.922Z",
+    "name": "Model Y Performance"
+  },
+  {
+    "id": "KctVcprpjpm7mjKk1OZq",
+    "name": "Albea",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:14.022Z"
+  },
+  {
+    "id": "KczQ2Z3wDNduhWGv1Nbr",
+    "brandId": "XX8e3430thbOUrWQeMV5",
+    "name": "BT-50",
+    "createdAt": "2026-01-18T09:41:59.272Z"
+  },
+  {
+    "id": "KdSRwd47UtfLmB4YDLrG",
+    "brandId": "BT5sQuTBeVE4qbXgM9cv",
+    "name": "Seal",
+    "createdAt": "2026-01-18T10:12:20.111Z"
+  },
+  {
+    "id": "KiReKRU1XfTyVyyqUjLj",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "createdAt": "2026-01-02T21:01:50.837Z",
+    "name": "75"
+  },
+  {
+    "id": "KlOdqVrQ0mB2sbfwlEQg",
+    "brandId": "w7lIyQAd98lec4Qs7DYr",
+    "createdAt": "2026-01-18T09:42:03.569Z",
+    "name": "5008"
+  },
+  {
+    "id": "KxyIxY67hPFYrH4WDFmX",
+    "createdAt": "2026-01-02T20:44:25.525Z",
+    "brandId": "J1T0lOeeGrDlU46tMzFO",
+    "name": "300C"
+  },
+  {
+    "id": "L0znBvTLYO9hvfYrPHTj",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:33.578Z",
+    "name": "308"
+  },
+  {
+    "id": "L86mKqs986OpU52r953S",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "createdAt": "2026-01-02T21:01:27.629Z",
+    "name": "Nova"
+  },
+  {
+    "id": "LCV0dTv4mKRF5X20zOnC",
+    "createdAt": "2026-01-02T21:01:25.827Z",
+    "name": "Sportage",
+    "brandId": "eXED7TjVzsQU393jlhei"
+  },
+  {
+    "id": "LFgg9MTmuR6xZ7TZvTCA",
+    "createdAt": "2026-01-18T09:41:56.508Z",
+    "brandId": "DyxhoBNfjPjXaAyeTcGU",
+    "name": "Gladiator"
+  },
+  {
+    "id": "LG7jCDu7CsktOCGm0qO7",
+    "name": "F355",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:35.107Z"
+  },
+  {
+    "id": "LL7Tck7aPOcreblGYewI",
+    "brandId": "DXR4i6gJJ2YE0qCEKZnP",
+    "createdAt": "2026-01-18T09:42:00.003Z",
+    "name": "GLE"
+  },
+  {
+    "id": "LM6aUPk5QQg0BLIeblVp",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "createdAt": "2026-01-18T09:41:45.984Z",
+    "name": "X4 M"
+  },
+  {
+    "id": "LP4lRlDTWt4Xj36VmWwm",
+    "brandId": "AdKMPvYng3ocNHXjTKhD",
+    "name": "Mantula",
+    "createdAt": "2026-01-02T21:01:31.719Z"
+  },
+  {
+    "id": "LVKSVpqJQjNv9DMwl2Ib",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.758Z",
+    "name": "Talisman"
+  },
+  {
+    "id": "LYjYov1LQvuq52LDI09X",
+    "createdAt": "2026-01-02T21:01:56.850Z",
+    "brandId": "21gkec3Uvzsg5P4c8YBP",
+    "name": "Kartal"
+  },
+  {
+    "id": "LazluXgSRXsoOE9w3Vm7",
+    "name": "X2",
+    "createdAt": "2026-01-18T09:41:45.642Z",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb"
+  },
+  {
+    "id": "LdGwpvAo7BZJUTjxa25f",
+    "brandId": "Yyecu846x7An7DTHjEAN",
+    "name": "Feroza",
+    "createdAt": "2026-01-02T20:44:30.734Z"
+  },
+  {
+    "id": "Lh9ZDT4WE17BcOQWmjLI",
+    "name": "accent",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-04-21T07:31:39.270Z"
+  },
+  {
+    "id": "LidpjcyQFvbLAn3DvgIm",
+    "brandId": "QkaBwMwCsdKzP8LkbtWI",
+    "name": "EV600",
+    "createdAt": "2026-01-02T21:01:31.542Z"
+  },
+  {
+    "id": "Lj0Gy9Hzk9olFIz3tiau",
+    "name": "B-Max",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:16.264Z"
+  },
+  {
+    "id": "Lr7r1GUWYshlSkYcx7hL",
+    "createdAt": "2026-03-18T13:08:13.644Z",
+    "name": "MASTER",
+    "brandId": "637uOo41EcHm8xn1lM9L"
+  },
+  {
+    "id": "Lyxzjnlc08LYfU10l2Df",
+    "name": "R1",
+    "brandId": "Xq3OfSjm0KkkF3X0awio",
+    "createdAt": "2026-01-18T10:12:27.017Z"
+  },
+  {
+    "id": "M1duJO8gVEY2dKtNj640",
+    "brandId": "DXR4i6gJJ2YE0qCEKZnP",
+    "createdAt": "2026-01-18T09:41:59.709Z",
+    "name": "G-Serisi"
+  },
+  {
+    "id": "M2RRArERLe4alHNa2lcB",
+    "name": "I30",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "createdAt": "2026-01-02T21:01:22.929Z"
+  },
+  {
+    "id": "M4B598Am6SQoKt424R5U",
+    "createdAt": "2026-01-18T09:42:00.533Z",
+    "name": "ZS",
+    "brandId": "1xwZqz7UVXqmSuNelP1H"
+  },
+  {
+    "id": "MBimt3y3F3hx7FxMj3QC",
+    "createdAt": "2026-01-02T21:01:51.811Z",
+    "name": "Cordoba",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb"
+  },
+  {
+    "id": "MD2h4wugGpoVZEVoxBau",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:19.773Z",
+    "name": "i5"
+  },
+  {
+    "id": "MD96dgjhrbEwqOX4EadC",
+    "brandId": "IddnnWWyU2KztqST371W",
+    "createdAt": "2026-01-02T20:44:10.896Z",
+    "name": "V"
+  },
+  {
+    "id": "MM0FaJETYOqv85jeWkV5",
+    "createdAt": "2026-01-02T21:01:34.426Z",
+    "name": "C Serisi",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "MRLlcDRQ6jgceHJoViTy",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "name": "Range Rover Vogue",
+    "createdAt": "2026-09-23T13:14:04.446Z"
+  },
+  {
+    "id": "MSVwSrOTi7lRyN41Y91P",
+    "createdAt": "2026-01-02T20:44:18.887Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "name": "X1"
+  },
+  {
+    "id": "MUII8v0TXFeYLirfaTmy",
+    "name": "Vega",
+    "brandId": "lW31uM62KPt1gFKnl0Kb",
+    "createdAt": "2026-01-18T10:12:30.738Z"
+  },
+  {
+    "id": "Mb17nLy802YJGdxN3C1l",
+    "name": "X7",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:19.369Z"
+  },
+  {
+    "id": "Mg1qF1vWet3xDTmr99RQ",
+    "brandId": "21gkec3Uvzsg5P4c8YBP",
+    "createdAt": "2026-01-02T21:01:56.998Z",
+    "name": "Serçe"
+  },
+  {
+    "id": "MggPFLes6NnujjBrPX07",
+    "name": "CX-5",
+    "brandId": "XX8e3430thbOUrWQeMV5",
+    "createdAt": "2026-01-18T09:41:59.486Z"
+  },
+  {
+    "id": "MjvBxSSy82YHMezNLKwv",
+    "brandId": "PBVwMeoJbo8GP6d16x4S",
+    "createdAt": "2026-01-18T09:41:54.323Z",
+    "name": "H3"
+  },
+  {
+    "id": "MrSxSeRQvSnFRIIRo8pK",
+    "name": "EVS Cargo",
+    "brandId": "YFBvrEQgvOSGKSP5Xpa8",
+    "createdAt": "2026-01-18T10:12:30.585Z"
+  },
+  {
+    "id": "MxmyRco9CxHqB4bl77tU",
+    "createdAt": "2026-01-18T09:41:57.084Z",
+    "name": "Sorento",
+    "brandId": "tt5vGKep7Xzk2tXYyoG3"
+  },
+  {
+    "id": "Mz9YwVzOu4rXE1l1NBVl",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "createdAt": "2026-01-02T21:01:29.858Z",
+    "name": "IS"
+  },
+  {
+    "id": "NEI9uTt8x3aoi6LsD4oA",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:01.181Z",
+    "name": "850"
+  },
+  {
+    "id": "NFu7el1aNSyk8hpB37Sv",
+    "brandId": "tt5vGKep7Xzk2tXYyoG3",
+    "createdAt": "2026-01-18T09:41:57.229Z",
+    "name": "Stonic"
+  },
+  {
+    "id": "NJ9P0GVf6U4X7QweEMY2",
+    "name": "X6",
+    "createdAt": "2026-01-02T20:44:19.290Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "NMWpgNIKZASTbKh3pcp0",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "name": "Rapide",
+    "createdAt": "2026-01-02T20:44:14.622Z"
+  },
+  {
+    "id": "NMgb2TCkshmUarAqa8QV",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "createdAt": "2026-01-02T21:01:27.009Z",
+    "name": "1300"
+  },
+  {
+    "id": "NPD7fJhByXXWli8wh8RR",
+    "name": "S-Type",
+    "createdAt": "2026-01-02T21:01:24.069Z",
+    "brandId": "N1QkEFvqdkDj81x5vsZb"
+  },
+  {
+    "id": "NQP7UZyH2h82cPmthEOU",
+    "createdAt": "2026-01-18T09:41:44.094Z",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "name": "Q2"
+  },
+  {
+    "id": "NVF5QVNhTh0zcdaA1hzn",
+    "createdAt": "2026-01-02T21:01:28.143Z",
+    "name": "Gallardo",
+    "brandId": "0VH1RIa47bRmoGe6gQCq"
+  },
+  {
+    "id": "NY4a2aGdAYVcWrFrvg8G",
+    "name": "Vito Tourer",
+    "brandId": "JpBtTOJYOFxvbxH3Enny",
+    "createdAt": "2026-03-30T12:01:29.710Z"
+  },
+  {
+    "id": "NbIR3NwcNcOpkVMp7b7U",
+    "createdAt": "2026-01-02T20:44:15.923Z",
+    "name": "Q5",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "Nbm67K4srJN4SkIXseDZ",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "name": "DBX",
+    "createdAt": "2026-01-02T20:44:14.538Z"
+  },
+  {
+    "id": "Ng09fRYcOQQoTm9zsELp",
+    "createdAt": "2026-01-02T20:44:34.622Z",
+    "name": "599",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "Nh9yZukZH9C5GCXjKkB0",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "createdAt": "2026-01-02T20:44:12.424Z",
+    "name": "MiTo"
+  },
+  {
+    "id": "NmLEUgbzQHzOqMeub3XX",
+    "name": "Aygo",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:57.510Z"
+  },
+  {
+    "id": "NpswAuShDxS86OCNd6NS",
+    "name": "Crossland X",
+    "createdAt": "2026-01-18T09:42:02.548Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN"
+  },
+  {
+    "id": "NqcmYZpfL3hicJOY9bwB",
+    "brandId": "myFLHq3VbA4Eblp4P7cl",
+    "createdAt": "2026-01-02T20:44:31.553Z",
+    "name": "Charger"
+  },
+  {
+    "id": "NvUl2Tk3lYlJUFLw2sZy",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "createdAt": "2026-01-18T09:41:43.873Z",
+    "name": "e-tron"
+  },
+  {
+    "id": "NvuqKv00fzruwehu0yI4",
+    "brandId": "Yyecu846x7An7DTHjEAN",
+    "createdAt": "2026-01-02T20:44:30.492Z",
+    "name": "Charade"
+  },
+  {
+    "id": "NwpBGklvDNYfN4FU8cMI",
+    "name": "3200 GT",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "createdAt": "2026-01-02T21:01:31.953Z"
+  },
+  {
+    "id": "NyftgdJLIMEOIlPAGNWD",
+    "name": "Seicento",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:15.699Z"
+  },
+  {
+    "id": "O0mwIs6OjwqdFohVSgmA",
+    "createdAt": "2026-01-02T20:44:17.716Z",
+    "name": "Bentayga",
+    "brandId": "tYHEapQnq9bXzZDbE5JQ"
+  },
+  {
+    "id": "O31JP1ZE5cskTIOJhbo4",
+    "name": "City",
+    "brandId": "TtzCcYuk2mQOtBsGB08f",
+    "createdAt": "2026-01-02T21:02:02.763Z"
+  },
+  {
+    "id": "O3XzMOFWKism6Hg8sGFW",
+    "name": "Tonale",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "createdAt": "2026-01-02T20:44:12.673Z"
+  },
+  {
+    "id": "O4OVGkdaVQv4OrWVdz8a",
+    "name": "RC",
+    "createdAt": "2026-01-02T21:01:30.150Z",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn"
+  },
+  {
+    "id": "O5XeHgwAkIPgtb3oh8jw",
+    "name": "QX56",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "createdAt": "2026-01-02T21:01:23.552Z"
+  },
+  {
+    "id": "OFqyQPF5sdSz6Ij3rbEZ",
+    "brandId": "cmHLEwz1BCHU7PuhbtIm",
+    "name": "Gen-2",
+    "createdAt": "2026-01-02T21:01:46.220Z"
+  },
+  {
+    "id": "OGepfrZqy2eQKdgORTix",
+    "name": "C4",
+    "createdAt": "2026-01-18T09:41:48.740Z",
+    "brandId": "qEnvUARXYLwK26ongeAZ"
+  },
+  {
+    "id": "OGjzUvppdFWhVExkET5p",
+    "brandId": "qEnvUARXYLwK26ongeAZ",
+    "name": "C4 X",
+    "createdAt": "2026-01-18T09:41:49.026Z"
+  },
+  {
+    "id": "OMeF8SW8zjKafFtlLyyM",
+    "name": "918 Spyder",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "createdAt": "2026-01-02T21:01:45.626Z"
+  },
+  {
+    "id": "OMvr2E2NrjJGdBf1ZdeR",
+    "name": "Corona",
+    "createdAt": "2026-01-02T21:01:57.899Z",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE"
+  },
+  {
+    "id": "OOPpZiQYZjWDoZ6k8623",
+    "name": "Celica",
+    "createdAt": "2026-01-02T21:01:57.735Z",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE"
+  },
+  {
+    "id": "OS5v96YdYog2Y0NYUS39",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:20.612Z",
+    "name": "Getz"
+  },
+  {
+    "id": "OSNFTrI9ZkLi9Kz65jny",
+    "name": "4",
+    "createdAt": "2026-01-02T21:01:36.356Z",
+    "brandId": "tVE23itxm5FQgLGahlez"
+  },
+  {
+    "id": "OXyyNdl9TpbuTAnw3NmQ",
+    "createdAt": "2026-01-18T09:41:45.548Z",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "name": "X1"
+  },
+  {
+    "id": "OYh6RR347VdLrkSiYG35",
+    "brandId": "hipmofIxcL2KV7yvH8ye",
+    "name": "Karoq",
+    "createdAt": "2026-01-18T09:42:05.658Z"
+  },
+  {
+    "id": "ObFwFeaXlaHn7e3MJLnt",
+    "name": "Macan",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "createdAt": "2026-01-02T21:01:45.924Z"
+  },
+  {
+    "id": "OoLiAfY8UP80ZAOgd9pX",
+    "createdAt": "2026-01-02T21:01:36.210Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "Viano"
+  },
+  {
+    "id": "OoRufukcdD69N0ioKTMZ",
+    "createdAt": "2026-01-18T10:12:28.445Z",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "name": "Model 3"
+  },
+  {
+    "id": "OpVxsGoPOy8SOfzP9zyR",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "createdAt": "2026-01-02T21:01:59.032Z",
+    "name": "Arteon"
+  },
+  {
+    "id": "OrzjG7bDFjGls5PXvWEK",
+    "name": "Tang",
+    "createdAt": "2026-01-18T09:41:46.708Z",
+    "brandId": "7N6zIMET2lpGjKsPsy3b"
+  },
+  {
+    "id": "OtQNXhFzUbtPwcZpoEoW",
+    "name": "Tracker",
+    "createdAt": "2026-01-02T20:44:25.128Z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "OtWdzlyhqn8jw3OMh1E1",
+    "name": "e-Rifter",
+    "createdAt": "2026-01-18T10:12:25.730Z",
+    "brandId": "ixviW4kG4ARlOzt9uly3"
+  },
+  {
+    "id": "OvB4hmE52Jbtft8VZYmA",
+    "name": "Cherokee",
+    "brandId": "DyxhoBNfjPjXaAyeTcGU",
+    "createdAt": "2026-01-18T09:41:56.296Z"
+  },
+  {
+    "id": "Oxg0GdrGDqqgXOoPdms8",
+    "createdAt": "2026-01-02T21:01:45.480Z",
+    "name": "912",
+    "brandId": "UCWrrfSmGxyisH1HGR8T"
+  },
+  {
+    "id": "P0Iff5sh48l8rvfzp1xM",
+    "name": "Antara",
+    "createdAt": "2026-01-18T09:42:02.404Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN"
+  },
+  {
+    "id": "P1gdvOkheMbWcpseDbhA",
+    "brandId": "fewLgy1kDeDakme4odts",
+    "createdAt": "2026-01-18T10:12:21.528Z",
+    "name": "E-Doblo"
+  },
+  {
+    "id": "P7k86QYncre0qtMZbmyR",
+    "createdAt": "2026-01-02T21:01:33.300Z",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "929"
+  },
+  {
+    "id": "PDzCe2aSxbhCcnLP4mdV",
+    "createdAt": "2026-01-02T21:01:45.193Z",
+    "name": "Grand Prix",
+    "brandId": "88bHP7y0bmc2fCDaH5uO"
+  },
+  {
+    "id": "PFxAxAUygpuZeSBr472r",
+    "name": "Kangoo",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.089Z"
+  },
+  {
+    "id": "PPDJaRoJhiHS4PFe4Vxn",
+    "createdAt": "2026-01-02T20:44:10.448Z",
+    "brandId": "eIorYBhW7TC17qK98dX5",
+    "name": "Punto Evo"
+  },
+  {
+    "id": "PWFVQf008sY4V6jdZ4FV",
+    "name": "8 Serisi",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:18.803Z"
+  },
+  {
+    "id": "PXVuGQYrByP38BwzvN5l",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "name": "Model 3 Performance",
+    "createdAt": "2026-01-18T10:12:28.606Z"
+  },
+  {
+    "id": "PXlWuZTV0oQdaHczdrqq",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "name": "FX",
+    "createdAt": "2026-01-02T21:01:22.779Z"
+  },
+  {
+    "id": "PdUf47koaRQyNjjVeS4y",
+    "createdAt": "2026-01-02T21:01:35.405Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "GLC"
+  },
+  {
+    "id": "PddkCFtz5Ns9wbEhp1Sw",
+    "createdAt": "2026-01-02T20:44:32.589Z",
+    "name": "DS 5",
+    "brandId": "9912diSF2H8sNsgUZa1K"
+  },
+  {
+    "id": "PgIyDlWr92zYZRVQTubu",
+    "createdAt": "2026-01-02T21:01:18.099Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "name": "Tourneo"
+  },
+  {
+    "id": "PhPDK5V4qvJa2kbolgcY",
+    "createdAt": "2026-01-02T21:01:42.849Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "205"
+  },
+  {
+    "id": "PhX8cnu7fnsJ6eSBDxMj",
+    "createdAt": "2026-01-18T09:41:51.378Z",
+    "name": "DS 4",
+    "brandId": "K9Ph3wExh82Fhq2HR6W0"
+  },
+  {
+    "id": "PlxlxuO8pTz5GOAOOeyq",
+    "createdAt": "2026-01-18T10:12:29.923Z",
+    "brandId": "jY17KrahXCk7zu8TwFN2",
+    "name": "ID.4"
+  },
+  {
+    "id": "PmEWpJZmZScIoY6R1Vlt",
+    "createdAt": "2026-01-18T09:42:01.830Z",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "name": "Pick Up"
+  },
+  {
+    "id": "Pui7B81bfHiGNdywRsP6",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM",
+    "name": "Austral",
+    "createdAt": "2026-01-18T09:42:04.294Z"
+  },
+  {
+    "id": "Q2NTwACWTkLcqGoi6SNh",
+    "brandId": "LfGSs9WeV8mZqvuoLl62",
+    "name": "A110 GT",
+    "createdAt": "2026-01-02T20:44:13.040Z"
+  },
+  {
+    "id": "Q8lIWGZyQEob3h0JS94P",
+    "createdAt": "2026-01-02T20:44:21.521Z",
+    "name": "CTS",
+    "brandId": "mS0gw27zWhVyfuLDo5kx"
+  },
+  {
+    "id": "QER43ZxhCalPQ68CIZMd",
+    "name": "XK",
+    "createdAt": "2026-01-02T21:01:24.422Z",
+    "brandId": "N1QkEFvqdkDj81x5vsZb"
+  },
+  {
+    "id": "QEXIGCL7wwIzc28Cag6P",
+    "name": "Agila",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:40.764Z"
+  },
+  {
+    "id": "QIZsY3pi4feIQsiNpQS9",
+    "name": "XV",
+    "createdAt": "2026-01-02T21:01:54.416Z",
+    "brandId": "yhThrhGwlQemPo7UbwsH"
+  },
+  {
+    "id": "QIxHxuFR01DSHpZIhePX",
+    "createdAt": "2026-01-02T20:44:33.813Z",
+    "name": "360",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "QMBGVfvYLyYiN1tXLkbU",
+    "name": "Tiggo 8 Pro",
+    "createdAt": "2026-01-18T09:41:47.529Z",
+    "brandId": "eXbUFvB8NHm8215JUIO9"
+  },
+  {
+    "id": "QOxSvsDA3BB9DwTTXSj9",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "name": "Clarus",
+    "createdAt": "2026-01-02T21:01:25.121Z"
+  },
+  {
+    "id": "QR4UBCPaipMNdPjhDy8R",
+    "createdAt": "2026-01-02T21:01:35.773Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "S Serisi"
+  },
+  {
+    "id": "QSsRKmaRTsvtBuPp7OwK",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:34.300Z",
+    "name": "488"
+  },
+  {
+    "id": "QZ1D50lbbAt2WjqJXxWP",
+    "name": "Mokka X",
+    "createdAt": "2026-01-18T09:42:03.065Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN"
+  },
+  {
+    "id": "QbY8ZrVkUPGG8RZ0RTkO",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:21.037Z",
+    "name": "Ioniq"
+  },
+  {
+    "id": "Qez1UCn9zd3cjzufsTdX",
+    "brandId": "qs0YgsdsQRjHOVp7y70i",
+    "name": "A1",
+    "createdAt": "2026-01-02T21:01:48.979Z"
+  },
+  {
+    "id": "QjTOgp6Rjf8Mjdn3CCOY",
+    "createdAt": "2026-01-18T09:42:09.408Z",
+    "name": "Tiguan All Space",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM"
+  },
+  {
+    "id": "Qk3TiLSpZw0CSTdMBUnd",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "name": "620",
+    "createdAt": "2026-01-02T21:01:50.764Z"
+  },
+  {
+    "id": "QkLiwqhqhoQecSl9xKRn",
+    "name": "Sunny",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:40.393Z"
+  },
+  {
+    "id": "QpTSdYgDMS3RGQ4QhLdD",
+    "name": "Caddy",
+    "brandId": "fQtYbXQQLHtxkGvOI6VB",
+    "createdAt": "2026-05-06T11:30:08.746Z"
+  },
+  {
+    "id": "QrHqTXh2fJ0EDbXp6z9z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:24.970Z",
+    "name": "Suburban"
+  },
+  {
+    "id": "QshUsVSAsTMNS4QPrkrY",
+    "brandId": "qEnvUARXYLwK26ongeAZ",
+    "createdAt": "2026-01-18T09:41:48.544Z",
+    "name": "Berlingo SUV"
+  },
+  {
+    "id": "QwRBl0BL8EaA3QqYnKu7",
+    "name": "Puma",
+    "createdAt": "2026-01-02T21:01:17.735Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "R10ZWcH1SM9XLAQFzcD5",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "RCZ",
+    "createdAt": "2026-01-02T21:01:44.169Z"
+  },
+  {
+    "id": "R7u0coK7HqC9iwlB4AVk",
+    "createdAt": "2026-01-02T20:44:29.832Z",
+    "brandId": "fDr5idEGAVWSw38SdKoT",
+    "name": "Leganza"
+  },
+  {
+    "id": "R8n9sEhR7xMz6bh6ZYsx",
+    "brandId": "os9Yjbb7kF4PG91PoCSB",
+    "name": "Skyjet Cargo",
+    "createdAt": "2026-01-18T10:12:17.838Z"
+  },
+  {
+    "id": "RAx7Kwzdljaboy5hA0aM",
+    "createdAt": "2026-01-18T09:42:02.620Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN",
+    "name": "Frontera"
+  },
+  {
+    "id": "REd11VDiPvXO2Bw5nhgE",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:20.466Z",
+    "name": "Elantra"
+  },
+  {
+    "id": "RFv1WgCmLzA3Bfg87zEj",
+    "createdAt": "2026-01-02T20:44:27.062Z",
+    "name": "C4 Picasso",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "RGZtD5HsbqFwYCIgKqoG",
+    "createdAt": "2026-01-02T21:01:17.587Z",
+    "name": "Mondeo",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "RKPBDGMDhGcgzTjiQJg2",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:36.137Z",
+    "name": "V Serisi"
+  },
+  {
+    "id": "RKgYkVjKIakMh80FBknX",
+    "createdAt": "2026-01-02T20:44:22.447Z",
+    "name": "Logistar LS260",
+    "brandId": "R74Aku6ydGfGHKxaR879"
+  },
+  {
+    "id": "RWmjDW0bIK8WpQTNoU6j",
+    "brandId": "ixviW4kG4ARlOzt9uly3",
+    "name": "e-308",
+    "createdAt": "2026-01-18T10:12:25.496Z"
+  },
+  {
+    "id": "RXB9nP714NjPSAV41UBZ",
+    "createdAt": "2026-01-02T21:01:16.658Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "name": "EcoSport"
+  },
+  {
+    "id": "Rc4dW7XHg357OvSVmREV",
+    "createdAt": "2026-01-02T20:44:29.936Z",
+    "name": "Matiz",
+    "brandId": "fDr5idEGAVWSw38SdKoT"
+  },
+  {
+    "id": "RcL8OuwNc9BRo3DrF16b",
+    "createdAt": "2026-01-02T20:44:16.258Z",
+    "name": "RS4",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "RfXBPxRvjESS8D6OYEu1",
+    "createdAt": "2026-01-02T20:44:18.199Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "name": "1 Serisi"
+  },
+  {
+    "id": "RiPvfM2x22JjYRkdKOb5",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:34.498Z",
+    "name": "CL"
+  },
+  {
+    "id": "Rj86RpOtPMZaAC4f8K8b",
+    "createdAt": "2026-01-18T09:42:04.364Z",
+    "name": "Captur",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM"
+  },
+  {
+    "id": "Rl7nZxUMge98DC2uGMqc",
+    "createdAt": "2026-01-02T20:44:24.571Z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "name": "Monte Carlo"
+  },
+  {
+    "id": "RofUme3H27KUyvldjntI",
+    "createdAt": "2026-01-02T20:44:13.537Z",
+    "brandId": "dMStfGgO8FfNjpPVGGag",
+    "name": "STC"
+  },
+  {
+    "id": "RzfB91kFJyrqmlj0CsgR",
+    "name": "Corolla Cross",
+    "createdAt": "2026-01-18T09:42:08.350Z",
+    "brandId": "m94YtGeYldZsXHqPbY0M"
+  },
+  {
+    "id": "S07faVix1Q2pM0JMIIYh",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:16.097Z",
+    "name": "Uno"
+  },
+  {
+    "id": "S20sC9F4Nhee3W8aXluE",
+    "name": "C-Max",
+    "createdAt": "2026-01-02T21:01:16.364Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "S5uTW8ACP3avBDiuAFaC",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "name": "Capri",
+    "createdAt": "2026-01-02T21:01:16.466Z"
+  },
+  {
+    "id": "S8Ap5NvXqHoURhPm9kAK",
+    "name": "Caprice",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:23.753Z"
+  },
+  {
+    "id": "S8d7wW9YvYGM0T8Y80oc",
+    "name": "500e",
+    "brandId": "fewLgy1kDeDakme4odts",
+    "createdAt": "2026-01-18T10:12:21.364Z"
+  },
+  {
+    "id": "SExZjbqsD5g3vpje654u",
+    "brandId": "6FxN1j9LcYyjmkj80rYU",
+    "name": "Kangoo E-Tech",
+    "createdAt": "2026-01-18T10:12:27.609Z"
+  },
+  {
+    "id": "SFkeYKEjkROxG8RCtRww",
+    "createdAt": "2026-01-02T21:02:00.809Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "240"
+  },
+  {
+    "id": "SHJE9jjLlotfSu0y70Ue",
+    "createdAt": "2026-01-02T20:44:21.772Z",
+    "name": "Fleetwood",
+    "brandId": "mS0gw27zWhVyfuLDo5kx"
+  },
+  {
+    "id": "SL4TtUE7Q9kpmheD0xxB",
+    "name": "Bayon",
+    "createdAt": "2026-01-02T21:01:20.310Z",
+    "brandId": "NLNOb3DLywuJFfpe7hxB"
+  },
+  {
+    "id": "SMdg7uiQoCD45dHYuFBs",
+    "name": "e-208 GT",
+    "createdAt": "2026-01-18T10:12:25.335Z",
+    "brandId": "ixviW4kG4ARlOzt9uly3"
+  },
+  {
+    "id": "SMxcLVff8G9JlhRg7w5h",
+    "brandId": "pQ7oA2LF4DYe4h9XgnnC",
+    "name": "Partner",
+    "createdAt": "2026-09-04T09:43:56.785Z"
+  },
+  {
+    "id": "SRDyrujwZZWyKv3lqRYK",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:01.108Z",
+    "name": "740"
+  },
+  {
+    "id": "SSbAdYgUEMErACv6XuCw",
+    "createdAt": "2026-01-02T21:01:35.848Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "SL"
+  },
+  {
+    "id": "SThXSbMgtt28vKoWm6Zx",
+    "createdAt": "2026-01-18T09:42:05.803Z",
+    "name": "Yeti",
+    "brandId": "hipmofIxcL2KV7yvH8ye"
+  },
+  {
+    "id": "SVdjtBzWDrQ1jcvATegj",
+    "createdAt": "2026-01-18T09:41:55.864Z",
+    "brandId": "GDmig9uQClWV06FEunFx",
+    "name": "J7"
+  },
+  {
+    "id": "SXOWuPg9xjYtUbIfy1Cv",
+    "brandId": "3FvukhEpISO3Xn5rionK",
+    "createdAt": "2026-01-18T10:12:29.610Z",
+    "name": "T10F"
+  },
+  {
+    "id": "SdKLN5OO45mCW7WpOeGG",
+    "createdAt": "2026-01-02T20:44:10.998Z",
+    "name": "Y",
+    "brandId": "IddnnWWyU2KztqST371W"
+  },
+  {
+    "id": "Sf5NxW4rGjMM4KTp0ANa",
+    "name": "X2",
+    "createdAt": "2026-01-02T20:44:18.971Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "SgSZrLmFOLNr0u6zUt2K",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:33.500Z",
+    "name": "296 GTB"
+  },
+  {
+    "id": "SiSKN2gZUH5PfCU7t8WZ",
+    "name": "Regal",
+    "createdAt": "2026-01-02T20:44:20.518Z",
+    "brandId": "7tfZeuep0y2oWgQ8nwi0"
+  },
+  {
+    "id": "SjAbB5X2aguhk20l6es3",
+    "name": "Century",
+    "brandId": "7tfZeuep0y2oWgQ8nwi0",
+    "createdAt": "2026-01-02T20:44:20.190Z"
+  },
+  {
+    "id": "SlEQguEBClghHiU4POpl",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.045Z",
+    "name": "City"
+  },
+  {
+    "id": "SvfeBYmCUGLFOdlTzbZz",
+    "createdAt": "2026-01-02T21:01:32.401Z",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "name": "Levante"
+  },
+  {
+    "id": "T3s7h1dx8srlE4E4RNTH",
+    "createdAt": "2026-01-02T20:44:18.358Z",
+    "name": "3 Serisi",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "T4jrK13YhguT5s3gl1z0",
+    "createdAt": "2026-01-02T21:01:23.152Z",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "name": "Q30"
+  },
+  {
+    "id": "T9okErzDihKb2GMfWLF3",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "GLB",
+    "createdAt": "2026-01-02T21:01:35.333Z"
+  },
+  {
+    "id": "TI8F0uKbnAZuUvrgtnZB",
+    "createdAt": "2026-01-18T09:41:51.076Z",
+    "brandId": "8e2OXyO2uXBtYw3L5aCK",
+    "name": "Nitro"
+  },
+  {
+    "id": "TPDBNwTwtt5iKkPSubTk",
+    "createdAt": "2026-01-02T21:02:01.037Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "460"
+  },
+  {
+    "id": "TQgRsmisbfQgvEQcNz6a",
+    "brandId": "EJym8bCsmUASk1ffjd0N",
+    "name": "ë-C3",
+    "createdAt": "2026-01-18T10:12:20.384Z"
+  },
+  {
+    "id": "TR7mRtvYavannOfruH8w",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "name": "Bluebird",
+    "createdAt": "2026-01-02T21:01:39.502Z"
+  },
+  {
+    "id": "TRt8OOEgwFo0kHU8kdUK",
+    "brandId": "92iE3wNkm4pehCEy1Cgt",
+    "createdAt": "2026-01-18T09:42:07.191Z",
+    "name": "Grand Vitara"
+  },
+  {
+    "id": "TYIICViA7Ep9IjUbWOl8",
+    "name": "Neon",
+    "createdAt": "2026-01-02T20:44:25.860Z",
+    "brandId": "J1T0lOeeGrDlU46tMzFO"
+  },
+  {
+    "id": "TciDs72aNYS2Lpp8dDWN",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "BX",
+    "createdAt": "2026-01-02T20:44:26.500Z"
+  },
+  {
+    "id": "TlxAhnKYf6F2doG2jfFe",
+    "name": "RAV4",
+    "brandId": "m94YtGeYldZsXHqPbY0M",
+    "createdAt": "2026-01-18T09:42:08.644Z"
+  },
+  {
+    "id": "TvT01LdmCRDtTzBBO38I",
+    "brandId": "Zd247fK6y0OVen5TmWx4",
+    "name": "e-tron Sportback",
+    "createdAt": "2026-01-18T10:12:18.143Z"
+  },
+  {
+    "id": "Tz4wz9FAsQyegStYmEJe",
+    "name": "D-Max",
+    "createdAt": "2026-01-18T09:41:55.577Z",
+    "brandId": "SYnzOc0eY20LLIU1ayBz"
+  },
+  {
+    "id": "U0tmCjlW5eQU6lPnmKv3",
+    "createdAt": "2026-01-18T09:42:04.651Z",
+    "name": "Koleos",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM"
+  },
+  {
+    "id": "U293ppXin1IhJZBKCa72",
+    "createdAt": "2026-01-02T21:02:02.154Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "V70"
+  },
+  {
+    "id": "U363bJwWTI7ReEvGOvZV",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "name": "Skyline",
+    "createdAt": "2026-01-02T21:01:40.322Z"
+  },
+  {
+    "id": "U3CGN56LgqPdd2cv1Rdm",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "name": "i7",
+    "createdAt": "2026-01-02T20:44:19.853Z"
+  },
+  {
+    "id": "U5UI4qTfm5YK3AtD1GoT",
+    "createdAt": "2026-01-18T09:41:46.566Z",
+    "brandId": "7N6zIMET2lpGjKsPsy3b",
+    "name": "Atto 3"
+  },
+  {
+    "id": "U8x0ilM5aRIhKOYWl9IU",
+    "createdAt": "2026-01-02T21:01:25.195Z",
+    "name": "Picanto",
+    "brandId": "eXED7TjVzsQU393jlhei"
+  },
+  {
+    "id": "U9kI0mZGyI6vTAzGUwtz",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "name": "Model Y",
+    "createdAt": "2026-01-18T10:12:28.694Z"
+  },
+  {
+    "id": "U9p4Dqe7wh35OA9IxG0V",
+    "name": "Tucson",
+    "brandId": "ssJTL4P0rHJvdh4HOFeu",
+    "createdAt": "2026-01-18T09:41:54.933Z"
+  },
+  {
+    "id": "UI6dNjbHzUaE70HSJ7E7",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "348",
+    "createdAt": "2026-01-02T20:44:33.734Z"
+  },
+  {
+    "id": "ULC7Rh5kjvF03kv9DXXY",
+    "name": "Grande Punto",
+    "brandId": "eIorYBhW7TC17qK98dX5",
+    "createdAt": "2026-01-02T20:44:10.348Z"
+  },
+  {
+    "id": "UOiikRDwR462ht5NwdfH",
+    "createdAt": "2026-01-02T20:44:29.025Z",
+    "name": "Lodgy",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd"
+  },
+  {
+    "id": "UWRBSe1tEMRE9wWudXpB",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "name": "Maverick",
+    "createdAt": "2026-01-02T21:01:17.513Z"
+  },
+  {
+    "id": "UYkqTMMEh3oF7vmrUDCs",
+    "name": "Huracan",
+    "createdAt": "2026-01-02T21:01:28.217Z",
+    "brandId": "0VH1RIa47bRmoGe6gQCq"
+  },
+  {
+    "id": "UbO4W09stpZk1Ow1KwAq",
+    "name": "A4",
+    "brandId": "dMStfGgO8FfNjpPVGGag",
+    "createdAt": "2026-01-02T20:44:13.382Z"
+  },
+  {
+    "id": "UezCPjfBpGxQHh3nVWeq",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "createdAt": "2026-01-18T09:41:58.020Z",
+    "name": "Range Rover Evoque"
+  },
+  {
+    "id": "UgkOOsHA3durqizQkbwf",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "208",
+    "createdAt": "2026-01-02T21:01:43.072Z"
+  },
+  {
+    "id": "Uj99UWmslp8HkvlXmMV5",
+    "name": "Accent Blue",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:20.161Z"
+  },
+  {
+    "id": "UmB13POOm0sAevBp5A7g",
+    "name": "i8",
+    "createdAt": "2026-01-02T20:44:19.938Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "Utw2sLNELQyCfskufsDT",
+    "createdAt": "2026-01-02T21:01:14.477Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Doblo"
+  },
+  {
+    "id": "Uy2cK64qScJwncOpDQ2u",
+    "name": "EX",
+    "createdAt": "2026-01-02T21:01:22.677Z",
+    "brandId": "lAkycWxDUZkPXXkB98CO"
+  },
+  {
+    "id": "V4Qr5Fltdklv4OK9SyiQ",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "323",
+    "createdAt": "2026-01-02T21:01:33.010Z"
+  },
+  {
+    "id": "V8QJZHtrGabjqAcPkHJz",
+    "brandId": "Li3SWXkcU9dKVEvNZqHx",
+    "createdAt": "2026-01-18T09:41:53.560Z",
+    "name": "Sierra"
+  },
+  {
+    "id": "V9z2hSB89Jz74jgiuVYe",
+    "createdAt": "2026-01-18T10:12:30.507Z",
+    "name": "EV3",
+    "brandId": "YFBvrEQgvOSGKSP5Xpa8"
+  },
+  {
+    "id": "VEnWGhBJWOUXxFLZ8suf",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Lybra",
+    "createdAt": "2026-01-02T21:01:28.743Z"
+  },
+  {
+    "id": "VGPDwVSKT9nf5trl95Uh",
+    "createdAt": "2026-01-18T09:42:07.561Z",
+    "brandId": "92iE3wNkm4pehCEy1Cgt",
+    "name": "Vitara"
+  },
+  {
+    "id": "VIXjQ0H4BozgfHu2LJYL",
+    "createdAt": "2026-01-02T21:01:33.445Z",
+    "name": "CX-5",
+    "brandId": "jGp6IIvDUD3TalvDrzDV"
+  },
+  {
+    "id": "VOWVSLYvgSVHRC1RqbN7",
+    "createdAt": "2026-01-18T10:12:19.375Z",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "name": "i5 M60"
+  },
+  {
+    "id": "VRPbfMRX5ifuJNGXdozw",
+    "createdAt": "2026-01-02T21:01:22.530Z",
+    "name": "Soren",
+    "brandId": "TLfmwtcUt7odbYYjggwh"
+  },
+  {
+    "id": "VYRMRbvCQpHCpADc5ROP",
+    "brandId": "Li3SWXkcU9dKVEvNZqHx",
+    "createdAt": "2026-01-18T09:41:53.632Z",
+    "name": "Yukon"
+  },
+  {
+    "id": "VaEepW3wVHFkPHVAeh0m",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "name": "Terracan",
+    "createdAt": "2026-01-02T21:01:21.723Z"
+  },
+  {
+    "id": "Vaw5EJmy9eHQyFBaNnq4",
+    "name": "EV6",
+    "brandId": "tt5vGKep7Xzk2tXYyoG3",
+    "createdAt": "2026-01-18T09:41:56.865Z"
+  },
+  {
+    "id": "VbPQo4ugjhRJ27YnEEK2",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "C4",
+    "createdAt": "2026-01-02T20:44:26.904Z"
+  },
+  {
+    "id": "VfpMCsUJwquNmEFuHsTS",
+    "createdAt": "2026-01-02T21:01:18.559Z",
+    "name": "FC",
+    "brandId": "K55wijyvS6KLetUk4Dn8"
+  },
+  {
+    "id": "Vgmuso1Z4yKzUi4PcAWy",
+    "createdAt": "2026-01-18T10:12:19.071Z",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "name": "i4 eDrive40 M Sport"
+  },
+  {
+    "id": "VhQ3W6ClgdntATocLP5V",
+    "name": "Qashqai",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:40.247Z"
+  },
+  {
+    "id": "VhlkPlQNN9LWFrhj9D3D",
+    "createdAt": "2026-01-18T09:42:07.336Z",
+    "brandId": "92iE3wNkm4pehCEy1Cgt",
+    "name": "S-Cross"
+  },
+  {
+    "id": "VnXEeqGe6szG9eeyfE1F",
+    "name": "Stinger",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.904Z"
+  },
+  {
+    "id": "VnljyBow6L6bZQHnqkJy",
+    "createdAt": "2026-01-02T21:01:13.565Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "131"
+  },
+  {
+    "id": "VsWX1RT3uLPo5dBwOqB9",
+    "createdAt": "2026-01-02T20:44:17.050Z",
+    "name": "S8",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "VszlKA9HDlXDSua2c8NV",
+    "createdAt": "2026-01-02T20:44:20.942Z",
+    "brandId": "nT2Ov7jIgiNnL4sWRfOO",
+    "name": "Han"
+  },
+  {
+    "id": "VvQeuPEiXdzZgsHgKN87",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb",
+    "createdAt": "2026-01-02T21:01:51.519Z",
+    "name": "Alhambra"
+  },
+  {
+    "id": "VvVbhoKA3v1F3KZLAqZS",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "Q7",
+    "createdAt": "2026-01-02T20:44:16Z"
+  },
+  {
+    "id": "VyEQpazryGBhjf9I2tQ1",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Egea",
+    "createdAt": "2026-01-02T21:01:14.575Z"
+  },
+  {
+    "id": "VzqRuwrdLNx00lJNv7Kz",
+    "name": "Fluence",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:47.943Z"
+  },
+  {
+    "id": "W2mdjSxpwy4yEgq1D6YK",
+    "name": "Kalos",
+    "createdAt": "2026-01-02T20:44:29.594Z",
+    "brandId": "fDr5idEGAVWSw38SdKoT"
+  },
+  {
+    "id": "W81Q5V0hnJ0EeaT30RH7",
+    "createdAt": "2026-01-18T09:41:56.649Z",
+    "brandId": "DyxhoBNfjPjXaAyeTcGU",
+    "name": "Renegade"
+  },
+  {
+    "id": "WBqKiTNHXh98uHMxO830",
+    "createdAt": "2026-01-18T09:42:00.314Z",
+    "name": "EHS",
+    "brandId": "1xwZqz7UVXqmSuNelP1H"
+  },
+  {
+    "id": "WDEJwFdXN3XyL7q0LuSH",
+    "brandId": "0VH1RIa47bRmoGe6gQCq",
+    "createdAt": "2026-01-02T21:01:27.992Z",
+    "name": "Countach"
+  },
+  {
+    "id": "WHldLh5JnMVBc9WewZC0",
+    "createdAt": "2026-01-02T21:01:59.785Z",
+    "name": "Polo",
+    "brandId": "IwWpatQmQW8G5ZyVypSx"
+  },
+  {
+    "id": "WHznfA4dTyFY2uMJ2eld",
+    "createdAt": "2026-01-18T09:41:46.400Z",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "name": "X7"
+  },
+  {
+    "id": "WKKFZanVUp62lX5OyzsZ",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "name": "Scala",
+    "createdAt": "2026-01-02T21:01:53.241Z"
+  },
+  {
+    "id": "WY34jEQYOx3uRAete0UH",
+    "name": "Actyon",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq",
+    "createdAt": "2026-01-18T09:42:06.094Z"
+  },
+  {
+    "id": "WZSucV9maHUY26OUsZIU",
+    "createdAt": "2026-01-02T21:01:49.503Z",
+    "brandId": "jES7oj5TVpoxp8827UWJ",
+    "name": "Ghost"
+  },
+  {
+    "id": "WahiV2OZGvY8YeJs1W1A",
+    "name": "Model X",
+    "createdAt": "2026-01-18T10:12:29.080Z",
+    "brandId": "WhEbqxPovlAFrC5juxNq"
+  },
+  {
+    "id": "WbGcw8p1cvzsDtoIfgnI",
+    "name": "307",
+    "createdAt": "2026-01-02T21:01:43.296Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "Wo64ss99kuK3oAWEB1KA",
+    "name": "Blueberry",
+    "createdAt": "2026-01-18T10:12:22.441Z",
+    "brandId": "JVr1LFqHr9NqSzTPCbG5"
+  },
+  {
+    "id": "WpQfOUxa3MCMUSthJLMH",
+    "brandId": "uHBL48nmpMqecLflbAvC",
+    "createdAt": "2026-01-18T09:41:57.372Z",
+    "name": "Niva"
+  },
+  {
+    "id": "Wpi7TpJFfPJlkueM7W9v",
+    "name": "Liana",
+    "createdAt": "2026-01-02T21:01:55.084Z",
+    "brandId": "Ch9jH69iTglbIYgNpqh5"
+  },
+  {
+    "id": "Wr82NsOHk5HmgTRQ0J5p",
+    "brandId": "3Ws5KGNDBQomd1Mx347z",
+    "name": "Aviator",
+    "createdAt": "2026-01-02T21:01:30.447Z"
+  },
+  {
+    "id": "WsJ3XzvCGDLhLRzYh4Zj",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:17.416Z",
+    "name": "Kuga"
+  },
+  {
+    "id": "Wv2ofv5ojW4CEidwmSVh",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "createdAt": "2026-01-18T09:41:44.616Z",
+    "name": "Q8"
+  },
+  {
+    "id": "Wx0hahFZRxi9GKuDmray",
+    "brandId": "ffnILVAQmc8QJjTKPDDu",
+    "name": "Sedici",
+    "createdAt": "2026-01-18T09:41:52.062Z"
+  },
+  {
+    "id": "WxZpUHKRMGBwreeymjK9",
+    "name": "Tourneo Custom",
+    "createdAt": "2026-03-31T10:44:02.906Z",
+    "brandId": "g6l0e4w0ANIaHvYuoD8A"
+  },
+  {
+    "id": "X18svf3MxhwLaKqgFRFR",
+    "createdAt": "2026-01-02T20:44:31.063Z",
+    "brandId": "Yyecu846x7An7DTHjEAN",
+    "name": "Terios"
+  },
+  {
+    "id": "X530owXmc4JbpoXhfmpq",
+    "createdAt": "2026-01-02T21:01:29.931Z",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "name": "LC"
+  },
+  {
+    "id": "X6AsxorMX22YY7hdfqcd",
+    "name": "Murcielago",
+    "brandId": "0VH1RIa47bRmoGe6gQCq",
+    "createdAt": "2026-01-02T21:01:28.296Z"
+  },
+  {
+    "id": "XAUksVPojdm6khdg4OI8",
+    "name": "Taycan",
+    "createdAt": "2026-01-02T21:01:46.075Z",
+    "brandId": "UCWrrfSmGxyisH1HGR8T"
+  },
+  {
+    "id": "XGkNJuQbTZG72TvPyFzp",
+    "name": "S-Max",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:17.901Z"
+  },
+  {
+    "id": "XL1dshvJlWYp8TkFPJa2",
+    "name": "Almera",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:39.427Z"
+  },
+  {
+    "id": "XRQZRLTkNKoDDaSnym69",
+    "name": "Testarossa",
+    "createdAt": "2026-01-02T20:44:36.038Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "XRQxXXZ4v7Ah4Jo98qhb",
+    "name": "GLS",
+    "createdAt": "2026-01-02T21:01:35.550Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "XRxR74vu4MTWnwyP0WaS",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "name": "Roomster",
+    "createdAt": "2026-01-02T21:01:53.166Z"
+  },
+  {
+    "id": "XTQswbYpxNOr6lhdHEk3",
+    "name": "R Serisi",
+    "createdAt": "2026-01-02T21:01:35.700Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "XVxhsUSN7j4u5gIsF0tk",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.504Z",
+    "name": "Sephia"
+  },
+  {
+    "id": "XWhZlSWLybDxi1yHid3N",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "createdAt": "2026-01-02T20:44:11.977Z",
+    "name": "Brera"
+  },
+  {
+    "id": "XaueJMjt9xw4xnfe4obJ",
+    "brandId": "w7lIyQAd98lec4Qs7DYr",
+    "createdAt": "2026-01-18T09:42:03.498Z",
+    "name": "408"
+  },
+  {
+    "id": "XdJWE3hbTCLYa3sH9urT",
+    "name": "Freelander",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "createdAt": "2026-01-18T09:41:57.877Z"
+  },
+  {
+    "id": "Xe2MlpnJh5RI0qu8KSlS",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "name": "X4",
+    "createdAt": "2026-01-18T09:41:45.891Z"
+  },
+  {
+    "id": "XeXnDxNCa7KFot2BgSpM",
+    "name": "Juke",
+    "createdAt": "2026-01-02T21:01:39.576Z",
+    "brandId": "tmq3NVi598n6gi6d5bhZ"
+  },
+  {
+    "id": "XeeCsUjpqWETaKqIi2kX",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "C30",
+    "createdAt": "2026-01-02T21:02:01.330Z"
+  },
+  {
+    "id": "XjFpFKLa3TffKPnkjPyn",
+    "name": "Epica",
+    "createdAt": "2026-01-02T20:44:24.169Z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "Xmta1ttNX3BK2QJyP5lx",
+    "createdAt": "2026-01-02T20:44:11.776Z",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "name": "164"
+  },
+  {
+    "id": "XolWZEyYQ3KOcctQp0IZ",
+    "name": "Jimny",
+    "brandId": "92iE3wNkm4pehCEy1Cgt",
+    "createdAt": "2026-01-18T09:42:07.263Z"
+  },
+  {
+    "id": "Xs50GSPIdi583w8M1oK7",
+    "createdAt": "2026-01-02T21:01:42.550Z",
+    "name": "104",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "XugtitXRdo2pVRZzG8yF",
+    "name": "Jumpy Spacetourer",
+    "createdAt": "2026-03-30T08:03:02.539Z",
+    "brandId": "Of3JDvSfM4QeL9VCWfdc"
+  },
+  {
+    "id": "XvCefbkX5cUlnEM5aGsP",
+    "name": "Urban",
+    "brandId": "Dhcz6ucGDrE57dXlhfsO",
+    "createdAt": "2026-01-02T21:01:26.555Z"
+  },
+  {
+    "id": "XwgqfYUHAQUnxd0GTqMB",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:57.809Z",
+    "name": "Corolla"
+  },
+  {
+    "id": "Xx5X5whXZCmaPe0C281V",
+    "name": "Mio",
+    "brandId": "JVr1LFqHr9NqSzTPCbG5",
+    "createdAt": "2026-01-18T10:12:22.597Z"
+  },
+  {
+    "id": "Y0HtDfixDONrUhiqskSl",
+    "createdAt": "2026-01-02T20:44:27.961Z",
+    "name": "Nemo",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "Y12zZqYKVUACVx4uZAAT",
+    "name": "500",
+    "createdAt": "2026-01-02T20:44:10.046Z",
+    "brandId": "eIorYBhW7TC17qK98dX5"
+  },
+  {
+    "id": "Y2wo9x2p1F1LQrk01c5V",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Mokka",
+    "createdAt": "2026-01-02T21:01:41.719Z"
+  },
+  {
+    "id": "Y5wCtII5suTAk1U3TO4g",
+    "name": "Grandland-e",
+    "createdAt": "2026-01-18T09:42:02.920Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN"
+  },
+  {
+    "id": "Y8vSr3EcKNn2AusPafPT",
+    "brandId": "RsFApN6KzxzPbVUkpqdS",
+    "name": "RX",
+    "createdAt": "2026-01-18T09:41:58.377Z"
+  },
+  {
+    "id": "Y9evVB1oBYFWVzpyF3dx",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "400",
+    "createdAt": "2026-01-02T20:44:33.970Z"
+  },
+  {
+    "id": "YALVqXtb0X5cNcVeRK1G",
+    "name": "Taunus",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:18.027Z"
+  },
+  {
+    "id": "YDanAWb0N8tGVyk6ag2v",
+    "brandId": "3ILw68caJVPlyX25anlf",
+    "name": "FX",
+    "createdAt": "2026-01-18T09:41:55.215Z"
+  },
+  {
+    "id": "YFeT4JWfd3mBa7bPTKXR",
+    "name": "Maxima",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:39.725Z"
+  },
+  {
+    "id": "YIeLTkp7x00EuSkMTGXs",
+    "brandId": "9912diSF2H8sNsgUZa1K",
+    "createdAt": "2026-01-02T20:44:32.510Z",
+    "name": "DS 4"
+  },
+  {
+    "id": "YLMKNtkmmdgpgLUUcFsO",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "name": "EcoSport",
+    "createdAt": "2026-01-18T09:41:52.407Z"
+  },
+  {
+    "id": "YM2o0iaKtd2EEJExiGk4",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.313Z",
+    "name": "Latitude"
+  },
+  {
+    "id": "YN2R7bxIAFdShjkVpwKn",
+    "createdAt": "2026-01-02T21:01:15.412Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Punto"
+  },
+  {
+    "id": "YNp76BdWSAMuRdytDGI8",
+    "brandId": "GqEYPh6tEhp1nspsIe6M",
+    "createdAt": "2026-01-18T09:42:01.327Z",
+    "name": "Pajero"
+  },
+  {
+    "id": "YStZn8ea0Cv0X5cBm3IL",
+    "createdAt": "2026-01-02T21:01:40.102Z",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "name": "Pathfinder"
+  },
+  {
+    "id": "YUoaZpfAl4gk4OsmxTqD",
+    "brandId": "J1T0lOeeGrDlU46tMzFO",
+    "name": "Voyager",
+    "createdAt": "2026-01-02T20:44:26.101Z"
+  },
+  {
+    "id": "YYjGxClIdKgzPF8vUXKu",
+    "name": "e-308 GT",
+    "createdAt": "2026-01-18T10:12:25.576Z",
+    "brandId": "ixviW4kG4ARlOzt9uly3"
+  },
+  {
+    "id": "Yb0q28OdVJQ3oAktRH5o",
+    "createdAt": "2026-01-18T10:12:20.637Z",
+    "name": "ë-Berlingo",
+    "brandId": "EJym8bCsmUASk1ffjd0N"
+  },
+  {
+    "id": "Ye8zNHOeGQTIhJhBbpzM",
+    "createdAt": "2026-01-02T21:01:26.296Z",
+    "brandId": "Dhcz6ucGDrE57dXlhfsO",
+    "name": "City"
+  },
+  {
+    "id": "YgMEqeiDclUfmEWhQoDh",
+    "name": "QX50",
+    "brandId": "3ILw68caJVPlyX25anlf",
+    "createdAt": "2026-01-18T09:41:55.288Z"
+  },
+  {
+    "id": "YmfEisUSjRPjalV98KxI",
+    "createdAt": "2026-01-02T20:44:32.189Z",
+    "brandId": "myFLHq3VbA4Eblp4P7cl",
+    "name": "Viper"
+  },
+  {
+    "id": "YpvPmGn7EZ4qnX1KSNeI",
+    "createdAt": "2026-01-18T10:12:28.523Z",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "name": "Model 3 Long Range"
+  },
+  {
+    "id": "Yqmb2A3i42x9lfUS3fAP",
+    "createdAt": "2026-01-18T09:42:04.504Z",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM",
+    "name": "Kadjar"
+  },
+  {
+    "id": "YtkSQSbBirnNVEy2zIVU",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "createdAt": "2026-01-02T21:01:50.065Z",
+    "name": "214"
+  },
+  {
+    "id": "YukUcZUiYjwh7xNrc57O",
+    "brandId": "cFcmWPu6L1OzsgfblQuF",
+    "createdAt": "2026-01-18T09:41:48.201Z",
+    "name": "Tahoe"
+  },
+  {
+    "id": "YvHniKeDpMazENdJgUCa",
+    "name": "e-2008",
+    "brandId": "w7lIyQAd98lec4Qs7DYr",
+    "createdAt": "2026-01-18T09:42:03.639Z"
+  },
+  {
+    "id": "Z1X7qojtrpPeGOkJNuLg",
+    "createdAt": "2026-01-02T21:01:20.068Z",
+    "name": "Accent",
+    "brandId": "NLNOb3DLywuJFfpe7hxB"
+  },
+  {
+    "id": "Z2M4U9i4TgnlhXzeZ4E6",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.832Z",
+    "name": "Zoe"
+  },
+  {
+    "id": "Z2zFX2KfYIA5z2bSflpD",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "XC90",
+    "createdAt": "2026-01-02T21:02:02.467Z"
+  },
+  {
+    "id": "ZC1qNPg1m655Jpqg1IzE",
+    "createdAt": "2026-01-18T09:41:44.512Z",
+    "name": "Q7",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9"
+  },
+  {
+    "id": "ZFm9A7L3HZtSTDWB3YYA",
+    "createdAt": "2026-06-02T09:31:17.831Z",
+    "brandId": "TbqZx7F0gthAcaEQPGim",
+    "name": "1600 GTL"
+  },
+  {
+    "id": "ZH48Sm19PyZWImEOhzme",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "name": "Accord",
+    "createdAt": "2026-01-02T21:01:18.951Z"
+  },
+  {
+    "id": "ZYEgh1U0kcOgXT0lJvVX",
+    "brandId": "AuObstQU7Vne3qQvLQts",
+    "createdAt": "2026-01-18T09:41:56.153Z",
+    "name": "I-Pace"
+  },
+  {
+    "id": "ZZUhVHodjVmATNcmEVIE",
+    "createdAt": "2026-01-18T10:12:21.966Z",
+    "brandId": "LUQGt8VizymCdt6iFWM9",
+    "name": "Ioniq 6"
+  },
+  {
+    "id": "ZbaYWtKbwr94cFDZcLJ1",
+    "name": "Enzo",
+    "createdAt": "2026-01-02T20:44:34.946Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "ZpJu2G2INiNAZ1Sci94v",
+    "createdAt": "2026-01-02T20:44:27.239Z",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "C4 X"
+  },
+  {
+    "id": "ZvcZIv5bShqGmuZBSAw6",
+    "createdAt": "2026-01-02T21:01:53.533Z",
+    "brandId": "SyDEhmr2uoeGn9FwnC3P",
+    "name": "ForFour"
+  },
+  {
+    "id": "Zy2mFY1FY1DKDNImAWNM",
+    "createdAt": "2026-01-02T20:44:35.449Z",
+    "name": "FF",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "ZyFK9dW9E7nIwmB8cPZg",
+    "createdAt": "2026-01-02T21:01:49.358Z",
+    "name": "Cullinan",
+    "brandId": "jES7oj5TVpoxp8827UWJ"
+  },
+  {
+    "id": "Zza1uMeEEbNKAjkgqdRu",
+    "name": "Outlander",
+    "createdAt": "2026-01-18T09:42:01.256Z",
+    "brandId": "GqEYPh6tEhp1nspsIe6M"
+  },
+  {
+    "id": "ZzlNfRlqCkK58I7N6Wpm",
+    "name": "Carmel",
+    "brandId": "CQPhErsvMlHD0b5g6e62",
+    "createdAt": "2026-01-02T21:01:58.727Z"
+  },
+  {
+    "id": "a3FU0tSn4qSszcb0kClf",
+    "brandId": "m94YtGeYldZsXHqPbY0M",
+    "name": "C-HR",
+    "createdAt": "2026-01-18T09:42:08.278Z"
+  },
+  {
+    "id": "a4Dv3F64VUlEbQYE7c2K",
+    "name": "Stilo",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:15.802Z"
+  },
+  {
+    "id": "a6v0AyNORdkHckDmW1Kx",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:40.989Z",
+    "name": "Astra"
+  },
+  {
+    "id": "a8XsMwDCLzgmRhbk4MhS",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:17.176Z",
+    "name": "Fusion"
+  },
+  {
+    "id": "a9vkpMUXbI1ulZrL5Q6f",
+    "name": "SEAL U DM-İ",
+    "brandId": "7N6zIMET2lpGjKsPsy3b",
+    "createdAt": "2026-03-07T09:05:23.057Z"
+  },
+  {
+    "id": "aDcQ4X2VMOX6xhfUtNz3",
+    "createdAt": "2026-01-02T21:01:58.046Z",
+    "name": "Hilux",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE"
+  },
+  {
+    "id": "aHMbFWiQkbo5vgogcWrP",
+    "name": "3",
+    "createdAt": "2026-01-02T21:01:44.828Z",
+    "brandId": "VHOZQzstpfxPnD1K1Vv4"
+  },
+  {
+    "id": "aI53oROTJgLYywXSiywE",
+    "name": "Captur",
+    "createdAt": "2026-01-02T21:01:47.719Z",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm"
+  },
+  {
+    "id": "aKpPMqFTGjupDeayYDYZ",
+    "createdAt": "2026-01-02T21:01:28.982Z",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Prisma"
+  },
+  {
+    "id": "aKsJ6twoA1U1XVmpVuM1",
+    "createdAt": "2026-01-02T21:01:52.108Z",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb",
+    "name": "Malaga"
+  },
+  {
+    "id": "aMoZiU5nLxSYkKAS4XZ9",
+    "name": "Yaris",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:58.578Z"
+  },
+  {
+    "id": "aP5FRUtcALMRIz9s9Qjz",
+    "createdAt": "2026-01-02T20:44:18.277Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "name": "2 Serisi"
+  },
+  {
+    "id": "aStElKHB2muxLneeUSql",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "550",
+    "createdAt": "2026-01-02T20:44:34.458Z"
+  },
+  {
+    "id": "aWvz8L2ynkg2t0IfpO1s",
+    "name": "Kona Electric",
+    "createdAt": "2026-01-18T10:12:21.813Z",
+    "brandId": "LUQGt8VizymCdt6iFWM9"
+  },
+  {
+    "id": "aanjydeliWS6VvHseu02",
+    "createdAt": "2026-01-02T21:01:59.553Z",
+    "name": "Jetta",
+    "brandId": "IwWpatQmQW8G5ZyVypSx"
+  },
+  {
+    "id": "acyCBlF4Y1LeyINMOlzW",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.394Z",
+    "name": "Megane"
+  },
+  {
+    "id": "adEdiOxeVIPPUq4RBGZ1",
+    "name": "Palio",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:15.227Z"
+  },
+  {
+    "id": "aj07ULQVwXDhuW2sHznz",
+    "name": "Bora",
+    "createdAt": "2026-01-02T21:01:59.186Z",
+    "brandId": "IwWpatQmQW8G5ZyVypSx"
+  },
+  {
+    "id": "arxS05IsNPf0KXewMnpD",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM",
+    "createdAt": "2026-01-18T09:42:09.260Z",
+    "name": "Tayron"
+  },
+  {
+    "id": "asTJcztMqQnxeG0ObOzx",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.530Z",
+    "name": "Jazz"
+  },
+  {
+    "id": "asblfb4ahDQ1UQYfGcfc",
+    "name": "Focus",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:17.102Z"
+  },
+  {
+    "id": "awuhcPtFi1oWP25XEzKE",
+    "name": "XC40",
+    "createdAt": "2026-01-18T09:42:09.866Z",
+    "brandId": "ms4M50ZrkrCCzLUSSCA4"
+  },
+  {
+    "id": "b4gHJlduSWoBboU7bvaV",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:18.614Z",
+    "name": "6 Serisi"
+  },
+  {
+    "id": "bCDgRZvh1TtzsKOho7VY",
+    "brandId": "ssJTL4P0rHJvdh4HOFeu",
+    "createdAt": "2026-01-18T09:41:54.467Z",
+    "name": "Bayon"
+  },
+  {
+    "id": "bLUlB2zldmslFguygBrG",
+    "brandId": "N1QkEFvqdkDj81x5vsZb",
+    "name": "XF",
+    "createdAt": "2026-01-02T21:01:24.218Z"
+  },
+  {
+    "id": "bQSzWfPrDbSP4dzNhKsd",
+    "createdAt": "2026-07-04T09:40:12.433Z",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "C-Elysee"
+  },
+  {
+    "id": "bRDxxIK4U82pgryKGO84",
+    "name": "Eclipse",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:38.066Z"
+  },
+  {
+    "id": "bTy1YDeFh5NKnX5ENZ3i",
+    "createdAt": "2026-01-02T21:01:58.421Z",
+    "name": "Supra",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE"
+  },
+  {
+    "id": "bV5LnIBEV6bXyFpcyBiM",
+    "createdAt": "2026-01-18T09:41:51.989Z",
+    "name": "Panda Cross",
+    "brandId": "ffnILVAQmc8QJjTKPDDu"
+  },
+  {
+    "id": "bWsU0MYm2h0kYptmhfGX",
+    "brandId": "uxDpotUxT6TDKiMURqt5",
+    "createdAt": "2026-01-02T20:44:22.605Z",
+    "name": "Alia"
+  },
+  {
+    "id": "baIzwwzKbGoKzsOxnaXj",
+    "brandId": "uxDpotUxT6TDKiMURqt5",
+    "createdAt": "2026-01-02T20:44:23.003Z",
+    "name": "Tiggo 3"
+  },
+  {
+    "id": "bawhw8bqtLgMtjb7Hd6Q",
+    "name": "2008",
+    "brandId": "w7lIyQAd98lec4Qs7DYr",
+    "createdAt": "2026-01-18T09:42:03.281Z"
+  },
+  {
+    "id": "bdhwe6gBZDMEad0XCwnB",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:38.214Z",
+    "name": "L200"
+  },
+  {
+    "id": "bfgd9PdpUVixw8M8MmMH",
+    "name": "Dawn",
+    "createdAt": "2026-01-02T21:01:49.432Z",
+    "brandId": "jES7oj5TVpoxp8827UWJ"
+  },
+  {
+    "id": "bfqX783OZhGgOXriFWJ4",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "createdAt": "2026-01-02T20:44:12.163Z",
+    "name": "Giulietta"
+  },
+  {
+    "id": "biBEirxHYpGlqhssY4Sn",
+    "brandId": "BT5sQuTBeVE4qbXgM9cv",
+    "name": "Tang",
+    "createdAt": "2026-01-18T10:12:20.208Z"
+  },
+  {
+    "id": "bjgkRYccPMUFbR8unhVy",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.468Z",
+    "name": "Modus"
+  },
+  {
+    "id": "bl7kB1N1L8QX2llTkiZf",
+    "createdAt": "2026-01-02T20:44:12.266Z",
+    "name": "GT",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP"
+  },
+  {
+    "id": "bwTtsfVqlF7n3z09u07E",
+    "createdAt": "2026-01-02T21:01:49.052Z",
+    "name": "City",
+    "brandId": "qs0YgsdsQRjHOVp7y70i"
+  },
+  {
+    "id": "bwvmhswdlgMZc80fYlUQ",
+    "createdAt": "2026-01-18T10:12:20.482Z",
+    "brandId": "EJym8bCsmUASk1ffjd0N",
+    "name": "ë-C4"
+  },
+  {
+    "id": "byuuE60DiiMstrqSQWWJ",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:40.912Z",
+    "name": "Ascona"
+  },
+  {
+    "id": "c6sx8nmhIokz9SBencEi",
+    "name": "Electric",
+    "createdAt": "2026-01-02T21:01:42.391Z",
+    "brandId": "NDLMUMqA4drTIJfhQ21z"
+  },
+  {
+    "id": "c79SdbFPspSwMHmMZbV3",
+    "createdAt": "2026-01-02T20:44:22.684Z",
+    "name": "Arrizo 5",
+    "brandId": "uxDpotUxT6TDKiMURqt5"
+  },
+  {
+    "id": "cAOWr5kJEVtgW5HQql8U",
+    "name": "250",
+    "createdAt": "2026-01-02T20:44:33.335Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "cCZY3UO1DSj0RRHEPvol",
+    "createdAt": "2026-01-02T21:02:01.579Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "S60"
+  },
+  {
+    "id": "cCsduYQ9xjZV57sXLgwV",
+    "createdAt": "2026-01-18T09:42:10.014Z",
+    "name": "XC90",
+    "brandId": "ms4M50ZrkrCCzLUSSCA4"
+  },
+  {
+    "id": "cE3vL8haHYN7ksSJMvsL",
+    "brandId": "uTXRCXkqbGL7DBHwXYXw",
+    "createdAt": "2026-01-02T20:44:13.978Z",
+    "name": "E-Car"
+  },
+  {
+    "id": "cEoqRYdSr84FrvduTKXe",
+    "createdAt": "2026-01-02T21:01:13.454Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "128"
+  },
+  {
+    "id": "cKEQIi2iRs25gJl8Nmhh",
+    "createdAt": "2026-01-02T20:44:21.189Z",
+    "name": "Tang",
+    "brandId": "nT2Ov7jIgiNnL4sWRfOO"
+  },
+  {
+    "id": "cSoUldhpcepoFfj7K8tE",
+    "name": "Tonale",
+    "brandId": "Bk6dbf1BDTN9nGyqDPWq",
+    "createdAt": "2026-01-18T09:41:43.670Z"
+  },
+  {
+    "id": "cU3GkkLNJeR4SiPy7lCp",
+    "createdAt": "2026-01-02T21:01:50.536Z",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "name": "416"
+  },
+  {
+    "id": "caElwYR59cePAenD1VVT",
+    "name": "DS3",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "createdAt": "2026-01-02T20:44:27.559Z"
+  },
+  {
+    "id": "cgd6uXtAen1tAtuxCUTv",
+    "brandId": "LfGSs9WeV8mZqvuoLl62",
+    "createdAt": "2026-01-02T20:44:12.879Z",
+    "name": "A110"
+  },
+  {
+    "id": "chdmGz5TPnTrB5bNzlaL",
+    "createdAt": "2026-01-02T20:44:16.648Z",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "S3"
+  },
+  {
+    "id": "clN7pDQjuLwgVbWBckT7",
+    "brandId": "lW31uM62KPt1gFKnl0Kb",
+    "createdAt": "2026-01-18T10:12:30.989Z",
+    "name": "Cargo EV"
+  },
+  {
+    "id": "cmVM41Y2Pc1EqWWuHKyq",
+    "name": "E-Compact",
+    "brandId": "uTXRCXkqbGL7DBHwXYXw",
+    "createdAt": "2026-01-02T20:44:13.796Z"
+  },
+  {
+    "id": "cnYIMaHU8lyS5mcQ0Tto",
+    "createdAt": "2026-01-02T21:01:38.361Z",
+    "name": "Outlander",
+    "brandId": "YmndY5fMO2ffTBR53xzG"
+  },
+  {
+    "id": "co0OWB1xNKIwdciwVeZS",
+    "createdAt": "2026-01-18T09:41:52.621Z",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "name": "Expedition"
+  },
+  {
+    "id": "cqMPiThEag5AKSPYqjA9",
+    "createdAt": "2026-01-02T20:44:33.148Z",
+    "name": "208",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "cthdjEsuhECGLtIDgtta",
+    "brandId": "K55wijyvS6KLetUk4Dn8",
+    "createdAt": "2026-01-02T21:01:18.728Z",
+    "name": "MK"
+  },
+  {
+    "id": "cvUCZEcQOk0on6IwIXOl",
+    "brandId": "MJA03uLxDfvLpTVhjxdJ",
+    "createdAt": "2026-01-02T21:01:56.117Z",
+    "name": "Vista"
+  },
+  {
+    "id": "cxc1QbIy5LQQ3Szzo0th",
+    "name": "Espace",
+    "createdAt": "2026-01-02T21:01:47.868Z",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm"
+  },
+  {
+    "id": "d2HMpdg4X4PuD7wF3fdj",
+    "createdAt": "2026-01-02T21:01:45.115Z",
+    "brandId": "88bHP7y0bmc2fCDaH5uO",
+    "name": "G6"
+  },
+  {
+    "id": "dBifiLPfqrzCh5SEO5jM",
+    "createdAt": "2026-01-02T20:44:18.457Z",
+    "name": "4 Serisi",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "dEZVDgV2C7O562DyGKKV",
+    "name": "Cayenne Coupe",
+    "createdAt": "2026-01-18T09:42:04.006Z",
+    "brandId": "8bw7mt6Xk5Xk3tKXq1t4"
+  },
+  {
+    "id": "dGi9yOp0eZgYyolU7z5n",
+    "createdAt": "2026-01-18T09:41:49.557Z",
+    "brandId": "cEJWbOHANgL94xcNNI8j",
+    "name": "Duster"
+  },
+  {
+    "id": "dMBotuoFrwKKigFlmLTX",
+    "name": "XJ",
+    "createdAt": "2026-01-02T21:01:24.292Z",
+    "brandId": "N1QkEFvqdkDj81x5vsZb"
+  },
+  {
+    "id": "dMa9sq8ffc6SFSJbjwz6",
+    "name": "Touareg",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM",
+    "createdAt": "2026-01-18T09:42:09.495Z"
+  },
+  {
+    "id": "dNPicgMDV3MIrBHubBVa",
+    "createdAt": "2026-01-18T09:41:56.577Z",
+    "brandId": "DyxhoBNfjPjXaAyeTcGU",
+    "name": "Grand Cherokee"
+  },
+  {
+    "id": "dQg8Ol9xPHYEGowTn8Yb",
+    "name": "Korando",
+    "createdAt": "2026-01-18T09:42:06.287Z",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq"
+  },
+  {
+    "id": "dS99OjXfaKe5Ir08n3tK",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:17.128Z",
+    "name": "TT"
+  },
+  {
+    "id": "dYRWPtOoNQYn0OX9VHay",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "name": "GT86",
+    "createdAt": "2026-01-02T21:01:57.972Z"
+  },
+  {
+    "id": "da4z4q8xWZI34qQf7w6X",
+    "name": "Paceman",
+    "createdAt": "2026-01-18T09:42:00.899Z",
+    "brandId": "bq1iWORT8A4lt1Y2fHJ1"
+  },
+  {
+    "id": "df9wTY1J7NvAcRBeGNm4",
+    "name": "Saga",
+    "createdAt": "2026-01-02T21:01:46.535Z",
+    "brandId": "cmHLEwz1BCHU7PuhbtIm"
+  },
+  {
+    "id": "diL5EKwYaogksmVe5wCd",
+    "name": "Continental",
+    "brandId": "3Ws5KGNDBQomd1Mx347z",
+    "createdAt": "2026-01-02T21:01:30.518Z"
+  },
+  {
+    "id": "dkIixGmj75Uw6LqemsVW",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "createdAt": "2026-01-18T10:12:19.276Z",
+    "name": "i5 eDrive40"
+  },
+  {
+    "id": "dncJ8iSZ4miH8dL4sglx",
+    "name": "1500",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "createdAt": "2026-01-02T21:01:27.082Z"
+  },
+  {
+    "id": "dor83qF7vQylrNnfKeE7",
+    "createdAt": "2026-01-02T20:44:12.505Z",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "name": "Spider"
+  },
+  {
+    "id": "dqhsBQbKD7TttVjYZ1Pz",
+    "name": "Quattroporte",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "createdAt": "2026-01-02T21:01:32.548Z"
+  },
+  {
+    "id": "dxwd5c4sESptzr7JgKXL",
+    "createdAt": "2026-03-25T06:34:35.596Z",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Transporter"
+  },
+  {
+    "id": "e0wsc1C5a4QlFDZVFO52",
+    "name": "Model S",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "createdAt": "2026-01-18T10:12:29.002Z"
+  },
+  {
+    "id": "e4yjWEI4UaFHMt9qU2Yz",
+    "brandId": "iuvRzDI7lUwvphEb2u5j",
+    "createdAt": "2026-01-02T21:01:31.258Z",
+    "name": "Evora"
+  },
+  {
+    "id": "e5Y62d0uGxlcEAzopcKm",
+    "createdAt": "2026-01-18T10:12:18.767Z",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "name": "i4"
+  },
+  {
+    "id": "e8OF9pFimvzWV4cHly64",
+    "name": "T-Roc",
+    "createdAt": "2026-01-18T09:42:09.094Z",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM"
+  },
+  {
+    "id": "eGuFGSGIti93qbEmnhvl",
+    "name": "Suburban",
+    "createdAt": "2026-01-18T09:41:48.104Z",
+    "brandId": "cFcmWPu6L1OzsgfblQuF"
+  },
+  {
+    "id": "eIgANxYmELjWWMOrXhot",
+    "brandId": "YFBvrEQgvOSGKSP5Xpa8",
+    "name": "EV1",
+    "createdAt": "2026-01-18T10:12:30.346Z"
+  },
+  {
+    "id": "eLKGOIENlha0slD3U6Y5",
+    "createdAt": "2026-01-02T21:01:20.805Z",
+    "name": "i20",
+    "brandId": "NLNOb3DLywuJFfpe7hxB"
+  },
+  {
+    "id": "eVMAOE3ialSLsTSXr6aX",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Antara",
+    "createdAt": "2026-01-02T21:01:40.839Z"
+  },
+  {
+    "id": "eZBaWl31zjClcG16pkZz",
+    "createdAt": "2026-01-02T21:01:24.143Z",
+    "name": "XE",
+    "brandId": "N1QkEFvqdkDj81x5vsZb"
+  },
+  {
+    "id": "eb0s049FYzHxqOl0WMXp",
+    "createdAt": "2026-01-02T20:44:35.536Z",
+    "name": "GTC4 Lusso",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "ecRQ9taxmW1wiGuVNOXY",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "createdAt": "2026-01-02T20:44:26.262Z",
+    "name": "AMI"
+  },
+  {
+    "id": "edbrYHPf1IcgGwucIeHW",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "Jumper",
+    "createdAt": "2026-01-02T20:44:27.878Z"
+  },
+  {
+    "id": "efW5V1nnN5GBJxRSrQl4",
+    "createdAt": "2026-01-02T20:44:18.042Z",
+    "name": "Mulsanne",
+    "brandId": "tYHEapQnq9bXzZDbE5JQ"
+  },
+  {
+    "id": "ei5tAXox3BdguKqB1Nrc",
+    "name": "EQE 300",
+    "createdAt": "2026-01-18T10:12:23.569Z",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx"
+  },
+  {
+    "id": "eiatFTkS6GqAG6JNDe7C",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "GLA",
+    "createdAt": "2026-01-02T21:01:35.258Z"
+  },
+  {
+    "id": "eioU5eMzwC4TfhDsaDCh",
+    "name": "CLE 300",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-03-02T07:38:19.926Z"
+  },
+  {
+    "id": "ekmYzwqbDHMixJfyGmsQ",
+    "createdAt": "2026-01-02T20:44:31.794Z",
+    "name": "Journey",
+    "brandId": "myFLHq3VbA4Eblp4P7cl"
+  },
+  {
+    "id": "el9i9BIl0bTRQ4R10dBc",
+    "name": "Range Rover  3.0 PHEV Autobiography",
+    "brandId": "JmiQxhwDluNKEh6S8PIM",
+    "createdAt": "2026-03-16T08:33:08.385Z"
+  },
+  {
+    "id": "elfKkXalAL4NhRkSdtPl",
+    "createdAt": "2026-01-02T20:44:23.833Z",
+    "name": "Captiva",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "emv4x9c5QIgVDsmJmcMH",
+    "brandId": "17Lvbt1kuwoTAb0Ay0c1",
+    "name": "EQ fortwo",
+    "createdAt": "2026-01-18T10:12:28.292Z"
+  },
+  {
+    "id": "ep4yvtXnH7PkwlABjzFc",
+    "name": "e-tron",
+    "createdAt": "2026-01-18T10:12:18.046Z",
+    "brandId": "Zd247fK6y0OVen5TmWx4"
+  },
+  {
+    "id": "epxPseLEPzYMJz7bzcTN",
+    "createdAt": "2026-01-18T10:12:24.941Z",
+    "brandId": "iIcsGnyJWeoLdpWhhQwG",
+    "name": "Astra Electric"
+  },
+  {
+    "id": "eqpCdkgWNRXQZOCxAXqD",
+    "name": "EQB 250",
+    "createdAt": "2026-01-18T10:12:23.429Z",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx"
+  },
+  {
+    "id": "es2bOcObNlOW8CCSnise",
+    "name": "Santa Fe",
+    "brandId": "ssJTL4P0rHJvdh4HOFeu",
+    "createdAt": "2026-01-18T09:41:54.861Z"
+  },
+  {
+    "id": "esfnPYxIrFTEWDcJnnBS",
+    "createdAt": "2026-01-02T21:01:42.101Z",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Tigra"
+  },
+  {
+    "id": "ewqcNiKEsoHrBxxwrGl9",
+    "createdAt": "2026-01-02T21:01:43.795Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "2008"
+  },
+  {
+    "id": "f4Rp8qNpXLxtqhdDY4Cc",
+    "brandId": "VHOZQzstpfxPnD1K1Vv4",
+    "createdAt": "2026-01-02T21:01:44.684Z",
+    "name": "1"
+  },
+  {
+    "id": "fHe9RT2jWzIfH06SJ2Ne",
+    "brandId": "qEnvUARXYLwK26ongeAZ",
+    "createdAt": "2026-01-18T09:41:49.102Z",
+    "name": "C5 Aircross"
+  },
+  {
+    "id": "fMCR05hTW4uU1J20zSIX",
+    "createdAt": "2026-01-18T10:12:26.837Z",
+    "name": "EV 2000",
+    "brandId": "Y0PErCHuzqGGItc6O87T"
+  },
+  {
+    "id": "fMGQdxmrwsdr9jyOhlAk",
+    "brandId": "m94YtGeYldZsXHqPbY0M",
+    "name": "Yaris Cross",
+    "createdAt": "2026-01-18T09:42:08.714Z"
+  },
+  {
+    "id": "fQh4FFrdnZiqLVuPJqVv",
+    "createdAt": "2026-01-18T09:42:07.051Z",
+    "brandId": "Hj6FwqhKw0YIzUfQzFaU",
+    "name": "XV"
+  },
+  {
+    "id": "fbGkoMMlFn931AvoA9pG",
+    "createdAt": "2026-01-02T20:44:11.878Z",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "name": "166"
+  },
+  {
+    "id": "fdRgON6UZJQ1anT77zGc",
+    "createdAt": "2026-01-18T09:42:04.434Z",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM",
+    "name": "Duster"
+  },
+  {
+    "id": "feYcsiUOknyxhrFdyKPm",
+    "brandId": "0VH1RIa47bRmoGe6gQCq",
+    "createdAt": "2026-01-02T21:01:27.916Z",
+    "name": "Aventador"
+  },
+  {
+    "id": "fgpGh0UTwdQ1ELSJAGmE",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "createdAt": "2026-01-18T09:41:44.210Z",
+    "name": "Q3"
+  },
+  {
+    "id": "fkObBsQA4TjmqBifzjo0",
+    "brandId": "TLfmwtcUt7odbYYjggwh",
+    "name": "Dena",
+    "createdAt": "2026-01-02T21:01:22.288Z"
+  },
+  {
+    "id": "fpxIhFCwyooSkKPnqmaq",
+    "createdAt": "2026-01-02T21:01:51.593Z",
+    "name": "Altea",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb"
+  },
+  {
+    "id": "fqTYAzl9m4kvIjWQKwGK",
+    "createdAt": "2026-01-02T20:44:24.250Z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "name": "Impala"
+  },
+  {
+    "id": "fsEm8ppDEPyAhvCLbYec",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd",
+    "name": "Dokker",
+    "createdAt": "2026-01-02T20:44:28.785Z"
+  },
+  {
+    "id": "fsTheU7Z6EbsX3jRAtGs",
+    "createdAt": "2026-01-02T20:44:24.084Z",
+    "name": "Cruze",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "fxX1zXR1qaQamDRv39BX",
+    "brandId": "uxDpotUxT6TDKiMURqt5",
+    "name": "Arrizo 8",
+    "createdAt": "2026-01-02T20:44:22.765Z"
+  },
+  {
+    "id": "fxr5IYrXwOdvepwR4pym",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "name": "Prelude",
+    "createdAt": "2026-01-02T21:01:19.678Z"
+  },
+  {
+    "id": "g4NuO4IrPfH1758kpMzw",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "name": "Samurai",
+    "createdAt": "2026-01-02T21:01:55.157Z"
+  },
+  {
+    "id": "g4bOovSVbqhYwGL0OD4X",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Vento",
+    "createdAt": "2026-01-02T21:02:00.318Z"
+  },
+  {
+    "id": "g5ib6NJp5VaE1mvJnBNv",
+    "createdAt": "2026-01-02T20:44:28.944Z",
+    "name": "Jogger",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd"
+  },
+  {
+    "id": "g69GQMRu9nC8CnP5ojNb",
+    "name": "Soul",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.652Z"
+  },
+  {
+    "id": "gKcfwhUkB4U6oiyds7df",
+    "createdAt": "2026-01-02T20:44:14.945Z",
+    "name": "Virage",
+    "brandId": "NywooeRrDjD174A38ZNh"
+  },
+  {
+    "id": "gKhjk3WOmQ0SvK4hZlfT",
+    "name": "Saxo",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "createdAt": "2026-01-02T20:44:28.041Z"
+  },
+  {
+    "id": "gRThRggOVpUCynLi6F87",
+    "brandId": "aASgy3UAnSk2qfRdSUHi",
+    "name": "ZR-V",
+    "createdAt": "2026-01-18T09:41:54.110Z"
+  },
+  {
+    "id": "gRW9gukzAj6AVboqGjpR",
+    "createdAt": "2026-01-02T21:01:52.358Z",
+    "name": "Toledo",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb"
+  },
+  {
+    "id": "gRfvneVGKtROuUktgKEC",
+    "createdAt": "2026-01-02T20:44:17.634Z",
+    "brandId": "tYHEapQnq9bXzZDbE5JQ",
+    "name": "Arnage"
+  },
+  {
+    "id": "gUtgS5BvdfDpuSFy3azM",
+    "brandId": "hUfAcqegkPcAeyD24DqS",
+    "name": "Spectre",
+    "createdAt": "2026-01-18T10:12:28.140Z"
+  },
+  {
+    "id": "gZ4l5wzbZ7rHPyoGVAuv",
+    "brandId": "SYnzOc0eY20LLIU1ayBz",
+    "createdAt": "2026-01-18T09:41:55.650Z",
+    "name": "Rodeo"
+  },
+  {
+    "id": "gbTvPOgZnfBASYiT2Ahf",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "createdAt": "2026-01-18T09:41:53.218Z",
+    "name": "Ranger"
+  },
+  {
+    "id": "geWnhduUU0Zsppn3UtV9",
+    "name": "GTV",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "createdAt": "2026-01-02T20:44:12.347Z"
+  },
+  {
+    "id": "geZgBgq0fQQFM3QH10DA",
+    "brandId": "Wm3xx6vmfRIidxsliWqk",
+    "name": "EV3",
+    "createdAt": "2026-01-02T21:02:00.660Z"
+  },
+  {
+    "id": "giWlgT1qc1mf3FldKMql",
+    "name": "Urus",
+    "createdAt": "2026-01-02T21:01:28.367Z",
+    "brandId": "0VH1RIa47bRmoGe6gQCq"
+  },
+  {
+    "id": "gjj8cZOskdAfvvw524t9",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "createdAt": "2026-01-02T21:01:50.611Z",
+    "name": "45"
+  },
+  {
+    "id": "gqyt9OqzSP8z48Idl8nN",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "name": "ES",
+    "createdAt": "2026-01-02T21:01:29.711Z"
+  },
+  {
+    "id": "gtF2pQThJUXgjLtjl60z",
+    "brandId": "Xq3OfSjm0KkkF3X0awio",
+    "name": "R2",
+    "createdAt": "2026-01-18T10:12:27.114Z"
+  },
+  {
+    "id": "gtrEplxl9mHKcJzSgprj",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "ML",
+    "createdAt": "2026-01-02T21:01:35.627Z"
+  },
+  {
+    "id": "h1rwd6YDagIX1RglVh1B",
+    "createdAt": "2026-01-02T21:01:30.078Z",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "name": "NX"
+  },
+  {
+    "id": "h5qykjFVKFM7wHmmbefJ",
+    "name": "Skystar",
+    "createdAt": "2026-01-18T09:42:02.114Z",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q"
+  },
+  {
+    "id": "h7ElSJsznw0zE0z0nqUw",
+    "name": "LC",
+    "createdAt": "2026-01-02T21:01:18.652Z",
+    "brandId": "K55wijyvS6KLetUk4Dn8"
+  },
+  {
+    "id": "hKF4evoT9OnpTekH06xK",
+    "createdAt": "2026-01-02T20:44:28.119Z",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "Xsara"
+  },
+  {
+    "id": "hTE5VRtTJwNQYyhc9yqa",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "createdAt": "2026-01-02T21:01:23.700Z",
+    "name": "QX80"
+  },
+  {
+    "id": "hTISCHGycrTLYarJkFj1",
+    "brandId": "7N6zIMET2lpGjKsPsy3b",
+    "name": "Song Plus",
+    "createdAt": "2026-01-18T09:41:46.639Z"
+  },
+  {
+    "id": "hX6PdRUKbRJoEUghkMA4",
+    "createdAt": "2026-01-02T21:01:23.379Z",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "name": "Q70"
+  },
+  {
+    "id": "hfJsBIyk3CrTcwuZzr8I",
+    "createdAt": "2026-01-02T21:01:44.245Z",
+    "name": "Rifter",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "hfbXHu2m2SwU54Xc6Hso",
+    "createdAt": "2026-01-02T21:01:59.106Z",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "name": "Beetle"
+  },
+  {
+    "id": "hi5nhCPjIv6obJftH7Uc",
+    "brandId": "cmHLEwz1BCHU7PuhbtIm",
+    "name": "Impian",
+    "createdAt": "2026-01-02T21:01:46.302Z"
+  },
+  {
+    "id": "hmPBUazYFx9X4bq5Y7pF",
+    "createdAt": "2026-01-02T21:01:44.463Z",
+    "name": "Fury",
+    "brandId": "ZDJuW8D5OOj52ulbwYHg"
+  },
+  {
+    "id": "hqxEyjqRMKtEgA0Xl2OU",
+    "name": "X6 M",
+    "createdAt": "2026-01-18T09:41:46.326Z",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb"
+  },
+  {
+    "id": "hrQG2Kri09HT0pgAA58j",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "RS6",
+    "createdAt": "2026-01-02T20:44:16.490Z"
+  },
+  {
+    "id": "hxcgeCQQXd4BQkgJMCOG",
+    "brandId": "JVr1LFqHr9NqSzTPCbG5",
+    "name": "Mio Pro",
+    "createdAt": "2026-01-18T10:12:22.672Z"
+  },
+  {
+    "id": "i0T8NEykdywmvDigw5EW",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "RS7",
+    "createdAt": "2026-01-02T20:44:16.572Z"
+  },
+  {
+    "id": "i3ZYpsSp4IyZ40c5psit",
+    "createdAt": "2026-01-18T09:41:45.365Z",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "name": "iX1"
+  },
+  {
+    "id": "i7IedxJByTBWAhi587CU",
+    "name": "Wagon R",
+    "createdAt": "2026-01-02T21:01:55.519Z",
+    "brandId": "Ch9jH69iTglbIYgNpqh5"
+  },
+  {
+    "id": "iAF1EoiNvTV6JxwWkM9Z",
+    "brandId": "rikeCqkizgnmmDcxr7lo",
+    "name": "FIORINO",
+    "createdAt": "2026-03-30T10:23:50.971Z"
+  },
+  {
+    "id": "iAP3MWVdvfJvQRzsO0hO",
+    "name": "Cygnet",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "createdAt": "2026-01-02T20:44:14.162Z"
+  },
+  {
+    "id": "iBmM1tRbtmlyiAOuKcd3",
+    "createdAt": "2026-01-02T20:44:23.593Z",
+    "name": "Blazer",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "iG52LJoHaGZP8Qm9I8gX",
+    "name": "Q8 e-tron",
+    "brandId": "Zd247fK6y0OVen5TmWx4",
+    "createdAt": "2026-01-18T10:12:18.326Z"
+  },
+  {
+    "id": "iLriDYhvgNnLPdUylxAP",
+    "createdAt": "2026-01-02T20:44:16.087Z",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "Q8"
+  },
+  {
+    "id": "iQrwq76QOmdoml8AkKyd",
+    "name": "T-Cross",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "createdAt": "2026-01-02T21:02:00.009Z"
+  },
+  {
+    "id": "iU1ZFoSpbaMO1smuofP7",
+    "brandId": "fewLgy1kDeDakme4odts",
+    "name": "Egea EV",
+    "createdAt": "2026-01-18T10:12:21.629Z"
+  },
+  {
+    "id": "iUv1mFoS6Rw5D8fdWbLa",
+    "name": "X-Trail",
+    "createdAt": "2026-01-18T09:42:02.254Z",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q"
+  },
+  {
+    "id": "iZhLRwJkwD2X8LiXSDms",
+    "name": "Rezzo",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:24.809Z"
+  },
+  {
+    "id": "iauKQkjrqyXDpW6lcQ14",
+    "createdAt": "2026-01-18T10:12:17.534Z",
+    "brandId": "os9Yjbb7kF4PG91PoCSB",
+    "name": "Skyjet"
+  },
+  {
+    "id": "iigCATMwic8mhdrO152P",
+    "brandId": "ffnILVAQmc8QJjTKPDDu",
+    "createdAt": "2026-01-18T09:41:51.765Z",
+    "name": "Egea Cross"
+  },
+  {
+    "id": "imLss5IPrRVW0fl5IVTL",
+    "createdAt": "2026-01-02T20:44:35.799Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "Portofino"
+  },
+  {
+    "id": "incLkiFtg44xzqgMLEHs",
+    "createdAt": "2026-01-02T20:44:13.459Z",
+    "name": "A6",
+    "brandId": "dMStfGgO8FfNjpPVGGag"
+  },
+  {
+    "id": "ioVjL8Mqep4QJ24sw2hN",
+    "name": "Forester",
+    "brandId": "Hj6FwqhKw0YIzUfQzFaU",
+    "createdAt": "2026-01-18T09:42:06.908Z"
+  },
+  {
+    "id": "ivB2qRRwGT1BtIXtOSZg",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "createdAt": "2026-01-02T20:44:14.265Z",
+    "name": "DB9"
+  },
+  {
+    "id": "ixBAkrTIWO2bJ79LXIi0",
+    "name": "Seal",
+    "createdAt": "2026-01-02T20:44:21.024Z",
+    "brandId": "nT2Ov7jIgiNnL4sWRfOO"
+  },
+  {
+    "id": "j3qLfM3vRMVwQzkFFBiR",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "createdAt": "2026-01-02T21:01:40.466Z",
+    "name": "Terrano"
+  },
+  {
+    "id": "j5ITWC5j1o4DTDsA3ogs",
+    "createdAt": "2026-01-18T09:42:00.824Z",
+    "name": "Countryman E",
+    "brandId": "bq1iWORT8A4lt1Y2fHJ1"
+  },
+  {
+    "id": "j8R8RxZubQlm9QNBp4Bw",
+    "name": "EQS 450+",
+    "createdAt": "2026-01-18T10:12:23.876Z",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx"
+  },
+  {
+    "id": "j9OwpV7ia5ExbKXg023X",
+    "brandId": "DyxhoBNfjPjXaAyeTcGU",
+    "name": "Compass",
+    "createdAt": "2026-01-18T09:41:56.437Z"
+  },
+  {
+    "id": "jCnQtsdneLGbvjJSemee",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:24.491Z",
+    "name": "Malibu"
+  },
+  {
+    "id": "jFxznizQTDHqJprsON9F",
+    "name": "Jogger",
+    "brandId": "cEJWbOHANgL94xcNNI8j",
+    "createdAt": "2026-01-18T09:41:49.646Z"
+  },
+  {
+    "id": "jJ3DeIWNxng88C2idp1T",
+    "name": "2",
+    "brandId": "VHOZQzstpfxPnD1K1Vv4",
+    "createdAt": "2026-01-02T21:01:44.755Z"
+  },
+  {
+    "id": "jJA0p54s9pJHuyYoIrIs",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "6",
+    "createdAt": "2026-01-02T21:01:33.155Z"
+  },
+  {
+    "id": "jJLmFi2URuyFl8lJWa6a",
+    "name": "508",
+    "createdAt": "2026-01-02T21:01:43.724Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "jLeTw6ONXkNuJjOfcfxZ",
+    "createdAt": "2026-01-02T21:01:32.177Z",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "name": "Ghibli"
+  },
+  {
+    "id": "jPAHDQ7exO1rf7yqrsOw",
+    "name": "Bravo",
+    "createdAt": "2026-01-02T21:01:14.119Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX"
+  },
+  {
+    "id": "jQEPNBPqKpO2cbP1wkAV",
+    "name": "Free",
+    "createdAt": "2026-01-18T09:42:10.168Z",
+    "brandId": "Fma6cmw7xqKKPKP4Jx5M"
+  },
+  {
+    "id": "jQvC4P8TC6OF6mlJ64mf",
+    "name": "Kona",
+    "createdAt": "2026-01-18T09:41:54.761Z",
+    "brandId": "ssJTL4P0rHJvdh4HOFeu"
+  },
+  {
+    "id": "jW6lwSbxLVCpDNfutLsh",
+    "name": "Ami",
+    "createdAt": "2026-01-18T10:12:20.723Z",
+    "brandId": "EJym8bCsmUASk1ffjd0N"
+  },
+  {
+    "id": "jaaAAy6GvoIudEEFdQsR",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "name": "Cavalier",
+    "createdAt": "2026-01-02T20:44:23.916Z"
+  },
+  {
+    "id": "jcFKckYEPRBEYaMv4iqH",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "createdAt": "2026-01-02T21:01:59.637Z",
+    "name": "Passat"
+  },
+  {
+    "id": "jcXBiEuwsx4o8tO74sVB",
+    "name": "Courier",
+    "createdAt": "2026-01-02T21:01:16.565Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "jjYyiD49Y7LjjpebM5lk",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "name": "911",
+    "createdAt": "2026-01-02T21:01:45.409Z"
+  },
+  {
+    "id": "jpuuhdkcoJ39agAsGHOG",
+    "name": "3008",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "createdAt": "2026-01-02T21:01:43.867Z"
+  },
+  {
+    "id": "jqHZCzbxuHtrbvfRd7kO",
+    "name": "Carry",
+    "createdAt": "2026-01-02T21:01:54.710Z",
+    "brandId": "Ch9jH69iTglbIYgNpqh5"
+  },
+  {
+    "id": "jtsQfCW2kuAWiPHIkfWp",
+    "brandId": "g6l0e4w0ANIaHvYuoD8A",
+    "createdAt": "2026-05-13T12:58:23.347Z",
+    "name": "Tourneo Courier"
+  },
+  {
+    "id": "k06hsnM4V30Mi1L0AWJl",
+    "brandId": "MJA03uLxDfvLpTVhjxdJ",
+    "name": "Indigo",
+    "createdAt": "2026-01-02T21:01:55.745Z"
+  },
+  {
+    "id": "k0cWFMyY7wwmFYGWWA3x",
+    "createdAt": "2026-01-02T21:01:33.820Z",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "RX-7"
+  },
+  {
+    "id": "k2DNknh8V16XMJg0BE5s",
+    "name": "ASX",
+    "brandId": "GqEYPh6tEhp1nspsIe6M",
+    "createdAt": "2026-01-18T09:42:01.038Z"
+  },
+  {
+    "id": "k4eURFzZnulomzT2r0De",
+    "brandId": "N1QkEFvqdkDj81x5vsZb",
+    "createdAt": "2026-01-02T21:01:23.995Z",
+    "name": "F-Type"
+  },
+  {
+    "id": "k4k57MWLQmzDmGlb113s",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "name": "x3 20",
+    "createdAt": "2026-03-03T09:24:50.350Z"
+  },
+  {
+    "id": "k8DP19eaBCQuZTBpPwp3",
+    "brandId": "ypIR51W1A2B4dKq8B6JN",
+    "createdAt": "2026-01-02T21:01:39.282Z",
+    "name": "E-Car"
+  },
+  {
+    "id": "kFj7GfdoVnEkSTYO15wi",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "createdAt": "2026-01-02T21:01:50.302Z",
+    "name": "25"
+  },
+  {
+    "id": "kGrk4UZEfESsjDBlTExq",
+    "createdAt": "2026-01-02T21:01:30.664Z",
+    "brandId": "3Ws5KGNDBQomd1Mx347z",
+    "name": "Navigator"
+  },
+  {
+    "id": "kO7crM25h0qj6yGuMKXc",
+    "createdAt": "2026-01-18T09:41:48.013Z",
+    "name": "Equinox",
+    "brandId": "cFcmWPu6L1OzsgfblQuF"
+  },
+  {
+    "id": "kQjy5GjprFLnLRrHPmpd",
+    "name": "Z4",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:19.532Z"
+  },
+  {
+    "id": "kTFRBcAokcyyXqEQzafp",
+    "createdAt": "2026-01-02T21:01:55.669Z",
+    "name": "Indica",
+    "brandId": "MJA03uLxDfvLpTVhjxdJ"
+  },
+  {
+    "id": "kU7iZfncb0fnA9xokU5y",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx",
+    "name": "EQC 400",
+    "createdAt": "2026-01-18T10:12:24.031Z"
+  },
+  {
+    "id": "kWKoWHOCi0K3ghTL43Ke",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "CLA",
+    "createdAt": "2026-01-02T21:01:34.571Z"
+  },
+  {
+    "id": "kaOYWevrpRYZyTHatHZ0",
+    "name": "A1",
+    "createdAt": "2026-01-02T20:44:15.141Z",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "kdGM6Zn4EP164X814FEP",
+    "brandId": "yhThrhGwlQemPo7UbwsH",
+    "createdAt": "2026-01-02T21:01:54.273Z",
+    "name": "Outback"
+  },
+  {
+    "id": "knxGuzHAgizd21spe6nP",
+    "brandId": "orEW9ovgl2QgzTsBkJCf",
+    "createdAt": "2026-01-18T10:12:26.246Z",
+    "name": "Taycan Turbo S"
+  },
+  {
+    "id": "kqrQh1hzllHxCRlwgg6q",
+    "name": "595",
+    "brandId": "eIorYBhW7TC17qK98dX5",
+    "createdAt": "2026-01-02T20:44:10.155Z"
+  },
+  {
+    "id": "krmfqIDTo83d3BC5hYmK",
+    "brandId": "GqEYPh6tEhp1nspsIe6M",
+    "createdAt": "2026-01-18T09:42:01.181Z",
+    "name": "L 200"
+  },
+  {
+    "id": "kwVdL1lBA4yxNRwbGbWG",
+    "brandId": "88bHP7y0bmc2fCDaH5uO",
+    "createdAt": "2026-01-02T21:01:44.971Z",
+    "name": "Bonneville"
+  },
+  {
+    "id": "kxpj5z0GJQzo6JnwSXcn",
+    "createdAt": "2026-01-02T21:01:51.373Z",
+    "brandId": "UvhJ9HCdW1E5aMlHzJ4o",
+    "name": "Pride"
+  },
+  {
+    "id": "l58j5Rt98lCLWJqE7AmZ",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "name": "XT6",
+    "createdAt": "2026-01-02T20:44:22.186Z"
+  },
+  {
+    "id": "lBs2BObea00Yd3PTs5iH",
+    "createdAt": "2026-01-18T09:42:04.223Z",
+    "name": "Arkana",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM"
+  },
+  {
+    "id": "lF7ybnXrChSqMboqsSwA",
+    "brandId": "Nx1h3wCMuaRP91WRDYds",
+    "name": "UX 300e",
+    "createdAt": "2026-01-18T10:12:23.003Z"
+  },
+  {
+    "id": "lHUbINYRfkVzAHOQdaC4",
+    "name": "Taycan Cross Turismo",
+    "createdAt": "2026-01-18T10:12:26.338Z",
+    "brandId": "orEW9ovgl2QgzTsBkJCf"
+  },
+  {
+    "id": "lOy05lfvsblNNWnzRpXi",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:17.378Z",
+    "name": "Q4 e-tron"
+  },
+  {
+    "id": "lU4mcbAQaVtPTi3Sellw",
+    "createdAt": "2026-01-02T21:01:55.010Z",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "name": "Jimny"
+  },
+  {
+    "id": "las9svhicb3U8FVAwyCy",
+    "createdAt": "2026-01-02T21:01:37.169Z",
+    "brandId": "AhBMPIUnFCVIhzHeXGng",
+    "name": "Countryman"
+  },
+  {
+    "id": "lccY91V8KJemJh2ryLQJ",
+    "createdAt": "2026-01-02T21:01:18.316Z",
+    "name": "CK",
+    "brandId": "K55wijyvS6KLetUk4Dn8"
+  },
+  {
+    "id": "lgUyKKRD6J1mXtvcQgJb",
+    "name": "A7",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:15.606Z"
+  },
+  {
+    "id": "lk30LAUtdUE7MZ6ZS2P0",
+    "createdAt": "2026-01-18T09:42:09.331Z",
+    "name": "Tiguan",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM"
+  },
+  {
+    "id": "lk8AKNXX1TJhEAG2lsFE",
+    "name": "Flying Spur",
+    "createdAt": "2026-01-02T20:44:17.962Z",
+    "brandId": "tYHEapQnq9bXzZDbE5JQ"
+  },
+  {
+    "id": "lmfP94Hy07AWNDB6wtjg",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "CX-3",
+    "createdAt": "2026-01-02T21:01:33.374Z"
+  },
+  {
+    "id": "lncLdXMpZS8b4QV5eJmz",
+    "name": "5 Serisi",
+    "createdAt": "2026-01-02T20:44:18.536Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "ltjEaAZ01Dp3MWjNDcj0",
+    "createdAt": "2026-01-02T20:44:15.845Z",
+    "name": "Q3",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "luxfV27C9m0QrIxhViww",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "name": "i3",
+    "createdAt": "2026-01-18T10:12:18.662Z"
+  },
+  {
+    "id": "m02zIqtzD0GU0fnZMl2o",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "C3",
+    "createdAt": "2026-01-02T20:44:26.741Z"
+  },
+  {
+    "id": "m3SDIdA1ZqK8cuAnu9ZY",
+    "createdAt": "2026-01-02T21:01:59.333Z",
+    "name": "Corrado",
+    "brandId": "IwWpatQmQW8G5ZyVypSx"
+  },
+  {
+    "id": "m4FsNNqRPzlWryXtqKkN",
+    "createdAt": "2026-01-02T21:01:34.960Z",
+    "name": "EQE",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "m5Xtde1hW5kVobVgDjmb",
+    "name": "UX",
+    "createdAt": "2026-01-18T09:41:58.450Z",
+    "brandId": "RsFApN6KzxzPbVUkpqdS"
+  },
+  {
+    "id": "m62RIPdOVazPBlVl9u0f",
+    "createdAt": "2026-01-18T09:41:48.665Z",
+    "brandId": "qEnvUARXYLwK26ongeAZ",
+    "name": "C3 Aircross"
+  },
+  {
+    "id": "mAyEYrG5UY9J8WzwkDMv",
+    "createdAt": "2026-01-02T20:44:18.700Z",
+    "name": "7 Serisi",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "mB7lzlJVAkkdIYuUpuzn",
+    "name": "Elise",
+    "brandId": "iuvRzDI7lUwvphEb2u5j",
+    "createdAt": "2026-01-02T21:01:30.956Z"
+  },
+  {
+    "id": "mFq6FrZyhwKXOrr0XRzO",
+    "name": "B Serisi",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:34.335Z"
+  },
+  {
+    "id": "mIXZp1795kul6s8tsVHU",
+    "brandId": "tmq3NVi598n6gi6d5bhZ",
+    "name": "X-Trail",
+    "createdAt": "2026-01-02T21:01:40.542Z"
+  },
+  {
+    "id": "mLvsz2tUPBBqsyvQh6Lk",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "createdAt": "2026-01-02T21:01:52.503Z",
+    "name": "Citigo"
+  },
+  {
+    "id": "mOPshU4eKotxPGP1r3hx",
+    "brandId": "Yyecu846x7An7DTHjEAN",
+    "name": "Copen",
+    "createdAt": "2026-01-02T20:44:30.572Z"
+  },
+  {
+    "id": "mPWJXaYB4jWw1ZlsXtBO",
+    "name": "Xedos",
+    "createdAt": "2026-01-02T21:01:33.964Z",
+    "brandId": "jGp6IIvDUD3TalvDrzDV"
+  },
+  {
+    "id": "mRpyfI70GLEpxBBm0FHo",
+    "name": "TX4",
+    "createdAt": "2026-01-02T21:01:56.631Z",
+    "brandId": "exj31seYdWAzIkyu9z7e"
+  },
+  {
+    "id": "mSJsgFN8d99ZcJPnjWNG",
+    "name": "ProCeed",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.345Z"
+  },
+  {
+    "id": "mTHsRHkT7EfB3YjXIJxp",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:33.657Z",
+    "name": "328"
+  },
+  {
+    "id": "mTjcswNGM4fWWAShm8a0",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "name": "2104",
+    "createdAt": "2026-01-02T21:01:27.157Z"
+  },
+  {
+    "id": "mcNF3kaICST9WVtBuk3Q",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "createdAt": "2026-01-02T21:01:23.001Z",
+    "name": "JX"
+  },
+  {
+    "id": "mhCn8W4C4s4qKML17dsE",
+    "brandId": "IddnnWWyU2KztqST371W",
+    "name": "S",
+    "createdAt": "2026-01-02T20:44:10.794Z"
+  },
+  {
+    "id": "ml7Y9nTIPTYgUxGCKnjs",
+    "createdAt": "2026-01-02T21:01:26.147Z",
+    "name": "XCeed",
+    "brandId": "eXED7TjVzsQU393jlhei"
+  },
+  {
+    "id": "mlZjc3B546n4xE044zdb",
+    "name": "Megane E-Tech Electric",
+    "createdAt": "2026-01-18T10:12:27.417Z",
+    "brandId": "6FxN1j9LcYyjmkj80rYU"
+  },
+  {
+    "id": "mmNTdjyAl4EtJKx8oF3B",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "name": "159",
+    "createdAt": "2026-01-02T20:44:11.674Z"
+  },
+  {
+    "id": "mn5u9h1qxPY6dsCdnDHM",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:37.606Z",
+    "name": "3000GT"
+  },
+  {
+    "id": "mpA7ZjizxZ32p5lFVrtp",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "createdAt": "2026-01-02T20:44:20.018Z",
+    "name": "XM"
+  },
+  {
+    "id": "mqVePXzf1lW6xpsnKn0r",
+    "createdAt": "2026-01-18T09:41:55.143Z",
+    "name": "EX",
+    "brandId": "3ILw68caJVPlyX25anlf"
+  },
+  {
+    "id": "mtqTG3VemKb58WqswJ1a",
+    "createdAt": "2026-01-02T20:44:15.501Z",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "A6"
+  },
+  {
+    "id": "mzo3Uh8IcJqyLoU5cvLh",
+    "createdAt": "2026-01-02T20:44:35.369Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "F50"
+  },
+  {
+    "id": "n4TMWScbaO5PcjejWzCq",
+    "createdAt": "2026-04-28T10:57:00.642Z",
+    "name": "City",
+    "brandId": "6aDIyyolXQTccALJw3QT"
+  },
+  {
+    "id": "n7sTsN2z4k6knmFOVHZP",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx",
+    "createdAt": "2026-01-18T10:12:23.726Z",
+    "name": "EQE 350+ AMG"
+  },
+  {
+    "id": "n8D5mvJ6F1uR6lMrRr8I",
+    "brandId": "iMgOqZ5Np1P1hb2dYXmd",
+    "name": "Solenza",
+    "createdAt": "2026-01-02T20:44:29.344Z"
+  },
+  {
+    "id": "n9bKCosxoqUV9eZbvxGc",
+    "name": "Yuan Plus",
+    "createdAt": "2026-01-18T09:41:46.801Z",
+    "brandId": "7N6zIMET2lpGjKsPsy3b"
+  },
+  {
+    "id": "n9lAUCB4eVZ9Zxuy7sWa",
+    "createdAt": "2026-01-02T20:44:23.672Z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "name": "Camaro"
+  },
+  {
+    "id": "nBCrHZOvzPuRm1m83nu3",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Thema",
+    "createdAt": "2026-01-02T21:01:29.055Z"
+  },
+  {
+    "id": "nDXribcoRcKVRW7vzHyg",
+    "createdAt": "2026-01-02T21:01:45.553Z",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "name": "914"
+  },
+  {
+    "id": "nM3aVhUbgTxE1OrTWvQ4",
+    "name": "C5",
+    "createdAt": "2026-01-02T20:44:27.319Z",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "nMZkG4OXoIjTD1TGe35V",
+    "createdAt": "2026-01-02T20:44:12.959Z",
+    "name": "A110 S",
+    "brandId": "LfGSs9WeV8mZqvuoLl62"
+  },
+  {
+    "id": "nMtRJJc4MIdnh37Nzmhu",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "408",
+    "createdAt": "2026-04-29T12:15:33.498Z"
+  },
+  {
+    "id": "nPue7oTgV6lkpJxbRBZV",
+    "createdAt": "2026-01-02T21:01:28.816Z",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Musa"
+  },
+  {
+    "id": "nQfcPvPa6khHoPoI0fgb",
+    "name": "Auris",
+    "createdAt": "2026-01-02T21:01:57.363Z",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE"
+  },
+  {
+    "id": "nQnueVL8wTNzcz1XINVj",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.267Z",
+    "name": "Pride"
+  },
+  {
+    "id": "nUCaKeWAlxJLXggtviKA",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "name": "Volt",
+    "createdAt": "2026-01-02T20:44:25.291Z"
+  },
+  {
+    "id": "nUqWeVURtnh77m3FybtF",
+    "name": "Navigator",
+    "brandId": "HrbxIpRmszsrYSSOyxip",
+    "createdAt": "2026-01-18T09:41:58.678Z"
+  },
+  {
+    "id": "nYDCr0414iMSrdCazXDA",
+    "createdAt": "2026-01-02T21:01:28.512Z",
+    "name": "Dedra",
+    "brandId": "1yY9XIqJXQO9T86gZAPv"
+  },
+  {
+    "id": "nhW3UR8MvApQmRnmf1X0",
+    "createdAt": "2026-05-12T08:54:40.047Z",
+    "brandId": "rikeCqkizgnmmDcxr7lo",
+    "name": "Doblo"
+  },
+  {
+    "id": "nkwg2ykAJ7ulW0bEvP4h",
+    "brandId": "cFcmWPu6L1OzsgfblQuF",
+    "createdAt": "2026-01-18T09:41:48.400Z",
+    "name": "Traverse"
+  },
+  {
+    "id": "nob834f5UMZ9anYfbdde",
+    "name": "Q8 e-tron",
+    "createdAt": "2026-01-18T09:41:44.704Z",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9"
+  },
+  {
+    "id": "nowISzDDcItSI76bAXCA",
+    "name": "N5",
+    "createdAt": "2026-01-18T10:12:24.624Z",
+    "brandId": "LcPFLHcPej2ysDbjiyO4"
+  },
+  {
+    "id": "np2rtz3PoDmjVte7OoJg",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:14.676Z",
+    "name": "Fiorino"
+  },
+  {
+    "id": "nyvMQSKrMsDnPVm9peWF",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:15.597Z",
+    "name": "Regata"
+  },
+  {
+    "id": "o5HrYxpKI7WL9NmZRTzO",
+    "name": "Swift",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "createdAt": "2026-01-02T21:01:55.302Z"
+  },
+  {
+    "id": "o7JP4El40OKcGWJokqov",
+    "name": "EX40",
+    "createdAt": "2026-01-18T09:42:09.723Z",
+    "brandId": "ms4M50ZrkrCCzLUSSCA4"
+  },
+  {
+    "id": "o9VU72HFiWZOYxCPDdKc",
+    "brandId": "iIcsGnyJWeoLdpWhhQwG",
+    "name": "Mokka-e",
+    "createdAt": "2026-01-18T10:12:24.860Z"
+  },
+  {
+    "id": "oDp7k4FvjmFz6acy1nqm",
+    "brandId": "aASgy3UAnSk2qfRdSUHi",
+    "name": "Passport",
+    "createdAt": "2026-01-18T09:41:53.958Z"
+  },
+  {
+    "id": "oF2ftVAVWqOnST1JwHH2",
+    "name": "Q50",
+    "createdAt": "2026-01-02T21:01:23.223Z",
+    "brandId": "lAkycWxDUZkPXXkB98CO"
+  },
+  {
+    "id": "oFgrzzGBxPw3qRWUx7a3",
+    "brandId": "jES7oj5TVpoxp8827UWJ",
+    "createdAt": "2026-01-02T21:01:49.692Z",
+    "name": "Silver Shadow"
+  },
+  {
+    "id": "oHdzd5m8l660zIMEu0oL",
+    "brandId": "AhBMPIUnFCVIhzHeXGng",
+    "name": "Cooper S",
+    "createdAt": "2026-01-02T21:01:37.095Z"
+  },
+  {
+    "id": "oJXnOE2ntPccqN7f6FRE",
+    "createdAt": "2026-01-02T21:01:43.524Z",
+    "name": "406",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "oLbv7dCYfS3pzuXZltNR",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "createdAt": "2026-01-02T21:01:22.854Z",
+    "name": "G"
+  },
+  {
+    "id": "oNCbfeCd4raxFbqKiBSJ",
+    "createdAt": "2026-01-02T20:44:24.892Z",
+    "name": "Spark",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "oO09Hm9WJ73oF7oSxpyo",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:02.238Z",
+    "name": "XC40"
+  },
+  {
+    "id": "oRnHccYcK7dntjrexXxL",
+    "createdAt": "2026-01-18T10:12:27.514Z",
+    "name": "Twingo Electric",
+    "brandId": "6FxN1j9LcYyjmkj80rYU"
+  },
+  {
+    "id": "oT2AgZXlqO4nGMqeERp6",
+    "name": "Exige",
+    "createdAt": "2026-01-02T21:01:31.330Z",
+    "brandId": "iuvRzDI7lUwvphEb2u5j"
+  },
+  {
+    "id": "oW9t7FQYpSsURPss9tTp",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "createdAt": "2026-01-02T21:01:54.863Z",
+    "name": "Grand Vitara"
+  },
+  {
+    "id": "oWAYQUeX6OQ2jR6JjWDZ",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:42.246Z",
+    "name": "Zafira"
+  },
+  {
+    "id": "oWObuSDjRdJ6gm71ha3V",
+    "brandId": "vHDKj6OH68oXN3LCucOX",
+    "name": "Terios",
+    "createdAt": "2026-01-18T09:41:50.026Z"
+  },
+  {
+    "id": "obBJKtRGCCnVY0HqSzk0",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "CLK",
+    "createdAt": "2026-01-02T21:01:34.716Z"
+  },
+  {
+    "id": "ofXAMHy5s7uz7jwjms3m",
+    "brandId": "dMStfGgO8FfNjpPVGGag",
+    "createdAt": "2026-01-02T20:44:13.221Z",
+    "name": "A1"
+  },
+  {
+    "id": "okNLeJOBNfeGtTf8g8G7",
+    "createdAt": "2026-01-18T09:41:44.320Z",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "name": "Q4 e-tron"
+  },
+  {
+    "id": "onTo8ePoc0PhDvDmhsGA",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Tempra",
+    "createdAt": "2026-01-02T21:01:15.905Z"
+  },
+  {
+    "id": "ooFLMLqFJUlgV5LR8dB1",
+    "createdAt": "2026-01-02T21:01:20.706Z",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "name": "i10"
+  },
+  {
+    "id": "ooeBw4DdhXTDFlwKTJlz",
+    "name": "Kyron",
+    "createdAt": "2026-01-18T09:42:06.430Z",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq"
+  },
+  {
+    "id": "opPhyW0QoNzINMwsbjOq",
+    "createdAt": "2026-01-02T21:01:46.907Z",
+    "name": "Electric",
+    "brandId": "bFAVyaetxbNutkZiFyzs"
+  },
+  {
+    "id": "opg9CWnOiwtBku7aJRfc",
+    "brandId": "MJ9rA0VBKfzMYHA0Vv37",
+    "name": "Model 3",
+    "createdAt": "2026-01-02T21:01:56.336Z"
+  },
+  {
+    "id": "orcDTqwjbm0omZbY0FaI",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:34.643Z",
+    "name": "CLC"
+  },
+  {
+    "id": "oskw1G5SCDst1r0vq3zG",
+    "name": "Combo-e",
+    "brandId": "iIcsGnyJWeoLdpWhhQwG",
+    "createdAt": "2026-01-18T10:12:25.018Z"
+  },
+  {
+    "id": "owRJ3q5WzZffzieWLhrr",
+    "name": "Insight",
+    "createdAt": "2026-01-02T21:01:19.455Z",
+    "brandId": "6aDIyyolXQTccALJw3QT"
+  },
+  {
+    "id": "ozCu4UwemcJSgtxUpRbC",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.686Z",
+    "name": "Symbol"
+  },
+  {
+    "id": "p3Cu4SZLAXTviQn06HBA",
+    "brandId": "016nekx7eXa6T9Eu9Blg",
+    "createdAt": "2026-01-18T09:41:49.864Z",
+    "name": "Musso"
+  },
+  {
+    "id": "p6HhrDiobApVcEaLK3xf",
+    "brandId": "TWk8088ce6ViBtCdIQ7m",
+    "name": "SRX",
+    "createdAt": "2026-01-18T09:41:47.028Z"
+  },
+  {
+    "id": "pABRD8qHPnicmq0QIDRV",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "createdAt": "2026-01-02T21:01:48.612Z",
+    "name": "Scenic"
+  },
+  {
+    "id": "pAm4q23fgwYXubWGB01g",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "createdAt": "2026-01-02T20:44:22.022Z",
+    "name": "XT4"
+  },
+  {
+    "id": "pBSL9SMMBp2Ve8vOuaYA",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "createdAt": "2026-01-18T10:12:28.846Z",
+    "name": "Model Y Long Range"
+  },
+  {
+    "id": "pFie3HBRXLeNRXaELyvp",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb",
+    "name": "Marbella",
+    "createdAt": "2026-01-02T21:01:52.188Z"
+  },
+  {
+    "id": "pLKToNGQ1qbDB01gZTvk",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "name": "Pathfinder",
+    "createdAt": "2026-01-18T09:42:01.686Z"
+  },
+  {
+    "id": "pM9w1A3JTDBr8BmygQQs",
+    "createdAt": "2026-01-02T21:01:20.877Z",
+    "name": "i30",
+    "brandId": "NLNOb3DLywuJFfpe7hxB"
+  },
+  {
+    "id": "pNgFAXkPL58RYacNWGfs",
+    "brandId": "yhThrhGwlQemPo7UbwsH",
+    "createdAt": "2026-01-02T21:01:54.199Z",
+    "name": "Levorg"
+  },
+  {
+    "id": "pSJ0V5COUaqXji9qDMvr",
+    "createdAt": "2026-01-02T21:01:48.539Z",
+    "name": "Safrane",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm"
+  },
+  {
+    "id": "pV811c0QBw50RGWbYz7r",
+    "brandId": "KQMjnV9qF6fUh527HGhd",
+    "createdAt": "2026-01-02T21:01:36.799Z",
+    "name": "Microlino"
+  },
+  {
+    "id": "pW8FhQ82mLMgK0HqVOVZ",
+    "createdAt": "2026-01-02T21:01:24.973Z",
+    "name": "Ceed",
+    "brandId": "eXED7TjVzsQU393jlhei"
+  },
+  {
+    "id": "pdCpjsFLMoPOoY5kNJej",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:38.290Z",
+    "name": "Lancer"
+  },
+  {
+    "id": "pfC8t5iskAaRYAXkxqxG",
+    "brandId": "XX8e3430thbOUrWQeMV5",
+    "name": "CX-7",
+    "createdAt": "2026-01-18T09:41:59.568Z"
+  },
+  {
+    "id": "plmxaS5EKdKwlui5980M",
+    "name": "Panda",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:15.319Z"
+  },
+  {
+    "id": "ppChL8kABUpceqDVclfi",
+    "createdAt": "2026-01-02T21:01:13.217Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "126"
+  },
+  {
+    "id": "ppOrvVTF0Pn8tzrhY4PE",
+    "createdAt": "2026-01-02T20:44:28.359Z",
+    "name": "Ateca",
+    "brandId": "w3ALimSaUVUMeHEgrvus"
+  },
+  {
+    "id": "ppzLre8THBOK1fwadJWE",
+    "name": "720S",
+    "brandId": "hdxMsveBlVdderTYeMfl",
+    "createdAt": "2026-01-02T21:01:34.107Z"
+  },
+  {
+    "id": "pvUpeofCgylSgTmdu7vG",
+    "createdAt": "2026-01-02T20:44:19.210Z",
+    "name": "X5",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "q1iei4pYRVEbbq007kS6",
+    "createdAt": "2026-01-18T09:42:03.789Z",
+    "brandId": "w7lIyQAd98lec4Qs7DYr",
+    "name": "e-5008"
+  },
+  {
+    "id": "qBB6jxEPpgyM9sgt0aoX",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "createdAt": "2026-01-02T21:01:55.229Z",
+    "name": "Splash"
+  },
+  {
+    "id": "qJYFa0AXooWJ8emXyNoO",
+    "name": "Cuore",
+    "brandId": "Yyecu846x7An7DTHjEAN",
+    "createdAt": "2026-01-02T20:44:30.652Z"
+  },
+  {
+    "id": "qKfq0oanBv7MTJLnC17o",
+    "brandId": "w7lIyQAd98lec4Qs7DYr",
+    "createdAt": "2026-01-18T09:42:03.425Z",
+    "name": "4007"
+  },
+  {
+    "id": "qKyZ25WwXKunjxTDYN8P",
+    "name": "Leon",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb",
+    "createdAt": "2026-01-02T21:01:52.035Z"
+  },
+  {
+    "id": "qMKxke98AcrSoVzOHrs1",
+    "name": "Emira",
+    "brandId": "iuvRzDI7lUwvphEb2u5j",
+    "createdAt": "2026-01-02T21:01:31.030Z"
+  },
+  {
+    "id": "qPSOrrayH9T7GUCsaCa0",
+    "createdAt": "2026-01-02T20:44:26.342Z",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "AX"
+  },
+  {
+    "id": "qRXUZwkXIFbPNBSJPvLA",
+    "brandId": "K9Ph3wExh82Fhq2HR6W0",
+    "name": "DS 3 Crossback",
+    "createdAt": "2026-01-18T09:41:51.292Z"
+  },
+  {
+    "id": "qT5gk4GNQwWlu47LI4N5",
+    "createdAt": "2026-01-18T10:12:20.559Z",
+    "name": "e-C4 X",
+    "brandId": "EJym8bCsmUASk1ffjd0N"
+  },
+  {
+    "id": "qUbftVXHRXaCcr647d1W",
+    "brandId": "WhEbqxPovlAFrC5juxNq",
+    "createdAt": "2026-01-18T10:12:28.769Z",
+    "name": "Model Y Standart Range"
+  },
+  {
+    "id": "qVZiwdRNfOtYEf2QY9kF",
+    "brandId": "ffnILVAQmc8QJjTKPDDu",
+    "name": "600",
+    "createdAt": "2026-01-18T09:41:51.691Z"
+  },
+  {
+    "id": "qZaRc5GhLPGMrKtmHXPM",
+    "name": "SQ8",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "createdAt": "2026-01-18T09:41:44.944Z"
+  },
+  {
+    "id": "qaqkvOZTIxAuRKIbqTfv",
+    "createdAt": "2026-01-02T20:44:25.777Z",
+    "name": "Crossfire",
+    "brandId": "J1T0lOeeGrDlU46tMzFO"
+  },
+  {
+    "id": "qcVinaovefEMpe49UKYi",
+    "name": "F12 Berlinetta",
+    "createdAt": "2026-01-02T20:44:35.025Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "qdj9CwZ6woznku390Arv",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "Frontera",
+    "createdAt": "2026-01-02T21:01:41.281Z"
+  },
+  {
+    "id": "qfQ6dhRMkkxdniZZXPGn",
+    "createdAt": "2026-01-02T21:01:28.668Z",
+    "brandId": "1yY9XIqJXQO9T86gZAPv",
+    "name": "Kappa"
+  },
+  {
+    "id": "qfRHP2MCUOlKkPJSdXih",
+    "createdAt": "2026-01-02T21:01:42.923Z",
+    "name": "206",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "qg7ZmcQJJTHCYgmurrGX",
+    "createdAt": "2026-01-18T09:42:07.986Z",
+    "name": "Xenon",
+    "brandId": "ocomMmAH8go1gAp2Rrhq"
+  },
+  {
+    "id": "qpKiaaDxZ9d2RzhljJrS",
+    "createdAt": "2026-01-18T09:42:00.607Z",
+    "brandId": "1xwZqz7UVXqmSuNelP1H",
+    "name": "ZS EV"
+  },
+  {
+    "id": "quj1zsBeBfMrqLDWbK02",
+    "name": "ID.Buzz",
+    "brandId": "jY17KrahXCk7zu8TwFN2",
+    "createdAt": "2026-01-18T10:12:30.099Z"
+  },
+  {
+    "id": "qygQn3PDPb2Jsp9ZTLTi",
+    "createdAt": "2026-01-02T21:01:30.882Z",
+    "name": "Elan",
+    "brandId": "iuvRzDI7lUwvphEb2u5j"
+  },
+  {
+    "id": "qz4dy7ZnuEFUrAaXXnxj",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:24.650Z",
+    "name": "Nubira"
+  },
+  {
+    "id": "r1JYY9R1KDvjrCmXlBOo",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "createdAt": "2026-01-18T09:41:53.124Z",
+    "name": "Puma- E"
+  },
+  {
+    "id": "r1Yy9czkRNHP38e7Vdpv",
+    "createdAt": "2026-01-02T21:01:34.792Z",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "name": "CLS"
+  },
+  {
+    "id": "r1ZpT4TzyjgWI98pkvKu",
+    "name": "EX30",
+    "brandId": "ms4M50ZrkrCCzLUSSCA4",
+    "createdAt": "2026-01-18T09:42:09.654Z"
+  },
+  {
+    "id": "r4Nq91g0haTh35d3rz41",
+    "name": "Cerato",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.047Z"
+  },
+  {
+    "id": "rAug1ILwREMlUGKhXgsd",
+    "createdAt": "2026-01-18T10:12:23.107Z",
+    "brandId": "Nx1h3wCMuaRP91WRDYds",
+    "name": "RZ 450e"
+  },
+  {
+    "id": "rB4UtTrfLgwjSnG4dAGL",
+    "createdAt": "2026-01-02T21:01:35.993Z",
+    "name": "SLK",
+    "brandId": "u3UQzXxDGEQsph4tNB3N"
+  },
+  {
+    "id": "rFK4SeB258wZJgkdDFxL",
+    "name": "Celerio",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "createdAt": "2026-01-02T21:01:54.786Z"
+  },
+  {
+    "id": "rGTDyfBbi2YuX421pDOX",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "name": "146",
+    "createdAt": "2026-01-02T20:44:11.273Z"
+  },
+  {
+    "id": "rHE06kcp1zC0jWqzLQ1o",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:42.029Z",
+    "name": "Signum"
+  },
+  {
+    "id": "rHyyAQs2wDEz0ySBN5mS",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:23.512Z",
+    "name": "Bel Air"
+  },
+  {
+    "id": "rMSnNVYQlN9zqFinujiW",
+    "brandId": "JVr1LFqHr9NqSzTPCbG5",
+    "createdAt": "2026-01-18T10:12:22.836Z",
+    "name": "Taksi EV"
+  },
+  {
+    "id": "rO6BkeZrt8OeKoVpk8K9",
+    "createdAt": "2026-01-02T21:02:01.653Z",
+    "name": "S80",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm"
+  },
+  {
+    "id": "rOTmAucVSMAWdvOefAkW",
+    "name": "Freemont",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:14.777Z"
+  },
+  {
+    "id": "rQoxbD8GJRiAPSizjPaW",
+    "name": "SF90 Stradale",
+    "createdAt": "2026-01-18T10:12:21.192Z",
+    "brandId": "9bTvLKorZVEjL1Gp8pw3"
+  },
+  {
+    "id": "rTNdSsJeuKokUa5dLaxh",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "121",
+    "createdAt": "2026-01-02T21:01:32.790Z"
+  },
+  {
+    "id": "rVWaBgPyDnBk68YFfx5g",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "createdAt": "2026-02-09T14:46:26.693Z",
+    "name": "X3 20"
+  },
+  {
+    "id": "rYXfFR3S1WRud1zFqlKA",
+    "name": "Marea",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:15.152Z"
+  },
+  {
+    "id": "rrYIsilp0QxcBNlQ8EwN",
+    "name": "124",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "createdAt": "2026-01-02T21:01:13.144Z"
+  },
+  {
+    "id": "rwsuC67GSZEzSEHHSVZb",
+    "createdAt": "2026-01-02T20:44:19.451Z",
+    "name": "Z3",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO"
+  },
+  {
+    "id": "rxLwNQZ7mpBKvFLRrkpI",
+    "createdAt": "2026-01-02T20:44:24.729Z",
+    "name": "Orlando",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "rzV1THu5MAz4PdvRilsf",
+    "createdAt": "2026-01-18T09:41:53.049Z",
+    "brandId": "GIOrEUyhI3FR15wdMB4G",
+    "name": "Puma"
+  },
+  {
+    "id": "s05C8wUSD1eJAC7jSZpT",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:57.582Z",
+    "name": "C-HR"
+  },
+  {
+    "id": "s1dvNYcCNjjFTduPdi5H",
+    "createdAt": "2026-01-02T21:01:47.352Z",
+    "brandId": "Q7Tu0dNdQavK3mmSiZ7I",
+    "name": "City"
+  },
+  {
+    "id": "s3rzlLEDzB0Ubx5bgPo2",
+    "createdAt": "2026-01-18T09:41:45.819Z",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb",
+    "name": "X3 M"
+  },
+  {
+    "id": "s5vMjAWLu4clluNgRY0q",
+    "name": "Vanquish",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "createdAt": "2026-01-02T20:44:14.862Z"
+  },
+  {
+    "id": "s5whsLDymKrarMqz9Eml",
+    "name": "200",
+    "brandId": "JJcZn7tUag55uzMGmalp",
+    "createdAt": "2026-01-02T21:01:49.995Z"
+  },
+  {
+    "id": "sAzvCeHB8KE0mYRb5lzF",
+    "createdAt": "2026-01-02T21:01:43.369Z",
+    "name": "308",
+    "brandId": "fduU6Elc3uDKmWiSJ56S"
+  },
+  {
+    "id": "sCiliQSOloaE0j5Plddu",
+    "brandId": "J1T0lOeeGrDlU46tMzFO",
+    "createdAt": "2026-01-02T20:44:25.447Z",
+    "name": "200"
+  },
+  {
+    "id": "sIhnAtf2yzv810lxzD6Z",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.196Z",
+    "name": "CR-V"
+  },
+  {
+    "id": "sKhoaYUn3d8FLd5k4DdC",
+    "brandId": "SOlsacCfOCqtNGIsNuHN",
+    "name": "Frontera-e",
+    "createdAt": "2026-01-18T09:42:02.694Z"
+  },
+  {
+    "id": "sOqXyeplVixpWPyB4lwh",
+    "createdAt": "2026-01-18T09:42:07.914Z",
+    "name": "Safari",
+    "brandId": "ocomMmAH8go1gAp2Rrhq"
+  },
+  {
+    "id": "sP4qqPImTJGKC666ETOP",
+    "name": "ID.5",
+    "createdAt": "2026-01-18T10:12:29.999Z",
+    "brandId": "jY17KrahXCk7zu8TwFN2"
+  },
+  {
+    "id": "sTH2baMWTofgtFHDePVX",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:35.920Z",
+    "name": "SLC"
+  },
+  {
+    "id": "sUbWTChH4oHytfWxr50Y",
+    "name": "S6",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:16.889Z"
+  },
+  {
+    "id": "sY8ijqiIbhz7PSGUX1bW",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "name": "GT",
+    "createdAt": "2026-01-02T21:01:41.356Z"
+  },
+  {
+    "id": "sa0EcviXKCH3EkhAouSO",
+    "createdAt": "2026-05-20T15:00:12.803Z",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx",
+    "name": "GLB 200+"
+  },
+  {
+    "id": "sfk9hTrmF0iC57eawk7Z",
+    "name": "Forester",
+    "createdAt": "2026-01-02T21:01:53.903Z",
+    "brandId": "yhThrhGwlQemPo7UbwsH"
+  },
+  {
+    "id": "sfltewAtizAE0AfGkPRP",
+    "brandId": "TzzfchbBXkfz5do91G9c",
+    "name": "ZX",
+    "createdAt": "2026-01-02T20:44:28.197Z"
+  },
+  {
+    "id": "sj3hMJH0ialy5gLsTcen",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "name": "Coupe",
+    "createdAt": "2026-01-02T21:01:20.391Z"
+  },
+  {
+    "id": "snXwIEUKmhn8aBcGOf9j",
+    "createdAt": "2026-01-18T09:41:46.236Z",
+    "name": "X6",
+    "brandId": "e3ptBuAQU9dYGmhxVIsb"
+  },
+  {
+    "id": "sqbbNDeuhUWCciU9DHm2",
+    "createdAt": "2026-01-02T21:01:16.837Z",
+    "name": "Escort",
+    "brandId": "deYLWqG4eeu69p4PEvH4"
+  },
+  {
+    "id": "stQ4tOTLYVEjkLKtsms8",
+    "name": "EV1",
+    "createdAt": "2026-01-02T21:02:00.469Z",
+    "brandId": "Wm3xx6vmfRIidxsliWqk"
+  },
+  {
+    "id": "sxehxIKQRZSyBfkdJ2VO",
+    "name": "Tico",
+    "createdAt": "2026-01-02T20:44:30.257Z",
+    "brandId": "fDr5idEGAVWSw38SdKoT"
+  },
+  {
+    "id": "t5fquDHJ92rZvcpg5szi",
+    "name": "RX-8",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "createdAt": "2026-01-02T21:01:33.891Z"
+  },
+  {
+    "id": "t7fx1ga4Tij37iu4wPmS",
+    "brandId": "JVr1LFqHr9NqSzTPCbG5",
+    "createdAt": "2026-01-18T10:12:22.757Z",
+    "name": "Trend"
+  },
+  {
+    "id": "t9qe2jeYxioPqhjyTU56",
+    "name": "Qashqai+2",
+    "createdAt": "2026-01-18T09:42:01.974Z",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q"
+  },
+  {
+    "id": "tCdQltlntwc1ToarSpG8",
+    "brandId": "7tfZeuep0y2oWgQ8nwi0",
+    "createdAt": "2026-01-02T20:44:20.358Z",
+    "name": "LaCrosse"
+  },
+  {
+    "id": "tI9N35BzQz4olqUrBH7M",
+    "brandId": "jES7oj5TVpoxp8827UWJ",
+    "createdAt": "2026-01-02T21:01:49.768Z",
+    "name": "Wraith"
+  },
+  {
+    "id": "tJvVSJcAsqdCAi635oPD",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "createdAt": "2026-01-02T21:01:17.660Z",
+    "name": "Mustang"
+  },
+  {
+    "id": "tMe6Fh4vwKKxa9v2EGnG",
+    "name": "Kangoo 4x4",
+    "createdAt": "2026-01-18T09:42:04.574Z",
+    "brandId": "hW1aTyDwzNPj2RPmkDWM"
+  },
+  {
+    "id": "tNKQz2jQwxe7KOLGvB1Q",
+    "name": "Legacy",
+    "brandId": "yhThrhGwlQemPo7UbwsH",
+    "createdAt": "2026-01-02T21:01:54.128Z"
+  },
+  {
+    "id": "tPIPkDU6jwHv4Si2J1Nm",
+    "createdAt": "2026-01-02T20:44:12.084Z",
+    "name": "Giulia",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP"
+  },
+  {
+    "id": "tS0K6caQTlEIgLaQqOdD",
+    "name": "Taycan",
+    "brandId": "orEW9ovgl2QgzTsBkJCf",
+    "createdAt": "2026-01-18T10:12:25.887Z"
+  },
+  {
+    "id": "tbAcunze9OV3xh9K8atf",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "createdAt": "2026-01-02T21:01:29.785Z",
+    "name": "GS"
+  },
+  {
+    "id": "tbCYfWmVbxXptjAtCPCu",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "name": "111",
+    "createdAt": "2026-01-02T21:01:26.776Z"
+  },
+  {
+    "id": "tdRTvfGlNHCiRCSC5Nkq",
+    "name": "Excel",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:20.539Z"
+  },
+  {
+    "id": "te1WkT7Awvttkbatkvqf",
+    "name": "Model S",
+    "createdAt": "2026-01-02T21:01:56.265Z",
+    "brandId": "MJ9rA0VBKfzMYHA0Vv37"
+  },
+  {
+    "id": "teLW4BvGjKxmdB3sGwrB",
+    "name": "156",
+    "createdAt": "2026-01-02T20:44:11.569Z",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP"
+  },
+  {
+    "id": "th4CS855gnSDdJh00Erx",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "createdAt": "2026-01-02T20:44:11.196Z",
+    "name": "145"
+  },
+  {
+    "id": "ti3t3DfzNbHt611cLDt8",
+    "brandId": "Hj6FwqhKw0YIzUfQzFaU",
+    "createdAt": "2026-01-18T09:42:06.980Z",
+    "name": "Outback"
+  },
+  {
+    "id": "tn7tpVOdMviUxoFKYILx",
+    "createdAt": "2026-01-18T10:12:18.420Z",
+    "name": "RS e-tron GT",
+    "brandId": "Zd247fK6y0OVen5TmWx4"
+  },
+  {
+    "id": "tqjXBVYanlGFUwocmuzc",
+    "brandId": "dMStfGgO8FfNjpPVGGag",
+    "name": "A2",
+    "createdAt": "2026-01-02T20:44:13.301Z"
+  },
+  {
+    "id": "trdB7sZqJwi4ahg3Un3D",
+    "createdAt": "2026-01-02T20:44:25.942Z",
+    "brandId": "J1T0lOeeGrDlU46tMzFO",
+    "name": "PT Cruiser"
+  },
+  {
+    "id": "tslaREnAjU3IZ0fcdmdm",
+    "name": "Tiggo 8",
+    "createdAt": "2026-01-02T20:44:23.244Z",
+    "brandId": "uxDpotUxT6TDKiMURqt5"
+  },
+  {
+    "id": "tv1qCGYscM8M9cCnz3HU",
+    "createdAt": "2026-01-02T20:44:16.728Z",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "name": "S4"
+  },
+  {
+    "id": "tvbWVvJfQSr3qujy0dRI",
+    "createdAt": "2026-01-02T21:01:52.944Z",
+    "brandId": "bnktqz9yxXnuLzPIxXBO",
+    "name": "Kodiaq"
+  },
+  {
+    "id": "twVBoojclXrk3xAN2oLs",
+    "createdAt": "2026-01-02T21:01:14.220Z",
+    "brandId": "cc5GrGsTVJwxb8wGPUZX",
+    "name": "Brava"
+  },
+  {
+    "id": "tyJf82MKzlmWDESOS02e",
+    "createdAt": "2026-05-12T10:20:28.429Z",
+    "name": "İstoç",
+    "brandId": "kyBS5O2bEuJA7d3X4K1W"
+  },
+  {
+    "id": "tzZGGXFIsuhi29XYsgrX",
+    "brandId": "nT2Ov7jIgiNnL4sWRfOO",
+    "createdAt": "2026-01-02T20:44:20.769Z",
+    "name": "Atto 3"
+  },
+  {
+    "id": "u1R5gpUAQp9LPpXAAVCe",
+    "name": "Alto",
+    "brandId": "Ch9jH69iTglbIYgNpqh5",
+    "createdAt": "2026-01-02T21:01:54.563Z"
+  },
+  {
+    "id": "u30Uasea7In1BCdA1gyv",
+    "brandId": "ZDJuW8D5OOj52ulbwYHg",
+    "name": "Barracuda",
+    "createdAt": "2026-01-02T21:01:44.389Z"
+  },
+  {
+    "id": "u4SwyIbIchxwWCpBv7EK",
+    "name": "Aspen",
+    "brandId": "J1T0lOeeGrDlU46tMzFO",
+    "createdAt": "2026-01-02T20:44:25.607Z"
+  },
+  {
+    "id": "u5ks8EqSSXZkUVivVcx8",
+    "createdAt": "2026-01-02T21:01:37.303Z",
+    "brandId": "AhBMPIUnFCVIhzHeXGng",
+    "name": "Paceman"
+  },
+  {
+    "id": "u6bHsvdGQR0rCgLNrkbu",
+    "createdAt": "2026-01-18T10:12:26.723Z",
+    "brandId": "Y0PErCHuzqGGItc6O87T",
+    "name": "EV 1000"
+  },
+  {
+    "id": "u90Qcg5ghiDovj3jE2jO",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "createdAt": "2026-01-02T21:02:00.157Z",
+    "name": "Tiguan"
+  },
+  {
+    "id": "uBVHBr0RLI0aNNRssH6C",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9",
+    "createdAt": "2026-01-18T09:41:44.782Z",
+    "name": "SQ5"
+  },
+  {
+    "id": "uF7UN7n5j8sTXiO4yTRv",
+    "createdAt": "2026-01-18T09:41:59.411Z",
+    "name": "CX-30",
+    "brandId": "XX8e3430thbOUrWQeMV5"
+  },
+  {
+    "id": "uFMgLPVtJ8eAunW2Ysf8",
+    "createdAt": "2026-01-02T20:44:11.462Z",
+    "brandId": "GZz5rSqMYkSY9hWd1cmP",
+    "name": "155"
+  },
+  {
+    "id": "uFpI0h7cCFXcFJUT197h",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq",
+    "createdAt": "2026-01-18T09:42:06.640Z",
+    "name": "Rexton Sports"
+  },
+  {
+    "id": "uLmp9pEMZMXLgRRj4fjn",
+    "name": "4/4",
+    "brandId": "fhzmjuvae8A0e57o9kAD",
+    "createdAt": "2026-01-02T21:01:38.678Z"
+  },
+  {
+    "id": "uPxaMxDw3F3zHvHHMR0m",
+    "createdAt": "2026-01-18T09:41:55.722Z",
+    "name": "Trooper",
+    "brandId": "SYnzOc0eY20LLIU1ayBz"
+  },
+  {
+    "id": "uTVS3rutzuB020rAatrF",
+    "createdAt": "2026-01-18T09:41:51.595Z",
+    "name": "500 X",
+    "brandId": "ffnILVAQmc8QJjTKPDDu"
+  },
+  {
+    "id": "uUoexIc9liwDhy3ZFCiN",
+    "createdAt": "2026-01-02T21:01:50.464Z",
+    "name": "414",
+    "brandId": "JJcZn7tUag55uzMGmalp"
+  },
+  {
+    "id": "uXXXe9RZ52qrv8hrQO8i",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "createdAt": "2026-01-18T10:12:19.663Z",
+    "name": "iX xDrive50"
+  },
+  {
+    "id": "uXzKvFNF86iee4cwQOvi",
+    "createdAt": "2026-01-02T21:01:57.661Z",
+    "name": "Camry",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE"
+  },
+  {
+    "id": "ubczVCGRlBJqIm4DXU8Y",
+    "brandId": "u3UQzXxDGEQsph4tNB3N",
+    "createdAt": "2026-01-02T21:01:34.865Z",
+    "name": "E Serisi"
+  },
+  {
+    "id": "uchhS2dctbB63rvhQAND",
+    "name": "SQ7",
+    "createdAt": "2026-01-18T09:41:44.870Z",
+    "brandId": "7LLL0s0fcg8K9Nd0vgO9"
+  },
+  {
+    "id": "ucnqZ0lp3ytUH0IldnVz",
+    "createdAt": "2026-01-02T20:44:19.049Z",
+    "brandId": "jZlHQ0xS08pNJFAkCHZO",
+    "name": "X3"
+  },
+  {
+    "id": "udLLIKJFuzo0GYno75nD",
+    "createdAt": "2026-01-18T09:42:03.135Z",
+    "brandId": "SOlsacCfOCqtNGIsNuHN",
+    "name": "Mokka-e"
+  },
+  {
+    "id": "ukHGtfgRV04QUvRwZanu",
+    "createdAt": "2026-01-02T20:44:25.208Z",
+    "name": "Trax",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "ukgGAQWKp2GayuV0ybSR",
+    "createdAt": "2026-01-18T09:41:59.931Z",
+    "name": "GLC",
+    "brandId": "DXR4i6gJJ2YE0qCEKZnP"
+  },
+  {
+    "id": "usU6YWaxE3Tde4SPKb9k",
+    "createdAt": "2026-01-02T20:44:31.950Z",
+    "name": "Neon",
+    "brandId": "myFLHq3VbA4Eblp4P7cl"
+  },
+  {
+    "id": "usp9EbyxTHCFziKdgyTl",
+    "brandId": "VRLbv4IHrzpOEnRPpcFy",
+    "createdAt": "2026-01-18T10:12:24.208Z",
+    "name": "Cooper SE"
+  },
+  {
+    "id": "uvRTUN6l9X0uUBE5YQtC",
+    "createdAt": "2026-01-18T09:41:50.911Z",
+    "brandId": "8e2OXyO2uXBtYw3L5aCK",
+    "name": "Durango"
+  },
+  {
+    "id": "uxmprhDCsXy3DIgPspr3",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:16.968Z",
+    "name": "S7"
+  },
+  {
+    "id": "v6Lj36u3rpAz2TqTXVsU",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb",
+    "name": "Tarraco",
+    "createdAt": "2026-01-02T21:01:52.283Z"
+  },
+  {
+    "id": "v6b2AMcZcbAmC1ev1vfW",
+    "brandId": "yhThrhGwlQemPo7UbwsH",
+    "createdAt": "2026-01-02T21:01:53.976Z",
+    "name": "Impreza"
+  },
+  {
+    "id": "v8IxSlnQHR2BrY771c22",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "createdAt": "2026-01-02T21:01:42.777Z",
+    "name": "108"
+  },
+  {
+    "id": "vEaW7CjPfTvyv1rN4Iov",
+    "name": "Panamera",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "createdAt": "2026-01-02T21:01:45.997Z"
+  },
+  {
+    "id": "vJ1qFrDRpB8GvsYtNQmU",
+    "createdAt": "2026-01-02T20:44:16.807Z",
+    "name": "S5",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "vLweQbGMH9UGJER1ZSA1",
+    "name": "107",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "createdAt": "2026-01-02T21:01:42.703Z"
+  },
+  {
+    "id": "vMPwEQv4v1YbFuAdVHGy",
+    "createdAt": "2026-01-02T21:01:54.344Z",
+    "brandId": "yhThrhGwlQemPo7UbwsH",
+    "name": "SVX"
+  },
+  {
+    "id": "vMb2WVA1CPKYf93Or7Bt",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "createdAt": "2026-01-02T20:44:14.454Z",
+    "name": "DBS"
+  },
+  {
+    "id": "vMhCUIod5d8a3bg1y21M",
+    "name": "A5",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:15.403Z"
+  },
+  {
+    "id": "vNwjLOBRCCxeJwCeh38l",
+    "brandId": "qM2ANFEWB3b7v55F00Aq",
+    "createdAt": "2026-01-02T20:44:16.178Z",
+    "name": "RS3"
+  },
+  {
+    "id": "vP6XxucZoAryuBZKxrUT",
+    "name": "Nubira",
+    "brandId": "fDr5idEGAVWSw38SdKoT",
+    "createdAt": "2026-01-02T20:44:30.100Z"
+  },
+  {
+    "id": "vQE9Iwq4OTkHL33MIeYb",
+    "brandId": "aASgy3UAnSk2qfRdSUHi",
+    "createdAt": "2026-01-18T09:41:54.040Z",
+    "name": "Pilot"
+  },
+  {
+    "id": "vQUTlumUv6KKtFI8Vgfw",
+    "name": "365",
+    "createdAt": "2026-01-02T20:44:33.891Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd"
+  },
+  {
+    "id": "vSbwYvWGAxBbLRDWf4h1",
+    "createdAt": "2026-01-18T09:42:08.575Z",
+    "brandId": "m94YtGeYldZsXHqPbY0M",
+    "name": "Land Cruiser"
+  },
+  {
+    "id": "vW4sRIfkjkwZWNSVxmDi",
+    "name": "Space Star",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:38.530Z"
+  },
+  {
+    "id": "vaJdVKGcBHvONXbHV99X",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "407",
+    "createdAt": "2026-01-02T21:01:43.650Z"
+  },
+  {
+    "id": "vauIGT8BkshKoFOjoRzx",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "createdAt": "2026-01-18T09:42:01.617Z",
+    "name": "Navara"
+  },
+  {
+    "id": "vbiqqgqw2n1zGw8ojeHI",
+    "brandId": "gBgsbJ666y32E1f8hF51",
+    "createdAt": "2026-01-02T21:01:32.251Z",
+    "name": "GranCabrio"
+  },
+  {
+    "id": "vf2SV5iZ9quzdC3SqSmX",
+    "createdAt": "2026-01-02T21:01:16.746Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "name": "Edge"
+  },
+  {
+    "id": "vg2ibxavGnjszTo5fMQX",
+    "name": "C5 Aircross",
+    "createdAt": "2026-01-02T20:44:27.399Z",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "vj9WYLWNoaIcCzqV1Gwp",
+    "name": "456",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:34.138Z"
+  },
+  {
+    "id": "vkfSiMKRHiMgOJJ2QMLQ",
+    "name": "Sonata",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:21.639Z"
+  },
+  {
+    "id": "vlSPg1ZpJOu7nR9nFFVE",
+    "name": "RAV4",
+    "brandId": "dXbQUBzP3uCFbr7cVtkE",
+    "createdAt": "2026-01-02T21:01:58.270Z"
+  },
+  {
+    "id": "vo3HUHKbd92rXlrswi6I",
+    "name": "C4 Cactus",
+    "createdAt": "2026-01-02T20:44:26.984Z",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "vpAEwOZjUgd9Vnw5STtQ",
+    "name": "i4 eDrive35",
+    "createdAt": "2026-01-18T10:12:18.874Z",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs"
+  },
+  {
+    "id": "vwt6d918Yl1Gle6Y6GAA",
+    "createdAt": "2026-01-02T21:01:22.457Z",
+    "name": "Samand",
+    "brandId": "TLfmwtcUt7odbYYjggwh"
+  },
+  {
+    "id": "vxFxMgRqw8mauOrse0Sx",
+    "name": "Dolphin",
+    "createdAt": "2026-01-18T10:12:20.009Z",
+    "brandId": "BT5sQuTBeVE4qbXgM9cv"
+  },
+  {
+    "id": "w0G4OIExrGKKUQI7q5np",
+    "createdAt": "2026-01-02T21:01:45.266Z",
+    "name": "Trans Am",
+    "brandId": "88bHP7y0bmc2fCDaH5uO"
+  },
+  {
+    "id": "w0ckziTWvGHu0CWQy8UH",
+    "createdAt": "2026-01-18T10:12:21.891Z",
+    "name": "Ioniq 5",
+    "brandId": "LUQGt8VizymCdt6iFWM9"
+  },
+  {
+    "id": "w7napdxqkQOWLQ2xEnCT",
+    "createdAt": "2026-01-18T09:42:03.716Z",
+    "name": "e-3008",
+    "brandId": "w7lIyQAd98lec4Qs7DYr"
+  },
+  {
+    "id": "wAiSF29N8VB30s5U4kA4",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.121Z",
+    "name": "Civic"
+  },
+  {
+    "id": "wI8YUqLDjPapb1rPbpsN",
+    "name": "K7",
+    "brandId": "5s0l7UsE6Slv56a3PCiC",
+    "createdAt": "2026-01-02T21:01:47.210Z"
+  },
+  {
+    "id": "wMwAIo5lc94Jjt8pUDRX",
+    "name": "Kalina",
+    "createdAt": "2026-01-02T21:01:27.484Z",
+    "brandId": "CrD06cYqPe4WGq6EErMp"
+  },
+  {
+    "id": "wS9JFospdlqWA7tOYj76",
+    "name": "Musso",
+    "createdAt": "2026-01-18T09:42:06.502Z",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq"
+  },
+  {
+    "id": "wSV5n4Laqs8uLI00JuiF",
+    "createdAt": "2026-01-18T09:42:06.218Z",
+    "name": "Actyon Sports",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq"
+  },
+  {
+    "id": "wWWKCmc9ABXjWDIdvMN9",
+    "brandId": "3ILw68caJVPlyX25anlf",
+    "createdAt": "2026-01-18T09:41:55.366Z",
+    "name": "QX60"
+  },
+  {
+    "id": "wZO305c8gxd5TdF58jE4",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:01.254Z",
+    "name": "940"
+  },
+  {
+    "id": "wbhj5eyQNFzQoPAQhlpx",
+    "createdAt": "2026-01-02T20:44:15.324Z",
+    "name": "A4",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "wi3TjT01Nsdq2gwdZcEL",
+    "name": "Tahoe",
+    "createdAt": "2026-01-02T20:44:25.050Z",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW"
+  },
+  {
+    "id": "wjjFZt70uqZCSRRq6Jck",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "name": "ASX",
+    "createdAt": "2026-01-02T21:01:37.683Z"
+  },
+  {
+    "id": "wn9gMtTM5Dwgy0EdLqug",
+    "name": "Mini",
+    "brandId": "Q7Tu0dNdQavK3mmSiZ7I",
+    "createdAt": "2026-01-02T21:01:47.424Z"
+  },
+  {
+    "id": "wqFtz9hD4zqKombWqXCV",
+    "createdAt": "2026-01-02T21:01:17.828Z",
+    "brandId": "deYLWqG4eeu69p4PEvH4",
+    "name": "Ranger"
+  },
+  {
+    "id": "wr1WcT8j9JQcoP8HmAl8",
+    "name": "Tiggo 4",
+    "createdAt": "2026-01-02T20:44:23.081Z",
+    "brandId": "uxDpotUxT6TDKiMURqt5"
+  },
+  {
+    "id": "wskjcrhDfBg2bP3BU8dp",
+    "createdAt": "2026-01-02T20:44:17.299Z",
+    "name": "e-tron",
+    "brandId": "qM2ANFEWB3b7v55F00Aq"
+  },
+  {
+    "id": "wsuMpCgDTISCNnbBsvRa",
+    "createdAt": "2026-01-02T21:01:43.451Z",
+    "brandId": "fduU6Elc3uDKmWiSJ56S",
+    "name": "405"
+  },
+  {
+    "id": "wtgELP2qjDLaxZNLCr9l",
+    "brandId": "Dhcz6ucGDrE57dXlhfsO",
+    "name": "Mini",
+    "createdAt": "2026-01-02T21:01:26.482Z"
+  },
+  {
+    "id": "wz0csty4Q07QRE8UraIv",
+    "brandId": "0ASooJfHJVT2sdkZpQRT",
+    "name": "Sergio",
+    "createdAt": "2026-01-18T09:41:50.758Z"
+  },
+  {
+    "id": "x16ehWPScQb5ehwwB97F",
+    "createdAt": "2026-01-18T09:42:07.771Z",
+    "name": "G01F",
+    "brandId": "7oDnUHEBD518f8EmzFUy"
+  },
+  {
+    "id": "x2VGi56RT4ju8WjPCyg5",
+    "brandId": "NLNOb3DLywuJFfpe7hxB",
+    "createdAt": "2026-01-02T21:01:21.276Z",
+    "name": "Kona"
+  },
+  {
+    "id": "x2aMGEUM0E3h8bE9zms3",
+    "createdAt": "2026-01-18T09:41:49.398Z",
+    "brandId": "iaNJFrqPM9XLrXz9vvYN",
+    "name": "Tavascan"
+  },
+  {
+    "id": "x5RVMFqPrVqlE2DAWXhr",
+    "name": "SRX",
+    "brandId": "mS0gw27zWhVyfuLDo5kx",
+    "createdAt": "2026-01-02T20:44:21.938Z"
+  },
+  {
+    "id": "x5Tt9QNieJ1VYX8eK4uh",
+    "createdAt": "2026-01-02T21:01:29.421Z",
+    "brandId": "wVD6FQhyHe7A7i8cetVz",
+    "name": "C10"
+  },
+  {
+    "id": "xAtvIkMYrABhNQOpF7yj",
+    "createdAt": "2026-01-02T21:01:28.069Z",
+    "name": "Diablo",
+    "brandId": "0VH1RIa47bRmoGe6gQCq"
+  },
+  {
+    "id": "xDrrq6kbg5gpiGxkBwfs",
+    "name": "Blueberry Pro",
+    "brandId": "JVr1LFqHr9NqSzTPCbG5",
+    "createdAt": "2026-01-18T10:12:22.517Z"
+  },
+  {
+    "id": "xFfRBhboWDkdEk1fpQb8",
+    "name": "Tiggo 7",
+    "brandId": "uxDpotUxT6TDKiMURqt5",
+    "createdAt": "2026-01-02T20:44:23.160Z"
+  },
+  {
+    "id": "xFwr3mrHOHxsci7jmtNx",
+    "name": "Ibiza",
+    "createdAt": "2026-01-02T21:01:51.960Z",
+    "brandId": "D6FGNB0EZfdHmQmDWwLb"
+  },
+  {
+    "id": "xGBBv1D5b7Q5nIlLFFqq",
+    "createdAt": "2026-01-02T20:44:20.273Z",
+    "brandId": "7tfZeuep0y2oWgQ8nwi0",
+    "name": "Electra"
+  },
+  {
+    "id": "xK0xWLFU7pe8p3dYAiY8",
+    "name": "Cooper SE Cabrio",
+    "createdAt": "2026-01-18T10:12:24.287Z",
+    "brandId": "VRLbv4IHrzpOEnRPpcFy"
+  },
+  {
+    "id": "xLBzPegJjFrSkUOeiAEY",
+    "name": "ix35",
+    "brandId": "ssJTL4P0rHJvdh4HOFeu",
+    "createdAt": "2026-01-18T09:41:54.631Z"
+  },
+  {
+    "id": "xPyKuWIOmU7KQdYj6Gn0",
+    "createdAt": "2026-01-02T20:44:32.350Z",
+    "name": "DS 3",
+    "brandId": "9912diSF2H8sNsgUZa1K"
+  },
+  {
+    "id": "xQYEMdHooocE7ZaVeYKZ",
+    "brandId": "MDvbIXz6mBWkpaj5lIQs",
+    "createdAt": "2026-01-18T10:12:19.467Z",
+    "name": "i7 xDrive60"
+  },
+  {
+    "id": "xTCKjahuGRitchXmuH4B",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "createdAt": "2026-01-18T09:42:01.547Z",
+    "name": "Juke"
+  },
+  {
+    "id": "xUNgvKFzG8jbgg7EADNr",
+    "brandId": "lAkycWxDUZkPXXkB98CO",
+    "createdAt": "2026-01-02T21:01:23.627Z",
+    "name": "QX70"
+  },
+  {
+    "id": "xXsklZ9Cm0QxwmgqUWPL",
+    "brandId": "MVfDiUte5lEkRo7UWJpo",
+    "createdAt": "2026-01-18T09:41:59.057Z",
+    "name": "Grecale"
+  },
+  {
+    "id": "xiXar3M4t4Ly2lnXneYF",
+    "name": "UX",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn",
+    "createdAt": "2026-01-02T21:01:30.300Z"
+  },
+  {
+    "id": "xuEFTOtNbyI95mHD8ipm",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:38.141Z",
+    "name": "Galant"
+  },
+  {
+    "id": "y4656loUxR5dp0kqbNEj",
+    "name": "RX",
+    "createdAt": "2026-01-02T21:01:30.225Z",
+    "brandId": "HmXrFRVrGGCRbbFSAFnn"
+  },
+  {
+    "id": "y4lXvNoSQHt0A5hRBsJB",
+    "name": "Skylark",
+    "createdAt": "2026-01-02T20:44:20.602Z",
+    "brandId": "7tfZeuep0y2oWgQ8nwi0"
+  },
+  {
+    "id": "y8lXYzBYUyt9kndP0vpi",
+    "brandId": "21gkec3Uvzsg5P4c8YBP",
+    "createdAt": "2026-01-02T21:01:56.923Z",
+    "name": "Murat"
+  },
+  {
+    "id": "yIyftJcOdfJQzOABUYc6",
+    "createdAt": "2026-01-02T20:44:35.287Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "F430"
+  },
+  {
+    "id": "yKwzLAOoyPZJSKM4nYl8",
+    "name": "K6",
+    "brandId": "5s0l7UsE6Slv56a3PCiC",
+    "createdAt": "2026-01-02T21:01:47.134Z"
+  },
+  {
+    "id": "yMWcVzvCiHlcjIf4KN9R",
+    "brandId": "hipmofIxcL2KV7yvH8ye",
+    "name": "Enyaq",
+    "createdAt": "2026-01-18T09:42:05.512Z"
+  },
+  {
+    "id": "yNhTwjxx1D0spcIvJoM0",
+    "name": "Sportage",
+    "brandId": "tt5vGKep7Xzk2tXYyoG3",
+    "createdAt": "2026-01-18T09:41:57.156Z"
+  },
+  {
+    "id": "yQ0Pta0mXddG09zo30Vr",
+    "brandId": "SOlsacCfOCqtNGIsNuHN",
+    "name": "Grandland",
+    "createdAt": "2026-01-18T09:42:02.764Z"
+  },
+  {
+    "id": "yXH4kkHRLg0BYELiVxLw",
+    "name": "EQA 250",
+    "brandId": "dC0Q8IRN4FPKscqWxeRx",
+    "createdAt": "2026-01-18T10:12:23.350Z"
+  },
+  {
+    "id": "yY27QOKMcsCljECyosnI",
+    "createdAt": "2026-01-02T20:44:31.472Z",
+    "name": "Challenger",
+    "brandId": "myFLHq3VbA4Eblp4P7cl"
+  },
+  {
+    "id": "ybtkaEjqZaMuRInpooiO",
+    "createdAt": "2026-01-02T20:44:34.707Z",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "name": "612"
+  },
+  {
+    "id": "ycxfsDTwXPeJPll7xrpQ",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:41.060Z",
+    "name": "Calibra"
+  },
+  {
+    "id": "yd4ZizggVaLIhwDzFK5T",
+    "createdAt": "2026-01-02T21:01:33.591Z",
+    "brandId": "jGp6IIvDUD3TalvDrzDV",
+    "name": "CX-9"
+  },
+  {
+    "id": "yjUOIVBhRwJa4QL0Uomw",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "name": "V8 Vantage",
+    "createdAt": "2026-01-02T20:44:14.702Z"
+  },
+  {
+    "id": "ymnTcNOsoKbuPdX0Ov46",
+    "createdAt": "2026-01-02T21:01:37.780Z",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "name": "Attrage"
+  },
+  {
+    "id": "yofytInmeevNFqCybmaF",
+    "brandId": "UCWrrfSmGxyisH1HGR8T",
+    "createdAt": "2026-01-02T21:01:45.703Z",
+    "name": "Boxster"
+  },
+  {
+    "id": "yqpHjdRPK0ilqMb9gVsh",
+    "createdAt": "2026-01-02T21:02:00.883Z",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "name": "340"
+  },
+  {
+    "id": "ys6tLdR01vkAPWjkQJZ3",
+    "createdAt": "2026-01-02T21:01:47.794Z",
+    "brandId": "8eFVKn7sIn4SrfR8LSIm",
+    "name": "Clio"
+  },
+  {
+    "id": "z2skCEzslNEqALDUugoa",
+    "createdAt": "2026-01-18T09:42:06.358Z",
+    "name": "Korando Sports",
+    "brandId": "ReqTGzWjSZa52Kf5uMeq"
+  },
+  {
+    "id": "z30SBerHJXi4xLYhVc51",
+    "brandId": "4nsfPmvZD3r5gj3S4Etm",
+    "createdAt": "2026-01-02T21:02:01.925Z",
+    "name": "V50"
+  },
+  {
+    "id": "z3cDNJcC6wVgZ1KE2y7I",
+    "name": "Passat Variant",
+    "createdAt": "2026-04-01T09:22:13.899Z",
+    "brandId": "IwWpatQmQW8G5ZyVypSx"
+  },
+  {
+    "id": "z5cC2vmw3b60T0IYITw9",
+    "name": "Daytona",
+    "brandId": "Yp8hVlMzV4zk03Nlsevd",
+    "createdAt": "2026-01-02T20:44:34.864Z"
+  },
+  {
+    "id": "z8P2fFwDLGr0e9qkfI7C",
+    "name": "Golf",
+    "createdAt": "2026-01-02T21:01:59.480Z",
+    "brandId": "IwWpatQmQW8G5ZyVypSx"
+  },
+  {
+    "id": "z8UISHNCe1BS8QFIuOD4",
+    "name": "Pajero",
+    "brandId": "YmndY5fMO2ffTBR53xzG",
+    "createdAt": "2026-01-02T21:01:38.453Z"
+  },
+  {
+    "id": "z8Z32zB6SsSgdLuVdEgf",
+    "brandId": "w3ALimSaUVUMeHEgrvus",
+    "createdAt": "2026-01-02T20:44:28.626Z",
+    "name": "Leon"
+  },
+  {
+    "id": "zAn8iF5m0sT6TrM4Q5Nk",
+    "name": "Stream",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.919Z"
+  },
+  {
+    "id": "zLH2eUKD51bqCqgQyeQ3",
+    "name": "Sharan",
+    "brandId": "IwWpatQmQW8G5ZyVypSx",
+    "createdAt": "2026-01-02T21:01:59.938Z"
+  },
+  {
+    "id": "zLMBADegWLyAM1QdDWo5",
+    "brandId": "w3ALimSaUVUMeHEgrvus",
+    "createdAt": "2026-01-02T20:44:28.439Z",
+    "name": "Born"
+  },
+  {
+    "id": "zRNXU6YlSaI54iSKPNTN",
+    "name": "Venga",
+    "brandId": "eXED7TjVzsQU393jlhei",
+    "createdAt": "2026-01-02T21:01:25.975Z"
+  },
+  {
+    "id": "zSDg04tjgObg4jSILwYT",
+    "name": "Combo",
+    "brandId": "93J57mw3fq9mxoOVLBv2",
+    "createdAt": "2026-01-02T21:01:41.134Z"
+  },
+  {
+    "id": "zVhv4esgqLSMvjrC0uOz",
+    "name": "Shuttle",
+    "brandId": "6aDIyyolXQTccALJw3QT",
+    "createdAt": "2026-01-02T21:01:19.844Z"
+  },
+  {
+    "id": "zW2eyX8Y8Rr5GaOihihS",
+    "brandId": "N1QkEFvqdkDj81x5vsZb",
+    "createdAt": "2026-01-02T21:01:23.846Z",
+    "name": "E-Pace"
+  },
+  {
+    "id": "zWU8ytCTr1Oryg0nzOKg",
+    "name": "G01",
+    "createdAt": "2026-01-18T09:42:07.700Z",
+    "brandId": "7oDnUHEBD518f8EmzFUy"
+  },
+  {
+    "id": "zWV0oGbOz0Ub8iNjlGxR",
+    "createdAt": "2026-01-02T21:01:26.702Z",
+    "brandId": "CrD06cYqPe4WGq6EErMp",
+    "name": "110"
+  },
+  {
+    "id": "zZ5uWIR9VC3RN7UWrmUQ",
+    "brandId": "NyLlPf9p0ADPT4DQz1lW",
+    "createdAt": "2026-01-02T20:44:24.330Z",
+    "name": "Kalos"
+  },
+  {
+    "id": "zasU0clKMoUbhA1FajBr",
+    "name": "Tavascan",
+    "brandId": "JbWSvGWzMiN9mJavL9N9",
+    "createdAt": "2026-01-18T10:12:20.992Z"
+  },
+  {
+    "id": "zat2Nroaun35GoI7s44S",
+    "name": "Micra",
+    "createdAt": "2026-01-02T21:01:39.806Z",
+    "brandId": "tmq3NVi598n6gi6d5bhZ"
+  },
+  {
+    "id": "zdEIHjmNTukxdxAsdOlm",
+    "brandId": "QkaBwMwCsdKzP8LkbtWI",
+    "createdAt": "2026-01-02T21:01:31.472Z",
+    "name": "EV300"
+  },
+  {
+    "id": "zhy1aMcXoYobufQ2ZqYW",
+    "createdAt": "2026-01-18T09:42:08.930Z",
+    "name": "ID.4",
+    "brandId": "4ysgaJQj9Jb3uHgfrqlM"
+  },
+  {
+    "id": "zjG7MZ5vQzPsiV0geyKX",
+    "createdAt": "2026-01-18T09:41:50.171Z",
+    "name": "Rich",
+    "brandId": "qCGYFf5nR2zLUC8maEGu"
+  },
+  {
+    "id": "zp05MpL3Uadr7U4wl070",
+    "createdAt": "2026-01-18T09:42:04.865Z",
+    "name": "Cullinan",
+    "brandId": "eq8fN6dDk0hudLJY3lyD"
+  },
+  {
+    "id": "zspUNrmXmSFz0YAmkf99",
+    "name": "V12 Vantage",
+    "brandId": "NywooeRrDjD174A38ZNh",
+    "createdAt": "2026-01-02T20:44:14.783Z"
+  },
+  {
+    "id": "zsra2pBfBkBsxSBncW1r",
+    "createdAt": "2026-01-02T21:01:52.795Z",
+    "name": "Kamiq",
+    "brandId": "bnktqz9yxXnuLzPIxXBO"
+  },
+  {
+    "id": "ztZJAClp9IQoEchRlRMf",
+    "createdAt": "2026-01-18T09:42:01.478Z",
+    "brandId": "49O5Z3BmWN1VBic9Vp7Q",
+    "name": "Country"
+  },
+  {
+    "id": "zuaimJQkyexrZEG7ugrx",
+    "createdAt": "2026-01-02T20:44:31.717Z",
+    "brandId": "myFLHq3VbA4Eblp4P7cl",
+    "name": "Durango"
+  },
+  {
+    "id": "zvtH9oU8EXBmXDv4LqZr",
+    "name": "DS5",
+    "createdAt": "2026-01-02T20:44:27.717Z",
+    "brandId": "TzzfchbBXkfz5do91G9c"
+  },
+  {
+    "id": "zyrWV1tvmve6DTLDoPca",
+    "name": "Plus 4",
+    "brandId": "fhzmjuvae8A0e57o9kAD",
+    "createdAt": "2026-01-02T21:01:38.751Z"
+  }
+]

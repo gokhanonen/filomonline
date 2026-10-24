@@ -1,0 +1,1142 @@
+// FilomOnline — Multi-tenant filo/galeri yönetimi + ön muhasebe
+//
+// Tenant (holding) → Company (şirket) hiyerarşisi:
+//  - Katalog/tanım verileri (marka, model, renk, kasa tipi, kategori, şablonlar, roller)
+//    TENANT seviyesinde tutulur → holdingin tüm şirketleri paylaşır.
+//  - Operasyonel veriler (araç, cari, fatura, masraf, kira, lokasyon, kasa, ürün, doküman)
+//    COMPANY seviyesinde tutulur → her sorgu companyId ile filtrelenir (Prisma extension).
+//  - Holding konsolidasyonu: tenant'ın şirketleri üzerinden toplanır.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================================================
+// ADRES REFERANS VERİSİ (global — tenant bağımsız)
+// ========================================================================
+
+model City {
+  id        Int        @id // İl kodu (plaka kodu, örn: 34)
+  name      String     @unique // İl adı (örn: İstanbul)
+  districts District[]
+}
+
+model District {
+  id            Int            @id @default(autoincrement())
+  cityId        Int
+  name          String         // İlçe adı
+  city          City           @relation(fields: [cityId], references: [id])
+  neighborhoods Neighborhood[]
+
+  @@unique([cityId, name])
+  @@index([cityId])
+}
+
+model Neighborhood {
+  id         Int      @id @default(autoincrement())
+  districtId Int
+  name       String   // Mahalle adı
+  postalCode String   // Posta kodu
+  district   District @relation(fields: [districtId], references: [id])
+
+  @@unique([districtId, name])
+  @@index([districtId])
+  @@index([postalCode])
+}
+
+// ========================================================================
+// PLATFORM: Tenant / Company / User / RBAC / Auth
+// ========================================================================
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String // Holding / firma grubu adı
+  slug      String   @unique
+  isActive  Boolean  @default(true)
+  plan      String? // İleride abonelik planı için rezerve
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companies Company[]
+  users     User[]
+  roles     Role[]
+
+  brands             Brand[]
+  vehicleCategories  VehicleCategory[]
+  bodyTypes          BodyType[]
+  colors             Color[]
+  vehicleTypes       VehicleType[]
+  listingSources     ListingSource[]
+  accountCategories  AccountCategory[]
+  productCategories  ProductCategory[]
+  documentCategories DocumentCategory[]
+  documentTypes      DocumentType[]
+  contractTemplates  ContractTemplate[]
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  legalName String?
+  taxOffice String?
+  taxNumber String?
+  address   String?  @db.Text
+  phone     String?
+  email     String?
+  logoUrl   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant      Tenant              @relation(fields: [tenantId], references: [id])
+  memberships CompanyMembership[]
+
+  @@index([tenantId])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  tenantId     String? // null = platform süper admini
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  extension    String? // Dahili no
+  avatarUrl    String?
+  coverUrl     String?
+  isSuperAdmin Boolean  @default(false) // Platform sahibi (tenant yönetimi)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant        Tenant?             @relation(fields: [tenantId], references: [id])
+  memberships   CompanyMembership[]
+  refreshTokens RefreshToken[]
+
+  @@index([tenantId])
+}
+
+// Kullanıcının bir şirketteki üyeliği + rolleri
+model CompanyMembership {
+  id        String   @id @default(cuid())
+  userId    String
+  companyId String
+  isDefault Boolean  @default(false) // Login sonrası varsayılan şirket
+  isAdmin   Boolean  @default(false) // Şirket yöneticisi kısayolu
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  roles   Role[]
+
+  @@unique([userId, companyId])
+  @@index([companyId])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  description String?
+  permissions Json // string[] — izin anahtarları
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant      Tenant              @relation(fields: [tenantId], references: [id])
+  memberships CompanyMembership[]
+
+  @@unique([tenantId, name])
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Şirket bazlı dış API erişimi (ERP vb. üçüncü taraflar için)
+model ApiKey {
+  id         String    @id @default(cuid())
+  companyId  String
+  name       String
+  prefix     String    @unique // Görünen kısım: fo_live_xxxx
+  keyHash    String
+  scopes     Json // string[] — izin verilen kaynaklar
+  lastUsedAt DateTime?
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+
+  @@index([companyId])
+}
+
+// Şirket bazlı ayarlar (anahtar-değer)
+model Setting {
+  id        String   @id @default(cuid())
+  companyId String
+  key       String
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, key])
+}
+
+// ========================================================================
+// KATALOGLAR (tenant seviyesi — holding genelinde paylaşılır)
+// ========================================================================
+
+model VehicleCategory {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String // otomobil, suv, elektrikli, ticari, motosiklet...
+  code      String? // slug / value: otomobil, suv, elektrikli_ara_, etc.
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tenant Tenant  @relation(fields: [tenantId], references: [id])
+  brands Brand[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId, code])
+}
+
+model Brand {
+  id         String   @id @default(cuid())
+  tenantId   String
+  name       String
+  categoryId String? // Hangi araç kategorisine ait
+  createdAt  DateTime @default(now())
+
+  tenant   Tenant           @relation(fields: [tenantId], references: [id])
+  category VehicleCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  models   VehicleModel[]
+
+  @@unique([tenantId, categoryId, name])
+  @@index([tenantId, categoryId])
+}
+
+model VehicleModel {
+  id        String   @id @default(cuid())
+  brandId   String
+  name      String
+  createdAt DateTime @default(now())
+
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@unique([brandId, name])
+}
+
+model BodyType {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, name])
+}
+
+model Color {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  hex       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, name])
+}
+
+// Araç tipi: Filo, 2.El, Konsinye...
+model VehicleType {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, name])
+}
+
+// İlan kaynakları (sahibinden, arabam.com...)
+model ListingSource {
+  id         String   @id @default(cuid())
+  tenantId   String
+  label      String
+  domainLink String?
+  iconUrl    String?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model AccountCategory {
+  id        String      @id @default(cuid())
+  tenantId  String
+  name      String
+  type      AccountType
+  createdAt DateTime    @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, name])
+}
+
+model ProductCategory {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  type      String // material | received_service | provided_service | both
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, name])
+}
+
+model DocumentCategory {
+  id        String   @id @default(cuid())
+  tenantId  String
+  value     String // arac, musteri, sozlesme...
+  label     String
+  module    String   @default("ALL") // VEHICLE, CUSTOMER, CONTRACT, INVOICE, ALL veya virgülle ayrılmış liste
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id])
+  types  DocumentType[]
+
+  @@unique([tenantId, value])
+}
+
+model DocumentType {
+  id         String   @id @default(cuid())
+  tenantId   String
+  categoryId String
+  value      String // trafik_sigortasi, kasko, ruhsat...
+  label      String
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  tenant   Tenant           @relation(fields: [tenantId], references: [id])
+  category DocumentCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, value])
+}
+
+model ContractTemplate {
+  id        String       @id @default(cuid())
+  tenantId  String
+  type      ContractKind
+  name      String
+  content   String       @db.LongText // HTML içerik
+  isDefault Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+// ========================================================================
+// OPERASYON (company seviyesi)
+// ========================================================================
+
+model Location {
+  id            String   @id @default(cuid())
+  companyId     String
+  name          String
+  code          String
+  address       String?  @db.Text
+  city          String?
+  phone         String?
+  workplaceInfo String? // İşyeri bilgisi (ERP)
+  warehouseInfo String? // Depo bilgisi (ERP)
+  isActive      Boolean  @default(true)
+  isExternal    Boolean  @default(false) // Dış lokasyon (kaporta, boyacı...) — onay gerektirmez
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([companyId, code])
+  @@index([companyId])
+}
+
+model CashRegister {
+  id         String   @id @default(cuid())
+  companyId  String
+  locationId String
+  erpCode    String
+  name       String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([companyId])
+}
+
+model Account {
+  id              String            @id @default(cuid())
+  companyId       String
+  type            AccountType
+  entityType      EntityType
+  name            String // Ad Soyad (şahıs) / Firma unvanı
+  contactPerson   String?
+  email           String?
+  phone           String?
+  address         String?           @db.Text
+  neighborhood    String?
+  city            String?
+  district        String?
+  postalCode      String?
+  taxOffice       String?
+  taxNumber       String? // VKN
+  tckn            String?
+  categoryId      String?
+  integrationCode String?
+  isPotential     Boolean           @default(false)
+  isActive        Boolean           @default(true)
+  balance         Decimal           @default(0) @db.Decimal(15, 2)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([companyId])
+  @@index([companyId, name])
+}
+
+model Product {
+  id              String      @id @default(cuid())
+  companyId       String
+  type            ProductType
+  name            String
+  code            String // Stok/Hizmet kodu
+  integrationCode String?
+  categoryId      String?
+  unit            String // Adet, Saat, Kg...
+  buyingPrice     Decimal     @default(0) @db.Decimal(15, 2)
+  sellingPrice    Decimal     @default(0) @db.Decimal(15, 2)
+  taxRate         Decimal     @default(20) @db.Decimal(5, 2)
+  description     String?     @db.Text
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@unique([companyId, code])
+  @@index([companyId])
+}
+
+// ------------------------------------------------------------------------
+// ARAÇ — single source of truth; alış/satış/kira finansal entegrasyonu buradan türer
+// ------------------------------------------------------------------------
+
+model Vehicle {
+  id        String        @id @default(cuid())
+  companyId String
+  status    VehicleStatus @default(STOKTA)
+  isActive  Boolean       @default(true)
+
+  // Kimlik / katalog
+  plate             String
+  categoryId        String? // VehicleCategory
+  vehicleTypeId     String? // Filo, 2.El, Konsinye...
+  brandId           String?
+  modelId           String?
+  brandName         String? // Snapshot / serbest giriş
+  modelName         String?
+  year              Int?
+  chassisNo         String?
+  engineNo          String?
+  registrationModel String? // Ruhsat modeli
+
+  // Teknik
+  fuelType     FuelType?
+  transmission TransmissionType?
+  km           Int?
+  bodyTypeId   String?
+  colorId      String?
+  colorName    String?
+  horsePower   Int? // Beygir
+  enginePower  Int? // Motor gücü (HP)
+  engineVolume Int? // cc
+  driveType    DriveType?
+  warranty     Boolean           @default(false)
+  heavyDamage  Boolean           @default(false)
+  spareKey     Boolean           @default(false)
+  notes        String?           @db.Text
+
+  // Fiyatlandırma
+  listPrice            Decimal? @db.Decimal(15, 2)
+  tensf                Decimal? @db.Decimal(15, 2) // TENSF
+  tenListPrice         Decimal? @db.Decimal(15, 2)
+  purchaseRegime       String   @default("sahis") // 'sahis' | 'sirket_1' | 'sirket_20' | 'galeri_ozel'
+  specialBase          Boolean  @default(false) // Özel matrah
+  specialBaseAmount    Decimal? @db.Decimal(15, 2)
+  profitVatRate        Decimal? @db.Decimal(5, 2) // Kâr KDV oranı
+  vatRate              Decimal? @db.Decimal(5, 2)
+  erpCode              String?
+
+  // Alış
+  purchasePrice              Decimal?  @db.Decimal(15, 2)
+  purchaseNotaryPrice        Decimal?  @db.Decimal(15, 2) // Alış Noter Fiyatı
+  purchaseDate               DateTime?
+  purchaseVatRate            Decimal?  @db.Decimal(5, 2)
+  purchaseInterestRate       Decimal?  @db.Decimal(5, 2)
+  purchaseType               String? // 'T Tipi' vb.
+  purchaseOtherAmount        Decimal?  @db.Decimal(15, 2)
+  purchaseDownPayment        Decimal?  @db.Decimal(15, 2)
+  purchasePaymentNotes       String?   @db.Text
+  purchasedFrom              String? // Satın alınan yer/kişi (serbest)
+  supplierId                 String? // Satıcı cari
+  purchaseLocationId         String?
+  purchaseInvoiceNo          String?
+  purchaseInvoiceDate        DateTime?
+  purchaseInvoiceDescription String?   @db.Text
+  purchaseNotaryName         String?
+  purchaseNotaryJournalNo    String?
+  purchaseNotaryAmount       Decimal?  @db.Decimal(15, 2)
+
+  // Satış (salePrice kaldırıldı)
+  saleAmount             Decimal?           @db.Decimal(15, 2) // Satış Tutarı
+  saleDate               DateTime?
+  saleVatRate            Decimal?           @db.Decimal(5, 2)
+  saleType               String?
+  saleOtherAmount        Decimal?           @db.Decimal(15, 2)
+  customerId             String? // Alıcı cari
+  saleLocationId         String?
+  saleInvoiceNo          String?
+  saleInvoiceDate        DateTime?
+  saleInvoiceDescription String?            @db.Text
+  saleNotaryName         String?
+  saleNotaryJournalNo    String?
+  saleNotaryAmount       Decimal?           @db.Decimal(15, 2)
+  salesIntegrationStatus IntegrationStatus?
+  salesIntegrationRefNo  String?
+
+  salesRepId String? // Satış temsilcisi (User)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  photos       VehiclePhoto[]
+  tramerSet    VehicleTramerRecord[]
+  installments VehiclePurchaseInstallment[]
+  listingUrls  VehicleListingUrl[]
+  options      VehicleOption[]
+
+  @@index([companyId])
+  @@index([companyId, plate])
+  @@index([companyId, status])
+}
+
+model VehiclePhoto {
+  id        String             @id @default(cuid())
+  vehicleId String
+  category  VehiclePhotoKind
+  fileKey   String // S3 object key (tam görsel, max 300KB)
+  thumbKey  String? // S3 object key (thumbnail, ~50KB — liste/kart için)
+  url       String?
+  thumbUrl  String?
+  sortOrder Int                @default(0)
+  createdAt DateTime           @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+}
+
+model VehicleTramerRecord {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  date        DateTime
+  amount      Decimal  @db.Decimal(15, 2)
+  description String   @db.Text
+  photoUrl    String?
+  createdAt   DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+}
+
+// Alış taksitleri
+model VehiclePurchaseInstallment {
+  id        String   @id @default(cuid())
+  vehicleId String
+  date      DateTime
+  amount    Decimal  @db.Decimal(15, 2)
+  type      String // NAKİT, KREDİ KARTI, ÇEK, SENET, HAVALE
+  createdAt DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+}
+
+model VehicleListingUrl {
+  id              String   @id @default(cuid())
+  vehicleId       String
+  listingSourceId String?
+  url             String   @db.Text
+  createdAt       DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+}
+
+// Opsiyon (kapora/rezervasyon)
+model VehicleOption {
+  id            String              @id @default(cuid())
+  companyId     String
+  vehicleId     String
+  customerId    String // Account
+  optionDate    DateTime
+  validUntil    DateTime
+  amount        Decimal             @db.Decimal(15, 2)
+  note          String?             @db.Text
+  status        VehicleOptionStatus @default(ACTIVE)
+  createdById   String
+  updatedById   String?
+  cancelledById String?
+  cancelledAt   DateTime?
+  convertedAt   DateTime?
+  saleId        String?
+  supersededById String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+// Aracın güncel lokasyon durumu
+model VehicleLocationState {
+  id                String                @id @default(cuid())
+  companyId         String
+  vehicleId         String                @unique
+  currentLocationId String
+  status            VehicleLocationStatus @default(AT_LOCATION)
+  pendingTransferId String?
+  supplierId        String? // Dış lokasyondaysa hangi tedarikçide
+  lastUpdated       DateTime              @updatedAt
+
+  @@index([companyId])
+}
+
+model VehicleTransfer {
+  id                 String                @id @default(cuid())
+  companyId          String
+  vehicleId          String
+  fromLocationId     String
+  toLocationId       String
+  status             VehicleTransferStatus @default(PENDING)
+  initiatedById      String
+  initiatedAt        DateTime              @default(now())
+  confirmedById      String?
+  confirmedAt        DateTime?
+  cancelledById      String?
+  cancelledAt        DateTime?
+  notes              String?               @db.Text
+  isExternalTransfer Boolean               @default(false)
+  supplierId         String?
+  returnLocationId   String?
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+// ------------------------------------------------------------------------
+// FATURALAR
+// ------------------------------------------------------------------------
+
+model PurchaseInvoice {
+  id                    String             @id @default(cuid())
+  companyId             String
+  vehicleId             String
+  locationId            String?
+  invoiceNo             String
+  invoiceDate           DateTime
+  notaryAmount          Decimal            @default(0) @db.Decimal(15, 2)
+  otherAmount           Decimal            @default(0) @db.Decimal(15, 2)
+  vatRate               Decimal            @default(0) @db.Decimal(5, 2)
+  vatAmount             Decimal            @default(0) @db.Decimal(15, 2)
+  specialBaseAmount     Decimal            @default(0) @db.Decimal(15, 2)
+  specialBaseServiceFee Decimal            @default(0) @db.Decimal(15, 2)
+  accountId             String
+  description           String?            @db.Text
+  notaryJournalNo       String?
+  integrationStatus     IntegrationStatus? @default(BEKLIYOR)
+  integrationRefNo      String?
+  erpCode               String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+model SalesInvoice {
+  id                   String             @id @default(cuid())
+  companyId            String
+  vehicleId            String
+  locationId           String?
+  invoiceNo            String
+  invoiceDate          DateTime
+  accountId            String
+  entityType           EntityType         @default(CORPORATE)
+  purchaseRegime       String?            // 'sahis' | 'sirket_1' | 'sirket_20' | 'galeri_ozel'
+  saleAmount           Decimal            @default(0) @db.Decimal(15, 2) // Satış Tutarı
+  notarySalePrice      Decimal?           @db.Decimal(15, 2) // Satış Noter Fiyatı
+  notaryPurchasePrice  Decimal?           @db.Decimal(15, 2) // Alış Noter Fiyatı
+  profitMargin         Decimal?           @db.Decimal(15, 2) // Noter Satış - Noter Alış
+  matrah               Decimal            @default(0) @db.Decimal(15, 2)
+  vatRate              Decimal            @default(0) @db.Decimal(5, 2)
+  vatAmount            Decimal            @default(0) @db.Decimal(15, 2)
+  serviceFee           Decimal?           @db.Decimal(15, 2) // Hizmet Matrahı
+  serviceFeeVat        Decimal?           @db.Decimal(15, 2) // Hizmet KDV'si (%20)
+  totalWithVat         Decimal            @default(0) @db.Decimal(15, 2)
+  otherAmountExclNotary Decimal           @default(0) @db.Decimal(15, 2)
+  saleType             String? // 'T' vb.
+  notaryJournalNo      String?
+  description          String?            @db.Text
+  integrationStatus    IntegrationStatus? @default(BEKLIYOR)
+  toDelete             Boolean            @default(false) // T tipi güncelleme sonrası eski fatura
+  integrationRefNo     String?
+  erpCode              String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+model RentalInvoice {
+  id                String             @id @default(cuid())
+  companyId         String
+  rentalContractId  String?
+  vehicleId         String
+  locationId        String?
+  invoiceNo         String
+  invoiceDate       DateTime
+  rentAmount        Decimal            @db.Decimal(15, 2) // KDV hariç
+  vatRate           Decimal            @default(20) @db.Decimal(5, 2)
+  totalWithVat      Decimal            @db.Decimal(15, 2)
+  accountId         String
+  description       String?            @db.Text
+  salesRegime       String?
+  integrationStatus IntegrationStatus? @default(BEKLIYOR)
+  integrationRefNo  String?
+  erpCode           String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+// ------------------------------------------------------------------------
+// MASRAF / HİZMET FATURALARI
+// ------------------------------------------------------------------------
+
+model Expense {
+  id                String             @id @default(cuid())
+  companyId         String
+  invoiceType       ExpenseInvoiceType @default(RECEIVED) // Alınan (masraf) / Verilen hizmet
+  expenseType       ExpenseTargetType  @default(GENERAL) // Araç / Lokasyon / Genel
+  vehicleId         String?
+  locationId        String?
+  documentType      String? // T tipi vb.
+  documentNo        String?
+  documentDate      DateTime
+  category          String? // bakim, sigorta, vergi, yakıt, lastik, hasar, diger
+  description       String?            @db.Text
+  supplierId        String? // Tedarikçi cari
+  cashRegisterId    String?
+  subTotal          Decimal            @default(0) @db.Decimal(15, 2)
+  totalVat          Decimal            @default(0) @db.Decimal(15, 2)
+  grandTotal        Decimal            @default(0) @db.Decimal(15, 2)
+  integrationStatus IntegrationStatus? @default(BEKLIYOR)
+  integrationRefNo  String?
+  erpCode           String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  lines ExpenseLine[]
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+model ExpenseLine {
+  id          String      @id @default(cuid())
+  expenseId   String
+  type        ProductType
+  productId   String?
+  code        String
+  name        String
+  quantity    Decimal     @default(1) @db.Decimal(15, 3)
+  unitPrice   Decimal     @default(0) @db.Decimal(15, 2)
+  vatRate     Decimal     @default(20) @db.Decimal(5, 2)
+  description String?     @db.Text
+  sortOrder   Int         @default(0)
+
+  expense Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+
+  @@index([expenseId])
+}
+
+// ------------------------------------------------------------------------
+// SÖZLEŞMELER (kira + satış)
+// ------------------------------------------------------------------------
+
+model RentalContract {
+  id                   String               @id @default(cuid())
+  companyId            String
+  vehicleId            String
+  customerId           String? // Account
+  customerName         String // Snapshot
+  customerTcTaxNo      String?
+  customerAddress      String?              @db.Text
+  customerPhone        String?
+  durationMonths       Int
+  kmLimit              Int                  @default(0)
+  startDate            DateTime
+  endDate              DateTime?
+  monthlyPrice         Decimal              @db.Decimal(15, 2)
+  currency             String               @default("TRY")
+  vatRate              Decimal              @default(20) @db.Decimal(5, 2)
+  drivers              Json // string[] — sürücü ad/TC listesi
+  contractDate         DateTime
+  documentNo           String?
+  salesRegime          String?
+  status               RentalContractStatus @default(DRAFT)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+// Dönemsel kira kaydı (faturalamaya esas satırlı kayıt)
+model Rental {
+  id           String   @id @default(cuid())
+  companyId    String
+  vehicleId    String
+  customerId   String
+  customerName String
+  startDate    DateTime
+  endDate      DateTime
+  period       Int // Ay sayısı: 1, 3, 6, 12
+  documentNo   String?
+  documentDate DateTime
+  subTotal     Decimal  @default(0) @db.Decimal(15, 2)
+  totalVat     Decimal  @default(0) @db.Decimal(15, 2)
+  totalAmount  Decimal  @default(0) @db.Decimal(15, 2)
+  description  String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  lines RentalLine[]
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+model RentalLine {
+  id          String  @id @default(cuid())
+  rentalId    String
+  code        String  @default("900")
+  name        String  @default("Araç Kiralama Hizmeti")
+  quantity    Decimal @default(1) @db.Decimal(15, 3)
+  unitPrice   Decimal @default(0) @db.Decimal(15, 2)
+  vatRate     Decimal @default(20) @db.Decimal(5, 2)
+  total       Decimal @default(0) @db.Decimal(15, 2)
+  description String? @db.Text
+  sortOrder   Int     @default(0)
+
+  rental Rental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+  @@index([rentalId])
+}
+
+model SalesContract {
+  id                      String              @id @default(cuid())
+  companyId               String
+  vehicleId               String
+  customerId              String?
+  customerName            String
+  customerPhone           String?
+  customerEmail           String?
+  customerAddress         String?             @db.Text
+  customerDistrict        String?
+  customerCity            String?
+  customerIntegrationCode String?
+  customerTaxOffice       String?
+  customerTaxNumber       String?
+  customerIdentityNumber  String?
+  documentNo              String
+  contractDate            DateTime
+  validUntil              DateTime?
+  price                   Decimal             @db.Decimal(15, 2)
+  vatRate                 Decimal             @default(0) @db.Decimal(5, 2)
+  vatAmount               Decimal             @default(0) @db.Decimal(15, 2)
+  vatBase                 Decimal?            @db.Decimal(15, 2) // KDV matrahı
+  discount                Decimal             @default(0) @db.Decimal(15, 2)
+  grandTotal              Decimal             @default(0) @db.Decimal(15, 2)
+  notarySalePrice         Decimal?            @db.Decimal(15, 2)
+  notaryPurchaseAmount    Decimal?            @db.Decimal(15, 2)
+  specialBase             Boolean             @default(false)
+  specialBaseAmount       Decimal?            @db.Decimal(15, 2)
+  status                  SalesContractStatus @default(DRAFT)
+  notes                   String?             @db.Text
+  paymentNotes            String?             @db.Text
+  penaltyClause           Decimal?            @db.Decimal(15, 2)
+  saleLocationId          String?
+  createdById             String?
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+
+  installments SalesContractInstallment[]
+
+  @@index([companyId])
+  @@index([vehicleId])
+}
+
+model SalesContractInstallment {
+  id              String   @id @default(cuid())
+  salesContractId String
+  date            DateTime
+  amount          Decimal  @db.Decimal(15, 2)
+  type            String // NAKİT, KREDİ KARTI, ÇEK, SENET, HAVALE
+  sortOrder       Int      @default(0)
+
+  salesContract SalesContract @relation(fields: [salesContractId], references: [id], onDelete: Cascade)
+
+  @@index([salesContractId])
+}
+
+// ------------------------------------------------------------------------
+// DOKÜMAN / MESAJLAŞMA / LOG
+// ------------------------------------------------------------------------
+
+model Document {
+  id            String                @id @default(cuid())
+  companyId     String
+  categoryId    String
+  typeId        String
+  referenceType DocumentReferenceType
+  referenceId   String
+  fileName      String
+  fileKey       String // S3 object key
+  thumbKey      String? // görsel dokümanlar için thumbnail
+  fileType      String // MIME
+  fileSize      Int
+  description   String?               @db.Text
+  expiryDate    DateTime? // Sigorta vb. için
+  uploadedById  String
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([companyId])
+  @@index([companyId, referenceType, referenceId])
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  companyId String
+  // Araç sohbeti için opsiyonel bağlam
+  vehicleId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@index([companyId])
+}
+
+model ConversationParticipant {
+  id             String    @id @default(cuid())
+  conversationId String
+  userId         String
+  lastReadAt     DateTime?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String    @db.Text
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  companyId   String
+  type        String // VEHICLE_NEW, VEHICLE_OPTION, VEHICLE_SALE, RENTAL_NEW, LOCATION_CHANGE...
+  title       String
+  description String   @db.Text
+  entityType  String // vehicle, rental...
+  entityId    String
+  userId      String
+  userName    String?
+  link        String?
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([companyId])
+  @@index([companyId, createdAt])
+}
+
+// ========================================================================
+// ENUM'LAR
+// ========================================================================
+
+enum AccountType {
+  CUSTOMER
+  SUPPLIER
+  BOTH
+}
+
+enum EntityType {
+  INDIVIDUAL
+  CORPORATE
+}
+
+enum ProductType {
+  MATERIAL
+  RECEIVED_SERVICE
+  PROVIDED_SERVICE
+  VEHICLE
+}
+
+enum VehicleStatus {
+  STOKTA
+  KIRALAMADA
+  SATILDI
+}
+
+enum FuelType {
+  BENZIN
+  DIZEL
+  LPG
+  ELEKTRIK
+  HIBRIT
+}
+
+enum TransmissionType {
+  MANUEL
+  OTOMATIK
+  YARI_OTOMATIK
+}
+
+enum DriveType {
+  ONDEN_CEKIS
+  ARKADAN_ITIS
+  FOUR_WD
+  AWD
+}
+
+enum VehiclePhotoKind {
+  COVER
+  INTERIOR
+  EXTERIOR
+}
+
+enum VehicleOptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  CONVERTED
+  SUPERSEDED
+}
+
+enum VehicleLocationStatus {
+  AT_LOCATION
+  IN_TRANSFER
+  AT_EXTERNAL
+}
+
+enum VehicleTransferStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum IntegrationStatus {
+  BEKLIYOR
+  KUYRUKTA
+  ENTEGRE_EDILDI
+  IPTAL_BEKLIYOR
+  SILINDI
+}
+
+enum ExpenseInvoiceType {
+  RECEIVED
+  PROVIDED
+}
+
+enum ExpenseTargetType {
+  VEHICLE
+  LOCATION
+  GENERAL
+}
+
+enum RentalContractStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum SalesContractStatus {
+  DRAFT
+  SENT
+  SIGNED
+  APPROVED
+  CONVERTED
+  CANCELLED
+}
+
+enum ContractKind {
+  RENTAL
+  SALES
+  PURCHASE
+}
+
+enum DocumentReferenceType {
+  VEHICLE
+  CUSTOMER
+  CONTRACT
+  INVOICE
+}

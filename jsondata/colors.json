@@ -1,0 +1,114 @@
+[
+  {
+    "id": "0nR8K8ZLrrfUuhmAs28j",
+    "order": 14,
+    "label": "Mor",
+    "value": "mor",
+    "createdAt": "2026-01-18T15:00:42.528Z"
+  },
+  {
+    "id": "5bMQhh4gUG2Xogg8eePj",
+    "value": "kirmizi",
+    "label": "Kırmızı",
+    "order": 7,
+    "createdAt": "2026-01-18T15:00:41.753Z"
+  },
+  {
+    "id": "ETpZCwxGu1EA36ral1wf",
+    "value": "kahverengi",
+    "label": "Kahverengi",
+    "order": 10,
+    "createdAt": "2026-01-18T15:00:42.102Z"
+  },
+  {
+    "id": "GQlDvM4XAsttNCbgl7bX",
+    "value": "siyah",
+    "label": "Siyah",
+    "createdAt": "2026-01-18T15:00:41.265Z",
+    "order": 2
+  },
+  {
+    "id": "J7JILBOr9AVMHcnPDhhT",
+    "value": "gumus",
+    "createdAt": "2026-01-18T15:00:41.453Z",
+    "label": "Gümüş",
+    "order": 4
+  },
+  {
+    "id": "JBVZiy21xcJhIFUT3sXU",
+    "label": "Lacivert",
+    "order": 6,
+    "value": "lacivert",
+    "createdAt": "2026-01-18T15:00:41.657Z"
+  },
+  {
+    "id": "JIT27Q6FLs5k9dzunh6R",
+    "label": "Bej",
+    "order": 11,
+    "createdAt": "2026-01-18T15:00:42.185Z",
+    "value": "bej"
+  },
+  {
+    "id": "TCl3k34iCOBod7Jo7dgU",
+    "value": "beyaz",
+    "order": 1,
+    "label": "Beyaz",
+    "createdAt": "2026-01-18T15:00:41.020Z"
+  },
+  {
+    "id": "TIFh7YQklUARYjdKMqQF",
+    "value": "yesil",
+    "label": "Yeşil",
+    "createdAt": "2026-01-18T15:00:42.017Z",
+    "order": 9
+  },
+  {
+    "id": "YOryotbtY8GaWmC806dA",
+    "label": "Beyaz Siyah",
+    "order": 15,
+    "createdAt": "2026-08-27T21:15:28.694Z",
+    "value": "beyaz_siyah"
+  },
+  {
+    "id": "ekOj6NM86Ge1AWkEOhUy",
+    "order": 5,
+    "label": "Mavi",
+    "value": "mavi",
+    "createdAt": "2026-01-18T15:00:41.562Z"
+  },
+  {
+    "id": "jUYvzcYcml20wxDf1P5m",
+    "label": "Gri",
+    "order": 3,
+    "createdAt": "2026-01-18T15:00:41.366Z",
+    "value": "gri"
+  },
+  {
+    "id": "jmrnHAwlgfgtUZhA6eHW",
+    "value": "turuncu",
+    "createdAt": "2026-01-18T15:00:42.281Z",
+    "order": 12,
+    "label": "Turuncu"
+  },
+  {
+    "id": "mJROplgzCushQbiOXCGz",
+    "value": "mavi_siyah",
+    "createdAt": "2026-09-22T08:17:18.040Z",
+    "order": 16,
+    "label": "Mavi Siyah"
+  },
+  {
+    "id": "t05CMhQFBp5f6F66jwPx",
+    "order": 8,
+    "createdAt": "2026-01-18T15:00:41.910Z",
+    "label": "Bordo",
+    "value": "bordo"
+  },
+  {
+    "id": "uDTqq81ileSoICI0TTZJ",
+    "createdAt": "2026-01-18T15:00:42.358Z",
+    "value": "sari",
+    "label": "Sarı",
+    "order": 13
+  }
+]
