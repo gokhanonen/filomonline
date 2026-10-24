@@ -29,7 +29,6 @@ export const navigation: NavigationTree[] = [
       { id: "invoices", type: "item", path: "/invoices", title: "Faturalar", icon: "invoices" },
       { id: "expenses", type: "item", path: "/expenses", title: "Masraflar", icon: "expenses" },
       { id: "contracts", type: "item", path: "/contracts", title: "Sözleşmeler", icon: "contracts" },
-      { id: "reports", type: "item", path: "/reports", title: "Raporlar", icon: "reports" },
     ],
   },
   {
