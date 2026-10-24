@@ -225,12 +225,12 @@ export function Notifications() {
                     )}
                     <Button
                       component={Link}
-                      to="/settings/notifications"
+                      to="/settings"
                       className="size-7 rounded-full text-gray-500 hover:text-gray-700 dark:text-dark-300 dark:hover:text-dark-100"
                       isIcon
                       variant="flat"
                       onClick={close}
-                      title="Bildirim Ayarları"
+                      title="Ayarlar"
                     >
                       <Cog6ToothIcon className="size-4" />
                     </Button>
