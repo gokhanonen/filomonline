@@ -568,7 +568,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
       onClose={onClose}
       hideHeader
       noPadding
-      className="w-full max-w-6xl max-h-[calc(100vh-2rem)] flex flex-col overflow-hidden shadow-2xl rounded-2xl"
+      className="w-full max-w-6xl h-[680px] max-h-[calc(100vh-2.5rem)] flex flex-col overflow-hidden shadow-2xl rounded-2xl"
     >
       {/* Sticky Top Header */}
       <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-gray-50/95 px-5 py-2.5 backdrop-blur-xs dark:border-dark-600 dark:bg-dark-800/95">

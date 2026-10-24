@@ -37,7 +37,8 @@ export function Modal({
       >
         <DialogPanel
           className={clsx(
-            "w-full max-w-2xl rounded-xl bg-white shadow-xl dark:bg-dark-700",
+            "w-full rounded-xl bg-white shadow-xl dark:bg-dark-700",
+            !className?.includes("max-w-") && "max-w-2xl",
             className,
           )}
         >
