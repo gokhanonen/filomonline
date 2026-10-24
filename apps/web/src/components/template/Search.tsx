@@ -298,18 +298,13 @@ export function SearchDialog({ close }: SearchDialogProps) {
     return unifiedResults.filter((r) => r.category === activeCategory);
   }, [unifiedResults, activeCategory]);
 
-  // Reset selectedIndex when results or category change
+  // Reset selectedIndex and scroll to top when results or category change
   useEffect(() => {
     setSelectedIndex(0);
-  }, [filteredResults, activeCategory]);
-
-  // Keep active item scrolled into view
-  useEffect(() => {
-    const el = itemRefs.current[selectedIndex];
-    if (el) {
-      el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    if (resultsContainerRef.current) {
+      resultsContainerRef.current.scrollTop = 0;
     }
-  }, [selectedIndex]);
+  }, [filteredResults, activeCategory]);
 
   // Category counts
   const categoryCounts = useMemo(() => {
@@ -324,16 +319,24 @@ export function SearchDialog({ close }: SearchDialogProps) {
     return counts;
   }, [unifiedResults]);
 
-  // Keyboard navigation
+  // Keyboard navigation (scroll only when user uses arrow keys)
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (filteredResults.length === 0) return;
-      setSelectedIndex((prev) => (prev < filteredResults.length - 1 ? prev + 1 : 0));
+      setSelectedIndex((prev) => {
+        const next = prev < filteredResults.length - 1 ? prev + 1 : 0;
+        itemRefs.current[next]?.scrollIntoView({ block: "nearest", behavior: "auto" });
+        return next;
+      });
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       if (filteredResults.length === 0) return;
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : filteredResults.length - 1));
+      setSelectedIndex((prev) => {
+        const prevIdx = prev > 0 ? prev - 1 : filteredResults.length - 1;
+        itemRefs.current[prevIdx]?.scrollIntoView({ block: "nearest", behavior: "auto" });
+        return prevIdx;
+      });
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (filteredResults[selectedIndex]) {
@@ -453,7 +456,7 @@ export function SearchDialog({ close }: SearchDialogProps) {
       {/* Content Area */}
       <div
         ref={resultsContainerRef}
-        className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-1.5 focus:outline-none"
+        className="flex-1 overflow-y-auto overscroll-contain px-3 sm:px-6 py-4 space-y-1.5 focus:outline-none"
       >
         {/* Case 1: Empty Query - Quick Access & Search Tips */}
         {!hasQuery && (
@@ -558,7 +561,11 @@ export function SearchDialog({ close }: SearchDialogProps) {
                   }}
                   to={item.targetUrl}
                   onClick={close}
-                  onMouseEnter={() => setSelectedIndex(idx)}
+                  onMouseMove={() => {
+                    if (selectedIndex !== idx) {
+                      setSelectedIndex(idx);
+                    }
+                  }}
                   className={clsx(
                     "group flex items-start gap-3 sm:gap-3.5 p-3 sm:p-3.5 rounded-xl transition-all border outline-none",
                     isSelected
