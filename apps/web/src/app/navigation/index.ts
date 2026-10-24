@@ -18,7 +18,6 @@ export const navigation: NavigationTree[] = [
       { id: "dashboard", type: "item", path: "/dashboard", title: "Dashboard", icon: "dashboard" },
       { id: "vehicles", type: "item", path: "/vehicles", title: "Araç Operasyon", icon: "vehicles" },
       { id: "accounts", type: "item", path: "/accounts", title: "Cariler", icon: "accounts" },
-      { id: "activity", type: "item", path: "/activity", title: "Aktivite", icon: "activity" },
     ],
   },
   {
