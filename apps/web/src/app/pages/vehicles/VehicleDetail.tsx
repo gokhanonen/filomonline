@@ -38,7 +38,7 @@ import {
   INTEGRATION_LABELS,
   type SalesInvoiceDetail,
 } from "@/@types/invoice";
-import { getVehicle } from "@/services/vehicleService";
+import { getOrCreateShareLink, getVehicle } from "@/services/vehicleService";
 import { getCatalog } from "@/services/catalogService";
 import { presignDownload } from "@/services/storageService";
 import { getSalesInvoiceByVehicle } from "@/services/invoiceService";
@@ -280,6 +280,23 @@ export default function VehicleDetailPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outlined"
+              className="gap-1.5 text-xs text-gray-700 dark:text-dark-200"
+              onClick={async () => {
+                try {
+                  const link = await getOrCreateShareLink(v.id);
+                  const pubUrl = `${window.location.origin}/v/${link.token}`;
+                  await navigator.clipboard.writeText(pubUrl);
+                  toast.success("Login gerektirmeyen dış paylaşım linki kopyalandı!");
+                } catch {
+                  toast.error("Bağlantı oluşturulamadı");
+                }
+              }}
+              title="Müşteriye göndermek için login gerektirmeyen dışlinki kopyalar"
+            >
+              <TbLink className="size-4" /> Dış Linki Kopyala
+            </Button>
             <Button color="success" variant="soft" className="gap-2" onClick={() => setWaOpen(true)}>
               <TbBrandWhatsapp className="size-5" /> WhatsApp
             </Button>

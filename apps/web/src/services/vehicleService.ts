@@ -1,10 +1,15 @@
 import axios from "@/utils/axios";
+import rawAxios from "axios";
+import { API_BASE_URL } from "@/configs/auth";
 import type { Paginated } from "@/@types/common";
 import type {
+  CreateVehicleShareLinkInput,
+  PublicVehicleResponse,
   Vehicle,
   VehicleFormValues,
   VehicleListingUrl,
   VehicleOption,
+  VehicleShareLink,
   VehicleStatus,
 } from "@/@types/vehicle";
 
@@ -156,4 +161,54 @@ export async function deleteVehicleTramer(
 ): Promise<void> {
   await axios.delete(`/vehicles/${vehicleId}/tramer/${tramerId}`);
 }
+
+// --- Dış Paylaşım Bağlantıları (Public Share Links) ---
+
+export async function getOrCreateShareLink(
+  vehicleId: string,
+  input?: CreateVehicleShareLinkInput,
+): Promise<VehicleShareLink> {
+  const { data } = await axios.post<VehicleShareLink>(
+    `/vehicles/${vehicleId}/share-links`,
+    input ?? {},
+  );
+  return data;
+}
+
+export async function listShareLinks(
+  vehicleId: string,
+): Promise<VehicleShareLink[]> {
+  const { data } = await axios.get<VehicleShareLink[]>(
+    `/vehicles/${vehicleId}/share-links`,
+  );
+  return data;
+}
+
+export async function toggleShareLink(
+  vehicleId: string,
+  linkId: string,
+  isActive: boolean,
+): Promise<VehicleShareLink> {
+  const { data } = await axios.patch<VehicleShareLink>(
+    `/vehicles/${vehicleId}/share-links/${linkId}`,
+    { isActive },
+  );
+  return data;
+}
+
+export async function deleteShareLink(
+  vehicleId: string,
+  linkId: string,
+): Promise<void> {
+  await axios.delete(`/vehicles/${vehicleId}/share-links/${linkId}`);
+}
+
+/** Login olmadan çağrılan herkese açık araç detay sorgusu */
+export async function getPublicVehicle(token: string): Promise<PublicVehicleResponse> {
+  const { data } = await rawAxios.get<PublicVehicleResponse>(
+    `${API_BASE_URL}/vehicles/public/${token}`,
+  );
+  return data;
+}
+
 

@@ -26,6 +26,9 @@ import {
   CreateVehicleTransferDto,
   ReturnFromExternalDto,
 } from "./dto/vehicle-transfer.dto";
+import { CreateVehicleShareLinkDto } from "./dto/vehicle-share.dto";
+import { Public } from "../auth/decorators/public.decorator";
+import { SkipCompany } from "../tenancy/skip-company.decorator";
 
 @ApiTags("vehicles")
 @ApiBearerAuth()
@@ -241,6 +244,56 @@ export class VehiclesController {
     @Body() dto: ReturnFromExternalDto,
   ) {
     return this.vehicles.returnFromExternal(companyId, user.id, id, dto);
+  }
+
+  // --- Dış Paylaşım Bağlantıları ---
+
+  /** Login gerektirmeyen dışlink araç sayfası */
+  @Public()
+  @SkipCompany()
+  @Get("public/:token")
+  getPublicVehicle(@Param("token") token: string) {
+    return this.vehicles.getPublicVehicleByToken(token);
+  }
+
+  @RequirePermissions("vehicles.read")
+  @Get(":id/share-links")
+  listShareLinks(
+    @CompanyId() companyId: string,
+    @Param("id") id: string,
+  ) {
+    return this.vehicles.listShareLinks(companyId, id);
+  }
+
+  @RequirePermissions("vehicles.write")
+  @Post(":id/share-links")
+  createShareLink(
+    @CompanyId() companyId: string,
+    @Param("id") id: string,
+    @Body() dto: CreateVehicleShareLinkDto,
+  ) {
+    return this.vehicles.getOrCreateShareLink(companyId, id, dto);
+  }
+
+  @RequirePermissions("vehicles.write")
+  @Patch(":id/share-links/:linkId")
+  toggleShareLink(
+    @CompanyId() companyId: string,
+    @Param("id") id: string,
+    @Param("linkId") linkId: string,
+    @Body("isActive") isActive: boolean,
+  ) {
+    return this.vehicles.toggleShareLink(companyId, id, linkId, isActive);
+  }
+
+  @RequirePermissions("vehicles.write")
+  @Delete(":id/share-links/:linkId")
+  deleteShareLink(
+    @CompanyId() companyId: string,
+    @Param("id") id: string,
+    @Param("linkId") linkId: string,
+  ) {
+    return this.vehicles.deleteShareLink(companyId, id, linkId);
   }
 }
 

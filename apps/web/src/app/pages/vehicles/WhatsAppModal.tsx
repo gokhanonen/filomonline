@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { TbBrandWhatsapp, TbLink } from "react-icons/tb";
+import {
+  TbBrandWhatsapp,
+  TbCheck,
+  TbCopy,
+  TbExternalLink,
+  TbLink,
+  TbShieldCheck,
+} from "react-icons/tb";
 
 import { Button, Input, Textarea } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
@@ -13,7 +20,11 @@ import {
   type Vehicle,
 } from "@/@types/vehicle";
 import { listAccounts } from "@/services/accountService";
-import { getVehicle, listListingUrls } from "@/services/vehicleService";
+import {
+  getOrCreateShareLink,
+  getVehicle,
+  listListingUrls,
+} from "@/services/vehicleService";
 
 interface Props {
   open: boolean;
@@ -97,18 +108,31 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
   const [phone, setPhone] = useState("");
   const [listingUrl, setListingUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [hidePlate, setHidePlate] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!open || !vehicle) return;
     setCustomerId("");
     setPhone("");
+    setHidePlate(false);
+    setCopied(false);
     setFull(vehicle);
 
-    const initialUrl = findFirstListingUrl(vehicle) ?? "";
-    setListingUrl(initialUrl);
-    setMessage(buildWhatsAppMessage(vehicle, initialUrl || undefined));
+    // 1. FilomOnline dış paylaşım linkini çek / oluştur
+    getOrCreateShareLink(vehicle.id, { hidePlate: false })
+      .then((link) => {
+        const pubUrl = `${window.location.origin}/v/${link.token}`;
+        setListingUrl(pubUrl);
+        setMessage(buildWhatsAppMessage(vehicle, pubUrl));
+      })
+      .catch(() => {
+        const fallbackUrl = findFirstListingUrl(vehicle) ?? "";
+        setListingUrl(fallbackUrl);
+        setMessage(buildWhatsAppMessage(vehicle, fallbackUrl || undefined));
+      });
 
-    // Tramer + güncel ilan linklerini çek (aracın ilk ilan linkini garantiye al)
+    // Tramer + güncel ilan linklerini çek
     Promise.all([
       getVehicle(vehicle.id).catch(() => null),
       listListingUrls(vehicle.id).catch(() => []),
@@ -122,10 +146,6 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
         listingUrls: mergedUrls,
       };
       setFull(updatedVehicle);
-
-      const foundUrl = findFirstListingUrl(updatedVehicle) || initialUrl;
-      setListingUrl(foundUrl);
-      setMessage(buildWhatsAppMessage(updatedVehicle, foundUrl || undefined));
     });
 
     listAccounts({ type: "CUSTOMER", onlyActive: true, pageSize: 300 })
@@ -158,6 +178,28 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
     }
   };
 
+  const handleToggleHidePlate = async (checked: boolean) => {
+    setHidePlate(checked);
+    if (!vehicle) return;
+    try {
+      const link = await getOrCreateShareLink(vehicle.id, { hidePlate: checked });
+      const pubUrl = `${window.location.origin}/v/${link.token}`;
+      setListingUrl(pubUrl);
+      const cur = full ?? vehicle;
+      if (cur) setMessage(buildWhatsAppMessage(cur, pubUrl));
+    } catch {
+      //
+    }
+  };
+
+  const copyLink = () => {
+    if (!listingUrl) return;
+    navigator.clipboard.writeText(listingUrl);
+    setCopied(true);
+    toast.success("Dış paylaşım linki kopyalandı!");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const number = normalizePhone(phone);
   const valid = number.length >= 11;
 
@@ -184,6 +226,60 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
       className="max-w-xl"
     >
       <div className="space-y-4">
+        {/* FilomOnline Dış Paylaşım Bağlantısı Kartı */}
+        <div className="p-3.5 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/40">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs font-bold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
+              <TbLink className="size-4 text-emerald-600" />
+              FilomOnline Dış Paylaşım Linki (Login Gerektirmez)
+            </span>
+            <button
+              type="button"
+              onClick={copyLink}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-900 dark:text-emerald-300 transition"
+            >
+              {copied ? <TbCheck className="size-3.5 text-emerald-600" /> : <TbCopy className="size-3.5" />}
+              {copied ? "Kopyalandı" : "Linki Kopyala"}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={listingUrl}
+              className="flex-1 text-xs font-mono py-1.5 px-3 rounded-lg border border-emerald-300/80 dark:border-emerald-700 bg-white dark:bg-dark-800 text-gray-800 dark:text-dark-100 select-all"
+            />
+            {listingUrl && (
+              <a
+                href={listingUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="p-1.5 rounded-lg border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-dark-700 transition"
+                title="Yeni Sekmede Aç"
+              >
+                <TbExternalLink className="size-4" />
+              </a>
+            )}
+          </div>
+
+          <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-500 dark:text-dark-400">
+            <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={hidePlate}
+                onChange={(e) => handleToggleHidePlate(e.target.checked)}
+                className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 size-3.5"
+              />
+              <span>Plakayı ilanda gizle/maskele (Örn. 34 *** 123)</span>
+            </label>
+
+            <span className="text-emerald-700 dark:text-emerald-400 flex items-center gap-1 font-medium">
+              <TbShieldCheck className="size-3.5" /> Araç satılınca link otomatik kapanır
+            </span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <SearchableSelect
             label="Müşteri"
@@ -206,16 +302,16 @@ export function WhatsAppModal({ open, onClose, vehicle }: Props) {
         </div>
 
         <Input
-          label="İlan Linki (İlk link otomatik eklenir)"
-          placeholder="https://www.sahibinden.com/ilan/..."
+          label="İlan Linki (Harici ilan veya özel link)"
+          placeholder="https://..."
           value={listingUrl}
           onChange={(e) => handleUrlChange(e.target.value)}
           prefix={<TbLink className="size-4 text-gray-400" />}
         />
 
         <Textarea
-          label="Mesaj"
-          rows={11}
+          label="Mesaj Metni"
+          rows={9}
           value={message}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
           classNames={{ input: "font-mono text-xs" }}

@@ -22,6 +22,8 @@ import {
   ReturnFromExternalDto,
   SetInitialLocationDto,
 } from "./dto/vehicle-transfer.dto";
+import { CreateVehicleShareLinkDto } from "./dto/vehicle-share.dto";
+import { randomBytes } from "crypto";
 
 const fullInclude = {
   photos: { orderBy: { sortOrder: "asc" } },
@@ -968,5 +970,321 @@ export class VehiclesService {
       where: { id, companyId },
     });
     if (!exists) throw new NotFoundException("Araç bulunamadı");
+  }
+
+  // --- Dış Paylaşım Bağlantıları (Public Share Links) ---
+
+  async getOrCreateShareLink(
+    companyId: string,
+    vehicleId: string,
+    dto?: CreateVehicleShareLinkDto,
+  ) {
+    await this.ensureExists(companyId, vehicleId);
+
+    // Eğer özel fiyat veya özel ayar gönderilmediyse mevcut aktif varsayılan linki getir
+    const isCustom = Boolean(
+      dto?.title ||
+        dto?.hidePlate ||
+        dto?.customPrice !== undefined ||
+        dto?.customNote,
+    );
+
+    if (!isCustom) {
+      const existing = await this.prisma.vehicleShareLink.findFirst({
+        where: { vehicleId, companyId, isActive: true, customPrice: null },
+        orderBy: { createdAt: "desc" },
+      });
+      if (existing) {
+        return existing;
+      }
+    }
+
+    // Yeni benzersiz token üret (12 karakter hex)
+    const token = randomBytes(6).toString("hex");
+
+    const link = await this.prisma.vehicleShareLink.create({
+      data: {
+        vehicleId,
+        companyId,
+        token,
+        title: dto?.title?.trim() || null,
+        hidePlate: dto?.hidePlate ?? false,
+        customPrice:
+          dto?.customPrice !== undefined
+            ? new Prisma.Decimal(dto.customPrice)
+            : null,
+        customNote: dto?.customNote?.trim() || null,
+        isActive: true,
+      },
+    });
+
+    // Aracın ana shareToken alanını da güncelle (eğer henüz boşsa)
+    await this.prisma.vehicle
+      .update({
+        where: { id: vehicleId },
+        data: { shareToken: token },
+      })
+      .catch(() => void 0);
+
+    return link;
+  }
+
+  async listShareLinks(companyId: string, vehicleId: string) {
+    await this.ensureExists(companyId, vehicleId);
+    return this.prisma.vehicleShareLink.findMany({
+      where: { vehicleId, companyId },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  async toggleShareLink(
+    companyId: string,
+    vehicleId: string,
+    linkId: string,
+    isActive: boolean,
+  ) {
+    await this.ensureExists(companyId, vehicleId);
+    const link = await this.prisma.vehicleShareLink.findFirst({
+      where: { id: linkId, vehicleId, companyId },
+    });
+    if (!link) throw new NotFoundException("Paylaşım bağlantısı bulunamadı");
+
+    return this.prisma.vehicleShareLink.update({
+      where: { id: linkId },
+      data: { isActive },
+    });
+  }
+
+  async deleteShareLink(
+    companyId: string,
+    vehicleId: string,
+    linkId: string,
+  ) {
+    await this.ensureExists(companyId, vehicleId);
+    const link = await this.prisma.vehicleShareLink.findFirst({
+      where: { id: linkId, vehicleId, companyId },
+    });
+    if (!link) throw new NotFoundException("Paylaşım bağlantısı bulunamadı");
+
+    await this.prisma.vehicleShareLink.delete({ where: { id: linkId } });
+    return { success: true };
+  }
+
+  /**
+   * Login gerekmeksizin dışlink ile araç bilgilerini sorgular.
+   * Kural: Araç satıldığında (SATILDI) link otomatik olarak devre dışı (disabled) kalır!
+   */
+  async getPublicVehicleByToken(token: string) {
+    if (!token || typeof token !== "string") {
+      throw new NotFoundException("Geçersiz paylaşım bağlantısı");
+    }
+
+    // 1. Önce VehicleShareLink tablosundan token ara
+    let shareLink = await this.prisma.vehicleShareLink.findUnique({
+      where: { token },
+    });
+
+    let vehicleId = shareLink?.vehicleId;
+
+    // 2. Bulunamadıysa aracın birincil shareToken veya ID'si üzerinden ara
+    if (!vehicleId) {
+      const fallbackVehicle = await this.prisma.vehicle.findFirst({
+        where: { OR: [{ shareToken: token }, { id: token }] },
+        select: { id: true },
+      });
+      if (fallbackVehicle) {
+        vehicleId = fallbackVehicle.id;
+      }
+    }
+
+    if (!vehicleId) {
+      throw new NotFoundException("Paylaşım bağlantısı veya araç bulunamadı");
+    }
+
+    // 3. Aracı ve şirket bilgilerini çek
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: vehicleId },
+      include: {
+        photos: { orderBy: { sortOrder: "asc" } },
+        tramerSet: { orderBy: { date: "desc" } },
+        options: { where: { status: "ACTIVE" } },
+      },
+    });
+
+    if (!vehicle) {
+      throw new NotFoundException("Araç bulunamadı");
+    }
+
+    const company = await this.prisma.company.findUnique({
+      where: { id: vehicle.companyId },
+      select: {
+        id: true,
+        name: true,
+        legalName: true,
+        phone: true,
+        email: true,
+        address: true,
+        logoUrl: true,
+      },
+    });
+
+    let companyLogo = company?.logoUrl;
+    if (companyLogo && !companyLogo.startsWith("http")) {
+      companyLogo = await this.storage
+        .presignDownload(companyLogo)
+        .catch(() => company?.logoUrl || null);
+    }
+
+    const hidePlate = shareLink?.hidePlate ?? false;
+    const displayedPlate = hidePlate ? this.maskPlate(vehicle.plate) : vehicle.plate;
+
+    // --- KRİTİK KURAL: Araç satılmış ise link devre dışı kalır ---
+    if (vehicle.status === "SATILDI") {
+      return {
+        status: "disabled",
+        reason: "SOLD",
+        message:
+          "Bu aracın satışı tamamlandığı için ilan yayından kaldırılmıştır.",
+        vehicleSummary: {
+          brandName: vehicle.brandName,
+          modelName: vehicle.modelName,
+          year: vehicle.year,
+          plate: displayedPlate,
+        },
+        company: company
+          ? {
+              name: company.name,
+              phone: company.phone,
+              logoUrl: companyLogo,
+              address: company.address,
+            }
+          : null,
+      };
+    }
+
+    // Manuel olarak kapatılmış link kontrolü
+    if (shareLink && !shareLink.isActive) {
+      return {
+        status: "disabled",
+        reason: "INACTIVE",
+        message: "Bu paylaşım bağlantısı kapatılmıştır.",
+        company: company
+          ? {
+              name: company.name,
+              phone: company.phone,
+              logoUrl: companyLogo,
+              address: company.address,
+            }
+          : null,
+      };
+    }
+
+    // Görüntülenme sayısını artır (asenkron arka plan)
+    if (shareLink) {
+      this.prisma.vehicleShareLink
+        .update({
+          where: { id: shareLink.id },
+          data: {
+            viewCount: { increment: 1 },
+            lastViewedAt: new Date(),
+          },
+        })
+        .catch(() => void 0);
+    }
+
+    // Fotoğraf URL'lerini hazırla
+    const resolvedPhotos = await Promise.all(
+      vehicle.photos.map(async (p) => {
+        let url = p.url;
+        let thumbUrl = p.thumbUrl;
+        if (!url && p.fileKey) {
+          url = await this.storage.presignDownload(p.fileKey).catch(() => null);
+        }
+        if (!thumbUrl && (p.thumbKey || p.fileKey)) {
+          thumbUrl = await this.storage
+            .presignDownload(p.thumbKey ?? p.fileKey)
+            .catch(() => null);
+        }
+        return {
+          id: p.id,
+          category: p.category,
+          url: url ?? thumbUrl,
+          thumbUrl: thumbUrl ?? url,
+          sortOrder: p.sortOrder,
+        };
+      }),
+    );
+
+    const price =
+      shareLink?.customPrice != null
+        ? Number(shareLink.customPrice)
+        : vehicle.listPrice != null
+          ? Number(vehicle.listPrice)
+          : null;
+
+    return {
+      status: "active",
+      token,
+      title: shareLink?.title ?? null,
+      customNote: shareLink?.customNote ?? null,
+      hidePlate,
+      vehicle: {
+        id: vehicle.id,
+        plate: displayedPlate,
+        brandName: vehicle.brandName,
+        modelName: vehicle.modelName,
+        year: vehicle.year,
+        km: vehicle.km,
+        fuelType: vehicle.fuelType,
+        transmission: vehicle.transmission,
+        colorName: vehicle.colorName,
+        horsePower: vehicle.horsePower,
+        enginePower: vehicle.enginePower,
+        engineVolume: vehicle.engineVolume,
+        driveType: vehicle.driveType,
+        bodyTypeId: vehicle.bodyTypeId,
+        warranty: vehicle.warranty,
+        spareKey: vehicle.spareKey,
+        heavyDamage: vehicle.heavyDamage,
+        notes: vehicle.notes,
+        listPrice: price,
+        photos: resolvedPhotos,
+        tramerSet: vehicle.tramerSet.map((t) => ({
+          id: t.id,
+          date: t.date,
+          amount: Number(t.amount),
+          description: t.description,
+        })),
+        isReserved: vehicle.options.length > 0,
+        options: vehicle.options.map((o) => ({
+          id: o.id,
+          status: o.status,
+          note: o.note,
+        })),
+      },
+      company: company
+        ? {
+            name: company.name,
+            legalName: company.legalName,
+            phone: company.phone,
+            email: company.email,
+            address: company.address,
+            logoUrl: companyLogo,
+          }
+        : null,
+    };
+  }
+
+  private maskPlate(plate?: string | null): string {
+    if (!plate) return "";
+    const trimmed = plate.trim();
+    const parts = trimmed.split(/\s+/);
+    if (parts.length >= 3) {
+      return `${parts[0]} *** ${parts.slice(2).join(" ")}`;
+    }
+    if (trimmed.length > 5) {
+      return `${trimmed.slice(0, 2)} *** ${trimmed.slice(-3)}`;
+    }
+    return "***";
   }
 }

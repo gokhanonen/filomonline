@@ -536,15 +536,38 @@ model Vehicle {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  shareToken   String?                      @unique
   photos       VehiclePhoto[]
   tramerSet    VehicleTramerRecord[]
   installments VehiclePurchaseInstallment[]
   listingUrls  VehicleListingUrl[]
   options      VehicleOption[]
+  shareLinks   VehicleShareLink[]
 
   @@index([companyId])
   @@index([companyId, plate])
   @@index([companyId, status])
+}
+
+model VehicleShareLink {
+  id           String    @id @default(cuid())
+  vehicleId    String
+  companyId    String
+  token        String    @unique
+  title        String?
+  hidePlate    Boolean   @default(false)
+  customPrice  Decimal?  @db.Decimal(15, 2)
+  customNote   String?   @db.Text
+  viewCount    Int       @default(0)
+  lastViewedAt DateTime?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+  @@index([companyId])
 }
 
 model VehiclePhoto {

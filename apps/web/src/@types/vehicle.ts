@@ -239,3 +239,98 @@ export const STATUS_TAG_COLOR: Record<
   KIRALAMADA: "warning",
   SATILDI: "neutral",
 };
+
+export interface VehicleShareLink {
+  id: string;
+  vehicleId: string;
+  companyId: string;
+  token: string;
+  title?: string | null;
+  hidePlate: boolean;
+  customPrice?: number | null;
+  customNote?: string | null;
+  viewCount: number;
+  lastViewedAt?: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateVehicleShareLinkInput {
+  title?: string;
+  hidePlate?: boolean;
+  customPrice?: number;
+  customNote?: string;
+}
+
+export interface PublicVehiclePhoto {
+  id: string;
+  category: string;
+  url?: string | null;
+  thumbUrl?: string | null;
+  sortOrder: number;
+}
+
+export interface PublicVehicle {
+  id: string;
+  plate: string;
+  brandName?: string | null;
+  modelName?: string | null;
+  year?: number | null;
+  km?: number | null;
+  fuelType?: FuelType | null;
+  transmission?: TransmissionType | null;
+  colorName?: string | null;
+  horsePower?: number | null;
+  enginePower?: number | null;
+  engineVolume?: number | null;
+  driveType?: DriveType | null;
+  bodyTypeId?: string | null;
+  warranty: boolean;
+  spareKey: boolean;
+  heavyDamage: boolean;
+  notes?: string | null;
+  listPrice?: number | null;
+  photos: PublicVehiclePhoto[];
+  tramerSet: { id: string; date: string; amount: number; description: string }[];
+  isReserved?: boolean;
+  options?: { id: string; status: string; note?: string | null }[];
+}
+
+export interface PublicCompany {
+  name: string;
+  legalName?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  logoUrl?: string | null;
+}
+
+export type PublicVehicleResponse =
+  | {
+      status: "active";
+      token: string;
+      title?: string | null;
+      customNote?: string | null;
+      hidePlate: boolean;
+      vehicle: PublicVehicle;
+      company: PublicCompany | null;
+    }
+  | {
+      status: "disabled";
+      reason: "SOLD" | "INACTIVE";
+      message: string;
+      vehicleSummary?: {
+        brandName?: string | null;
+        modelName?: string | null;
+        year?: number | null;
+        plate?: string | null;
+      };
+      company?: {
+        name?: string;
+        phone?: string | null;
+        logoUrl?: string | null;
+        address?: string | null;
+      } | null;
+    };
+
