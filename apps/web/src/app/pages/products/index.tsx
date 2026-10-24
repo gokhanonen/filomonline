@@ -75,7 +75,7 @@ export default function ProductsPage() {
 
   return (
     <Page title="Tanımlar - Malzeme / Hizmet">
-      <div className="w-full px-(--margin-x) py-6 space-y-5">
+      <div className="w-full px-(--margin-x) py-4 space-y-4">
         <DefinitionsNav activeId="products" />
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

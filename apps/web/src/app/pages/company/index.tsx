@@ -5,7 +5,7 @@ import { CompanySettingsCard } from "@/app/pages/settings/components/CompanySett
 export default function CompanyPage() {
   return (
     <Page title="Tanımlar - Firma">
-      <div className="w-full px-(--margin-x) py-6 space-y-6">
+      <div className="w-full px-(--margin-x) py-4 space-y-4">
         <DefinitionsNav activeId="company" />
         <div className="max-w-5xl">
           <CompanySettingsCard />

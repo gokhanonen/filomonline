@@ -58,19 +58,7 @@ export function DefinitionsNav({ activeId, onTabChange }: DefinitionsNavProps) {
     })();
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-dark-50">
-            Tanımlar (Katalog)
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-dark-300">
-            Kategori › Marka › Model hiyerarşisi, renkler, kasa, araç tipleri, evrak, cariler, malzeme &amp; hizmetler, firma ve lokasyon tanımları
-          </p>
-        </div>
-      </div>
-
-      <div className="hide-scrollbar flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-gray-200/80 dark:border-dark-700/80">
+    <div className="hide-scrollbar flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-gray-200/80 dark:border-dark-700/80">
         {DEFINITION_TABS.map((t) => {
           const active = currentActiveId === t.id;
           const Icon = t.icon;
@@ -97,6 +85,5 @@ export function DefinitionsNav({ activeId, onTabChange }: DefinitionsNavProps) {
           );
         })}
       </div>
-    </div>
   );
 }
