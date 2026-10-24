@@ -42,6 +42,61 @@ export interface SalesInvoiceForm {
   notaryPurchasePrice?: number; // Alış Noter Fiyatı
   totalWithVat?: number;
   vatRate?: number;
+  otherAmountExclNotary?: number;
+  saleType?: string;
+  notaryJournalNo?: string;
+  description?: string;
+  locationId?: string;
+  erpCode?: string;
+}
+
+export interface SalesInvoiceDetail {
+  id: string;
+  companyId: string;
+  vehicleId: string;
+  locationId?: string | null;
+  invoiceNo: string;
+  invoiceDate: string;
+  accountId: string;
+  entityType: "INDIVIDUAL" | "CORPORATE";
+  purchaseRegime: PurchaseRegime;
+  saleAmount: number;
+  notarySalePrice: number;
+  notaryPurchasePrice: number;
+  profitMargin: number;
+  matrah: number;
+  vatRate: number;
+  vatAmount: number;
+  serviceFee: number | null;
+  serviceFeeVat: number | null;
+  totalWithVat: number;
+  otherAmountExclNotary: number;
+  saleType: string | null;
+  notaryJournalNo: string | null;
+  description: string | null;
+  integrationStatus: IntegrationStatus | null;
+  toDelete: boolean;
+  integrationRefNo: string | null;
+  erpCode: string | null;
+  createdAt: string;
+  updatedAt: string;
+  vehicle?: {
+    id: string;
+    plate: string;
+    brandName?: string | null;
+    modelName?: string | null;
+    year?: number | null;
+    chassisNo?: string | null;
+  };
+  account?: {
+    id: string;
+    name: string;
+    taxNumber?: string | null;
+    tckn?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    type?: string | null;
+  };
 }
 
 export const INVOICE_TYPE_LABELS: Record<InvoiceType, string> = {

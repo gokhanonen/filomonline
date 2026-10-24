@@ -53,6 +53,7 @@ function fmtDate(d: string): string {
 export default function InvoicesPage() {
   const { can } = useAuthContext();
   const canWrite = can("invoices.write");
+  const canDelete = can("invoices.delete");
   const [searchParams] = useSearchParams();
 
   const urlType = searchParams.get("type") as InvoiceType | null;
@@ -62,6 +63,7 @@ export default function InvoicesPage() {
   const [search, setSearch] = useState(urlSearch);
   const [refreshKey, setRefreshKey] = useState(0);
   const [formOpen, setFormOpen] = useState(false);
+  const [editingInvoice, setEditingInvoice] = useState<{ id: string; type: InvoiceType } | null>(null);
   const [plateMap, setPlateMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -94,9 +96,11 @@ export default function InvoicesPage() {
     [type, search, refreshKey],
   );
 
-  const { items, total, loading, hasMore, loadMore } = useInfiniteList<InvoiceRow>(fetchPage);
+  const { items, total, loading, hasMore, loadMore, removeItem } =
+    useInfiniteList<InvoiceRow>(fetchPage);
 
-  const advance = async (row: InvoiceRow) => {
+  const advance = async (row: InvoiceRow, e: React.MouseEvent) => {
+    e.stopPropagation();
     const next = row.integrationStatus ? NEXT_STATUS[row.integrationStatus] : undefined;
     if (!next) return;
     try {
@@ -108,32 +112,67 @@ export default function InvoicesPage() {
     }
   };
 
+  const handleDelete = async (row: InvoiceRow, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (row.integrationStatus === "ENTEGRE_EDILDI") {
+      toast.error("Entegre edilmiş faturalar silinemez.");
+      return;
+    }
+    if (!window.confirm(`"${row.invoiceNo}" faturası silinsin mi?`)) return;
+    try {
+      const { deleteInvoice } = await import("@/services/invoiceService");
+      await deleteInvoice(row.type, row.id);
+      toast.success("Fatura silindi");
+      removeItem((x) => x.id === row.id && x.type === row.type);
+    } catch (err) {
+      toast.error((err as { message?: string })?.message ?? "İşlem başarısız");
+    }
+  };
+
   return (
     <Page title="Faturalar">
       <div className="w-full px-(--margin-x) py-6">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">Faturalar</h2>
-            <p className="text-sm text-gray-400 dark:text-dark-300">{total} fatura · entegrasyon durumlu</p>
+            <p className="text-sm text-gray-400 dark:text-dark-300">{total} fatura · 4 Alım Rejimi & Entegrasyon</p>
           </div>
           {canWrite && (
-            <Button color="primary" onClick={() => setFormOpen(true)} className="gap-2">
+            <Button
+              color="primary"
+              onClick={() => {
+                setEditingInvoice(null);
+                setFormOpen(true);
+              }}
+              className="gap-2"
+            >
               <PlusIcon className="size-5" /> Yeni Fatura
             </Button>
           )}
         </div>
 
         <Card className="mt-4 p-4">
-          <Select
-            data={typeFilter}
-            value={type}
-            onChange={(e) => setType(e.target.value as InvoiceType | "")}
-            className="sm:max-w-52"
-          />
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <Select
+              data={typeFilter}
+              value={type}
+              onChange={(e) => setType(e.target.value as InvoiceType | "")}
+              className="w-full sm:max-w-52"
+            />
+            <div className="flex-1 w-full sm:max-w-md">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Fatura no ara..."
+                className="w-full h-9 rounded-lg border border-gray-200 bg-white px-3 text-xs text-gray-800 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+              />
+            </div>
+          </div>
 
           <div className="mt-4 overflow-x-auto">
             {items.length === 0 && !loading ? (
-              <div className="py-12 text-center text-gray-400 dark:text-dark-300">Fatura yok.</div>
+              <div className="py-12 text-center text-gray-400 dark:text-dark-300">Fatura bulunamadı.</div>
             ) : (
               <Table hoverable className="w-full text-left">
                 <THead>
@@ -144,21 +183,25 @@ export default function InvoicesPage() {
                     <Th>Araç</Th>
                     <Th className="text-right">Tutar</Th>
                     <Th>Entegrasyon</Th>
-                    <Th className="text-right">İşlem</Th>
+                    <Th className="text-right">İşlemler</Th>
                   </Tr>
                 </THead>
                 <TBody>
                   {items.map((r) => {
                     const next = r.integrationStatus ? NEXT_STATUS[r.integrationStatus] : undefined;
                     return (
-                      <Tr key={`${r.type}-${r.id}`}>
+                      <Tr
+                        key={`${r.type}-${r.id}`}
+                        onClick={() => setEditingInvoice({ id: r.id, type: r.type })}
+                        className="cursor-pointer hover:bg-gray-50/70 dark:hover:bg-dark-650"
+                      >
                         <Td>{fmtDate(r.invoiceDate)}</Td>
                         <Td>
                           <Tag color={r.type === "purchase" ? "info" : r.type === "sales" ? "success" : "secondary"}>
                             {INVOICE_TYPE_LABELS[r.type]}
                           </Tag>
                         </Td>
-                        <Td className="font-mono text-xs">{r.invoiceNo}</Td>
+                        <Td className="font-mono text-xs font-semibold">{r.invoiceNo}</Td>
                         <Td>{plateMap[r.vehicleId] ?? "—"}</Td>
                         <Td className="text-right font-medium">{money(r.total)}</Td>
                         <Td>
@@ -168,12 +211,40 @@ export default function InvoicesPage() {
                             </Tag>
                           )}
                         </Td>
-                        <Td className="text-right">
-                          {canWrite && next && (
-                            <Button variant="outlined" className="py-1 text-xs" onClick={() => advance(r)}>
-                              → {INTEGRATION_LABELS[next]}
-                            </Button>
-                          )}
+                        <Td className="text-right" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-1.5">
+                            {canWrite && next && (
+                              <Button
+                                variant="outlined"
+                                className="py-1 px-2 text-xs"
+                                onClick={(e) => advance(r, e)}
+                              >
+                                → {INTEGRATION_LABELS[next]}
+                              </Button>
+                            )}
+                            {canWrite && (
+                              <Button
+                                variant="flat"
+                                isIcon
+                                className="size-7"
+                                title="Faturayı Düzenle / İncele"
+                                onClick={() => setEditingInvoice({ id: r.id, type: r.type })}
+                              >
+                                ✏️
+                              </Button>
+                            )}
+                            {canDelete && r.integrationStatus !== "ENTEGRE_EDILDI" && (
+                              <Button
+                                variant="flat"
+                                isIcon
+                                className="size-7 text-rose-500 hover:text-rose-700"
+                                title="Faturayı Sil"
+                                onClick={(e) => handleDelete(r, e)}
+                              >
+                                🗑️
+                              </Button>
+                            )}
+                          </div>
                         </Td>
                       </Tr>
                     );
@@ -186,7 +257,19 @@ export default function InvoicesPage() {
         </Card>
       </div>
 
-      <InvoiceForm open={formOpen} onClose={() => setFormOpen(false)} onSaved={() => setRefreshKey((k) => k + 1)} />
+      <InvoiceForm
+        open={formOpen || !!editingInvoice}
+        editingInvoiceId={editingInvoice?.id}
+        initialType={editingInvoice?.type === "rental" ? undefined : editingInvoice?.type}
+        onClose={() => {
+          setFormOpen(false);
+          setEditingInvoice(null);
+        }}
+        onSaved={() => {
+          setRefreshKey((k) => k + 1);
+          setEditingInvoice(null);
+        }}
+      />
     </Page>
   );
 }

@@ -52,6 +52,25 @@ export class CreateSalesInvoiceDto {
   @IsOptional() @IsString() description?: string;
 }
 
+export class UpdateSalesInvoiceDto {
+  @IsOptional() @IsString() accountId?: string;
+  @IsOptional() @IsString() invoiceNo?: string;
+  @IsOptional() @Type(() => Date) @IsDate() invoiceDate?: Date;
+  @IsOptional() @IsEnum(EntityType) entityType?: EntityType;
+
+  @IsOptional() @IsString() purchaseRegime?: string;
+  @IsOptional() @Type(() => Number) @IsNumber() @Min(0) saleAmount?: number;
+  @IsOptional() @Type(() => Number) @IsNumber() @Min(0) notarySalePrice?: number;
+  @IsOptional() @Type(() => Number) @IsNumber() @Min(0) notaryPurchasePrice?: number;
+
+  @IsOptional() @Type(() => Number) @IsNumber() @Min(0) otherAmountExclNotary?: number;
+  @IsOptional() @IsString() locationId?: string;
+  @IsOptional() @IsString() saleType?: string;
+  @IsOptional() @IsString() notaryJournalNo?: string;
+  @IsOptional() @IsString() description?: string;
+  @IsOptional() @IsString() erpCode?: string;
+}
+
 export class UpdateIntegrationStatusDto {
   @IsEnum(IntegrationStatus) integrationStatus: IntegrationStatus;
   @IsOptional() @IsString() integrationRefNo?: string;

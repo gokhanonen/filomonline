@@ -14,6 +14,9 @@ import {
   TbShieldCheck,
   TbAlertTriangle,
   TbMapPin,
+  TbReceipt,
+  TbFileInvoice,
+  TbLock,
 } from "react-icons/tb";
 import { toast } from "sonner";
 
@@ -29,15 +32,22 @@ import {
   type Vehicle,
 } from "@/@types/vehicle";
 import { listingSourceIcon, matchListingSource, type CatalogAll } from "@/@types/catalog";
+import {
+  INTEGRATION_COLOR,
+  INTEGRATION_LABELS,
+  type SalesInvoiceDetail,
+} from "@/@types/invoice";
 import { getVehicle } from "@/services/vehicleService";
 import { getCatalog } from "@/services/catalogService";
 import { presignDownload } from "@/services/storageService";
+import { getSalesInvoiceByVehicle } from "@/services/invoiceService";
 import { DocumentManager } from "@/components/shared/DocumentManager";
 import { VehicleForm } from "./VehicleForm";
 import { ListingLinksModal } from "./ListingLinksModal";
 import { VehicleOptionModal } from "./VehicleOptionModal";
 import { WhatsAppModal } from "./WhatsAppModal";
 import { VehicleTransferModal } from "./VehicleTransferModal";
+import { InvoiceForm } from "../invoices/InvoiceForm";
 
 function money(v?: string | null): string {
   if (!v) return "—";
@@ -61,6 +71,12 @@ export default function VehicleDetailPage() {
   const [waOpen, setWaOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
 
+  // Satış Faturası Durumları
+  const [salesInvoice, setSalesInvoice] = useState<SalesInvoiceDetail | null>(null);
+  const [salesInvoiceLoading, setSalesInvoiceLoading] = useState(false);
+  const [saleModalOpen, setSaleModalOpen] = useState(false);
+  const [editingInvoiceId, setEditingInvoiceId] = useState<string | undefined>(undefined);
+
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -75,6 +91,16 @@ export default function VehicleDetailPage() {
       );
       setPhotoUrls(urls.filter(Boolean));
       setActivePhoto(0);
+
+      if (v.status === "SATILDI") {
+        setSalesInvoiceLoading(true);
+        getSalesInvoiceByVehicle(v.id)
+          .then(setSalesInvoice)
+          .catch(() => setSalesInvoice(null))
+          .finally(() => setSalesInvoiceLoading(false));
+      } else {
+        setSalesInvoice(null);
+      }
     } catch {
       setError("Araç bilgileri yüklenemedi");
       toast.error("Araç yüklenemedi");
@@ -210,8 +236,33 @@ export default function VehicleDetailPage() {
               <TbBrandWhatsapp className="size-5" /> WhatsApp
             </Button>
             {v.status === "STOKTA" && (
-              <Button color="warning" variant="soft" className="gap-2" onClick={() => setOptionOpen(true)}>
-                <TbTag className="size-5" /> {v.activeOption ? "Opsiyonu Düzenle" : "Opsiyon Ekle"}
+              <>
+                <Button color="warning" variant="soft" className="gap-2" onClick={() => setOptionOpen(true)}>
+                  <TbTag className="size-5" /> {v.activeOption ? "Opsiyonu Düzenle" : "Opsiyon Ekle"}
+                </Button>
+                <Button
+                  color="success"
+                  className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  onClick={() => {
+                    setEditingInvoiceId(undefined);
+                    setSaleModalOpen(true);
+                  }}
+                >
+                  <TbReceipt className="size-5" /> Satış Yap / Fatura Kes
+                </Button>
+              </>
+            )}
+            {v.status === "SATILDI" && (
+              <Button
+                color="primary"
+                variant="soft"
+                className="gap-2"
+                onClick={() => {
+                  setEditingInvoiceId(salesInvoice?.id);
+                  setSaleModalOpen(true);
+                }}
+              >
+                <TbFileInvoice className="size-5" /> {salesInvoice ? `Satış Faturası (${salesInvoice.invoiceNo})` : "Satış Faturası"}
               </Button>
             )}
             <Button
@@ -276,31 +327,151 @@ export default function VehicleDetailPage() {
               </div>
             </Card>
 
-            {/* Opsiyon durumu */}
-            <Card className="p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <h3 className="font-medium text-gray-800 dark:text-dark-50">Opsiyon Durumu</h3>
-                {v.status === "STOKTA" && (
-                  <button type="button" onClick={() => setOptionOpen(true)} className="text-xs text-primary-600 hover:underline dark:text-primary-400">
-                    {v.activeOption ? "Düzenle" : "Opsiyon ekle"}
-                  </button>
-                )}
-              </div>
-              {v.activeOption ? (
-                <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
+            {/* Satış & Fatura Detayları (Satılmış Araçlar İçin) */}
+            {v.status === "SATILDI" && (
+              <Card className="p-5 border-l-4 border-l-emerald-500 shadow-sm">
+                <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <TbTag className="size-5 text-amber-500" />
-                    <span className="font-semibold text-amber-900 dark:text-amber-100">{v.activeOption.customerName ?? "—"}</span>
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                      <TbFileInvoice className="size-4" />
+                    </div>
+                    <h3 className="font-semibold text-gray-800 dark:text-dark-50">Satış & Fatura Detayları</h3>
                   </div>
-                  <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
-                    {money(v.activeOption.amount)} • {fmtDate(v.activeOption.validUntil)} tarihine kadar
-                  </p>
-                  {v.activeOption.note && <p className="mt-1 text-xs italic text-amber-700 dark:text-amber-300">{v.activeOption.note}</p>}
+                  {salesInvoice && (
+                    <Tag color={INTEGRATION_COLOR[salesInvoice.integrationStatus ?? "BEKLIYOR"]}>
+                      {INTEGRATION_LABELS[salesInvoice.integrationStatus ?? "BEKLIYOR"]}
+                    </Tag>
+                  )}
                 </div>
-              ) : (
-                <p className="text-sm italic text-gray-400 dark:text-dark-300">Aktif opsiyon bulunmuyor</p>
-              )}
-            </Card>
+
+                {salesInvoiceLoading ? (
+                  <div className="flex justify-center py-6">
+                    <Spinner className="size-6 text-emerald-600" />
+                  </div>
+                ) : salesInvoice ? (
+                  <div className="space-y-3">
+                    <div className="rounded-lg bg-gray-50 p-3 dark:bg-dark-700/50">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500 dark:text-dark-300">Alıcı Cari</span>
+                        <span className="text-[11px] font-medium text-gray-400">
+                          {salesInvoice.account?.taxNumber ? `VKN: ${salesInvoice.account.taxNumber}` : salesInvoice.account?.tckn ? `TCKN: ${salesInvoice.account.tckn}` : ""}
+                        </span>
+                      </div>
+                      <p className="mt-0.5 font-semibold text-gray-800 dark:text-dark-50">
+                        {salesInvoice.account?.name ?? "—"}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-dark-600">
+                        <span className="text-gray-400">Fatura No</span>
+                        <span className="font-mono font-medium text-gray-700 dark:text-dark-100">{salesInvoice.invoiceNo}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-dark-600">
+                        <span className="text-gray-400">Fatura / Satış Tarihi</span>
+                        <span className="text-gray-700 dark:text-dark-100">{fmtDate(salesInvoice.invoiceDate)}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-dark-600">
+                        <span className="text-gray-400">Fatura Türü</span>
+                        <span className="font-medium text-primary-600 dark:text-primary-400">
+                          {salesInvoice.saleType === "T_TIPI" ? "T Tipi Satış (Komisyon/Kâr)" : "Normal Satış"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-dark-600">
+                        <span className="text-gray-400">Alım Rejimi</span>
+                        <span className="font-medium text-gray-700 dark:text-dark-100">
+                          {PURCHASE_REGIME_CONFIG[salesInvoice.purchaseRegime]?.label ?? salesInvoice.purchaseRegime}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-dark-600">
+                        <span className="text-gray-400">Noter Satış Fiyatı</span>
+                        <span className="font-mono font-semibold text-gray-800 dark:text-dark-50">{money(String(salesInvoice.notarySalePrice))}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-dark-600">
+                        <span className="text-gray-400">Hesaplanan Kâr Marjı</span>
+                        <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                          {money(String(salesInvoice.profitMargin))}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-dark-600">
+                        <span className="text-gray-400">KDV Tutarı (%{salesInvoice.vatRate})</span>
+                        <span className="font-mono font-semibold text-gray-800 dark:text-dark-50">{money(String(salesInvoice.vatAmount))}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="font-medium text-gray-700 dark:text-dark-200">Toplam Fatura Tutarı</span>
+                        <span className="font-mono text-base font-bold text-gray-900 dark:text-dark-50">{money(String(salesInvoice.totalWithVat))}</span>
+                      </div>
+                      {salesInvoice.notaryJournalNo && (
+                        <div className="flex items-center justify-between text-xs text-gray-400 pt-1">
+                          <span>Noter Yevmiye No</span>
+                          <span>{salesInvoice.notaryJournalNo}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {salesInvoice.integrationStatus === "ENTEGRE_EDILDI" && (
+                      <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+                        <TbLock className="size-4 shrink-0" />
+                        <span>ERP Sistemine aktarılmıştır. Yalnızca T Tipi faturaya dönüştürülebilir.</span>
+                      </div>
+                    )}
+
+                    <Button
+                      variant="outlined"
+                      className="w-full mt-2"
+                      onClick={() => {
+                        setEditingInvoiceId(salesInvoice.id);
+                        setSaleModalOpen(true);
+                      }}
+                    >
+                      Faturayı İncele / Düzenle
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-950/20 dark:text-amber-300">
+                    Araç satıldı durumunda ancak faturası bulunamadı.
+                    <Button
+                      color="primary"
+                      className="mt-2 w-full text-xs py-1.5"
+                      onClick={() => {
+                        setEditingInvoiceId(undefined);
+                        setSaleModalOpen(true);
+                      }}
+                    >
+                      Satış Faturası Oluştur
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            )}
+
+            {/* Opsiyon durumu */}
+            {v.status !== "SATILDI" && (
+              <Card className="p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="font-medium text-gray-800 dark:text-dark-50">Opsiyon Durumu</h3>
+                  {v.status === "STOKTA" && (
+                    <button type="button" onClick={() => setOptionOpen(true)} className="text-xs text-primary-600 hover:underline dark:text-primary-400">
+                      {v.activeOption ? "Düzenle" : "Opsiyon ekle"}
+                    </button>
+                  )}
+                </div>
+                {v.activeOption ? (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
+                    <div className="flex items-center gap-2">
+                      <TbTag className="size-5 text-amber-500" />
+                      <span className="font-semibold text-amber-900 dark:text-amber-100">{v.activeOption.customerName ?? "—"}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
+                      {money(v.activeOption.amount)} • {fmtDate(v.activeOption.validUntil)} tarihine kadar
+                    </p>
+                    {v.activeOption.note && <p className="mt-1 text-xs italic text-amber-700 dark:text-amber-300">{v.activeOption.note}</p>}
+                  </div>
+                ) : (
+                  <p className="text-sm italic text-gray-400 dark:text-dark-300">Aktif opsiyon bulunmuyor</p>
+                )}
+              </Card>
+            )}
 
             {/* İlan linkleri */}
             <Card className="p-5">
@@ -436,6 +607,21 @@ export default function VehicleDetailPage() {
         onClose={() => setTransferOpen(false)}
         vehicle={v}
         onSuccess={load}
+      />
+      <InvoiceForm
+        open={saleModalOpen}
+        onClose={() => {
+          setSaleModalOpen(false);
+          setEditingInvoiceId(undefined);
+        }}
+        onSaved={() => {
+          setSaleModalOpen(false);
+          setEditingInvoiceId(undefined);
+          load();
+        }}
+        initialType="sales"
+        initialVehicleId={v.id}
+        editingInvoiceId={editingInvoiceId}
       />
     </Page>
   );

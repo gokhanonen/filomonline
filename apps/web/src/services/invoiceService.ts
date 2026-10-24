@@ -42,10 +42,37 @@ export async function createSalesInvoice(form: SalesInvoiceForm) {
   return data;
 }
 
+export async function getInvoice<T = any>(type: InvoiceType, id: string): Promise<T> {
+  const { data } = await axios.get<T>(`/invoices/${type}/${id}`);
+  return data;
+}
+
+export async function getSalesInvoiceByVehicle(
+  vehicleId: string,
+): Promise<import("@/@types/invoice").SalesInvoiceDetail | null> {
+  const { data } = await axios.get<import("@/@types/invoice").SalesInvoiceDetail | null>(
+    `/invoices/by-vehicle/${vehicleId}/sales`,
+  );
+  return data;
+}
+
+export async function updateSalesInvoice(
+  id: string,
+  form: Partial<SalesInvoiceForm>,
+) {
+  const { data } = await axios.patch(`/invoices/sales/${id}`, clean(form));
+  return data;
+}
+
 export async function updateInvoiceStatus(
   type: InvoiceType,
   id: string,
   integrationStatus: IntegrationStatus,
 ) {
   await axios.patch(`/invoices/${type}/${id}/status`, { integrationStatus });
+}
+
+export async function deleteInvoice(type: InvoiceType, id: string) {
+  const { data } = await axios.delete(`/invoices/${type}/${id}`);
+  return data;
 }

@@ -9,9 +9,12 @@ import { VehiclesService } from "../vehicles/vehicles.service";
 import {
   CreatePurchaseInvoiceDto,
   CreateSalesInvoiceDto,
+  UpdateSalesInvoiceDto,
   QueryInvoicesDto,
   UpdateIntegrationStatusDto,
 } from "./dto/invoice.dto";
+
+import { calculateSalesRegime } from "./sales-regime.util";
 
 const round = (n: number) => Number(n.toFixed(2));
 
@@ -25,6 +28,10 @@ export class InvoicesService {
   private async assertVehicle(companyId: string, vehicleId: string) {
     const ok = await this.prisma.vehicle.count({ where: { id: vehicleId, companyId } });
     if (!ok) throw new BadRequestException("Geçersiz araç");
+  }
+
+  calculateSalesRegime(params: Parameters<typeof calculateSalesRegime>[0]) {
+    return calculateSalesRegime(params);
   }
 
   // ---- Alış Faturası ----
@@ -80,6 +87,7 @@ export class InvoicesService {
   }
 
   // ---- Satış Faturası ----
+
   async createSales(companyId: string, dto: CreateSalesInvoiceDto) {
     const vehicle = await this.prisma.vehicle.findFirst({
       where: { id: dto.vehicleId, companyId },
@@ -93,44 +101,13 @@ export class InvoicesService {
       Number(vehicle.purchaseNotaryPrice ?? vehicle.purchasePrice ?? 0);
     const saleAmount = dto.saleAmount ?? notarySalePrice;
 
-    let vatRate = 0;
-    let vatAmount = 0;
-    let matrah = 0;
-    let serviceFee: number | null = null;
-    let serviceFeeVat: number | null = null;
-    let profitMargin: number | null = null;
-
-    if (regime === "sahis") {
-      // 1) Şahıstan Alım:
-      // Kâr Marjı = Noter Satış - Noter Alış
-      profitMargin = Math.max(0, notarySalePrice - notaryPurchasePrice);
-      // Hizmet Matrahı = Kâr Marjı / 1.20
-      serviceFee = round(profitMargin / 1.2);
-      // Hizmet KDV'si (%20) = Kâr Marjı - Hizmet Matrahı
-      serviceFeeVat = round(profitMargin - serviceFee);
-      vatRate = 20;
-      vatAmount = serviceFeeVat;
-      matrah = round(notaryPurchasePrice + serviceFee);
-    } else if (regime === "sirket_1" || regime === "galeri_ozel") {
-      // 2) Şirketten %1 veya 4) Galeriden Özel Matrahlı (%1 KDV dahil)
-      // KDV (%1) = (Noter Satış Tutarı / 1.01) * 0.01
-      vatRate = 1;
-      vatAmount = round((notarySalePrice / 1.01) * 0.01);
-      matrah = round(notarySalePrice - vatAmount);
-    } else if (regime === "sirket_20") {
-      // 3) Şirketten %20 KDV ile Alım
-      // KDV (%20) = (Noter Satış Tutarı / 1.20) * 0.20
-      vatRate = 20;
-      vatAmount = round((notarySalePrice / 1.2) * 0.2);
-      matrah = round(notarySalePrice - vatAmount);
-    } else {
-      // Fallback
-      vatRate = dto.vatRate ?? 20;
-      vatAmount = round((notarySalePrice * vatRate) / 100);
-      matrah = notarySalePrice;
-    }
-
-    const totalWithVat = dto.totalWithVat || saleAmount;
+    const calc = this.calculateSalesRegime({
+      regime,
+      notarySalePrice,
+      notaryPurchasePrice,
+      saleAmount,
+      customVatRate: dto.vatRate,
+    });
 
     const invoice = await this.prisma.salesInvoice.create({
       data: {
@@ -140,19 +117,19 @@ export class InvoicesService {
         invoiceNo: dto.invoiceNo,
         invoiceDate: dto.invoiceDate,
         entityType: dto.entityType ?? (regime === "sahis" ? "INDIVIDUAL" : "CORPORATE"),
-        purchaseRegime: regime,
-        saleAmount,
-        notarySalePrice,
-        notaryPurchasePrice,
-        profitMargin,
-        matrah,
-        vatRate,
-        vatAmount,
-        serviceFee,
-        serviceFeeVat,
-        totalWithVat,
+        purchaseRegime: calc.regime,
+        saleAmount: calc.saleAmount,
+        notarySalePrice: calc.notarySalePrice,
+        notaryPurchasePrice: calc.notaryPurchasePrice,
+        profitMargin: calc.profitMargin,
+        matrah: calc.matrah,
+        vatRate: calc.vatRate,
+        vatAmount: calc.vatAmount,
+        serviceFee: calc.serviceFee,
+        serviceFeeVat: calc.serviceFeeVat,
+        totalWithVat: dto.totalWithVat || calc.totalWithVat,
         otherAmountExclNotary: dto.otherAmountExclNotary ?? 0,
-        saleType: dto.saleType,
+        saleType: dto.saleType ?? "Normal",
         notaryJournalNo: dto.notaryJournalNo,
         description: dto.description,
         locationId: dto.locationId,
@@ -165,8 +142,8 @@ export class InvoicesService {
       where: { id: dto.vehicleId },
       data: {
         status: "SATILDI",
-        saleAmount,
-        saleNotaryAmount: notarySalePrice,
+        saleAmount: calc.saleAmount,
+        saleNotaryAmount: calc.notarySalePrice,
         saleDate: dto.invoiceDate,
         saleInvoiceNo: dto.invoiceNo,
         saleInvoiceDate: dto.invoiceDate,
@@ -185,6 +162,281 @@ export class InvoicesService {
     );
 
     return invoice;
+  }
+
+  async findOne(companyId: string, type: string, id: string) {
+    if (type === "sales") {
+      const inv = await this.prisma.salesInvoice.findFirst({
+        where: { id, companyId },
+      });
+      if (!inv) throw new NotFoundException("Satış faturası bulunamadı");
+      const [vehicle, account] = await Promise.all([
+        this.prisma.vehicle.findUnique({
+          where: { id: inv.vehicleId },
+          select: {
+            id: true,
+            plate: true,
+            brandName: true,
+            modelName: true,
+            year: true,
+            chassisNo: true,
+            purchaseNotaryPrice: true,
+            purchasePrice: true,
+            purchaseRegime: true,
+          },
+        }),
+        this.prisma.account.findUnique({
+          where: { id: inv.accountId },
+          select: {
+            id: true,
+            name: true,
+            taxNumber: true,
+            tckn: true,
+            phone: true,
+            email: true,
+            type: true,
+            city: true,
+            district: true,
+          },
+        }),
+      ]);
+      return { ...inv, vehicle, account };
+    } else if (type === "purchase") {
+      const inv = await this.prisma.purchaseInvoice.findFirst({
+        where: { id, companyId },
+      });
+      if (!inv) throw new NotFoundException("Alış faturası bulunamadı");
+      const [vehicle, account] = await Promise.all([
+        this.prisma.vehicle.findUnique({
+          where: { id: inv.vehicleId },
+          select: {
+            id: true,
+            plate: true,
+            brandName: true,
+            modelName: true,
+            year: true,
+            chassisNo: true,
+          },
+        }),
+        this.prisma.account.findUnique({
+          where: { id: inv.accountId },
+          select: {
+            id: true,
+            name: true,
+            taxNumber: true,
+            tckn: true,
+            phone: true,
+            email: true,
+            type: true,
+          },
+        }),
+      ]);
+      return { ...inv, vehicle, account };
+    } else if (type === "rental") {
+      const inv = await this.prisma.rentalInvoice.findFirst({
+        where: { id, companyId },
+      });
+      if (!inv) throw new NotFoundException("Kira faturası bulunamadı");
+      const [vehicle, account] = await Promise.all([
+        this.prisma.vehicle.findUnique({
+          where: { id: inv.vehicleId },
+          select: { id: true, plate: true, brandName: true, modelName: true, year: true },
+        }),
+        this.prisma.account.findUnique({
+          where: { id: inv.accountId },
+          select: { id: true, name: true, taxNumber: true, tckn: true, phone: true, email: true },
+        }),
+      ]);
+      return { ...inv, vehicle, account };
+    }
+    throw new BadRequestException("Geçersiz fatura tipi");
+  }
+
+  async findSalesByVehicle(companyId: string, vehicleId: string) {
+    const inv = await this.prisma.salesInvoice.findFirst({
+      where: { vehicleId, companyId, toDelete: false },
+      orderBy: { createdAt: "desc" },
+    });
+    if (!inv) return null;
+    const account = await this.prisma.account.findUnique({
+      where: { id: inv.accountId },
+      select: { id: true, name: true, taxNumber: true, tckn: true, phone: true, email: true },
+    });
+    return { ...inv, account };
+  }
+
+  async updateSales(companyId: string, id: string, dto: UpdateSalesInvoiceDto) {
+    const inv = await this.prisma.salesInvoice.findFirst({
+      where: { id, companyId },
+    });
+    if (!inv) throw new NotFoundException("Satış faturası bulunamadı");
+
+    // T Tipi Akışı:
+    // Eğer fatura ERP'ye entegre edilmişse:
+    // Sadece ve sadece satisTipi "T Tipi" / "T" iken "Normal"e çevriliyorsa izin verilir!
+    const isIntegrated = inv.integrationStatus === "ENTEGRE_EDILDI";
+    const wasTTipi = inv.saleType?.toLowerCase().includes("t");
+    const isSwitchingFromTTipiToNormal =
+      wasTTipi && dto.saleType && !dto.saleType.toLowerCase().includes("t");
+
+    if (isIntegrated) {
+      if (!isSwitchingFromTTipiToNormal) {
+        throw new BadRequestException("Entegre edilmiş satış faturaları değiştirilemez.");
+      }
+
+      // T Tipi'nden Normale Geçiş:
+      // 1) Eski kaydı iptal_bekliyor + toDelete: true yap
+      await this.prisma.salesInvoice.update({
+        where: { id },
+        data: {
+          integrationStatus: "IPTAL_BEKLIYOR",
+          toDelete: true,
+        },
+      });
+
+      // 2) Yeni satış faturasını 'BEKLIYOR' olarak oluştur
+      const calc = this.calculateSalesRegime({
+        regime: dto.purchaseRegime ?? inv.purchaseRegime ?? "sahis",
+        notarySalePrice: dto.notarySalePrice ?? Number(inv.notarySalePrice ?? 0),
+        notaryPurchasePrice: dto.notaryPurchasePrice ?? Number(inv.notaryPurchasePrice ?? 0),
+        saleAmount: dto.saleAmount ?? Number(inv.saleAmount ?? 0),
+      });
+
+      const newInvoice = await this.prisma.salesInvoice.create({
+        data: {
+          companyId,
+          vehicleId: inv.vehicleId,
+          accountId: dto.accountId ?? inv.accountId,
+          locationId: dto.locationId ?? inv.locationId,
+          invoiceNo: dto.invoiceNo ?? inv.invoiceNo,
+          invoiceDate: dto.invoiceDate ?? inv.invoiceDate,
+          entityType: dto.entityType ?? inv.entityType,
+          purchaseRegime: calc.regime,
+          saleAmount: calc.saleAmount,
+          notarySalePrice: calc.notarySalePrice,
+          notaryPurchasePrice: calc.notaryPurchasePrice,
+          profitMargin: calc.profitMargin,
+          matrah: calc.matrah,
+          vatRate: calc.vatRate,
+          vatAmount: calc.vatAmount,
+          serviceFee: calc.serviceFee,
+          serviceFeeVat: calc.serviceFeeVat,
+          totalWithVat: calc.totalWithVat,
+          otherAmountExclNotary: dto.otherAmountExclNotary ?? inv.otherAmountExclNotary,
+          saleType: dto.saleType ?? "Normal",
+          notaryJournalNo: dto.notaryJournalNo ?? inv.notaryJournalNo,
+          description: dto.description ?? inv.description,
+          erpCode: dto.erpCode ?? inv.erpCode,
+          integrationStatus: "BEKLIYOR",
+        },
+      });
+
+      await this.prisma.vehicle.update({
+        where: { id: inv.vehicleId },
+        data: {
+          saleAmount: calc.saleAmount,
+          saleNotaryAmount: calc.notarySalePrice,
+          saleInvoiceNo: newInvoice.invoiceNo,
+          saleInvoiceDate: newInvoice.invoiceDate,
+          customerId: newInvoice.accountId,
+          salesIntegrationStatus: "BEKLIYOR",
+        },
+      });
+
+      return newInvoice;
+    }
+
+    // Entegre edilmemişse (BEKLIYOR / KUYRUKTA):
+    const calc = this.calculateSalesRegime({
+      regime: dto.purchaseRegime ?? inv.purchaseRegime ?? "sahis",
+      notarySalePrice: dto.notarySalePrice ?? Number(inv.notarySalePrice ?? 0),
+      notaryPurchasePrice: dto.notaryPurchasePrice ?? Number(inv.notaryPurchasePrice ?? 0),
+      saleAmount: dto.saleAmount ?? Number(inv.saleAmount ?? 0),
+    });
+
+    const updated = await this.prisma.salesInvoice.update({
+      where: { id },
+      data: {
+        accountId: dto.accountId ?? undefined,
+        invoiceNo: dto.invoiceNo ?? undefined,
+        invoiceDate: dto.invoiceDate ?? undefined,
+        entityType: dto.entityType ?? undefined,
+        purchaseRegime: calc.regime,
+        saleAmount: calc.saleAmount,
+        notarySalePrice: calc.notarySalePrice,
+        notaryPurchasePrice: calc.notaryPurchasePrice,
+        profitMargin: calc.profitMargin,
+        matrah: calc.matrah,
+        vatRate: calc.vatRate,
+        vatAmount: calc.vatAmount,
+        serviceFee: calc.serviceFee,
+        serviceFeeVat: calc.serviceFeeVat,
+        totalWithVat: calc.totalWithVat,
+        otherAmountExclNotary: dto.otherAmountExclNotary ?? undefined,
+        locationId: dto.locationId ?? undefined,
+        saleType: dto.saleType ?? undefined,
+        notaryJournalNo: dto.notaryJournalNo ?? undefined,
+        description: dto.description ?? undefined,
+        erpCode: dto.erpCode ?? undefined,
+      },
+    });
+
+    await this.prisma.vehicle.update({
+      where: { id: inv.vehicleId },
+      data: {
+        saleAmount: calc.saleAmount,
+        saleNotaryAmount: calc.notarySalePrice,
+        saleDate: dto.invoiceDate ?? undefined,
+        saleInvoiceNo: dto.invoiceNo ?? undefined,
+        saleInvoiceDate: dto.invoiceDate ?? undefined,
+        customerId: dto.accountId ?? undefined,
+      },
+    });
+
+    return updated;
+  }
+
+  async deleteInvoice(companyId: string, type: string, id: string) {
+    if (type === "sales") {
+      const inv = await this.prisma.salesInvoice.findFirst({ where: { id, companyId } });
+      if (!inv) throw new NotFoundException("Fatura bulunamadı");
+      if (inv.integrationStatus === "ENTEGRE_EDILDI") {
+        throw new BadRequestException("Entegre edilmiş faturalar silinemez.");
+      }
+      await this.prisma.salesInvoice.delete({ where: { id } });
+
+      await this.prisma.vehicle.update({
+        where: { id: inv.vehicleId },
+        data: {
+          status: "STOKTA",
+          saleAmount: null,
+          saleNotaryAmount: null,
+          saleDate: null,
+          saleInvoiceNo: null,
+          saleInvoiceDate: null,
+          customerId: null,
+          salesIntegrationStatus: null,
+        },
+      });
+      return { success: true };
+    } else if (type === "purchase") {
+      const inv = await this.prisma.purchaseInvoice.findFirst({ where: { id, companyId } });
+      if (!inv) throw new NotFoundException("Fatura bulunamadı");
+      if (inv.integrationStatus === "ENTEGRE_EDILDI") {
+        throw new BadRequestException("Entegre edilmiş faturalar silinemez.");
+      }
+      await this.prisma.purchaseInvoice.delete({ where: { id } });
+      return { success: true };
+    } else if (type === "rental") {
+      const inv = await this.prisma.rentalInvoice.findFirst({ where: { id, companyId } });
+      if (!inv) throw new NotFoundException("Fatura bulunamadı");
+      if (inv.integrationStatus === "ENTEGRE_EDILDI") {
+        throw new BadRequestException("Entegre edilmiş faturalar silinemez.");
+      }
+      await this.prisma.rentalInvoice.delete({ where: { id } });
+      return { success: true };
+    }
+    throw new BadRequestException("Geçersiz fatura tipi");
   }
 
   // ---- Birleşik liste ----
