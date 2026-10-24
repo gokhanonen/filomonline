@@ -17,11 +17,19 @@ export function Menu() {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const activeGroup = navigation.find((item) => {
-    if (item.path) return isRouteActive(item.path, pathname);
+    if (item.path && isRouteActive(item.path, pathname)) return true;
+    return item.childs?.some((c) => {
+      if (c.path && isRouteActive(c.path, pathname)) return true;
+      return c.childs?.some((sub) => sub.path && isRouteActive(sub.path, pathname));
+    });
   });
 
   const activeCollapsible = activeGroup?.childs?.find((item) => {
+    if (item.type === "collapse" && item.childs?.some((c) => isRouteActive(c.path, pathname))) {
+      return true;
+    }
     if (item.path) return isRouteActive(item.path, pathname);
+    return false;
   });
 
   const [expanded, setExpanded] = useState<string | null>(

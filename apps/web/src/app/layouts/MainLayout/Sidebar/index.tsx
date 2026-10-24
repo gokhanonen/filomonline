@@ -1,5 +1,5 @@
 // Import Dependencies
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 
 // Local Imports
@@ -20,14 +20,18 @@ export function Sidebar() {
   const { name, lgAndDown } = useBreakpointsContext();
   const { isExpanded, close } = useSidebarContext();
 
-  const initialSegment = useMemo(
-    () => navigation.find((item) => isRouteActive(item.path, pathname)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const findMatchingSegment = useCallback((path: string) => {
+    return navigation.find((item) => {
+      if (isRouteActive(item.path, path)) return true;
+      return item.childs?.some((c) => {
+        if (isRouteActive(c.path, path)) return true;
+        return c.childs?.some((sub) => isRouteActive(sub.path, path));
+      });
+    })?.path;
+  }, []);
 
-  const [activeSegmentPath, setActiveSegmentPath] = useState<SegmentPath>(
-    initialSegment?.path,
+  const [activeSegmentPath, setActiveSegmentPath] = useState<SegmentPath>(() =>
+    findMatchingSegment(pathname),
   );
 
   const currentSegment = useMemo(() => {
@@ -35,10 +39,7 @@ export function Sidebar() {
   }, [activeSegmentPath]);
 
   useDidUpdate(() => {
-    const activePath = navigation.find((item) =>
-      isRouteActive(item.path, pathname),
-    )?.path;
-
+    const activePath = findMatchingSegment(pathname);
     setActiveSegmentPath(activePath);
   }, [pathname]);
 

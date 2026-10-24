@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router";
 import {
   PlusIcon,
   TrashIcon,
@@ -11,6 +12,7 @@ import {
   CubeIcon,
   XMarkIcon,
   SparklesIcon,
+  MapPinIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
@@ -95,6 +97,13 @@ export default function CatalogPage() {
           >
             Evrak Tanımları
           </TabBtn>
+          <Link
+            to="/locations"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-emerald-500/50 transition shadow-xs"
+          >
+            <MapPinIcon className="size-4 text-emerald-500" />
+            Lokasyonlar
+          </Link>
         </div>
 
         <div className="mt-5">

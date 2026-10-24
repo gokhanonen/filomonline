@@ -19,7 +19,6 @@ export const navigation: NavigationTree[] = [
       { id: "vehicles", type: "item", path: "/vehicles", title: "Araç Operasyon", icon: "vehicles" },
       { id: "accounts", type: "item", path: "/accounts", title: "Cariler", icon: "accounts" },
       { id: "products", type: "item", path: "/products", title: "Malzeme / Hizmet", icon: "products" },
-      { id: "locations", type: "item", path: "/locations", title: "Lokasyonlar", icon: "locations" },
       { id: "activity", type: "item", path: "/activity", title: "Aktivite", icon: "activity" },
     ],
   },
@@ -44,7 +43,29 @@ export const navigation: NavigationTree[] = [
     icon: "settings",
     childs: [
       { id: "users", type: "item", path: "/users", title: "Kullanıcılar", icon: "users" },
-      { id: "catalog", type: "item", path: "/catalog", title: "Tanımlar", icon: "catalog" },
+      {
+        id: "catalog",
+        type: "collapse",
+        path: "/definitions",
+        title: "Tanımlar",
+        icon: "catalog",
+        childs: [
+          {
+            id: "catalog-general",
+            type: "item",
+            path: "/catalog",
+            title: "Genel Tanımlar",
+            icon: "catalog",
+          },
+          {
+            id: "locations",
+            type: "item",
+            path: "/locations",
+            title: "Lokasyonlar",
+            icon: "locations",
+          },
+        ],
+      },
       { id: "settings", type: "item", path: "/settings", title: "Ayarlar", icon: "settings" },
     ],
   },

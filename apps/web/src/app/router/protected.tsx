@@ -111,6 +111,10 @@ const protectedRoutes: RouteObject = {
             Component: (await import("@/app/pages/catalog")).default,
           }),
         },
+        {
+          path: "definitions",
+          element: <Navigate to="/catalog" replace />,
+        },
         // Süper-admin konsolu (sayfa kendi içinde yetki kontrolü yapar)
         {
           path: "admin",
