@@ -563,20 +563,26 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="" className="max-w-6xl w-full p-0 overflow-hidden">
+    <Modal
+      open={open}
+      onClose={onClose}
+      hideHeader
+      noPadding
+      className="w-full max-w-6xl max-h-[calc(100vh-2rem)] flex flex-col overflow-hidden shadow-2xl rounded-2xl"
+    >
       {/* Sticky Top Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50/90 px-6 py-3.5 backdrop-blur-xs dark:border-dark-600 dark:bg-dark-800/90">
+      <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-gray-50/95 px-5 py-2.5 backdrop-blur-xs dark:border-dark-600 dark:bg-dark-800/95">
         <div className="flex items-center gap-3">
           <div className="flex flex-col">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-dark-300">
               {isEdit ? "Araç Düzenleme" : "Yeni Araç Kaydı"}
             </span>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="rounded-md border border-gray-300 bg-white px-2 py-0.5 font-mono text-base font-bold text-gray-900 shadow-2xs dark:border-dark-500 dark:bg-dark-700 dark:text-dark-50">
+              <span className="rounded-md border border-gray-300 bg-white px-2 py-0.5 font-mono text-sm font-bold text-gray-900 shadow-2xs dark:border-dark-500 dark:bg-dark-700 dark:text-dark-50">
                 {plateVal || "PLAKA GİRİLMEDİ"}
               </span>
               {(currentBrand?.name || currentModel?.name) && (
-                <span className="hidden text-sm font-semibold text-gray-700 dark:text-dark-100 sm:inline-block">
+                <span className="hidden text-xs font-semibold text-gray-700 dark:text-dark-100 sm:inline-block">
                   {[currentBrand?.name, currentModel?.name].filter(Boolean).join(" ")}
                 </span>
               )}
@@ -604,11 +610,11 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
       </div>
 
       {/* Main Container: Stepper Sidebar + Steps Content */}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-        <div className="flex flex-col md:flex-row min-h-[520px] max-h-[calc(88vh-130px)]">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 min-h-0 flex-col overflow-hidden">
+        <div className="flex flex-1 min-h-0 flex-col md:flex-row overflow-hidden">
           {/* Stepper Sidebar */}
-          <div className="w-full md:w-60 shrink-0 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50/60 p-3 dark:border-dark-600 dark:bg-dark-800/40">
-            <div className="flex md:flex-col gap-1.5 overflow-x-auto md:overflow-visible">
+          <div className="w-full md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50/60 p-2.5 overflow-y-auto dark:border-dark-600 dark:bg-dark-800/40">
+            <div className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible">
               {STEPS.map((step) => {
                 const Icon = step.icon;
                 const isCurrent = activeStep === step.id;
@@ -622,7 +628,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                         setActiveStep(step.id);
                       }
                     }}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition shrink-0 md:w-full ${
+                    className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs font-semibold transition shrink-0 md:w-full ${
                       isCurrent
                         ? "bg-primary-50 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300 shadow-2xs"
                         : isPassed
@@ -631,7 +637,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                     }`}
                   >
                     <div
-                      className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                      className={`flex size-5.5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
                         isCurrent
                           ? "bg-primary-600 text-white"
                           : isPassed
@@ -639,9 +645,9 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                             : "border border-gray-300 text-gray-500 dark:border-dark-500 dark:text-dark-400"
                       }`}
                     >
-                      {isPassed && !isCurrent ? <TbCheck className="size-3.5" /> : step.id + 1}
+                      {isPassed && !isCurrent ? <TbCheck className="size-3" /> : step.id + 1}
                     </div>
-                    <Icon className="size-4 shrink-0" />
+                    <Icon className="size-3.5 shrink-0" />
                     <span className="truncate">{step.label}</span>
                   </button>
                 );
@@ -650,13 +656,13 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
           </div>
 
           {/* Steps Content Area */}
-          <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+          <div className="flex-1 min-h-0 overflow-y-auto p-3.5 sm:p-4.5 space-y-3.5">
             {/* ADIM 0: Temel Bilgiler */}
             {activeStep === 0 && (
-              <div className="space-y-5">
+              <div className="space-y-3.5">
                 {/* Genel Araç Bilgileri */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
                     Genel Araç Bilgileri
                   </h4>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -868,16 +874,14 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                 </div>
 
                 {/* Şase ve Motor Tanımlayıcıları - Geniş 2 Kolon */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <div className="mb-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
                       Şase ve Motor Tanımlayıcıları
                     </h4>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      17 haneli şase numarası (VIN) ve motor seri numarası
-                    </p>
+                    <span className="text-[11px] text-gray-400">17 haneli VIN ve motor seri numarası</span>
                   </div>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
@@ -912,12 +916,15 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
             {/* ADIM 1: Teknik Özellikler */}
             {activeStep === 1 && (
-              <div className="space-y-6">
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Teknik Özellikler
-                  </h4>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="space-y-3.5">
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
+                      Teknik Özellikler
+                    </h4>
+                    <span className="text-[11px] text-gray-400">Motor, şanzıman ve performans değerleri</span>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {/* KM */}
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
@@ -1080,20 +1087,18 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
             {/* ADIM 2: Finans */}
             {activeStep === 2 && (
-              <div className="space-y-5">
+              <div className="space-y-3.5">
                 {/* 1. Alış ve Satıcı Bilgileri (Tedarikçi en üstte) */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-4">
-                  <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                      Satıcı Cari ve Alış Bilgileri
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
+                      Satıcı Cari & Alış Bilgileri
                     </h4>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Aracın satın alındığı cari hesap, başlangıç lokasyonu ve alım bedelleri
-                    </p>
+                    <span className="text-[11px] text-gray-400">Tedarikçi, başlangıç lokasyonu ve alım bedelleri</span>
                   </div>
 
                   {/* Satıcı Cari + Lokasyon + Tarih */}
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {/* Satıcı Cari with SearchableSelect + Quick Add */}
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
@@ -1161,7 +1166,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                   </div>
 
                   {/* Alış Fiyatları + Noter + Canlı Fark (3 Kolon) */}
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 pt-3 border-t border-gray-100 dark:border-dark-600">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 pt-2.5 border-t border-gray-100 dark:border-dark-600">
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
@@ -1230,18 +1235,17 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                   </div>
                 </div>
 
-                {/* 2. Alım Rejimi ve KDV Yapılandırması */}
-                <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-4.5 dark:border-dark-600 dark:bg-dark-800/50 space-y-4">
-                  <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                      Alım Rejimi ve KDV Yapılandırması
+                {/* 2. Alım Rejimi, KDV ve Satış Fiyatlandırması */}
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
+                      Alım Rejimi, KDV & Satış Fiyatlandırması
                     </h4>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Vergi mevzuatı, alış KDV oranı ve satış faturası yansıması
-                    </p>
+                    <span className="text-[11px] text-gray-400">Vergi rejimi ve vitrin satış fiyatları</span>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  {/* Rejim Satırı (3 Kolon) */}
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
@@ -1266,7 +1270,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           Alış KDV Oranı (Kilitli)
                         </label>
                       </div>
-                      <div className="flex h-10 items-center rounded-lg border border-gray-200 bg-gray-100 px-3 text-xs font-bold text-gray-700 dark:border-dark-500 dark:bg-dark-800 dark:text-dark-200">
+                      <div className="flex h-10 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-xs font-bold text-gray-700 dark:border-dark-500 dark:bg-dark-800 dark:text-dark-200">
                         %{regimeConfig.purchaseVatRate}
                       </div>
                     </div>
@@ -1277,23 +1281,16 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           Satış KDV Yansıması
                         </label>
                       </div>
-                      <div className="flex h-10 items-center truncate rounded-lg border border-gray-200 bg-gray-100 px-3 text-xs font-bold text-primary-700 dark:border-dark-500 dark:bg-dark-800 dark:text-primary-400">
+                      <div className="flex h-10 items-center truncate rounded-lg border border-gray-200 bg-gray-50 px-3 text-xs font-bold text-primary-700 dark:border-dark-500 dark:bg-dark-800 dark:text-primary-400">
                         {regimeConfig.salesVatEffect}
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-gray-500 dark:text-dark-300">
-                    {regimeConfig.description}
-                  </p>
-
                   {/* Fatura Bilgileri (Şirket Alımları için) */}
                   {(currentRegime === "sirket_1" || currentRegime === "sirket_20") && (
-                    <div className="border-t border-gray-200 pt-3 dark:border-dark-600">
-                      <p className="mb-2.5 text-xs font-bold text-gray-700 dark:text-dark-200">
-                        Alış Fatura Bilgileri
-                      </p>
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="border-t border-gray-100 pt-2.5 dark:border-dark-600">
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <div>
                           <div className="flex items-center justify-between h-5 mb-1.5">
                             <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
@@ -1338,11 +1335,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                   {/* Galeri Özel Matrah - 4 Kolonlu Tam Hizalı Düzen */}
                   {currentRegime === "galeri_ozel" && (
-                    <div className="border-t border-gray-200 pt-3 dark:border-dark-600">
-                      <p className="mb-2.5 text-xs font-bold text-gray-700 dark:text-dark-200">
-                        Alış Fatura ve Özel Matrah Bilgileri
-                      </p>
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="border-t border-gray-100 pt-2.5 dark:border-dark-600">
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         <div>
                           <div className="flex items-center justify-between h-5 mb-1.5">
                             <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
@@ -1403,24 +1397,14 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                           />
                         </div>
                       </div>
-                      <p className="mt-2 text-[11px] text-gray-400">
+                      <p className="mt-1 text-[11px] text-gray-400">
                         * Önceki galerinin faturasında belirtilen özel matrah tutarı
                       </p>
                     </div>
                   )}
-                </div>
 
-                {/* 3. Satış & Liste Fiyatlandırması (Dengeli Genişlik) */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <div className="mb-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                      Satış & Liste Fiyatlandırması
-                    </h4>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Araç vitrin liste fiyatı ve tavsiye edilen noter satış fiyatı
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 max-w-2xl">
+                  {/* Satış & Vitrin Fiyatları (3 Kolon: Liste Fiyatı + TENSF + Mevzuat Açıklaması) */}
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 pt-2.5 border-t border-gray-100 dark:border-dark-600">
                     <div>
                       <div className="flex items-center justify-between h-5 mb-1.5">
                         <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
@@ -1462,6 +1446,17 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                         )}
                       />
                     </div>
+
+                    <div>
+                      <div className="flex items-center justify-between h-5 mb-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
+                          Rejim & Vergi Notu
+                        </label>
+                      </div>
+                      <div className="flex h-10 items-center rounded-lg border border-gray-200 bg-gray-50/80 px-3 text-[11px] leading-tight text-gray-600 dark:border-dark-500 dark:bg-dark-800 dark:text-dark-300">
+                        {regimeConfig.description}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1469,21 +1464,24 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
             {/* ADIM 3: Görünüm ve Durum */}
             {activeStep === 3 && (
-              <div className="space-y-6">
+              <div className="space-y-3.5">
                 {/* Araç Fotoğrafları (Kapak, İç, Dış Tabları) */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Araç Fotoğrafları
-                  </h4>
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
+                      Araç Fotoğrafları
+                    </h4>
+                    <span className="text-[11px] text-gray-400">Kapak, iç ve dış araç görselleri</span>
+                  </div>
                   {isEdit && vehicle ? (
                     <VehiclePhotos vehicleId={vehicle.id} />
                   ) : (
-                    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/70 p-6 text-center dark:border-dark-500 dark:bg-dark-800/40">
-                      <TbCamera className="mx-auto size-10 text-gray-400" />
-                      <p className="mt-2 text-xs font-medium text-gray-700 dark:text-dark-200">
+                    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/70 p-4 text-center dark:border-dark-500 dark:bg-dark-800/40">
+                      <TbCamera className="mx-auto size-8 text-gray-400" />
+                      <p className="mt-1.5 text-xs font-medium text-gray-700 dark:text-dark-200">
                         Fotoğrafları araç kaydedildikten sonra yükleyebilirsiniz.
                       </p>
-                      <p className="mt-1 text-[11px] text-gray-400">
+                      <p className="mt-0.5 text-[11px] text-gray-400">
                         Kapak fotoğrafı (1 adet), iç ve dış fotoğraflar kategorili olarak saklanır ve
                         otomatik optimize edilir.
                       </p>
@@ -1492,14 +1490,17 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                 </div>
 
                 {/* Renk & Durum Özellikleri (Switches) */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-5">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Renk ve Donanım Durumu
-                  </h4>
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
+                      Renk ve Donanım Durumu
+                    </h4>
+                    <span className="text-[11px] text-gray-400">Gövde rengi ve güvenlik/donanım anahtarları</span>
+                  </div>
 
                   <div className="max-w-xs">
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                    <div className="flex items-center justify-between h-5 mb-1.5">
+                      <label className="text-xs font-semibold text-gray-700 dark:text-dark-200">
                         Renk
                       </label>
                       <button
@@ -1512,7 +1513,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                     </div>
                     <select
                       {...register("colorId")}
-                      className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                      className="block h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
                     >
                       <option value="">Renk Seçiniz</option>
                       {catalog?.colors.map((c) => (
@@ -1589,12 +1590,12 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
             {/* ADIM 4: Tramer ve Notlar */}
             {activeStep === 4 && (
-              <div className="space-y-6">
+              <div className="space-y-3.5">
                 {/* Tramer Kayıtları */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
                         Tramer Kayıtları ({tramerList.length})
                       </h4>
                       <p className="text-[11px] text-gray-400">
@@ -1619,7 +1620,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
 
                   {/* Yeni Tramer Ekleme Formu */}
                   {showTramerForm && (
-                    <div className="mb-4 rounded-lg border border-primary-200 bg-primary-50/30 p-4 dark:border-primary-900/40 dark:bg-primary-950/20">
+                    <div className="mb-4 rounded-lg border border-primary-200 bg-primary-50/30 p-3.5 dark:border-primary-900/40 dark:bg-primary-950/20">
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <Input
                           label="Tarih *"
@@ -1746,35 +1747,39 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                 </div>
 
                 {/* Dahili Araç Notları */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Dahili Araç Notları
-                  </h4>
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
+                      Dahili Araç Notları
+                    </h4>
+                    <span className="text-[11px] text-gray-400">Yalnızca şirket içi kullanım içindir</span>
+                  </div>
                   <Textarea
                     placeholder="Araçla ilgili şirket içi özel notlar, geçmiş durumlar veya hatırlatmalar..."
-                    rows={4}
+                    rows={3}
+                    className="text-xs"
                     {...register("notes")}
                   />
-                  <p className="mt-1.5 text-[11px] text-gray-400">
-                    Bu notlar sadece şirket içi kullanım içindir ve müşterilere gösterilmez.
-                  </p>
                 </div>
               </div>
             )}
 
             {/* ADIM 5: Evrak Yükleme */}
             {activeStep === 5 && (
-              <div className="space-y-6">
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Araç Evrakları
-                  </h4>
+              <div className="space-y-3.5">
+                <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-dark-200">
+                      Araç Evrakları
+                    </h4>
+                    <span className="text-[11px] text-gray-400">Ruhsat, sigorta, kasko ve ekspertiz</span>
+                  </div>
                   {isEdit && vehicle ? (
                     <DocumentManager referenceType="VEHICLE" referenceId={vehicle.id} />
                   ) : (
-                    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/70 p-8 text-center dark:border-dark-500 dark:bg-dark-800/40">
-                      <TbFileText className="mx-auto size-12 text-gray-400" />
-                      <p className="mt-3 text-sm font-semibold text-gray-800 dark:text-dark-100">
+                    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/70 p-6 text-center dark:border-dark-500 dark:bg-dark-800/40">
+                      <TbFileText className="mx-auto size-10 text-gray-400" />
+                      <p className="mt-2 text-sm font-semibold text-gray-800 dark:text-dark-100">
                         Araç Evraklarını Eklemek İçin Önce Aracı Kaydedin
                       </p>
                       <p className="mt-1 text-xs text-gray-500 dark:text-dark-300 max-w-md mx-auto">
@@ -1784,7 +1789,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       <Button
                         type="submit"
                         color="primary"
-                        className="mt-4"
+                        className="mt-3 px-3.5 py-1.5 text-xs font-semibold"
                         disabled={isSubmitting}
                       >
                         {isSubmitting ? "Kaydediliyor..." : "Aracı Kaydet ve Evrak Yükle"}
@@ -1797,9 +1802,14 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
           </div>
         </div>
 
-        {/* Bottom Navigation Controls */}
-        <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-6 py-3.5 dark:border-dark-600 dark:bg-dark-800">
-          <Button type="button" variant="outlined" onClick={onClose}>
+        {/* Bottom Navigation Controls - Fixed Sticky Footer */}
+        <div className="flex shrink-0 items-center justify-between border-t border-gray-200 bg-gray-50/95 px-5 py-2.5 backdrop-blur-xs dark:border-dark-600 dark:bg-dark-800">
+          <Button
+            type="button"
+            variant="outlined"
+            className="px-3.5 py-1.5 text-xs font-semibold"
+            onClick={onClose}
+          >
             İptal
           </Button>
 
@@ -1808,6 +1818,7 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
               <Button
                 type="button"
                 variant="outlined"
+                className="px-3.5 py-1.5 text-xs font-semibold"
                 onClick={() => setActiveStep((prev) => Math.max(prev - 1, 0))}
               >
                 Geri
@@ -1818,13 +1829,19 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
               <Button
                 type="button"
                 variant="outlined"
+                className="px-3.5 py-1.5 text-xs font-semibold"
                 onClick={() => setActiveStep((prev) => Math.min(prev + 1, STEPS.length - 1))}
               >
                 İleri
               </Button>
             )}
 
-            <Button type="submit" color="primary" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              color="primary"
+              className="px-4 py-1.5 text-xs font-semibold"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Kaydediliyor..." : isEdit ? "Güncelle" : "Aracı Kaydet"}
             </Button>
           </div>
