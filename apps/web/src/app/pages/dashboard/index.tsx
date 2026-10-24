@@ -58,10 +58,10 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <Page title="Panel">
+    <Page title="Dashboard">
       <div className="w-full px-(--margin-x) py-6">
         <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">
-          {activeCompany?.name ?? "Panel"}
+          {activeCompany?.name ?? "Dashboard"}
         </h2>
         <p className="text-sm text-gray-400 dark:text-dark-300">Genel durum özeti</p>
 
