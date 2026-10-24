@@ -112,6 +112,12 @@ const protectedRoutes: RouteObject = {
           }),
         },
         {
+          path: "company",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/company")).default,
+          }),
+        },
+        {
           path: "definitions",
           element: <Navigate to="/catalog" replace />,
         },

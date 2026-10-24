@@ -44,6 +44,7 @@ export const navigationIcons: Record<string, ElementType> = {
   reports: TbChartBar,
   users: TbUsersGroup,
   tenants: TbBuildingSkyscraper,
+  company: TbBuilding,
   companies: TbBuilding,
   catalog: TbListDetails,
   activity: TbActivity,

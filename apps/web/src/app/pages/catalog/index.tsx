@@ -14,6 +14,7 @@ import {
   SparklesIcon,
   MapPinIcon,
   UserGroupIcon,
+  BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
@@ -111,6 +112,13 @@ export default function CatalogPage() {
           >
             <CubeIcon className="size-4 text-primary-500" />
             Malzeme & Hizmetler
+          </Link>
+          <Link
+            to="/company"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-indigo-500/50 transition shadow-xs"
+          >
+            <BuildingOffice2Icon className="size-4 text-indigo-500" />
+            Firma
           </Link>
           <Link
             to="/locations"

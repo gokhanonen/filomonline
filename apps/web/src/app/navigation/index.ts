@@ -69,6 +69,13 @@ export const navigation: NavigationTree[] = [
             icon: "products",
           },
           {
+            id: "company",
+            type: "item",
+            path: "/company",
+            title: "Firma",
+            icon: "company",
+          },
+          {
             id: "locations",
             type: "item",
             path: "/locations",
