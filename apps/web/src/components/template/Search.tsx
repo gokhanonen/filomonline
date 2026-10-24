@@ -28,7 +28,6 @@ import clsx from "clsx";
 // Local Imports
 import { Button, Spinner } from "@/components/ui";
 import { useDisclosure, useFuse } from "@/hooks";
-import { useThemeContext } from "@/app/contexts/theme/context";
 import { navigation } from "@/app/navigation";
 import { Highlight } from "@/components/shared/Highlight";
 import { settings } from "@/app/navigation/segments/settings";
@@ -219,7 +218,6 @@ export function Search({ renderButton }: SearchProps) {
 
 export function SearchDialog({ close }: SearchDialogProps) {
   const navigate = useNavigate();
-  const { isDark } = useThemeContext();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
   const [results, setResults] = useState<GlobalSearchResult[]>([]);
@@ -383,19 +381,22 @@ export function SearchDialog({ close }: SearchDialogProps) {
               setQuery("");
               inputRef.current?.focus();
             }}
-            className="p-1 rounded-md text-gray-400 hover:text-gray-600 dark:text-dark-300 dark:hover:text-dark-100 transition-colors"
-            title="Temizle"
+            className="text-[11px] font-medium text-gray-400 hover:text-gray-600 dark:text-dark-300 dark:hover:text-dark-100 px-1.5 py-0.5 rounded bg-gray-200/50 dark:bg-dark-650 transition-colors shrink-0"
+            title="Aramayı Temizle"
           >
-            <XMarkIcon className="size-4.5" />
+            Temizle
           </button>
         )}
 
         <Button
           onClick={close}
-          variant={isDark ? "filled" : "outlined"}
-          className="px-2.5 py-1 text-xs font-semibold rounded-md shrink-0"
+          isIcon
+          variant="flat"
+          className="size-8 rounded-lg text-gray-400 hover:text-gray-700 dark:text-dark-300 dark:hover:text-dark-50 hover:bg-gray-150/60 dark:hover:bg-dark-650 shrink-0"
+          title="Kapat (ESC)"
+          aria-label="Kapat"
         >
-          ESC
+          <XMarkIcon className="size-5" />
         </Button>
       </div>
 
