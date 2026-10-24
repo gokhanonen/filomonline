@@ -252,7 +252,7 @@ export class DocumentsService {
       companyId,
       userId,
       type: "DOCUMENT_NEW",
-      title: `Yeni Evrak: ${doc.title || "Evrak Yüklendi"}`,
+      title: `Yeni Evrak: ${doc.fileName || "Evrak Yüklendi"}`,
       description: `${doc.referenceType} (${doc.referenceId}) için evrak yüklendi`,
       entityType: "document",
       entityId: doc.id,

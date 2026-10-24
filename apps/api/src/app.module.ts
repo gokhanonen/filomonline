@@ -29,6 +29,7 @@ import { AiModule } from "./ai/ai.module";
 import { ChatModule } from "./chat/chat.module";
 import { AddressModule } from "./address/address.module";
 import { SearchModule } from "./search/search.module";
+import { CrmModule } from "./crm/crm.module";
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { SearchModule } from "./search/search.module";
     DocumentsModule,
     AddressModule,
     SearchModule,
+    CrmModule,
   ],
   controllers: [HealthController],
   providers: [

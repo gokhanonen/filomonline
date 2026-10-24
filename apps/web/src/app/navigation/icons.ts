@@ -25,6 +25,10 @@ import {
   TbMessages,
   TbContract,
   TbTransfer,
+  TbHeartHandshake,
+  TbUserPlus,
+  TbSteeringWheel,
+  TbFileDollar,
 } from "react-icons/tb";
 
 /**
@@ -63,4 +67,10 @@ export const navigationIcons: Record<string, ElementType> = {
 
   // Segment kök ikonları
   finance: TbReportMoney,
+
+  // CRM & Satış
+  crm: TbHeartHandshake,
+  leads: TbUserPlus,
+  testDrives: TbSteeringWheel,
+  quotes: TbFileDollar,
 };

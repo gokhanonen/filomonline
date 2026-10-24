@@ -66,6 +66,30 @@ const protectedRoutes: RouteObject = {
           }),
         },
 
+        // --- CRM & Satış ---
+        {
+          path: "crm",
+          element: <Navigate to="/crm/leads" />,
+        },
+        {
+          path: "crm/leads",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/crm")).default,
+          }),
+        },
+        {
+          path: "crm/test-drives",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/crm/TestDrivesPage")).default,
+          }),
+        },
+        {
+          path: "crm/quotes",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/crm/QuotesPage")).default,
+          }),
+        },
+
         // --- Finans ---
         {
           path: "invoices",

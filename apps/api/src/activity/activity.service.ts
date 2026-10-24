@@ -23,6 +23,10 @@ export type ActivityType =
   | "ACCOUNT_NEW"
   | "USER_NEW"
   | "CHAT_MESSAGE"
+  | "LEAD_NEW"
+  | "LEAD_UPDATE"
+  | "TEST_DRIVE_SCHEDULED"
+  | "LEAD_CONVERTED"
   | "SYSTEM";
 
 export interface LogInput {
