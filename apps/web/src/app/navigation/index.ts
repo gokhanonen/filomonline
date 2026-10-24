@@ -32,7 +32,7 @@ export const navigation: NavigationTree[] = [
     childs: [
       { id: "invoices", type: "item", path: "/invoices", title: "Faturalar", icon: "invoices" },
       { id: "expenses", type: "item", path: "/expenses", title: "Masraflar", icon: "expenses" },
-      { id: "rentals", type: "item", path: "/rentals", title: "Kiralama", icon: "rentals" },
+      { id: "contracts", type: "item", path: "/contracts", title: "Sözleşmeler", icon: "contracts" },
       { id: "reports", type: "item", path: "/reports", title: "Raporlar", icon: "reports" },
     ],
   },

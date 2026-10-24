@@ -17,6 +17,7 @@ import {
   TbReceipt,
   TbFileInvoice,
   TbLock,
+  TbContract,
 } from "react-icons/tb";
 import { toast } from "sonner";
 
@@ -48,6 +49,22 @@ import { VehicleOptionModal } from "./VehicleOptionModal";
 import { WhatsAppModal } from "./WhatsAppModal";
 import { VehicleTransferModal } from "./VehicleTransferModal";
 import { InvoiceForm } from "../invoices/InvoiceForm";
+import {
+  getRentalContractsByVehicle,
+  getSalesContractsByVehicle,
+} from "@/services/contractService";
+import {
+  RENTAL_STATUS_COLOR,
+  RENTAL_STATUS_LABELS,
+  SALES_STATUS_COLOR,
+  SALES_STATUS_LABELS,
+  type ContractKind,
+  type RentalContract,
+  type SalesContract,
+} from "@/@types/contract";
+import { ContractPrintModal } from "../contracts/ContractPrintModal";
+import { SalesContractFormModal } from "../contracts/SalesContractFormModal";
+import { RentalContractFormModal } from "../contracts/RentalContractFormModal";
 
 function money(v?: string | null): string {
   if (!v) return "—";
@@ -77,6 +94,25 @@ export default function VehicleDetailPage() {
   const [saleModalOpen, setSaleModalOpen] = useState(false);
   const [editingInvoiceId, setEditingInvoiceId] = useState<string | undefined>(undefined);
 
+  // Sözleşmeler Durumları
+  const [vehicleSalesContracts, setVehicleSalesContracts] = useState<SalesContract[]>([]);
+  const [vehicleRentalContracts, setVehicleRentalContracts] = useState<RentalContract[]>([]);
+  const [contractsLoading, setContractsLoading] = useState(false);
+  const [salesContractModalOpen, setSalesContractModalOpen] = useState(false);
+  const [editingSalesContractId, setEditingSalesContractId] = useState<string | undefined>(undefined);
+  const [rentalContractModalOpen, setRentalContractModalOpen] = useState(false);
+  const [editingRentalContractId, setEditingRentalContractId] = useState<string | undefined>(undefined);
+  const [contractPrintModal, setContractPrintModal] = useState<{
+    open: boolean;
+    contractType: ContractKind;
+    contractId: string;
+    documentNo?: string;
+  }>({
+    open: false,
+    contractType: "SALES",
+    contractId: "",
+  });
+
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -101,6 +137,18 @@ export default function VehicleDetailPage() {
       } else {
         setSalesInvoice(null);
       }
+
+      // Sözleşmeleri Yükle
+      setContractsLoading(true);
+      Promise.all([
+        getSalesContractsByVehicle(v.id).catch(() => []),
+        getRentalContractsByVehicle(v.id).catch(() => []),
+      ])
+        .then(([sList, rList]) => {
+          setVehicleSalesContracts(sList);
+          setVehicleRentalContracts(rList);
+        })
+        .finally(() => setContractsLoading(false));
     } catch {
       setError("Araç bilgileri yüklenemedi");
       toast.error("Araç yüklenemedi");
@@ -580,6 +628,180 @@ export default function VehicleDetailPage() {
           )}
         </Card>
 
+        {/* Sözleşmeler (Satış & Kiralama) */}
+        <Card className="mt-5 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-2">
+              <TbContract className="size-5 text-gray-500" />
+              <h3 className="font-medium text-gray-800 dark:text-dark-50">Sözleşmeler</h3>
+              {(vehicleSalesContracts.length > 0 || vehicleRentalContracts.length > 0) && (
+                <span className="rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-bold text-primary-700 dark:bg-primary-950/40 dark:text-primary-300">
+                  {vehicleSalesContracts.length + vehicleRentalContracts.length}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outlined"
+                className="gap-1.5 py-1 px-2.5 text-xs text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300"
+                onClick={() => {
+                  setEditingSalesContractId(undefined);
+                  setSalesContractModalOpen(true);
+                }}
+              >
+                + Satış Sözleşmesi
+              </Button>
+              <Button
+                variant="outlined"
+                className="gap-1.5 py-1 px-2.5 text-xs text-primary-700 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 dark:text-primary-300"
+                onClick={() => {
+                  setEditingRentalContractId(undefined);
+                  setRentalContractModalOpen(true);
+                }}
+              >
+                + Kira Sözleşmesi
+              </Button>
+            </div>
+          </div>
+
+          {contractsLoading ? (
+            <div className="flex justify-center py-6">
+              <Spinner className="size-6 text-primary-600" />
+            </div>
+          ) : vehicleSalesContracts.length === 0 && vehicleRentalContracts.length === 0 ? (
+            <p className="text-sm italic text-gray-400 dark:text-dark-300">
+              Bu araca ait kayıtlı satış veya kira sözleşmesi bulunmuyor.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {/* Satış Sözleşmeleri */}
+              {vehicleSalesContracts.map((sc) => (
+                <div
+                  key={sc.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-150 bg-emerald-50/40 p-3 dark:border-emerald-900/40 dark:bg-emerald-950/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                      <TbReceipt className="size-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-gray-900 dark:text-dark-50">
+                          {sc.documentNo}
+                        </span>
+                        <Tag color={SALES_STATUS_COLOR[sc.status] || "neutral"}>
+                          {SALES_STATUS_LABELS[sc.status] || sc.status}
+                        </Tag>
+                        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full dark:bg-emerald-900/50 dark:text-emerald-300">
+                          Satış Sözleşmesi
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-dark-300 mt-0.5">
+                        Alıcı: <b>{sc.customerName}</b> • Tarih: {fmtDate(sc.contractDate)} • Bedel:{" "}
+                        <span className="font-mono font-bold text-gray-900 dark:text-dark-100">
+                          {money(String(sc.grandTotal || sc.price))}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outlined"
+                      className="gap-1 py-1 px-2.5 text-xs text-emerald-700 bg-white hover:bg-emerald-50 dark:bg-dark-700 dark:text-emerald-300"
+                      onClick={() =>
+                        setContractPrintModal({
+                          open: true,
+                          contractType: "SALES",
+                          contractId: sc.id,
+                          documentNo: sc.documentNo,
+                        })
+                      }
+                    >
+                      🖨️ Yazdır / PDF
+                    </Button>
+                    <Button
+                      variant="flat"
+                      isIcon
+                      className="size-7"
+                      onClick={() => {
+                        setEditingSalesContractId(sc.id);
+                        setSalesContractModalOpen(true);
+                      }}
+                      title="Düzenle"
+                    >
+                      <PencilSquareIcon className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+
+              {/* Kira Sözleşmeleri */}
+              {vehicleRentalContracts.map((rc) => (
+                <div
+                  key={rc.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary-150 bg-primary-50/40 p-3 dark:border-primary-900/40 dark:bg-primary-950/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
+                      <TbKey className="size-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-gray-900 dark:text-dark-50">
+                          {rc.documentNo || "—"}
+                        </span>
+                        <Tag color={RENTAL_STATUS_COLOR[rc.status] || "neutral"}>
+                          {RENTAL_STATUS_LABELS[rc.status] || rc.status}
+                        </Tag>
+                        <span className="text-[11px] font-semibold text-primary-700 bg-primary-100 px-2 py-0.5 rounded-full dark:bg-primary-900/50 dark:text-primary-300">
+                          Kira Sözleşmesi
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-dark-300 mt-0.5">
+                        Kiracı: <b>{rc.customerName}</b> • Süre: {rc.durationMonths} Ay • Aylık:{" "}
+                        <span className="font-mono font-bold text-gray-900 dark:text-dark-100">
+                          {money(String(rc.monthlyPrice))}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outlined"
+                      className="gap-1 py-1 px-2.5 text-xs text-primary-700 bg-white hover:bg-primary-50 dark:bg-dark-700 dark:text-primary-300"
+                      onClick={() =>
+                        setContractPrintModal({
+                          open: true,
+                          contractType: "RENTAL",
+                          contractId: rc.id,
+                          documentNo: rc.documentNo || undefined,
+                        })
+                      }
+                    >
+                      🖨️ Yazdır / PDF
+                    </Button>
+                    <Button
+                      variant="flat"
+                      isIcon
+                      className="size-7"
+                      onClick={() => {
+                        setEditingRentalContractId(rc.id);
+                        setRentalContractModalOpen(true);
+                      }}
+                      title="Düzenle"
+                    >
+                      <PencilSquareIcon className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+
         {/* Evraklar */}
         <Card className="mt-5 p-5">
           <h3 className="mb-4 font-medium text-gray-800 dark:text-dark-50">Araç Evrakları</h3>
@@ -622,6 +844,46 @@ export default function VehicleDetailPage() {
         initialType="sales"
         initialVehicleId={v.id}
         editingInvoiceId={editingInvoiceId}
+      />
+
+      <SalesContractFormModal
+        open={salesContractModalOpen}
+        onClose={() => {
+          setSalesContractModalOpen(false);
+          setEditingSalesContractId(undefined);
+        }}
+        onSaved={() => {
+          setSalesContractModalOpen(false);
+          setEditingSalesContractId(undefined);
+          load();
+        }}
+        editingContractId={editingSalesContractId}
+        initialVehicleId={v.id}
+      />
+
+      <RentalContractFormModal
+        open={rentalContractModalOpen}
+        onClose={() => {
+          setRentalContractModalOpen(false);
+          setEditingRentalContractId(undefined);
+        }}
+        onSaved={() => {
+          setRentalContractModalOpen(false);
+          setEditingRentalContractId(undefined);
+          load();
+        }}
+        editingContractId={editingRentalContractId}
+        initialVehicleId={v.id}
+      />
+
+      <ContractPrintModal
+        open={contractPrintModal.open}
+        onClose={() =>
+          setContractPrintModal((prev) => ({ ...prev, open: false }))
+        }
+        contractType={contractPrintModal.contractType}
+        contractId={contractPrintModal.contractId}
+        documentNo={contractPrintModal.documentNo}
       />
     </Page>
   );

@@ -50,7 +50,9 @@ export class RentalsService {
       }),
       this.prisma.rentalContract.count({ where }),
     ]);
-    return { items, total, page: q.page, pageSize: q.pageSize };
+
+    const enriched = await Promise.all(items.map((i) => this.enrichRental(i)));
+    return { items: enriched, total, page: q.page, pageSize: q.pageSize };
   }
 
   async findOne(companyId: string, id: string) {
@@ -58,12 +60,20 @@ export class RentalsService {
       where: { id, companyId },
     });
     if (!rental) throw new NotFoundException("Kira sözleşmesi bulunamadı");
-    return rental;
+    return this.enrichRental(rental);
+  }
+
+  async findByVehicle(companyId: string, vehicleId: string) {
+    const items = await this.prisma.rentalContract.findMany({
+      where: { companyId, vehicleId },
+      orderBy: { contractDate: "desc" },
+    });
+    return Promise.all(items.map((i) => this.enrichRental(i)));
   }
 
   async update(companyId: string, id: string, dto: UpdateRentalContractDto) {
     await this.ensureExists(companyId, id);
-    return this.prisma.rentalContract.update({
+    const updated = await this.prisma.rentalContract.update({
       where: { id },
       data: {
         ...dto,
@@ -72,6 +82,43 @@ export class RentalsService {
         vatRate: dto.vatRate ?? 20,
       },
     });
+    return this.enrichRental(updated);
+  }
+
+  private async enrichRental(rental: any) {
+    const [vehicle, customer] = await Promise.all([
+      rental.vehicleId
+        ? this.prisma.vehicle.findUnique({
+            where: { id: rental.vehicleId },
+            select: {
+              id: true,
+              plate: true,
+              brandName: true,
+              modelName: true,
+              year: true,
+              chassisNo: true,
+              engineNo: true,
+              colorName: true,
+              status: true,
+            },
+          })
+        : null,
+      rental.customerId
+        ? this.prisma.account.findUnique({
+            where: { id: rental.customerId },
+            select: {
+              id: true,
+              name: true,
+              taxNumber: true,
+              tckn: true,
+              phone: true,
+              email: true,
+              address: true,
+            },
+          })
+        : null,
+    ]);
+    return { ...rental, vehicle, customer };
   }
 
   async remove(companyId: string, id: string) {

@@ -148,9 +148,9 @@ const QUICK_SHORTCUTS = [
     accent: "text-purple-500 bg-purple-500/10 dark:bg-purple-500/20",
   },
   {
-    title: "Kiralama & Sözleşmeler",
-    desc: "Aktif sözleşmeler ve rezervasyonlar",
-    to: "/rentals",
+    title: "Sözleşmeler",
+    desc: "Araç satış, kapora ve kiralama sözleşmeleri",
+    to: "/contracts",
     icon: CalendarDaysIcon,
     accent: "text-sky-500 bg-sky-500/10 dark:bg-sky-500/20",
   },

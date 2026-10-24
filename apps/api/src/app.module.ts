@@ -18,6 +18,7 @@ import { VehiclesModule } from "./vehicles/vehicles.module";
 import { CatalogModule } from "./catalog/catalog.module";
 import { ExpensesModule } from "./expenses/expenses.module";
 import { RentalsModule } from "./rentals/rentals.module";
+import { ContractsModule } from "./contracts/contracts.module";
 import { ReportsModule } from "./reports/reports.module";
 import { InvoicesModule } from "./invoices/invoices.module";
 import { DocumentsModule } from "./documents/documents.module";
@@ -49,6 +50,7 @@ import { SearchModule } from "./search/search.module";
     CatalogModule,
     ExpensesModule,
     RentalsModule,
+    ContractsModule,
     ReportsModule,
     InvoicesModule,
     DocumentsModule,

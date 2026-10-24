@@ -80,9 +80,15 @@ const protectedRoutes: RouteObject = {
           }),
         },
         {
+          path: "contracts",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/contracts")).default,
+          }),
+        },
+        {
           path: "rentals",
           lazy: async () => ({
-            Component: (await import("@/app/pages/rentals")).default,
+            Component: (await import("@/app/pages/contracts")).default,
           }),
         },
         {

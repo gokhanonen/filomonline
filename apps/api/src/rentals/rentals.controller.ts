@@ -37,6 +37,15 @@ export class RentalsController {
   }
 
   @RequirePermissions("rentals.read")
+  @Get("by-vehicle/:vehicleId")
+  findByVehicle(
+    @CompanyId() companyId: string,
+    @Param("vehicleId") vehicleId: string,
+  ) {
+    return this.rentals.findByVehicle(companyId, vehicleId);
+  }
+
+  @RequirePermissions("rentals.read")
   @Get(":id")
   findOne(@CompanyId() companyId: string, @Param("id") id: string) {
     return this.rentals.findOne(companyId, id);
