@@ -13,6 +13,7 @@ import {
   TbCheck,
   TbX,
   TbTrash,
+  TbGauge,
 } from "react-icons/tb";
 
 import { Button, Input, NumericInput, Switch, Textarea, Spinner, Tag } from "@/components/ui";
@@ -102,10 +103,11 @@ interface Props {
 
 const STEPS = [
   { id: 0, label: "Temel Bilgiler", icon: TbCar },
-  { id: 1, label: "Görünüm & Durum", icon: TbCamera },
-  { id: 2, label: "Fiyat & Alış", icon: TbCurrencyLira },
-  { id: 3, label: "Tramer & Notlar", icon: TbTool },
-  { id: 4, label: "Evrak Yükleme", icon: TbFileText },
+  { id: 1, label: "Teknik Özellikler", icon: TbGauge },
+  { id: 2, label: "Finans", icon: TbCurrencyLira },
+  { id: 3, label: "Görünüm & Durum", icon: TbCamera },
+  { id: 4, label: "Tramer & Notlar", icon: TbTool },
+  { id: 5, label: "Evrak Yükleme", icon: TbFileText },
 ];
 
 export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
@@ -837,37 +839,14 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
                       {...register("engineNo")}
                     />
 
-                    <Controller
-                      name="listPrice"
-                      control={control}
-                      render={({ field }) => (
-                        <NumericInput
-                          label="Liste Fiyatı (₺)"
-                          placeholder="0,00"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          error={errors.listPrice?.message}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="tensf"
-                      control={control}
-                      render={({ field }) => (
-                        <NumericInput
-                          label="TENSF (₺)"
-                          placeholder="0,00"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          error={errors.tensf?.message}
-                        />
-                      )}
-                    />
-                  </div>
+                    </div>
                 </div>
+              </div>
+            )}
 
-                {/* Teknik Özellikler */}
+            {/* ADIM 1: Teknik Özellikler */}
+            {activeStep === 1 && (
+              <div className="space-y-6">
                 <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
                   <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
                     Teknik Özellikler
@@ -992,129 +971,45 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
               </div>
             )}
 
-            {/* ADIM 1: Görünüm ve Durum */}
-            {activeStep === 1 && (
-              <div className="space-y-6">
-                {/* Araç Fotoğrafları (Kapak, İç, Dış Tabları) */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
-                  <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Araç Fotoğrafları
-                  </h4>
-                  {isEdit && vehicle ? (
-                    <VehiclePhotos vehicleId={vehicle.id} />
-                  ) : (
-                    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/70 p-6 text-center dark:border-dark-500 dark:bg-dark-800/40">
-                      <TbCamera className="mx-auto size-10 text-gray-400" />
-                      <p className="mt-2 text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Fotoğrafları araç kaydedildikten sonra yükleyebilirsiniz.
-                      </p>
-                      <p className="mt-1 text-[11px] text-gray-400">
-                        Kapak fotoğrafı (1 adet), iç ve dış fotoğraflar kategorili olarak saklanır ve
-                        otomatik optimize edilir.
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Renk & Durum Özellikleri (Switches) */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-5">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
-                    Renk ve Donanım Durumu
-                  </h4>
-
-                  <div className="max-w-xs">
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
-                        Renk
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenQuickAdd("color", "Yeni Renk Ekle")}
-                        className="flex items-center gap-0.5 text-[11px] font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400"
-                      >
-                        <TbPlus className="size-3.5" /> Ekle
-                      </button>
-                    </div>
-                    <select
-                      {...register("colorId")}
-                      className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
-                    >
-                      <option value="">Renk Seçiniz</option>
-                      {catalog?.colors.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Switch Toggles */}
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 pt-2">
-                    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 p-3.5 dark:border-dark-600 dark:bg-dark-800/40">
-                      <div>
-                        <p className="text-xs font-semibold text-gray-800 dark:text-dark-100">
-                          Yedek Anahtar
-                        </p>
-                        <p className="text-[11px] text-gray-400">Yedek anahtar mevcut mu?</p>
-                      </div>
-                      <Controller
-                        name="spareKey"
-                        control={control}
-                        render={({ field }) => (
-                          <Switch
-                            checked={!!field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                        )}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 p-3.5 dark:border-dark-600 dark:bg-dark-800/40">
-                      <div>
-                        <p className="text-xs font-semibold text-gray-800 dark:text-dark-100">
-                          Garanti Durumu
-                        </p>
-                        <p className="text-[11px] text-gray-400">Garanti kapsamında mı?</p>
-                      </div>
-                      <Controller
-                        name="warranty"
-                        control={control}
-                        render={({ field }) => (
-                          <Switch
-                            checked={!!field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                        )}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 p-3.5 dark:border-dark-600 dark:bg-dark-800/40">
-                      <div>
-                        <p className="text-xs font-semibold text-red-600 dark:text-red-400">
-                          Ağır Hasar Kaydı
-                        </p>
-                        <p className="text-[11px] text-gray-400">Pert / ağır hasar kaydı var mı?</p>
-                      </div>
-                      <Controller
-                        name="heavyDamage"
-                        control={control}
-                        render={({ field }) => (
-                          <Switch
-                            color="error"
-                            checked={!!field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                        )}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ADIM 2: Fiyat ve Alış Bilgileri */}
+            {/* ADIM 2: Finans */}
             {activeStep === 2 && (
               <div className="space-y-6">
+                {/* Satış & Liste Fiyatlandırması */}
+                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                    Satış & Liste Fiyatlandırması
+                  </h4>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Controller
+                      name="listPrice"
+                      control={control}
+                      render={({ field }) => (
+                        <NumericInput
+                          label="Liste Fiyatı (₺)"
+                          placeholder="0,00"
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          error={errors.listPrice?.message}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name="tensf"
+                      control={control}
+                      render={({ field }) => (
+                        <NumericInput
+                          label="TENSF (₺)"
+                          placeholder="0,00"
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          error={errors.tensf?.message}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+
                 {/* 4 Alım Rejimi Seçimi & Bilgi Paneli */}
                 <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-4 dark:border-dark-600 dark:bg-dark-800/50">
                   <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
@@ -1332,8 +1227,128 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
               </div>
             )}
 
-            {/* ADIM 3: Tramer ve Notlar */}
+            {/* ADIM 3: Görünüm ve Durum */}
             {activeStep === 3 && (
+              <div className="space-y-6">
+                {/* Araç Fotoğrafları (Kapak, İç, Dış Tabları) */}
+                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
+                  <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                    Araç Fotoğrafları
+                  </h4>
+                  {isEdit && vehicle ? (
+                    <VehiclePhotos vehicleId={vehicle.id} />
+                  ) : (
+                    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/70 p-6 text-center dark:border-dark-500 dark:bg-dark-800/40">
+                      <TbCamera className="mx-auto size-10 text-gray-400" />
+                      <p className="mt-2 text-xs font-medium text-gray-700 dark:text-dark-200">
+                        Fotoğrafları araç kaydedildikten sonra yükleyebilirsiniz.
+                      </p>
+                      <p className="mt-1 text-[11px] text-gray-400">
+                        Kapak fotoğrafı (1 adet), iç ve dış fotoğraflar kategorili olarak saklanır ve
+                        otomatik optimize edilir.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Renk & Durum Özellikleri (Switches) */}
+                <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700 space-y-5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
+                    Renk ve Donanım Durumu
+                  </h4>
+
+                  <div className="max-w-xs">
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-medium text-gray-700 dark:text-dark-200">
+                        Renk
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenQuickAdd("color", "Yeni Renk Ekle")}
+                        className="flex items-center gap-0.5 text-[11px] font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400"
+                      >
+                        <TbPlus className="size-3.5" /> Ekle
+                      </button>
+                    </div>
+                    <select
+                      {...register("colorId")}
+                      className="block h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:border-primary-500 focus:outline-hidden dark:border-dark-500 dark:bg-dark-700 dark:text-dark-100"
+                    >
+                      <option value="">Renk Seçiniz</option>
+                      {catalog?.colors.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Switch Toggles */}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 pt-2">
+                    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 p-3.5 dark:border-dark-600 dark:bg-dark-800/40">
+                      <div>
+                        <p className="text-xs font-semibold text-gray-800 dark:text-dark-100">
+                          Yedek Anahtar
+                        </p>
+                        <p className="text-[11px] text-gray-400">Yedek anahtar mevcut mu?</p>
+                      </div>
+                      <Controller
+                        name="spareKey"
+                        control={control}
+                        render={({ field }) => (
+                          <Switch
+                            checked={!!field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                          />
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 p-3.5 dark:border-dark-600 dark:bg-dark-800/40">
+                      <div>
+                        <p className="text-xs font-semibold text-gray-800 dark:text-dark-100">
+                          Garanti Durumu
+                        </p>
+                        <p className="text-[11px] text-gray-400">Garanti kapsamında mı?</p>
+                      </div>
+                      <Controller
+                        name="warranty"
+                        control={control}
+                        render={({ field }) => (
+                          <Switch
+                            checked={!!field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                          />
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 p-3.5 dark:border-dark-600 dark:bg-dark-800/40">
+                      <div>
+                        <p className="text-xs font-semibold text-red-600 dark:text-red-400">
+                          Ağır Hasar Kaydı
+                        </p>
+                        <p className="text-[11px] text-gray-400">Pert / ağır hasar kaydı var mı?</p>
+                      </div>
+                      <Controller
+                        name="heavyDamage"
+                        control={control}
+                        render={({ field }) => (
+                          <Switch
+                            color="error"
+                            checked={!!field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ADIM 4: Tramer ve Notlar */}
+            {activeStep === 4 && (
               <div className="space-y-6">
                 {/* Tramer Kayıtları */}
                 <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
@@ -1507,8 +1522,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle }: Props) {
               </div>
             )}
 
-            {/* ADIM 4: Evrak Yükleme */}
-            {activeStep === 4 && (
+            {/* ADIM 5: Evrak Yükleme */}
+            {activeStep === 5 && (
               <div className="space-y-6">
                 <div className="rounded-xl border border-gray-200 bg-white p-4.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
                   <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">
