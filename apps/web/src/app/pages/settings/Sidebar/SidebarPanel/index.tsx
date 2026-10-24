@@ -74,7 +74,7 @@ export function SidebarPanel() {
                 className="group text-xs-plus w-full justify-start gap-2 p-2"
               >
                 <QuestionMarkCircleIcon className="dark:text-dark-300 dark:group-hover:text-dark-200 dark:group-focus:text-dark-200 size-4.5 text-gray-400 transition-colors group-hover:text-gray-500 group-focus:text-gray-500" />
-                <span>Tailux Faq</span>
+                <span>Filomonline SSS</span>
               </Button>
             </li>
             <li>
