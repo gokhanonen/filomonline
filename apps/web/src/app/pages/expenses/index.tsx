@@ -108,13 +108,16 @@ export default function ExpensesPage() {
           {canWrite && (
             <Button
               color="primary"
+              isIcon
               onClick={() => {
                 setEditing(null);
                 setFormOpen(true);
               }}
-              className="gap-2"
+              className="size-9.5 rounded-lg shrink-0 shadow-xs"
+              title="Yeni Masraf"
+              aria-label="Yeni Masraf"
             >
-              <PlusIcon className="size-5" /> Yeni Masraf
+              <PlusIcon className="size-5" />
             </Button>
           )}
         </div>

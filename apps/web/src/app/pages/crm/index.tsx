@@ -111,11 +111,13 @@ export default function CrmPage() {
 
           <Button
             color="primary"
-            className="gap-2 shadow-xs"
+            isIcon
+            className="size-9.5 rounded-lg shrink-0 shadow-xs"
             onClick={() => setShowNewLeadModal(true)}
+            title="Yeni Aday Ekle"
+            aria-label="Yeni Aday Ekle"
           >
-            <PlusIcon className="size-4" />
-            <span>Yeni Aday Ekle</span>
+            <PlusIcon className="size-5" />
           </Button>
         </div>
 

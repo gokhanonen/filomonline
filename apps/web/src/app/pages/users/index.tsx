@@ -50,13 +50,16 @@ export default function UsersPage() {
           </div>
           <Button
             color="primary"
+            isIcon
             onClick={() => {
               setEditing(null);
               setFormOpen(true);
             }}
-            className="gap-2"
+            className="size-9.5 rounded-lg shrink-0 shadow-xs"
+            title="Yeni Kullanıcı"
+            aria-label="Yeni Kullanıcı"
           >
-            <PlusIcon className="size-5" /> Yeni Kullanıcı
+            <PlusIcon className="size-5" />
           </Button>
         </div>
 

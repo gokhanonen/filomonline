@@ -92,13 +92,16 @@ export default function RentalsPage() {
           {canWrite && (
             <Button
               color="primary"
+              isIcon
               onClick={() => {
                 setEditing(null);
                 setFormOpen(true);
               }}
-              className="gap-2"
+              className="size-9.5 rounded-lg shrink-0 shadow-xs"
+              title="Yeni Sözleşme"
+              aria-label="Yeni Sözleşme"
             >
-              <PlusIcon className="size-5" /> Yeni Sözleşme
+              <PlusIcon className="size-5" />
             </Button>
           )}
         </div>

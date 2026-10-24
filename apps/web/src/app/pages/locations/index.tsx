@@ -75,13 +75,16 @@ export default function LocationsPage() {
             {canWrite && (
               <Button
                 color="primary"
+                isIcon
                 onClick={() => {
                   setEditing(null);
                   setFormOpen(true);
                 }}
-                className="gap-2"
+                className="size-9.5 rounded-lg shrink-0 shadow-xs"
+                title="Yeni Lokasyon"
+                aria-label="Yeni Lokasyon"
               >
-                <PlusIcon className="size-4" /> Yeni Lokasyon
+                <PlusIcon className="size-5" />
               </Button>
             )}
           </div>

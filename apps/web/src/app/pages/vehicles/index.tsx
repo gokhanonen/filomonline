@@ -131,13 +131,16 @@ export default function VehiclesPage() {
           {canWrite && (
             <Button
               color="primary"
+              isIcon
               onClick={() => {
                 setEditing(null);
                 setFormOpen(true);
               }}
-              className="gap-2 shrink-0 self-start sm:self-auto"
+              className="size-9.5 rounded-lg shrink-0 self-start sm:self-auto shadow-xs"
+              title="Yeni Araç"
+              aria-label="Yeni Araç"
             >
-              <PlusIcon className="size-5" /> Yeni Araç
+              <PlusIcon className="size-5" />
             </Button>
           )}
         </div>

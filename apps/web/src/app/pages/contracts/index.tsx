@@ -209,27 +209,33 @@ export default function ContractsPage() {
           </div>
 
           {canWrite && (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2">
               <Button
                 color="primary"
-                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                isIcon
+                className="size-9.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs shrink-0"
                 onClick={() => {
                   setEditingSalesId(undefined);
                   setSalesModalOpen(true);
                 }}
+                title="Yeni Satış Sözleşmesi"
+                aria-label="Yeni Satış Sözleşmesi"
               >
-                <PlusIcon className="size-4" /> Yeni Satış Sözleşmesi
+                <PlusIcon className="size-5" />
               </Button>
               <Button
                 color="primary"
                 variant="soft"
-                className="gap-2"
+                isIcon
+                className="size-9.5 rounded-lg shrink-0"
                 onClick={() => {
                   setEditingRentalId(undefined);
                   setRentalModalOpen(true);
                 }}
+                title="Yeni Kira Sözleşmesi"
+                aria-label="Yeni Kira Sözleşmesi"
               >
-                <PlusIcon className="size-4" /> Yeni Kira Sözleşmesi
+                <PlusIcon className="size-5" />
               </Button>
             </div>
           )}
@@ -637,10 +643,13 @@ export default function ContractsPage() {
               {canWrite && (
                 <Button
                   color="primary"
-                  className="gap-2"
+                  isIcon
+                  className="size-9.5 rounded-lg shrink-0 shadow-xs"
                   onClick={() => setTemplateModal({ open: true, template: null })}
+                  title="Yeni Şablon Ekle"
+                  aria-label="Yeni Şablon Ekle"
                 >
-                  <PlusIcon className="size-4" /> Yeni Şablon Ekle
+                  <PlusIcon className="size-5" />
                 </Button>
               )}
             </div>

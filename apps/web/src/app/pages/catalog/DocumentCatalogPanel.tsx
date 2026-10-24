@@ -356,10 +356,13 @@ export function DocumentCatalogPanel() {
           <Button
             type="button"
             color="primary"
+            isIcon
             onClick={() => openCategoryModal()}
-            className="gap-1 text-xs py-1.5"
+            className="size-9 rounded-lg shrink-0 shadow-xs"
+            title="Yeni Kategori"
+            aria-label="Yeni Kategori"
           >
-            <PlusIcon className="size-3.5" /> Yeni Kategori
+            <PlusIcon className="size-4.5" />
           </Button>
         </div>
       </div>

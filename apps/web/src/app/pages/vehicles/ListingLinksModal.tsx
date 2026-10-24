@@ -164,8 +164,16 @@ export function ListingLinksModal({ open, onClose, vehicle, sources, onChanged }
               onChange={(e) => setSourceId(e.target.value)}
               className="sm:w-48"
             />
-            <Button color="primary" onClick={add} disabled={!newUrl.trim() || saving} className="gap-1">
-              <PlusIcon className="size-5" /> Ekle
+            <Button
+              color="primary"
+              isIcon
+              onClick={add}
+              disabled={!newUrl.trim() || saving}
+              className="size-9.5 rounded-lg shrink-0 shadow-xs"
+              title="İlan Linki Ekle"
+              aria-label="İlan Linki Ekle"
+            >
+              <PlusIcon className="size-5" />
             </Button>
           </div>
           <p className="mt-2 text-xs text-gray-400">

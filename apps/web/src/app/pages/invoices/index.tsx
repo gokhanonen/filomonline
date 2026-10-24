@@ -140,13 +140,16 @@ export default function InvoicesPage() {
           {canWrite && (
             <Button
               color="primary"
+              isIcon
               onClick={() => {
                 setEditingInvoice(null);
                 setFormOpen(true);
               }}
-              className="gap-2"
+              className="size-9.5 rounded-lg shrink-0 shadow-xs"
+              title="Yeni Fatura"
+              aria-label="Yeni Fatura"
             >
-              <PlusIcon className="size-5" /> Yeni Fatura
+              <PlusIcon className="size-5" />
             </Button>
           )}
         </div>

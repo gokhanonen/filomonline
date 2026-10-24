@@ -102,13 +102,16 @@ export default function ProductsPage() {
             {canWrite && (
               <Button
                 color="primary"
+                isIcon
                 onClick={() => {
                   setEditing(null);
                   setFormOpen(true);
                 }}
-                className="gap-2"
+                className="size-9.5 rounded-lg shrink-0 shadow-xs"
+                title="Yeni Kayıt"
+                aria-label="Yeni Kayıt"
               >
-                <PlusIcon className="size-4" /> Yeni Kayıt
+                <PlusIcon className="size-5" />
               </Button>
             )}
           </div>
