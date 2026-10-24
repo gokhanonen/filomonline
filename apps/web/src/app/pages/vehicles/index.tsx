@@ -94,7 +94,7 @@ export default function VehiclesPage() {
     [debounced, statusFilter, refreshKey],
   );
 
-  const { items, total, loading, hasMore, loadMore, removeItem, updateItem } =
+  const { items, loading, hasMore, loadMore, removeItem, updateItem } =
     useInfiniteList<Vehicle>(fetchPage);
 
   const handleDelete = async (v: Vehicle) => {
@@ -111,10 +111,22 @@ export default function VehiclesPage() {
   return (
     <Page title="Operasyon">
       <div className="w-full px-(--margin-x) py-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">Operasyon</h2>
-            <p className="text-sm text-gray-400 dark:text-dark-300">{total} araç</p>
+        {/* Filtreler ve Eylemler */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1">
+            <Input
+              placeholder="Plaka, marka, model, şase ara..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              prefix={<MagnifyingGlassIcon className="size-5" />}
+              className="sm:max-w-xs"
+            />
+            <Select
+              data={statusFilterOptions}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as VehicleStatus | "")}
+              className="sm:max-w-48"
+            />
           </div>
           {canWrite && (
             <Button
@@ -123,28 +135,11 @@ export default function VehiclesPage() {
                 setEditing(null);
                 setFormOpen(true);
               }}
-              className="gap-2"
+              className="gap-2 shrink-0 self-start sm:self-auto"
             >
               <PlusIcon className="size-5" /> Yeni Araç
             </Button>
           )}
-        </div>
-
-        {/* Filtreler */}
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <Input
-            placeholder="Plaka, marka, model, şase ara..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            prefix={<MagnifyingGlassIcon className="size-5" />}
-            className="sm:max-w-xs"
-          />
-          <Select
-            data={statusFilterOptions}
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as VehicleStatus | "")}
-            className="sm:max-w-48"
-          />
         </div>
 
         {/* Kart ızgarası + infinite scroll */}
