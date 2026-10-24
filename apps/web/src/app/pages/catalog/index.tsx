@@ -13,6 +13,7 @@ import {
   XMarkIcon,
   SparklesIcon,
   MapPinIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
@@ -97,6 +98,13 @@ export default function CatalogPage() {
           >
             Evrak Tanımları
           </TabBtn>
+          <Link
+            to="/accounts"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-purple-500/50 transition shadow-xs"
+          >
+            <UserGroupIcon className="size-4 text-purple-500" />
+            Cariler
+          </Link>
           <Link
             to="/products"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-gray-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-xs font-semibold text-gray-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 hover:border-primary-500/50 transition shadow-xs"

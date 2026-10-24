@@ -17,7 +17,6 @@ export const navigation: NavigationTree[] = [
     childs: [
       { id: "dashboard", type: "item", path: "/dashboard", title: "Dashboard", icon: "dashboard" },
       { id: "vehicles", type: "item", path: "/vehicles", title: "Araç Operasyon", icon: "vehicles" },
-      { id: "accounts", type: "item", path: "/accounts", title: "Cariler", icon: "accounts" },
     ],
   },
   {
@@ -54,6 +53,13 @@ export const navigation: NavigationTree[] = [
             path: "/catalog",
             title: "Genel Tanımlar",
             icon: "catalog",
+          },
+          {
+            id: "accounts",
+            type: "item",
+            path: "/accounts",
+            title: "Cariler",
+            icon: "accounts",
           },
           {
             id: "products",
