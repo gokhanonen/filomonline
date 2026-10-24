@@ -109,11 +109,11 @@ export default function VehiclesPage() {
   };
 
   return (
-    <Page title="Araç Operasyon">
+    <Page title="Operasyon">
       <div className="w-full px-(--margin-x) py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">Araç Operasyon</h2>
+            <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">Operasyon</h2>
             <p className="text-sm text-gray-400 dark:text-dark-300">{total} araç</p>
           </div>
           {canWrite && (
