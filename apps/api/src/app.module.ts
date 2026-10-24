@@ -25,6 +25,7 @@ import { DocumentsModule } from "./documents/documents.module";
 import { RealtimeModule } from "./realtime/realtime.module";
 import { ActivityModule } from "./activity/activity.module";
 import { SettingsModule } from "./settings/settings.module";
+import { AiModule } from "./ai/ai.module";
 import { ChatModule } from "./chat/chat.module";
 import { AddressModule } from "./address/address.module";
 import { SearchModule } from "./search/search.module";
@@ -36,6 +37,7 @@ import { SearchModule } from "./search/search.module";
     RealtimeModule,
     ActivityModule,
     SettingsModule,
+    AiModule,
     ChatModule,
     AuthModule,
     TenantsModule,
