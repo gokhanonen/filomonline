@@ -14,7 +14,6 @@ import { useAuthContext } from "@/app/contexts/auth/context";
 import { Avatar, Button, Input } from "@/components/ui";
 import { uploadBlob, useFileUrl } from "@/services/storageService";
 import { updateProfile } from "@/services/userService";
-import { CompanySettingsCard } from "@/app/pages/settings/components/CompanySettingsCard";
 
 function initialsOf(name?: string | null): string {
   if (!name) return "?";
@@ -108,19 +107,19 @@ export default function General() {
 
 
   return (
-    <div className="w-full max-w-4xl space-y-8">
+    <div className="w-full max-w-4xl space-y-6">
       {/* BAŞLIK */}
       <div>
         <h4 className="text-xl font-bold text-gray-900 dark:text-dark-50">
           Genel Ayarlar & Profil
         </h4>
         <p className="mt-1 text-sm text-gray-500 dark:text-dark-200">
-          Kişisel profilinizi ve aktif firmanıza ait logo ve kurumsal bilgileri yönetin.
+          Kişisel profilinizi ve hesap bilgilerinizi bu ekrandan yönetebilirsiniz.
         </p>
       </div>
 
-      {/* 1. BÖLÜM: KULLANICI PROFİLİ VE AVATAR */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs dark:border-dark-600 dark:bg-dark-750">
+      {/* KULLANICI PROFİLİ VE AVATAR */}
+      <section className="space-y-6">
         <div className="flex items-center gap-3 pb-5 border-b border-gray-150 dark:border-dark-600">
           <div className="flex size-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-950/40 dark:text-primary-400">
             <UserIcon className="size-5" />
@@ -248,9 +247,6 @@ export default function General() {
           </div>
         </form>
       </section>
-
-      {/* 2. BÖLÜM: FİRMA BİLGİLERİ VE FİRMA LOGOSU */}
-      <CompanySettingsCard />
     </div>
   );
 }
