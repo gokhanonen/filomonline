@@ -210,33 +210,44 @@ export default function ContractsPage() {
 
           {canWrite && (
             <div className="flex items-center gap-2">
-              <Button
-                color="primary"
-                isIcon
-                className="size-9.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs shrink-0"
-                onClick={() => {
-                  setEditingSalesId(undefined);
-                  setSalesModalOpen(true);
-                }}
-                title="Yeni Satış Sözleşmesi"
-                aria-label="Yeni Satış Sözleşmesi"
-              >
-                <PlusIcon className="size-5" />
-              </Button>
-              <Button
-                color="primary"
-                variant="soft"
-                isIcon
-                className="size-9.5 rounded-lg shrink-0"
-                onClick={() => {
-                  setEditingRentalId(undefined);
-                  setRentalModalOpen(true);
-                }}
-                title="Yeni Kira Sözleşmesi"
-                aria-label="Yeni Kira Sözleşmesi"
-              >
-                <PlusIcon className="size-5" />
-              </Button>
+              {activeTab === "sales" && (
+                <Button
+                  color="primary"
+                  className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-2 shadow-xs shrink-0"
+                  onClick={() => {
+                    setEditingSalesId(undefined);
+                    setSalesModalOpen(true);
+                  }}
+                >
+                  <PlusIcon className="size-4" />
+                  <span>Yeni Satış Sözleşmesi</span>
+                </Button>
+              )}
+
+              {activeTab === "rental" && (
+                <Button
+                  color="primary"
+                  className="gap-2 bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold px-3.5 py-2 shadow-xs shrink-0"
+                  onClick={() => {
+                    setEditingRentalId(undefined);
+                    setRentalModalOpen(true);
+                  }}
+                >
+                  <PlusIcon className="size-4" />
+                  <span>Yeni Kira Sözleşmesi</span>
+                </Button>
+              )}
+
+              {activeTab === "templates" && (
+                <Button
+                  color="primary"
+                  className="gap-2 text-xs font-semibold px-3.5 py-2 shadow-xs shrink-0"
+                  onClick={() => setTemplateModal({ open: true, template: null })}
+                >
+                  <PlusIcon className="size-4" />
+                  <span>Yeni Şablon</span>
+                </Button>
+              )}
             </div>
           )}
         </div>
