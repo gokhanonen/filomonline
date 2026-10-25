@@ -123,6 +123,20 @@ const chart2config: ApexOptions = {
   },
 };
 
+function formatCompactTL(val?: number): string {
+  if (val === undefined || val === null || isNaN(val)) return "₺0";
+  if (val >= 1_000_000) {
+    return `₺${(val / 1_000_000).toLocaleString("tr-TR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
+  }
+  if (val >= 10_000) {
+    return `₺${Math.round(val / 1_000)}K`;
+  }
+  if (val >= 1_000) {
+    return `₺${(val / 1_000).toLocaleString("tr-TR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`;
+  }
+  return `₺${val.toLocaleString("tr-TR")}`;
+}
+
 interface ChartSeries {
   name: string;
   data: number[];
@@ -130,36 +144,78 @@ interface ChartSeries {
 
 interface WidgetsProps {
   close?: () => void;
+  summary?: ReportSummary | null;
 }
 
-export function Widgets({ close }: WidgetsProps) {
-  const [summary, setSummary] = useState<ReportSummary | null>(null);
+export function Widgets({ close, summary: propSummary }: WidgetsProps) {
+  const [summary, setSummary] = useState<ReportSummary | null>(propSummary ?? null);
 
   useEffect(() => {
+    if (propSummary) {
+      setSummary(propSummary);
+      return;
+    }
     getSummary()
       .then(setSummary)
       .catch(() => void 0);
-  }, []);
+  }, [propSummary]);
 
   const totalActive = (summary?.vehicles.stokta ?? 0) + (summary?.vehicles.kiralamada ?? 0);
   const occupancyRate = totalActive > 0
     ? Math.round(((summary?.vehicles.kiralamada ?? 0) / totalActive) * 100)
-    : 65;
+    : 29;
   const stockRate = 100 - occupancyRate;
 
+  // Kira Gelirleri
+  const currentRevenue = summary?.trends?.currentRevenueTL ?? summary?.aktifKiraGeliri ?? 184000;
+  const revGrowth = summary?.trends?.revenueGrowth ?? 4;
+  const revGrowthFormatted = `${revGrowth >= 0 ? "+" : ""}${revGrowth}%`;
   const seriesRevenue: ChartSeries[] = [
     {
-      name: "Gelir",
-      data: [180, 240, 210, 310, 290, 385],
+      name: "Kira Geliri",
+      data: summary?.trends?.revenueSeries ?? [132, 145, 158, 167, 177, 184],
     },
   ];
 
+  // Masraflar
+  const currentExpense = summary?.trends?.currentMonthlyExpenseTL ?? 18240;
+  const expGrowth = summary?.trends?.expenseGrowth ?? -3.8;
+  const expGrowthFormatted = `${expGrowth >= 0 ? "+" : ""}${expGrowth}%`;
+  const isExpGood = expGrowth <= 0;
   const seriesExpense: ChartSeries[] = [
     {
       name: "Masraf",
-      data: [120, 110, 145, 98, 112, 94],
+      data: summary?.trends?.expenseSeries ?? [16, 19, 17, 20, 18, 18],
     },
   ];
+
+  const chart1Options: ApexOptions = {
+    ...chart1config,
+    xaxis: {
+      ...chart1config.xaxis,
+      categories: summary?.trends?.months ?? ["May", "Haz", "Tem", "Ağu", "Eyl", "Eki"],
+    },
+    tooltip: {
+      ...chart1config.tooltip,
+      y: {
+        formatter: (val: number) => `₺${val}K / ay`,
+      },
+    },
+  };
+
+  const chart2Options: ApexOptions = {
+    ...chart2config,
+    xaxis: {
+      ...chart2config.xaxis,
+      categories: summary?.trends?.months ?? ["May", "Haz", "Tem", "Ağu", "Eyl", "Eki"],
+    },
+    tooltip: {
+      ...chart2config.tooltip,
+      y: {
+        formatter: (val: number) => `₺${val}K / ay`,
+      },
+    },
+  };
 
   return (
     <>
@@ -170,7 +226,7 @@ export function Widgets({ close }: WidgetsProps) {
             <div className="flex items-center justify-between space-x-1">
               <p>
                 <span className="text-lg font-bold text-gray-800 dark:text-dark-100">
-                  {summary ? summary.vehicles.kiralamada : 8}
+                  {summary ? summary.vehicles.kiralamada : 6}
                 </span>{" "}
                 <span className="text-xs text-gray-500">araç</span>
               </p>
@@ -204,7 +260,7 @@ export function Widgets({ close }: WidgetsProps) {
             <div className="flex items-center justify-between space-x-1">
               <p>
                 <span className="text-lg font-bold text-gray-800 dark:text-dark-100">
-                  {summary ? summary.vehicles.stokta : 14}
+                  {summary ? summary.vehicles.stokta : 15}
                 </span>{" "}
                 <span className="text-xs text-gray-500">araç</span>
               </p>
@@ -242,7 +298,7 @@ export function Widgets({ close }: WidgetsProps) {
         </div>
         <div className="mt-2.5 grid grid-cols-2 gap-3">
           {/* Trend 1: Kira Geliri */}
-          <Link to="/invoices" onClick={close} className="block transition-transform active:scale-98">
+          <Link to="/contracts" onClick={close} className="block transition-transform active:scale-98">
             <Box className="rounded-lg bg-gray-100 p-2.5 hover:bg-gray-150 dark:bg-dark-600 dark:hover:bg-dark-550 transition-colors">
               <div className="flex items-center gap-2">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
@@ -261,17 +317,17 @@ export function Widgets({ close }: WidgetsProps) {
                     series={seriesRevenue}
                     type="area"
                     height="85"
-                    options={chart1config}
+                    options={chart1Options}
                   />
                 </Delayed>
               </div>
 
               <div className="mt-1.5 flex items-center justify-between">
                 <p className="text-xs font-bold text-gray-800 dark:text-dark-100">
-                  ₺385K
+                  {formatCompactTL(currentRevenue)}
                 </p>
                 <p className="text-[10px] font-semibold text-success dark:text-success-light">
-                  +12.4%
+                  {revGrowthFormatted}
                 </p>
               </div>
             </Box>
@@ -297,17 +353,17 @@ export function Widgets({ close }: WidgetsProps) {
                     series={seriesExpense}
                     type="area"
                     height="85"
-                    options={chart2config}
+                    options={chart2Options}
                   />
                 </Delayed>
               </div>
 
               <div className="mt-1.5 flex items-center justify-between">
                 <p className="text-xs font-bold text-gray-800 dark:text-dark-100">
-                  ₺94K
+                  {formatCompactTL(currentExpense)}
                 </p>
-                <p className="text-[10px] font-semibold text-success dark:text-success-light">
-                  -4.2%
+                <p className={`text-[10px] font-semibold ${isExpGood ? "text-success dark:text-success-light" : "text-amber-600 dark:text-amber-400"}`}>
+                  {expGrowthFormatted}
                 </p>
               </div>
             </Box>

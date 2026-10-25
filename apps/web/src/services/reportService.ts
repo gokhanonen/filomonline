@@ -8,6 +8,22 @@ export interface ReportSummary {
   brutKar: number;
   toplamMasraf: number;
   cariSayisi: number;
+  aktifKiraGeliri?: number;
+  aktifKiraAdedi?: number;
+  documentCount?: number;
+  photoCount?: number;
+  storageGB?: number;
+  storageQuotaGB?: number;
+  trends?: {
+    months: string[];
+    revenueSeries: number[];
+    expenseSeries: number[];
+    currentRevenueTL: number;
+    currentExpenseTL: number;
+    currentMonthlyExpenseTL?: number;
+    revenueGrowth: number;
+    expenseGrowth: number;
+  };
 }
 
 export interface VehicleProfitabilityItem {

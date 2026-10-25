@@ -7,9 +7,11 @@ import {
 } from "@headlessui/react";
 
 // Local Imports
+import { useEffect, useState } from "react";
 import { Button, ScrollShadow } from "@/components/ui";
 import { useDisclosure } from "@/hooks";
 import VerticalSliderIcon from "@/assets/dualicons/vertical-slider.svg?react";
+import { getSummary, type ReportSummary } from "@/services/reportService";
 import { Header } from "./Header";
 import { Search } from "./Search";
 import { BankingCard } from "./BankingCard";
@@ -44,6 +46,16 @@ interface RightSidebarContentProps {
 }
 
 function RightSidebarContent({ isOpen, close }: RightSidebarContentProps) {
+  const [summary, setSummary] = useState<ReportSummary | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      getSummary()
+        .then(setSummary)
+        .catch(() => void 0);
+    }
+  }, [isOpen]);
+
   return (
     <Transition show={isOpen}>
       <Dialog open={true} onClose={close} static autoFocus>
@@ -74,11 +86,11 @@ function RightSidebarContent({ isOpen, close }: RightSidebarContentProps) {
             className="hide-scrollbar overflow-y-auto overscroll-contain pb-5"
           >
             <Search close={close} />
-            <BankingCard close={close} />
+            <BankingCard close={close} summary={summary} />
             <Apps close={close} />
-            <Widgets close={close} />
+            <Widgets close={close} summary={summary} />
             <News close={close} />
-            <Upgrade close={close} />
+            <Upgrade close={close} summary={summary} />
           </ScrollShadow>
         </TransitionChild>
       </Dialog>

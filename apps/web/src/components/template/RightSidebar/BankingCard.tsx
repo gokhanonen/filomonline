@@ -24,18 +24,23 @@ function formatTL(val?: number): string {
 
 interface BankingCardProps {
   close?: () => void;
+  summary?: ReportSummary | null;
 }
 
-export function BankingCard({ close }: BankingCardProps) {
+export function BankingCard({ close, summary: propSummary }: BankingCardProps) {
   const { direction } = useLocaleContext();
   const carouselRef = useRef<HTMLElement | null>(null);
-  const [summary, setSummary] = useState<ReportSummary | null>(null);
+  const [summary, setSummary] = useState<ReportSummary | null>(propSummary ?? null);
 
   useEffect(() => {
+    if (propSummary) {
+      setSummary(propSummary);
+      return;
+    }
     getSummary()
       .then(setSummary)
       .catch(() => void 0);
-  }, []);
+  }, [propSummary]);
 
   useLayoutEffect(() => {
     if (!carouselRef.current) return;
