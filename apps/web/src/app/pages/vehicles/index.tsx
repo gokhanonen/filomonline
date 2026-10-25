@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
-import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { useSearchParams, useNavigate } from "react-router";
+import { MagnifyingGlassIcon, PlusIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
 import { Page } from "@/components/shared/Page";
@@ -43,12 +43,41 @@ export default function VehiclesPage() {
   const canWrite = can("vehicles.write");
   const canDelete = can("vehicles.delete");
   const canRental = can("rentals.write") || canWrite;
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const urlSearch = searchParams.get("search") || "";
+  const minPriceParam = searchParams.get("minPrice");
+  const maxPriceParam = searchParams.get("maxPrice");
+  const minYearParam = searchParams.get("minYear");
+  const transmissionParam = searchParams.get("transmission");
+  const statusParam = searchParams.get("status");
+
+  const hasAiFilter = Boolean(minPriceParam || maxPriceParam || minYearParam || transmissionParam);
 
   const [search, setSearch] = useState(urlSearch);
   const [debounced, setDebounced] = useState(urlSearch);
   const [statusFilter, setStatusFilter] = useState<VehicleStatus | "">("");
+
+  useEffect(() => {
+    if (statusParam) {
+      setStatusFilter(statusParam as VehicleStatus);
+    }
+  }, [statusParam]);
+
+  useEffect(() => {
+    if (searchParams.get("openNew") === "1") {
+      const prefillStr = sessionStorage.getItem("filomonline_ai_vehicle_prefill");
+      if (prefillStr) {
+        try {
+          const parsed = JSON.parse(prefillStr);
+          setCloningVehicle(parsed as unknown as Vehicle);
+          sessionStorage.removeItem("filomonline_ai_vehicle_prefill");
+        } catch {}
+      }
+      setEditing(null);
+      setFormOpen(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const s = searchParams.get("search");
@@ -96,6 +125,15 @@ export default function VehiclesPage() {
 
   const { items, loading, hasMore, loadMore, removeItem, updateItem } =
     useInfiniteList<Vehicle>(fetchPage);
+
+  const displayedItems = items.filter((v) => {
+    if (minYearParam && v.year && v.year < parseInt(minYearParam, 10)) return false;
+    if (transmissionParam && v.transmission && v.transmission.toLowerCase() !== transmissionParam.toLowerCase()) return false;
+    const price = Number(v.listPrice || v.purchasePrice || 0);
+    if (minPriceParam && price < parseFloat(minPriceParam)) return false;
+    if (maxPriceParam && price > parseFloat(maxPriceParam)) return false;
+    return true;
+  });
 
   const handleDelete = async (v: Vehicle) => {
     if (!window.confirm(`${v.plate} pasifleştirilsin mi?`)) return;
@@ -145,12 +183,38 @@ export default function VehiclesPage() {
           )}
         </div>
 
+        {/* AI Filtreleme Aktif Bildirim Bandı */}
+        {hasAiFilter && (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary-200 bg-primary-50/80 px-4 py-2.5 text-xs text-primary-900 shadow-2xs dark:border-primary-900/60 dark:bg-primary-950/40 dark:text-primary-200">
+            <div className="flex items-center gap-2">
+              <SparklesIcon className="size-4.5 text-primary-600 dark:text-primary-400 shrink-0" />
+              <span>
+                <strong>Yapay Zeka Filtresi:</strong>{" "}
+                {[
+                  minYearParam && `${minYearParam}+ Model`,
+                  transmissionParam && (transmissionParam.toUpperCase() === "OTOMATIK" ? "Otomatik Vites" : "Manuel"),
+                  minPriceParam && maxPriceParam && `${Number(minPriceParam).toLocaleString("tr-TR")} ₺ - ${Number(maxPriceParam).toLocaleString("tr-TR")} ₺`,
+                  "Stoktaki Araçlar",
+                ].filter(Boolean).join(" • ")}{" "}
+                ({displayedItems.length} araç listelendi)
+              </span>
+            </div>
+            <Button
+              variant="flat"
+              onClick={() => navigate("/vehicles")}
+              className="h-6.5 rounded-md px-2.5 text-[11px] font-semibold text-primary-700 hover:bg-primary-100 dark:text-primary-300 dark:hover:bg-primary-900/50"
+            >
+              Filtreyi Temizle
+            </Button>
+          </div>
+        )}
+
         {/* Kart ızgarası + infinite scroll */}
-        {items.length === 0 && !loading ? (
+        {displayedItems.length === 0 && !loading ? (
           <div className="py-16 text-center text-gray-400 dark:text-dark-300">Araç bulunamadı.</div>
         ) : (
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {items.map((v) => (
+            {displayedItems.map((v) => (
               <VehicleCard
                 key={v.id}
                 vehicle={v}

@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { SuperAdminGuard } from "../tenancy/super-admin.guard";
-import { ClaudeService } from "./claude.service";
+import { ClaudeService, AiAssistInput } from "./claude.service";
 
 class UpdateClaudeConfigDto {
   apiKey?: string;
@@ -26,6 +26,15 @@ class ClaudeQueryDto {
   model?: string;
   maxTokens?: number;
   temperature?: number;
+}
+
+class AiAssistDto implements AiAssistInput {
+  prompt?: string;
+  image?: {
+    mediaType: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
+    base64Data: string;
+  };
+  docTypeHint?: "EHLIYET" | "RUHSAT" | "AUTO";
 }
 
 @Controller()
@@ -63,5 +72,11 @@ export class AiController {
       maxTokens: dto.maxTokens,
       temperature: dto.temperature,
     });
+  }
+
+  /** Filomonline Akıllı Asistan: Metin, Ses veya Görseli (Ehliyet, Ruhsat) analiz edip aksiyon üretir */
+  @Post("ai/assist")
+  assist(@Body() dto: AiAssistDto) {
+    return this.claude.assist(dto);
   }
 }

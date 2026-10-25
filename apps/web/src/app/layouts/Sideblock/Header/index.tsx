@@ -12,6 +12,7 @@ import { SidebarToggleBtn } from "@/components/shared/SidebarToggleBtn";
 import { useBreakpointsContext } from "@/app/contexts/breakpoint/context";
 import { Profile } from "../Profile";
 import { Search } from "@/components/template/Search";
+import { AiAssistantButton } from "@/components/template/AiAssistant";
 import { useThemeContext } from "@/app/contexts/theme/context";
 
 // ----------------------------------------------------------------------
@@ -76,6 +77,7 @@ export function Header() {
             )}
           />
         </div>
+        <AiAssistantButton />
         <Notifications />
         <RightSidebar />
         <LanguageSelector />

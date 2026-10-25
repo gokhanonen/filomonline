@@ -30,13 +30,28 @@ export function NewLeadModal({ open, onClose, onSuccess }: Props) {
 
   useEffect(() => {
     if (open) {
-      setFullName("");
-      setPhone("");
+      // AI ön-doldurma verisi kontrolü
+      const aiPrefillStr = sessionStorage.getItem("filomonline_ai_lead_prefill");
+      let initialName = "";
+      let initialPhone = "";
+      let initialNotes = "";
+      if (aiPrefillStr) {
+        try {
+          const parsed = JSON.parse(aiPrefillStr);
+          if (parsed.fullName) initialName = parsed.fullName;
+          if (parsed.phone) initialPhone = parsed.phone;
+          if (parsed.notes) initialNotes = parsed.notes;
+          sessionStorage.removeItem("filomonline_ai_lead_prefill");
+        } catch {}
+      }
+
+      setFullName(initialName);
+      setPhone(initialPhone);
       setEmail("");
       setSource("WALK_IN");
       setStatus("NEW");
       setBudget("");
-      setNotes("");
+      setNotes(initialNotes);
       setSelectedVehicleIds([]);
 
       // Stoktaki araçları yükle

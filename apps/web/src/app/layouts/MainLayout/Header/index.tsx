@@ -8,6 +8,7 @@ import { useThemeContext } from "@/app/contexts/theme/context";
 import { Search } from "@/components/template/Search";
 import { Button } from "@/components/ui";
 import { ActivityBell } from "@/components/shared/ActivityBell";
+import { AiAssistantButton } from "@/components/template/AiAssistant";
 import { RightSidebar } from "@/components/template/RightSidebar";
 import { SidebarToggleBtn } from "@/components/shared/SidebarToggleBtn";
 import { CompanySwitcher } from "@/components/shared/CompanySwitcher";
@@ -75,6 +76,7 @@ export function Header() {
           )}
         />
         <CompanySwitcher />
+        <AiAssistantButton />
         <ActivityBell />
         <RightSidebar />
       </div>

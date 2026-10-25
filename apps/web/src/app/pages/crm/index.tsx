@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "react-router";
 import {
   PlusIcon,
   MagnifyingGlassIcon,
@@ -52,9 +53,17 @@ export default function CrmPage() {
     }
   };
 
+  const [searchParams] = useSearchParams();
+
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("openNew") === "1") {
+      setShowNewLeadModal(true);
+    }
+  }, [searchParams]);
 
   // İstemci tarafı arama & filtreleme
   const filteredLeads = useMemo(() => {
