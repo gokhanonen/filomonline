@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router";
 import {
   PlusIcon,
   MagnifyingGlassIcon,
+  Squares2X2Icon,
   ViewColumnsIcon,
   ListBulletIcon,
   UserGroupIcon,
@@ -19,6 +20,7 @@ import {
   listLeads,
   type Lead,
 } from "@/services/crmService";
+import { LeadCardGrid } from "./LeadCardGrid";
 import { KanbanView } from "./KanbanView";
 import { TableView } from "./TableView";
 import { NewLeadModal } from "./NewLeadModal";
@@ -29,8 +31,8 @@ export default function CrmPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Görünüm: "kanban" | "table"
-  const [viewMode, setViewMode] = useState<"kanban" | "table">("kanban");
+  // Görünüm: "grid" (4'lü Kart Izgarası) | "kanban" | "table"
+  const [viewMode, setViewMode] = useState<"grid" | "kanban" | "table">("grid");
 
   // Filtreler
   const [search, setSearch] = useState("");
@@ -228,8 +230,21 @@ export default function CrmPage() {
             />
           </div>
 
-          {/* Görünüm Değiştirici: Kanban vs Liste */}
+          {/* Görünüm Değiştirici: 4'lü Kart Izgarası vs Kanban vs Liste */}
           <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1 dark:bg-dark-800">
+            <button
+              type="button"
+              onClick={() => setViewMode("grid")}
+              className={clsx(
+                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
+                viewMode === "grid"
+                  ? "bg-white text-gray-900 shadow-xs dark:bg-dark-700 dark:text-white"
+                  : "text-gray-500 hover:text-gray-900 dark:text-dark-300 dark:hover:text-white",
+              )}
+            >
+              <Squares2X2Icon className="size-4" />
+              <span>Kart Görünümü (4'lü)</span>
+            </button>
             <button
               type="button"
               onClick={() => setViewMode("kanban")}
@@ -264,6 +279,12 @@ export default function CrmPage() {
           <div className="flex justify-center py-24">
             <Spinner className="size-8" />
           </div>
+        ) : viewMode === "grid" ? (
+          <LeadCardGrid
+            leads={filteredLeads}
+            onSelectLead={(id) => setSelectedLeadId(id)}
+            onRefresh={loadData}
+          />
         ) : viewMode === "kanban" ? (
           <KanbanView
             leads={filteredLeads}
