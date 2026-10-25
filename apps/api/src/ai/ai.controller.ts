@@ -6,37 +6,43 @@ import {
   Put,
   UseGuards,
 } from "@nestjs/common";
+import { IsOptional, IsString, IsNumber, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
 import { SuperAdminGuard } from "../tenancy/super-admin.guard";
+import { SkipCompany } from "../tenancy/skip-company.decorator";
 import { ClaudeService, AiAssistInput } from "./claude.service";
 
 class UpdateClaudeConfigDto {
-  apiKey?: string;
-  model?: string;
-  maxTokens?: number;
-  temperature?: number;
+  @IsOptional() @IsString() apiKey?: string;
+  @IsOptional() @IsString() model?: string;
+  @IsOptional() @IsNumber() maxTokens?: number;
+  @IsOptional() @IsNumber() temperature?: number;
 }
 
 class TestClaudeDto {
-  prompt?: string;
+  @IsOptional() @IsString() prompt?: string;
 }
 
 class ClaudeQueryDto {
-  prompt!: string;
-  system?: string;
-  model?: string;
-  maxTokens?: number;
-  temperature?: number;
+  @IsString() prompt!: string;
+  @IsOptional() @IsString() system?: string;
+  @IsOptional() @IsString() model?: string;
+  @IsOptional() @IsNumber() maxTokens?: number;
+  @IsOptional() @IsNumber() temperature?: number;
+}
+
+class AiImageDto {
+  @IsString() mediaType!: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
+  @IsString() base64Data!: string;
 }
 
 class AiAssistDto implements AiAssistInput {
-  prompt?: string;
-  image?: {
-    mediaType: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
-    base64Data: string;
-  };
-  docTypeHint?: "EHLIYET" | "RUHSAT" | "AUTO";
+  @IsOptional() @IsString() prompt?: string;
+  @IsOptional() @ValidateNested() @Type(() => AiImageDto) image?: AiImageDto;
+  @IsOptional() @IsString() docTypeHint?: "EHLIYET" | "RUHSAT" | "AUTO";
 }
 
+@SkipCompany()
 @Controller()
 export class AiController {
   constructor(private readonly claude: ClaudeService) {}
