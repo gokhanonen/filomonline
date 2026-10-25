@@ -69,6 +69,7 @@ export class CrmService {
       where,
       include: {
         interestedVehicles: {
+          where: { vehicle: { deletedAt: null } },
           include: {
             vehicle: {
               select: {
@@ -80,6 +81,7 @@ export class CrmService {
                 km: true,
                 saleAmount: true,
                 photos: {
+                  where: { deletedAt: null },
                   take: 1,
                   select: { url: true, thumbUrl: true },
                 },
@@ -89,8 +91,8 @@ export class CrmService {
         },
         _count: {
           select: {
-            testDrives: true,
-            quotes: true,
+            testDrives: { where: { deletedAt: null } },
+            quotes: { where: { deletedAt: null } },
             activities: true,
           },
         },
@@ -104,6 +106,7 @@ export class CrmService {
       where: { id, companyId },
       include: {
         interestedVehicles: {
+          where: { vehicle: { deletedAt: null } },
           include: {
             vehicle: {
               select: {
@@ -118,6 +121,7 @@ export class CrmService {
                 saleAmount: true,
                 status: true,
                 photos: {
+                  where: { deletedAt: null },
                   take: 3,
                   select: { id: true, url: true, thumbUrl: true, category: true },
                 },
@@ -126,6 +130,7 @@ export class CrmService {
           },
         },
         testDrives: {
+          where: { deletedAt: null },
           include: {
             vehicle: {
               select: {
@@ -140,6 +145,7 @@ export class CrmService {
           orderBy: { scheduledAt: "desc" },
         },
         quotes: {
+          where: { deletedAt: null },
           include: {
             vehicle: {
               select: {
@@ -198,6 +204,7 @@ export class CrmService {
       },
       include: {
         interestedVehicles: {
+          where: { vehicle: { deletedAt: null } },
           include: {
             vehicle: {
               select: {
@@ -274,6 +281,7 @@ export class CrmService {
       data,
       include: {
         interestedVehicles: {
+          where: { vehicle: { deletedAt: null } },
           include: {
             vehicle: {
               select: {
@@ -291,9 +299,16 @@ export class CrmService {
     return updated;
   }
 
+  /** Silme yok: potansiyel, teklifleri ve deneme sürüşleri gizlenir; teklif linkleri kapanır */
   async deleteLead(companyId: string, id: string) {
     await this.getLead(companyId, id);
-    await this.prisma.lead.delete({ where: { id } });
+    const now = new Date();
+    await this.prisma.$transaction([
+      this.prisma.leadQuote.updateMany({ where: { leadId: id, companyId, shareToken: { not: null }, shareRevokedAt: null }, data: { shareRevokedAt: now } }),
+      this.prisma.leadQuote.updateMany({ where: { leadId: id, companyId }, data: { deletedAt: now } }),
+      this.prisma.leadTestDrive.updateMany({ where: { leadId: id, companyId }, data: { deletedAt: now } }),
+      this.prisma.lead.update({ where: { id }, data: { deletedAt: now } }),
+    ]);
     return { success: true };
   }
 
@@ -352,7 +367,7 @@ export class CrmService {
     companyId: string,
     q?: { status?: TestDriveStatus; leadId?: string; vehicleId?: string },
   ) {
-    const where: any = { companyId };
+    const where: any = { companyId, deletedAt: null };
     if (q?.status) where.status = q.status;
     if (q?.leadId) where.leadId = q.leadId;
     if (q?.vehicleId) where.vehicleId = q.vehicleId;
@@ -461,7 +476,7 @@ export class CrmService {
   ) {
     const userName = await this.getUserName(userId);
     const existing = await this.prisma.leadTestDrive.findFirst({
-      where: { id, companyId },
+      where: { id, companyId, deletedAt: null },
       include: { vehicle: true, lead: true },
     });
     if (!existing) {
@@ -481,6 +496,23 @@ export class CrmService {
       },
     });
 
+    if (
+      (dto.status === TestDriveStatus.NO_SHOW || dto.status === TestDriveStatus.CANCELLED) &&
+      existing.status !== dto.status
+    ) {
+      const noShow = dto.status === TestDriveStatus.NO_SHOW;
+      await this.prisma.leadActivity.create({
+        data: {
+          leadId: existing.leadId,
+          userId,
+          userName,
+          type: "TEST_DRIVE",
+          title: noShow ? "Deneme Sürüşüne Gelmedi" : "Deneme Sürüşü İptal Edildi",
+          content: `${existing.vehicle.plate} · ${existing.scheduledAt.toLocaleString("tr-TR", { dateStyle: "medium", timeStyle: "short" })}${dto.feedbackNotes ? ` — ${dto.feedbackNotes}` : ""}`,
+        },
+      });
+    }
+
     if (dto.status === TestDriveStatus.COMPLETED && existing.status !== TestDriveStatus.COMPLETED) {
       await this.prisma.leadActivity.create({
         data: {
@@ -497,12 +529,26 @@ export class CrmService {
     return updated;
   }
 
-  async deleteTestDrive(companyId: string, id: string) {
+  /** Silme yok: kayıt gizlenir (deletedAt), geçmişte iz kalır */
+  async deleteTestDrive(companyId: string, id: string, userId?: string) {
     const existing = await this.prisma.leadTestDrive.findFirst({
-      where: { id, companyId },
+      where: { id, companyId, deletedAt: null },
+      include: { vehicle: { select: { plate: true } } },
     });
     if (!existing) throw new NotFoundException("Randevu bulunamadı.");
-    await this.prisma.leadTestDrive.delete({ where: { id } });
+    await this.prisma.$transaction([
+      this.prisma.leadTestDrive.update({ where: { id }, data: { deletedAt: new Date(), deletedById: userId ?? null } }),
+      this.prisma.leadActivity.create({
+        data: {
+          leadId: existing.leadId,
+          userId,
+          userName: await this.getUserName(userId),
+          type: "NOTE",
+          title: "Deneme Sürüşü Kaydı Silindi",
+          content: `${existing.vehicle.plate} · ${existing.scheduledAt.toLocaleString("tr-TR", { dateStyle: "medium", timeStyle: "short" })}`,
+        },
+      }),
+    ]);
     return { success: true };
   }
 
@@ -511,7 +557,7 @@ export class CrmService {
   // =========================================================================
 
   async listQuotes(companyId: string, q?: { status?: QuoteStatus; leadId?: string }) {
-    const where: any = { companyId };
+    const where: any = { companyId, deletedAt: null };
     if (q?.status) where.status = q.status;
     if (q?.leadId) where.leadId = q.leadId;
 
@@ -602,7 +648,7 @@ export class CrmService {
   ) {
     const userName = await this.getUserName(userId);
     const existing = await this.prisma.leadQuote.findFirst({
-      where: { id, companyId },
+      where: { id, companyId, deletedAt: null },
       include: { lead: true, vehicle: true },
     });
     if (!existing) throw new NotFoundException("Teklif bulunamadı.");
@@ -637,12 +683,29 @@ export class CrmService {
     return updated;
   }
 
-  async deleteQuote(companyId: string, id: string) {
+  /** Silme yok: teklif gizlenir (deletedAt) ve müşteri linki kapanır */
+  async deleteQuote(companyId: string, id: string, userId?: string) {
     const existing = await this.prisma.leadQuote.findFirst({
-      where: { id, companyId },
+      where: { id, companyId, deletedAt: null },
     });
     if (!existing) throw new NotFoundException("Teklif bulunamadı.");
-    await this.prisma.leadQuote.delete({ where: { id } });
+    const now = new Date();
+    await this.prisma.$transaction([
+      this.prisma.leadQuote.update({
+        where: { id },
+        data: { deletedAt: now, deletedById: userId ?? null, ...(existing.shareToken && !existing.shareRevokedAt ? { shareRevokedAt: now } : {}) },
+      }),
+      this.prisma.leadActivity.create({
+        data: {
+          leadId: existing.leadId,
+          userId,
+          userName: await this.getUserName(userId),
+          type: "NOTE",
+          title: `Teklif Silindi (${existing.quoteNumber})`,
+          content: `${Number(existing.offeredPrice).toLocaleString("tr-TR")} TL teklif kaldırıldı.`,
+        },
+      }),
+    ]);
     return { success: true };
   }
 
@@ -763,7 +826,7 @@ export class CrmService {
     let quoteInfo = "";
     if (dto.quoteId) {
       const q = await this.prisma.leadQuote.findFirst({
-        where: { id: dto.quoteId, companyId },
+        where: { id: dto.quoteId, companyId, deletedAt: null },
       });
       if (q) {
         quoteInfo = `Teklif Edilen Fiyat: ${Number(q.offeredPrice).toLocaleString("tr-TR")} TL, Ödeme Şekli: ${q.paymentType || "Nakit/Görüşülecek"}`;

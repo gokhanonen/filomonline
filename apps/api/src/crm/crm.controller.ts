@@ -7,10 +7,8 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { CompanyId } from "../tenancy/company-id.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { AuthUser } from "../auth/auth.types";
@@ -31,7 +29,6 @@ import { QuoteStatus, TestDriveStatus } from "@prisma/client";
 
 @ApiTags("crm")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller("crm")
 export class CrmController {
   constructor(private readonly crm: CrmService) {}
@@ -150,8 +147,8 @@ export class CrmController {
   }
 
   @Delete("test-drives/:id")
-  deleteTestDrive(@CompanyId() companyId: string, @Param("id") id: string) {
-    return this.crm.deleteTestDrive(companyId, id);
+  deleteTestDrive(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Param("id") id: string) {
+    return this.crm.deleteTestDrive(companyId, id, user.id);
   }
 
   // --- QUOTES ---
@@ -185,7 +182,7 @@ export class CrmController {
   }
 
   @Delete("quotes/:id")
-  deleteQuote(@CompanyId() companyId: string, @Param("id") id: string) {
-    return this.crm.deleteQuote(companyId, id);
+  deleteQuote(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Param("id") id: string) {
+    return this.crm.deleteQuote(companyId, id, user.id);
   }
 }

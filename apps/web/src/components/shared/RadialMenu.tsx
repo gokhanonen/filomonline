@@ -21,6 +21,9 @@ interface Props {
 
 const RADIUS = 125;
 const BTN = 56; // buton çapı
+const GAP = 8; // butonlar arası boşluk
+/** Buton sayısı arttıkça halka büyür (butonlar üst üste binmez) */
+const radiusFor = (n: number) => Math.max(RADIUS, (n * (BTN + GAP)) / (2 * Math.PI));
 
 /**
  * Oyun envanteri tarzı radial (dairesel) aksiyon menüsü.
@@ -45,13 +48,13 @@ export function RadialMenu({
       const r = anchorRef.current.getBoundingClientRect();
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const margin = RADIUS + BTN;
+      const margin = radiusFor(actions.length) + BTN;
       setCenter({
         x: Math.min(Math.max(r.left + r.width / 2, margin), vw - margin),
         y: Math.min(Math.max(r.top + r.height / 2, margin), vh - margin),
       });
     }
-  }, [open, anchorRef]);
+  }, [open, anchorRef, actions.length]);
 
   useEffect(() => {
     if (open) {
@@ -71,6 +74,7 @@ export function RadialMenu({
 
   if (!open || !center) return null;
   const n = actions.length;
+  const radius = radiusFor(n);
 
   return createPortal(
     // Şeffaf katman: sayfa görünür kalır, sadece dışarı tıklamayı yakalar.
@@ -139,8 +143,8 @@ export function RadialMenu({
 
       {actions.map((a, i) => {
         const angle = (i / n) * 2 * Math.PI - Math.PI / 2; // tepeden başla
-        const dx = spread ? Math.cos(angle) * RADIUS : 0;
-        const dy = spread ? Math.sin(angle) * RADIUS : 0;
+        const dx = spread ? Math.cos(angle) * radius : 0;
+        const dy = spread ? Math.sin(angle) * radius : 0;
         const Icon = a.icon;
         const isHovered = hoveredAction === a;
         return (

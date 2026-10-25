@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   SparklesIcon,
@@ -11,12 +11,14 @@ import {
   ArrowTopRightOnSquareIcon,
   StarIcon,
   ClipboardDocumentCheckIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon as StarSolid } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 
 import { Button, Card, Input, Select, Spinner, Tag, Badge, Textarea } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
+import { SearchableSelect } from "@/components/shared/SearchableSelect";
 import {
   getLead,
   updateLead,
@@ -30,9 +32,12 @@ import {
   addLeadActivity,
   convertLeadToCustomer,
   generateAiQuoteMessage,
+  deleteTestDrive,
+  deleteQuote,
   type Lead,
   type LeadStatus,
   type QuoteStatus,
+  type TestDriveStatus,
 } from "@/services/crmService";
 import { listVehicles } from "@/services/vehicleService";
 import {
@@ -59,6 +64,36 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
 
   // Stoktaki araçlar (seçim için)
   const [stockVehicles, setStockVehicles] = useState<Vehicle[]>([]);
+  // Silme onayı bekleyen satır ("td:<id>" / "q:<id>")
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+
+  const vehicleOptions = useMemo(
+    () =>
+      stockVehicles.map((v) => {
+        const brandModel = [v.brandName, v.modelName].filter(Boolean).join(" ");
+        const specs = [
+          v.year ? `${v.year} Model` : null,
+          v.km != null ? `${v.km.toLocaleString("tr-TR")} km` : null,
+          v.fuelType ? v.fuelType : null,
+          v.transmission ? v.transmission : null,
+        ]
+          .filter(Boolean)
+          .join(" • ");
+        const price = v.saleAmount
+          ? `₺${Number(v.saleAmount).toLocaleString("tr-TR")}`
+          : v.listPrice
+            ? `₺${Number(v.listPrice).toLocaleString("tr-TR")}`
+            : "";
+
+        return {
+          value: v.id,
+          label: `${v.plate} — ${brandModel}`,
+          subLabel: [specs, price].filter(Boolean).join(" | "),
+          badge: v.status || "STOKTA",
+        };
+      }),
+    [stockVehicles],
+  );
 
   // Yeni Araç Ekleme
   const [selectedAddVehicleId, setSelectedAddVehicleId] = useState("");
@@ -203,6 +238,32 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
     }
   };
 
+  // Gelmedi / İptal
+  const handleTdStatus = async (tdId: string, status: TestDriveStatus) => {
+    try {
+      await updateTestDrive(tdId, { status });
+      toast.success(status === "NO_SHOW" ? "Müşteri gelmedi olarak işaretlendi." : "Deneme sürüşü iptal edildi.");
+      loadData();
+      onRefresh();
+    } catch {
+      toast.error("Güncellenemedi.");
+    }
+  };
+
+  // Silme: kayıt silinmez, gizlenir (sunucuda deletedAt). Teklifin müşteri linki de kapanır.
+  const handleRemove = async (kind: "td" | "q", id: string) => {
+    try {
+      if (kind === "td") await deleteTestDrive(id);
+      else await deleteQuote(id);
+      toast.success(kind === "td" ? "Deneme sürüşü silindi." : "Teklif silindi.");
+      setConfirmRemove(null);
+      loadData();
+      onRefresh();
+    } catch {
+      toast.error("Silinemedi.");
+    }
+  };
+
   // Test Sürüşü Tamamla / Puanla
   const handleSaveTdFeedback = async (tdId: string) => {
     try {
@@ -338,7 +399,16 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
   return (
     <Modal open={open} onClose={onClose} title="" className="max-w-4xl p-0">
       {loading || !lead ? (
-        <div className="flex justify-center py-20">
+        <div className="relative flex justify-center py-20">
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-dark-600 dark:hover:text-dark-100"
+            title="Kapat (Esc)"
+            aria-label="Kapat"
+          >
+            <XMarkIcon className="size-5" />
+          </button>
           <Spinner className="size-8" />
         </div>
       ) : (
@@ -428,6 +498,18 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                 >
                   <TrashIcon className="size-4 text-error" />
                 </Button>
+
+                <div className="h-6 w-px bg-gray-200 dark:bg-dark-500 mx-0.5" />
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex size-9 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:border-dark-500 dark:text-dark-300 dark:hover:bg-dark-600 dark:hover:text-dark-100"
+                  title="Kapat (Esc)"
+                  aria-label="Kapat"
+                >
+                  <XMarkIcon className="size-5" />
+                </button>
               </div>
             </div>
 
@@ -497,23 +579,21 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
             {activeTab === "vehicles" && (
               <div className="space-y-4">
                 {/* Araç Ekle Barı */}
-                <div className="flex gap-2">
-                  <Select
-                    className="flex-1"
-                    value={selectedAddVehicleId}
-                    onChange={(e) => setSelectedAddVehicleId(e.target.value)}
-                    data={[
-                      { value: "", label: "Stoktan araç seçip ekleyin..." },
-                      ...stockVehicles.map((v) => ({
-                        value: v.id,
-                        label: `${v.plate} - ${v.brandName} ${v.modelName} (${v.year}) ${v.saleAmount ? `- ${Number(v.saleAmount).toLocaleString("tr-TR")} TL` : ""}`,
-                      })),
-                    ]}
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <SearchableSelect
+                      options={vehicleOptions}
+                      value={selectedAddVehicleId}
+                      onChange={setSelectedAddVehicleId}
+                      onClear={() => setSelectedAddVehicleId("")}
+                      placeholder="Stoktan araç seçip ekleyin..."
+                    />
+                  </div>
                   <Button
                     color="primary"
                     onClick={handleAddVehicleInterest}
                     disabled={!selectedAddVehicleId || isAddingVehicle}
+                    className="shrink-0 h-10 px-4"
                   >
                     {isAddingVehicle ? <Spinner className="size-4" /> : "İlgiye Ekle"}
                   </Button>
@@ -656,15 +736,13 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                     </h4>
                     <form onSubmit={handleCreateTestDrive} className="space-y-3">
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <Select
+                        <SearchableSelect
                           label="Araç *"
+                          options={vehicleOptions}
                           value={tdVehicleId}
-                          onChange={(e) => setTdVehicleId(e.target.value)}
-                          required
-                          data={stockVehicles.map((v) => ({
-                            value: v.id,
-                            label: `${v.plate} - ${v.brandName} ${v.modelName}`,
-                          }))}
+                          onChange={setTdVehicleId}
+                          onClear={() => setTdVehicleId("")}
+                          placeholder="Araç arayıp seçin..."
                         />
                         <Input
                           label="Randevu Tarihi & Saati *"
@@ -749,18 +827,32 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                                 </Tag>
                               )}
                               {td.status === "SCHEDULED" && !isEditing && (
-                                <Button
-                                  color="success"
-                                  variant="outlined"
-                                  onClick={() => {
-                                    setEditingTdId(td.id);
-                                    setTdFeedback(td.feedbackNotes || "");
-                                    setTdRating(td.feedbackRating || 5);
-                                  }}
-                                >
-                                  Tamamla & Değerlendir
-                                </Button>
+                                <>
+                                  <Button
+                                    color="success"
+                                    variant="outlined"
+                                    onClick={() => {
+                                      setEditingTdId(td.id);
+                                      setTdFeedback(td.feedbackNotes || "");
+                                      setTdRating(td.feedbackRating || 5);
+                                    }}
+                                  >
+                                    Tamamla & Değerlendir
+                                  </Button>
+                                  <Button color="warning" variant="outlined" onClick={() => handleTdStatus(td.id, "NO_SHOW")}>
+                                    Gelmedi
+                                  </Button>
+                                  <Button variant="flat" onClick={() => handleTdStatus(td.id, "CANCELLED")}>
+                                    İptal
+                                  </Button>
+                                </>
                               )}
+                              <RemoveButton
+                                confirming={confirmRemove === `td:${td.id}`}
+                                onAsk={() => setConfirmRemove(`td:${td.id}`)}
+                                onCancel={() => setConfirmRemove(null)}
+                                onConfirm={() => handleRemove("td", td.id)}
+                              />
                             </div>
                           </div>
 
@@ -862,22 +954,25 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                     </h4>
                     <form onSubmit={handleCreateQuote} className="space-y-3">
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <Select
+                        <SearchableSelect
                           label="Araç *"
+                          options={vehicleOptions}
                           value={quoteVehicleId}
-                          onChange={(e) => {
-                            setQuoteVehicleId(e.target.value);
-                            const found = stockVehicles.find((v) => v.id === e.target.value);
-                            if (found?.saleAmount) {
-                              setQuoteVehiclePrice(String(found.saleAmount));
-                              setQuoteOfferedPrice(String(found.saleAmount));
+                          onChange={(vId) => {
+                            setQuoteVehicleId(vId);
+                            const found = stockVehicles.find((v) => v.id === vId);
+                            const price = found?.saleAmount ?? found?.listPrice;
+                            if (price) {
+                              setQuoteVehiclePrice(String(price));
+                              setQuoteOfferedPrice(String(price));
                             }
                           }}
-                          required
-                          data={stockVehicles.map((v) => ({
-                            value: v.id,
-                            label: `${v.plate} - ${v.brandName} ${v.modelName}`,
-                          }))}
+                          onClear={() => {
+                            setQuoteVehicleId("");
+                            setQuoteVehiclePrice("");
+                            setQuoteOfferedPrice("");
+                          }}
+                          placeholder="Araç arayıp seçin..."
                         />
                         <Input
                           label="Liste Fiyatı (TL)"
@@ -1066,6 +1161,12 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                                   label: v.label,
                                 }))}
                               />
+                              <RemoveButton
+                                confirming={confirmRemove === `q:${q.id}`}
+                                onAsk={() => setConfirmRemove(`q:${q.id}`)}
+                                onCancel={() => setConfirmRemove(null)}
+                                onConfirm={() => handleRemove("q", q.id)}
+                              />
                             </div>
                           </div>
 
@@ -1239,5 +1340,32 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
         </Modal>
       )}
     </Modal>
+  );
+}
+
+/** Satır silme: iki adımlı onay (pencere açmadan) */
+function RemoveButton({ confirming, onAsk, onCancel, onConfirm }: { confirming: boolean; onAsk: () => void; onCancel: () => void; onConfirm: () => void }) {
+  if (confirming) {
+    return (
+      <span className="flex items-center gap-1">
+        <Button color="error" className="h-8 px-2.5 text-xs" onClick={onConfirm}>
+          Sil
+        </Button>
+        <Button variant="flat" className="h-8 px-2 text-xs" onClick={onCancel}>
+          Vazgeç
+        </Button>
+      </span>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={onAsk}
+      title="Sil"
+      aria-label="Sil"
+      className="rounded-lg p-1.5 text-gray-400 transition hover:bg-error/10 hover:text-error"
+    >
+      <TrashIcon className="size-4" />
+    </button>
   );
 }

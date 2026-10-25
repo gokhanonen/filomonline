@@ -19,6 +19,13 @@ const publicRoutes: RouteObject = {
         Component: (await import("@/app/pages/public/PublicVehiclePage")).default,
       }),
     },
+    {
+      // Müşteriye özel teklif (uzun rastgele token)
+      path: "q/:token",
+      lazy: async () => ({
+        Component: (await import("@/app/pages/public/PublicQuotePage")).default,
+      }),
+    },
   ],
 };
 

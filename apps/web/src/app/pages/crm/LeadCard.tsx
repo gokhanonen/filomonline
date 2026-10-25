@@ -60,7 +60,7 @@ export function LeadCard({ lead, onSelect, onRefresh }: Props) {
   return (
     <Card
       onClick={() => onSelect(lead.id)}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200/80 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-400 hover:shadow-lg dark:border-dark-700 dark:bg-dark-800 dark:hover:border-primary-500 cursor-pointer"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200/80 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-400 hover:shadow-lg dark:border-dark-600 dark:bg-dark-750 dark:hover:border-primary-500 cursor-pointer"
     >
       <div>
         {/* Üst Bar: Kaynak Rozeti & Aşama İlerleme Göstergesi */}

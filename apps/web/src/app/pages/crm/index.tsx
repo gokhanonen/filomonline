@@ -102,7 +102,7 @@ export default function CrmPage() {
   const convertedCount = leads.filter((l) => l.status === "CONVERTED").length;
 
   return (
-    <Page title="CRM & Potansiyel Alıcılar">
+    <Page title="CRM">
       <div className="w-full px-(--margin-x) py-6 space-y-6">
         {/* Üst Başlık & Aksiyon */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -134,7 +134,7 @@ export default function CrmPage() {
 
         {/* KPI Sayaç Kartları */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Card className="flex items-center gap-3.5 p-4">
+          <Card className="flex items-center gap-3.5 p-4 bg-white dark:bg-dark-750 border border-gray-200/80 dark:border-dark-600 shadow-2xs rounded-xl">
             <div className="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-300">
               <UserGroupIcon className="size-6" />
             </div>
@@ -148,7 +148,7 @@ export default function CrmPage() {
             </div>
           </Card>
 
-          <Card className="flex items-center gap-3.5 p-4">
+          <Card className="flex items-center gap-3.5 p-4 bg-white dark:bg-dark-750 border border-gray-200/80 dark:border-dark-600 shadow-2xs rounded-xl">
             <div className="flex size-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-300">
               <CalendarDaysIcon className="size-6" />
             </div>
@@ -162,7 +162,7 @@ export default function CrmPage() {
             </div>
           </Card>
 
-          <Card className="flex items-center gap-3.5 p-4">
+          <Card className="flex items-center gap-3.5 p-4 bg-white dark:bg-dark-750 border border-gray-200/80 dark:border-dark-600 shadow-2xs rounded-xl">
             <div className="flex size-11 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-300">
               <DocumentCheckIcon className="size-6" />
             </div>
@@ -176,7 +176,7 @@ export default function CrmPage() {
             </div>
           </Card>
 
-          <Card className="flex items-center gap-3.5 p-4">
+          <Card className="flex items-center gap-3.5 p-4 bg-white dark:bg-dark-750 border border-gray-200/80 dark:border-dark-600 shadow-2xs rounded-xl">
             <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300">
               <CheckCircleIcon className="size-6" />
             </div>
