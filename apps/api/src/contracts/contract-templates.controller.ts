@@ -16,8 +16,10 @@ import type { AuthUser } from "../auth/auth.types";
 import { activeTenantId } from "../tenancy/tenant-context";
 import { RequirePermissions } from "../tenancy/permissions.decorator";
 import { ContractTemplatesService } from "./contract-templates.service";
+import type { ContractLayout } from "./contract-layout";
 import {
   CreateContractTemplateDto,
+  PreviewContractLayoutDto,
   RenderContractDto,
   UpdateContractTemplateDto,
 } from "./dto/contract-template.dto";
@@ -72,6 +74,20 @@ export class ContractTemplatesController {
     @Param("id") id: string,
   ) {
     return this.templates.remove(activeTenantId(user), id);
+  }
+
+  /** Yeni düzende varsayılan şablon içeriği (sıfırla / yeni şablon için) */
+  @RequirePermissions("rentals.read")
+  @Get("default-layout/:type")
+  defaultLayout(@Param("type") type: ContractKind) {
+    return this.templates.defaultLayout(type);
+  }
+
+  /** Düzenleyici canlı önizleme (örnek veriyle) */
+  @RequirePermissions("rentals.read")
+  @Post("preview")
+  preview(@CompanyId() companyId: string, @Body() dto: PreviewContractLayoutDto) {
+    return this.templates.preview(companyId, dto.type, dto.layout as unknown as ContractLayout);
   }
 
   @RequirePermissions("rentals.read")

@@ -167,3 +167,43 @@ export async function renderContract(dto: {
   );
   return data;
 }
+
+// ---- Yapılandırılmış şablon (yeni düzen) ----
+
+/** Sözleşme şablonu düzeni — API contracts/contract-layout.ts ile aynı yapı */
+export interface ContractLayout {
+  kind: "layout";
+  version: 1;
+  title: string;
+  accentColor: string;
+  showLogo: boolean;
+  showCurrencyColumns: boolean;
+  installmentRows: number;
+  blankRowTypes: string[];
+  showPaymentNotes: boolean;
+  showWitness: boolean;
+  usagePurpose: string;
+  jurisdiction: string;
+  summaryLines: string[];
+  clauses: string[];
+}
+
+export function parseLayout(content?: string | null): ContractLayout | null {
+  if (!content || !content.trimStart().startsWith("{")) return null;
+  try {
+    const l = JSON.parse(content) as ContractLayout;
+    return l.kind === "layout" ? l : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getDefaultContractLayout(type: ContractKind): Promise<ContractLayout> {
+  const { data } = await axios.get<ContractLayout>(`/contracts/templates/default-layout/${type}`);
+  return data;
+}
+
+export async function previewContractLayout(type: ContractKind, layout: ContractLayout): Promise<string> {
+  const { data } = await axios.post<{ html: string }>("/contracts/templates/preview", { type, layout });
+  return data.html;
+}

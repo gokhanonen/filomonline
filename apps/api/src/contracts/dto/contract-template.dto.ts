@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsEnum, IsObject, IsOptional, IsString } from "class-validator";
 import { ContractKind } from "@prisma/client";
 
 export class CreateContractTemplateDto {
@@ -44,4 +44,13 @@ export class RenderContractDto {
   @IsOptional()
   @IsString()
   templateId?: string;
+}
+
+/** Düzenleyici canlı önizleme: kaydedilmemiş yapılandırılmış şablon */
+export class PreviewContractLayoutDto {
+  @IsEnum(ContractKind)
+  type: ContractKind;
+
+  @IsObject()
+  layout: Record<string, unknown>;
 }

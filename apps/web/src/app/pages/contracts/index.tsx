@@ -676,7 +676,7 @@ export default function ContractsPage() {
                     <div>
                       <div className="flex items-start justify-between gap-2">
                         <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-semibold text-gray-600 dark:bg-dark-700 dark:text-dark-300">
-                          {tmpl.type === "SALES" ? "Satış Sözleşmesi" : "Kira Sözleşmesi"}
+                          {tmpl.type === "SALES" ? "Satış Sözleşmesi" : tmpl.type === "PURCHASE" ? "Alış Sözleşmesi" : "Kira Sözleşmesi"}
                         </span>
                         {tmpl.isDefault && (
                           <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">

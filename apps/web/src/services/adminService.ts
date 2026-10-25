@@ -68,6 +68,9 @@ export interface CompanyDetails {
   phone?: string | null;
   email?: string | null;
   logoUrl?: string | null;
+  website?: string | null;
+  mersisNo?: string | null;
+  tradeRegistryNo?: string | null;
   isActive: boolean;
   createdAt: string;
   tenant?: { id: string; name: string };

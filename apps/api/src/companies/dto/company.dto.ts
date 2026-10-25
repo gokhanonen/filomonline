@@ -21,6 +21,9 @@ export class CreateCompanyDto {
   @IsOptional() @IsString() phone?: string;
   @IsOptional() @IsEmail() email?: string;
   @IsOptional() @IsString() logoUrl?: string;
+  @IsOptional() @IsString() website?: string;
+  @IsOptional() @IsString() mersisNo?: string;
+  @IsOptional() @IsString() tradeRegistryNo?: string;
 }
 
 export class UpdateCompanyDto {
@@ -32,5 +35,8 @@ export class UpdateCompanyDto {
   @IsOptional() @IsString() phone?: string;
   @IsOptional() @IsEmail() email?: string;
   @IsOptional() @IsString() logoUrl?: string;
+  @IsOptional() @IsString() website?: string;
+  @IsOptional() @IsString() mersisNo?: string;
+  @IsOptional() @IsString() tradeRegistryNo?: string;
   @IsOptional() @IsBoolean() isActive?: boolean;
 }

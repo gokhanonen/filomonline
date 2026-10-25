@@ -29,6 +29,9 @@ export function CompanySettingsCard() {
   const [companyPhone, setCompanyPhone] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
+  const [website, setWebsite] = useState("");
+  const [mersisNo, setMersisNo] = useState("");
+  const [tradeRegistryNo, setTradeRegistryNo] = useState("");
   const [logoKey, setLogoKey] = useState("");
   const [isLoadingCompany, setIsLoadingCompany] = useState(false);
   const [isSavingCompany, setIsSavingCompany] = useState(false);
@@ -48,6 +51,9 @@ export function CompanySettingsCard() {
       setCompanyPhone(data.phone ?? "");
       setCompanyEmail(data.email ?? "");
       setCompanyAddress(data.address ?? "");
+      setWebsite(data.website ?? "");
+      setMersisNo(data.mersisNo ?? "");
+      setTradeRegistryNo(data.tradeRegistryNo ?? "");
       setLogoKey(data.logoUrl ?? "");
     } catch (err) {
       console.error("Firma detayları yüklenemedi:", err);
@@ -104,6 +110,9 @@ export function CompanySettingsCard() {
         phone: companyPhone.trim() || null,
         email: companyEmail.trim() || null,
         address: companyAddress.trim() || null,
+        website: website.trim() || null,
+        mersisNo: mersisNo.trim() || null,
+        tradeRegistryNo: tradeRegistryNo.trim() || null,
         logoUrl: logoKey || null,
       });
       await refreshUser();
@@ -253,6 +262,18 @@ export function CompanySettingsCard() {
               placeholder="info@firmaniz.com"
               prefix={<EnvelopeIcon className="size-4.5 text-gray-400" />}
             />
+            {/* Sözleşme başlığında ve satıcı bilgilerinde kullanılır */}
+            <Input
+              label="Web Sitesi"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              disabled={!canEditCompany}
+              placeholder="www.firmaniz.com.tr"
+            />
+            <div className="grid grid-cols-2 gap-3">
+              <Input label="MERSİS No" value={mersisNo} onChange={(e) => setMersisNo(e.target.value)} disabled={!canEditCompany} />
+              <Input label="Ticaret Sicil No" value={tradeRegistryNo} onChange={(e) => setTradeRegistryNo(e.target.value)} disabled={!canEditCompany} />
+            </div>
             <div className="sm:col-span-2">
               <Textarea
                 label="Firma Resmi Adresi"

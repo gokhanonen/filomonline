@@ -83,6 +83,7 @@ export function SalesContractFormModal({
   const [documentNo, setDocumentNo] = useState("");
   const [contractDate, setContractDate] = useState(today());
   const [validUntil, setValidUntil] = useState(today());
+  const [deliveryDate, setDeliveryDate] = useState("");
   const [status, setStatus] = useState<SalesContractStatus>("DRAFT");
 
   const [price, setPrice] = useState(0); // Satış Bedeli
@@ -131,6 +132,7 @@ export function SalesContractFormModal({
           setDocumentNo(c.documentNo || "");
           setContractDate(c.contractDate ? c.contractDate.slice(0, 10) : today());
           setValidUntil(c.validUntil ? c.validUntil.slice(0, 10) : today());
+          setDeliveryDate(c.deliveryDate ? c.deliveryDate.slice(0, 10) : "");
           setStatus(c.status);
 
           setPrice(Number(c.price) || 0);
@@ -324,6 +326,7 @@ export function SalesContractFormModal({
         documentNo: documentNo.trim(),
         contractDate,
         validUntil: validUntil || undefined,
+        deliveryDate: deliveryDate || undefined,
         price,
         vatRate,
         discount,
@@ -582,6 +585,13 @@ export function SalesContractFormModal({
                   value={validUntil}
                   onChange={(e) => setValidUntil(e.target.value)}
                 />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-dark-300">
+                  Araç Teslim Tarihi
+                </label>
+                <Input type="date" value={deliveryDate} onChange={(e) => setDeliveryDate(e.target.value)} />
               </div>
 
               <div>

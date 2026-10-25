@@ -83,6 +83,10 @@ export class CreateSalesContractDto {
   @IsString()
   validUntil?: string;
 
+  @IsOptional()
+  @IsString()
+  deliveryDate?: string; // araç teslim tarihi
+
   @IsNumber()
   price: number;
 
@@ -209,6 +213,10 @@ export class UpdateSalesContractDto {
   @IsOptional()
   @IsString()
   validUntil?: string;
+
+  @IsOptional()
+  @IsString()
+  deliveryDate?: string; // araç teslim tarihi
 
   @IsOptional()
   @IsNumber()

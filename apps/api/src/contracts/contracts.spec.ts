@@ -38,6 +38,7 @@ describe("Contracts & Templates Engine", () => {
       },
       vehicle: {
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
       },
       account: {
         findUnique: jest.fn(),
@@ -51,27 +52,31 @@ describe("Contracts & Templates Engine", () => {
     };
 
     const mockActivity = { log: jest.fn().mockResolvedValue({}) };
-    templatesService = new ContractTemplatesService(mockPrisma as any);
+    templatesService = new ContractTemplatesService(mockPrisma as any, { presignDownload: jest.fn() } as any);
     salesService = new SalesContractsService(mockPrisma as any, mockActivity as any);
   });
 
   describe("ContractTemplatesService", () => {
-    it("should auto-seed default templates if none exist for tenant", async () => {
-      mockPrisma.contractTemplate.findMany
-        .mockResolvedValueOnce([]) // First call empty
-        .mockResolvedValueOnce([
-          { id: "tmpl-1", type: ContractKind.SALES, name: "Satış Şablonu", isDefault: true },
-          { id: "tmpl-2", type: ContractKind.RENTAL, name: "Kira Şablonu", isDefault: true },
-        ]); // Second call after seed
+    it("her sözleşme türü için yeni düzende varsayılan şablon oluşturur (eski şablonlar silinmez)", async () => {
+      mockPrisma.contractTemplate.findMany.mockResolvedValue([{ id: "old", content: "<p>eski</p>" }]);
+      await templatesService.findAll("tenant-1");
+      expect(mockPrisma.contractTemplate.create).toHaveBeenCalledTimes(3);
+      const types = mockPrisma.contractTemplate.create.mock.calls.map((c: any[]) => c[0].data.type);
+      expect(types).toEqual(expect.arrayContaining([ContractKind.SALES, ContractKind.PURCHASE, ContractKind.RENTAL]));
+      const content = JSON.parse(mockPrisma.contractTemplate.create.mock.calls[0][0].data.content);
+      expect(content.kind).toBe("layout");
+      expect(mockPrisma.contractTemplate.delete).not.toHaveBeenCalled();
+    });
 
-      const templates = await templatesService.findAll("tenant-1");
-      expect(mockPrisma.contractTemplate.createMany).toHaveBeenCalledWith({
-        data: expect.arrayContaining([
-          expect.objectContaining({ type: ContractKind.SALES }),
-          expect.objectContaining({ type: ContractKind.RENTAL }),
-        ]),
+    it("eski HTML şablon yer tutucu değiştirmeyle basılmaya devam eder", async () => {
+      mockPrisma.contractTemplate.findFirst.mockResolvedValue({ id: "t", content: "<p>{{plaka}} — {{musteri_adi}}</p>" });
+      mockPrisma.company.findUnique.mockResolvedValue({ name: "Test" });
+      mockPrisma.salesContract.findFirst.mockResolvedValue({
+        id: "s", vehicleId: "v", documentNo: "D1", contractDate: new Date(), customerName: "Ali", price: 1, grandTotal: 1, installments: [],
       });
-      expect(templates.length).toBe(2);
+      mockPrisma.vehicle.findUnique.mockResolvedValue({ plate: "34ABC1" });
+      const r = await templatesService.render("tenant-1", "comp-1", { contractType: ContractKind.SALES, contractId: "s", templateId: "t" });
+      expect(r.html).toBe("<p>34ABC1 — Ali</p>");
     });
 
     it("should render sales contract with customer, vehicle and installment table", async () => {
@@ -102,7 +107,7 @@ describe("Contracts & Templates Engine", () => {
         ],
       });
 
-      mockPrisma.vehicle.findUnique.mockResolvedValue({
+      mockPrisma.vehicle.findFirst.mockResolvedValue({
         id: "veh-1",
         plate: "34ABC789",
         brandName: "BMW",
@@ -122,8 +127,10 @@ describe("Contracts & Templates Engine", () => {
       expect(result.html).toContain("Test Otomotiv A.Ş.");
       expect(result.html).toContain("34ABC789");
       expect(result.html).toContain("Ahmet Yılmaz");
-      expect(result.html).toContain("1.500.000,00 ₺");
-      expect(result.html).toContain("1. Taksit");
+      expect(result.html).toContain("1.500.000,00 TL");
+      expect(result.html).toContain("1. TAKSİT TARİHİ");
+      expect(result.html).toContain("ARAÇ SATIŞ SÖZLEŞMESİ");
+      expect(result.html).not.toMatch(/\{\{\w+\}\}/);
       expect(result.html).toContain("SENET");
       expect(result.html).not.toContain("{{plaka}}");
       expect(result.html).not.toContain("{{musteri_adi}}");
@@ -149,7 +156,7 @@ describe("Contracts & Templates Engine", () => {
         drivers: ["Ali Veli (TC: 12345)", "Ayşe Fatma (TC: 67890)"],
       });
 
-      mockPrisma.vehicle.findUnique.mockResolvedValue({
+      mockPrisma.vehicle.findFirst.mockResolvedValue({
         id: "veh-1",
         plate: "06DEF123",
         brandName: "Renault",

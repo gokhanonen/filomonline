@@ -44,6 +44,7 @@ export interface SalesContract {
   documentNo: string;
   contractDate: string;
   validUntil?: string | null;
+  deliveryDate?: string | null; // araç teslim tarihi
   price: number;
   vatRate: number;
   vatAmount: number;
@@ -82,6 +83,7 @@ export interface SalesContractFormData {
   documentNo: string;
   contractDate: string;
   validUntil?: string;
+  deliveryDate?: string; // araç teslim tarihi
   price: number;
   vatRate?: number;
   vatAmount?: number;

@@ -28,6 +28,7 @@ export class SalesContractsService {
           price: contractData.price,
           contractDate: new Date(contractData.contractDate),
           validUntil: contractData.validUntil ? new Date(contractData.validUntil) : null,
+          deliveryDate: contractData.deliveryDate ? new Date(contractData.deliveryDate) : null,
           grandTotal: contractData.grandTotal ?? contractData.price,
           status: contractData.status ?? SalesContractStatus.DRAFT,
           installments: installments && installments.length > 0 ? {
@@ -164,6 +165,7 @@ export class SalesContractsService {
           ...updateData,
           contractDate: updateData.contractDate ? new Date(updateData.contractDate) : undefined,
           validUntil: updateData.validUntil !== undefined ? (updateData.validUntil ? new Date(updateData.validUntil) : null) : undefined,
+          deliveryDate: updateData.deliveryDate !== undefined ? (updateData.deliveryDate ? new Date(updateData.deliveryDate) : null) : undefined,
         },
         include: {
           installments: {
