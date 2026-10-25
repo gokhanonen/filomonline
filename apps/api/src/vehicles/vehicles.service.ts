@@ -25,6 +25,7 @@ import {
 import { CreateVehicleShareLinkDto } from "./dto/vehicle-share.dto";
 import { randomBytes } from "crypto";
 import { ActivityService } from "../activity/activity.service";
+import { ClaudeService } from "../ai/claude.service";
 
 const fullInclude = {
   photos: { orderBy: { sortOrder: "asc" } },
@@ -44,7 +45,27 @@ export class VehiclesService {
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
     private readonly activity: ActivityService,
+    private readonly claude: ClaudeService,
   ) {}
+
+  async ocrRegistration(body: { imageBase64: string; mediaType?: string }) {
+    if (!body.imageBase64) {
+      throw new BadRequestException("Görsel verisi zorunludur.");
+    }
+    const cleanBase64 = body.imageBase64.replace(/^data:image\/[a-zA-Z]+;base64,/, "");
+    const mediaType = (body.mediaType as any) || "image/jpeg";
+
+    const res = await this.claude.assist({
+      prompt: "Bu araç ruhsatındaki plaka, marka, model, model yılı, şasi/vin no, motor no, renk, yakıt tipi ve vites bilgilerini oku.",
+      image: {
+        mediaType,
+        base64Data: cleanBase64,
+      },
+      docTypeHint: "RUHSAT",
+    });
+
+    return res.data?.registration || null;
+  }
 
   async create(companyId: string, dto: CreateVehicleDto) {
     const { photos, tramerSet, listingUrls, installments, ...scalars } = dto;

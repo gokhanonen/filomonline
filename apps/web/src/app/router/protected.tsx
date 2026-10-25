@@ -116,6 +116,18 @@ const protectedRoutes: RouteObject = {
           }),
         },
         {
+          path: "cash-bank",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/finance/cash-bank")).default,
+          }),
+        },
+        {
+          path: "finance/cash-bank",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/finance/cash-bank")).default,
+          }),
+        },
+        {
           path: "reports",
           lazy: async () => ({
             Component: (await import("@/app/pages/reports")).default,

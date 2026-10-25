@@ -30,6 +30,7 @@ import { ChatModule } from "./chat/chat.module";
 import { AddressModule } from "./address/address.module";
 import { SearchModule } from "./search/search.module";
 import { CrmModule } from "./crm/crm.module";
+import { CashRegistersModule } from "./cash-registers/cash-registers.module";
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { CrmModule } from "./crm/crm.module";
     AddressModule,
     SearchModule,
     CrmModule,
+    CashRegistersModule,
   ],
   controllers: [HealthController],
   providers: [

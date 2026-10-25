@@ -37,6 +37,14 @@ export class VehiclesController {
   constructor(private readonly vehicles: VehiclesService) {}
 
   @RequirePermissions("vehicles.write")
+  @Post("ocr-registration")
+  ocrRegistration(
+    @Body() body: { imageBase64: string; mediaType?: string },
+  ) {
+    return this.vehicles.ocrRegistration(body);
+  }
+
+  @RequirePermissions("vehicles.write")
   @Post()
   create(@CompanyId() companyId: string, @Body() dto: CreateVehicleDto) {
     return this.vehicles.create(companyId, dto);

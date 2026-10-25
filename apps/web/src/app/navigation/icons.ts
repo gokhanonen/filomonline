@@ -55,6 +55,7 @@ export const navigationIcons: Record<string, ElementType> = {
   chat: TbMessages,
   contracts: TbContract,
   transfers: TbTransfer,
+  cashBank: TbCoins,
 
   // Ayarlar segmenti
   settings: TbSettings,

@@ -45,6 +45,7 @@ import {
   getVehicle,
   addVehicleTramer,
   deleteVehicleTramer,
+  ocrRegistration,
 } from "@/services/vehicleService";
 import { listAccounts, createAccount } from "@/services/accountService";
 import { listLocations } from "@/services/locationService";
@@ -225,6 +226,10 @@ export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }
   const [tramerUploading, setTramerUploading] = useState(false);
   const tramerFileRef = useRef<HTMLInputElement>(null);
 
+  // Ruhsat OCR State
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const ocrFileRef = useRef<HTMLInputElement>(null);
+
   // Quick Add modalları state
   const [quickAddModal, setQuickAddModal] = useState<{
     open: boolean;
@@ -325,12 +330,111 @@ export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }
     }
   }, [open]);
 
+  const handleOcrFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setOcrLoading(true);
+      toast.info("Ruhsat görseli yapay zeka ile taranıyor...");
+
+      const { full } = await resizeWithThumbnail(file, 200 * 1024);
+      const reader = new FileReader();
+
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(full);
+      });
+
+      const ocrResult = await ocrRegistration(base64Data, full.type);
+      if (!ocrResult) {
+        toast.error("Ruhsat bilgileri okunamadı.");
+        return;
+      }
+
+      if (ocrResult.brand && catalog?.brands) {
+        const bTarget = ocrResult.brand.toLowerCase().trim();
+        const brandObj = catalog.brands.find(
+          (b) => b.name.toLowerCase().trim() === bTarget || bTarget.includes(b.name.toLowerCase().trim()),
+        );
+        if (brandObj) {
+          setValue("brandId", brandObj.id);
+          if (ocrResult.model && brandObj.models) {
+            const mTarget = ocrResult.model.toLowerCase().trim();
+            const modelObj = brandObj.models.find(
+              (m) =>
+                m.name.toLowerCase().trim() === mTarget || mTarget.includes(m.name.toLowerCase().trim()),
+            );
+            if (modelObj) {
+              setValue("modelId", modelObj.id);
+            }
+          }
+        }
+      }
+
+      if (ocrResult.plate) setValue("plate", ocrResult.plate.toUpperCase().trim());
+      if (ocrResult.year) setValue("year", Number(ocrResult.year));
+      if (ocrResult.vin) setValue("chassisNo", ocrResult.vin.toUpperCase().trim());
+      if (ocrResult.engineNo) setValue("engineNo", ocrResult.engineNo.toUpperCase().trim());
+      if (ocrResult.fuelType) {
+        const ft = ocrResult.fuelType.toUpperCase();
+        if (["BENZIN", "DIZEL", "ELEKTRIK", "HIBRIT", "LPG"].includes(ft)) {
+          setValue("fuelType", ft as any);
+        }
+      }
+      if (ocrResult.transmission) {
+        const tr = ocrResult.transmission.toUpperCase();
+        if (["OTOMATIK", "MANUEL"].includes(tr)) {
+          setValue("transmission", tr as any);
+        }
+      }
+      if (ocrResult.color) {
+        const cTarget = ocrResult.color.toLowerCase().trim();
+        const colorList = catalog?.colors?.length ? catalog.colors : DEFAULT_COLORS;
+        const colorObj = colorList.find((c) => c.name.toLowerCase().includes(cTarget));
+        if (colorObj) setValue("colorId", colorObj.id);
+      }
+
+      setActiveStep(0);
+      toast.success(
+        `Ruhsat başarıyla okundu: ${ocrResult.plate || ""} ${ocrResult.brand || ""} ${ocrResult.model || ""} forma aktarıldı.`,
+      );
+    } catch (err: any) {
+      toast.error(err?.message || "Ruhsat okuma hatası.");
+    } finally {
+      setOcrLoading(false);
+      if (e.target) e.target.value = "";
+    }
+  };
+
   // Form Resetleme / Veri doldurma
   useEffect(() => {
     if (open) {
+      const isAiPrefill = Boolean((vehicle as any)?.brandName || (vehicle as any)?.modelName);
+
+      let initialBrandId = vehicle?.brandId ?? "";
+      let initialModelId = vehicle?.modelId ?? "";
+
+      if (isAiPrefill && catalog?.brands) {
+        const bName = String((vehicle as any).brandName || "").toLowerCase().trim();
+        const foundBrand = catalog.brands.find(
+          (b) => b.name.toLowerCase().trim() === bName || bName.includes(b.name.toLowerCase().trim()),
+        );
+        if (foundBrand) {
+          initialBrandId = foundBrand.id;
+          const mName = String((vehicle as any).modelName || "").toLowerCase().trim();
+          const foundModel = foundBrand.models?.find(
+            (m) =>
+              m.name.toLowerCase().trim() === mName || mName.includes(m.name.toLowerCase().trim()),
+          );
+          if (foundModel) initialModelId = foundModel.id;
+        }
+      }
+
       const initialCatId =
         vehicle?.categoryId ||
-        (vehicle?.brandId && catalog?.brands?.find((b) => b.id === vehicle.brandId)?.categoryId) ||
+        (initialBrandId && catalog?.brands?.find((b) => b.id === initialBrandId)?.categoryId) ||
         "";
 
       const determinedRegime: PurchaseRegime =
@@ -346,16 +450,16 @@ export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }
       const cfg = PURCHASE_REGIME_CONFIG[determinedRegime];
 
       reset({
-        plate: isClone ? "" : (vehicle?.plate ?? ""),
-        status: isClone ? "STOKTA" : (vehicle?.status ?? "STOKTA"),
+        plate: isClone && !isAiPrefill ? "" : (vehicle?.plate ?? ""),
+        status: isClone && !isAiPrefill ? "STOKTA" : (vehicle?.status ?? "STOKTA"),
         categoryId: initialCatId,
         vehicleTypeId: vehicle?.vehicleTypeId ?? "",
-        brandId: vehicle?.brandId ?? "",
-        modelId: vehicle?.modelId ?? "",
+        brandId: initialBrandId,
+        modelId: initialModelId,
         year: vehicle?.year ?? undefined,
-        chassisNo: isClone ? "" : (vehicle?.chassisNo ?? ""),
-        engineNo: isClone ? "" : (vehicle?.engineNo ?? ""),
-        erpCode: isClone ? "" : (vehicle?.erpCode ?? ""),
+        chassisNo: isClone && !isAiPrefill ? "" : (vehicle?.chassisNo ?? (vehicle as any)?.vin ?? ""),
+        engineNo: isClone && !isAiPrefill ? "" : (vehicle?.engineNo ?? ""),
+        erpCode: isClone && !isAiPrefill ? "" : (vehicle?.erpCode ?? ""),
         registrationModel: vehicle?.registrationModel ?? "",
         fuelType: vehicle?.fuelType ?? "",
         transmission: vehicle?.transmission ?? "",
@@ -373,17 +477,17 @@ export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }
         tensf: vehicle?.tensf ? Number(vehicle.tensf) : undefined,
         purchasePrice: vehicle?.purchasePrice ? Number(vehicle.purchasePrice) : undefined,
         purchaseNotaryPrice: vehicle?.purchaseNotaryPrice ? Number(vehicle.purchaseNotaryPrice) : undefined,
-        purchaseDate: isClone ? "" : (vehicle?.purchaseDate ? vehicle.purchaseDate.slice(0, 10) : ""),
+        purchaseDate: isClone && !isAiPrefill ? "" : (vehicle?.purchaseDate ? vehicle.purchaseDate.slice(0, 10) : ""),
         purchaseRegime: determinedRegime,
         purchaseVatRate: vehicle?.purchaseVatRate != null ? Number(vehicle.purchaseVatRate) : cfg.purchaseVatRate,
         specialBase: vehicle?.specialBase != null ? vehicle.specialBase : cfg.specialBase,
         specialBaseAmount: vehicle?.specialBaseAmount ? Number(vehicle.specialBaseAmount) : undefined,
-        purchaseInvoiceNo: isClone ? "" : (vehicle?.purchaseInvoiceNo ?? ""),
-        purchaseInvoiceDate: isClone ? "" : (vehicle?.purchaseInvoiceDate ? vehicle.purchaseInvoiceDate.slice(0, 10) : ""),
-        purchaseInvoiceDescription: isClone ? "" : (vehicle?.purchaseInvoiceDescription ?? ""),
+        purchaseInvoiceNo: isClone && !isAiPrefill ? "" : (vehicle?.purchaseInvoiceNo ?? ""),
+        purchaseInvoiceDate: isClone && !isAiPrefill ? "" : (vehicle?.purchaseInvoiceDate ? vehicle.purchaseInvoiceDate.slice(0, 10) : ""),
+        purchaseInvoiceDescription: isClone && !isAiPrefill ? "" : (vehicle?.purchaseInvoiceDescription ?? ""),
         supplierId: vehicle?.supplierId ?? "",
         purchaseLocationId: vehicle?.purchaseLocationId ?? "",
-        notes: isClone ? "" : (vehicle?.notes ?? ""),
+        notes: isClone && !isAiPrefill ? "" : (vehicle?.notes ?? ""),
       });
 
       // Tramer kayıtları (Klonlanan araç için sıfırlanır)
@@ -826,6 +930,56 @@ export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }
             {/* ADIM 0: Temel Bilgiler */}
             {activeStep === 0 && (
               <div className="space-y-3.5">
+                {/* RUHSAT OCR İLE OTOMATİK DOLDURMA KARTI */}
+                {!isEdit && (
+                  <div className="relative overflow-hidden rounded-xl border border-primary-200 bg-gradient-to-r from-primary-50 via-purple-50/50 to-white p-3.5 shadow-2xs dark:border-primary-900/50 dark:bg-dark-750">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 text-white shadow-sm">
+                          <TbCamera className="size-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-gray-900 dark:text-dark-50">
+                            Ruhsat Fotoğrafı ile Otomatik Doldur
+                          </h4>
+                          <p className="text-[11px] text-gray-500 dark:text-dark-300">
+                            Ruhsat fotoğrafını yükleyin; plaka, şasi, motor, marka ve model otomatik doldurulsun.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <input
+                          type="file"
+                          ref={ocrFileRef}
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleOcrFileChange}
+                        />
+                        <Button
+                          type="button"
+                          color="primary"
+                          onClick={() => ocrFileRef.current?.click()}
+                          disabled={ocrLoading}
+                          className="w-full sm:w-auto text-xs font-bold shadow-xs flex items-center gap-1.5"
+                        >
+                          {ocrLoading ? (
+                            <>
+                              <Spinner className="size-4 text-white" />
+                              <span>Ruhsat Okunuyor...</span>
+                            </>
+                          ) : (
+                            <>
+                              <TbCamera className="size-4" />
+                              <span>Ruhsat Fotoğrafı Seç / Çek</span>
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Genel Araç Bilgileri */}
                 <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs dark:border-dark-600 dark:bg-dark-700">
                   <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-dark-300">

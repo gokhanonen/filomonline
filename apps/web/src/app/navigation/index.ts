@@ -38,6 +38,7 @@ export const navigation: NavigationTree[] = [
     title: "Finans",
     icon: "finance",
     childs: [
+      { id: "cash-bank", type: "item", path: "/finance/cash-bank", title: "Kasa & Banka", icon: "cashBank" },
       { id: "invoices", type: "item", path: "/invoices", title: "Faturalar", icon: "invoices" },
       { id: "expenses", type: "item", path: "/expenses", title: "Masraflar", icon: "expenses" },
       { id: "contracts", type: "item", path: "/contracts", title: "Sözleşmeler", icon: "contracts" },

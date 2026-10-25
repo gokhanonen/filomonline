@@ -211,4 +211,28 @@ export async function getPublicVehicle(token: string): Promise<PublicVehicleResp
   return data;
 }
 
+export interface OcrRegistrationResult {
+  plate?: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+  vin?: string;
+  engineNo?: string;
+  color?: string;
+  fuelType?: string;
+  transmission?: string;
+  registrationDate?: string;
+}
+
+export async function ocrRegistration(
+  imageBase64: string,
+  mediaType?: string,
+): Promise<OcrRegistrationResult | null> {
+  const { data } = await axios.post<OcrRegistrationResult | null>(
+    "/vehicles/ocr-registration",
+    { imageBase64, mediaType },
+  );
+  return data;
+}
+
 

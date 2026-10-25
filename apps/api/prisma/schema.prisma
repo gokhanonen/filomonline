@@ -382,16 +382,53 @@ model Location {
 }
 
 model CashRegister {
-  id         String   @id @default(cuid())
-  companyId  String
-  locationId String
-  erpCode    String
-  name       String
-  isActive   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id             String            @id @default(cuid())
+  companyId      String
+  locationId     String?
+  erpCode        String?
+  name           String
+  type           CashRegisterType  @default(CASH)
+  currency       String            @default("TRY")
+  bankName       String?
+  branchName     String?
+  iban           String?
+  accountNumber  String?
+  openingBalance Decimal           @default(0) @db.Decimal(15, 2)
+  isActive       Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  transactions     CashTransaction[] @relation("SourceRegister")
+  incomingTransfers CashTransaction[] @relation("TargetRegister")
 
   @@index([companyId])
+}
+
+model CashTransaction {
+  id               String              @id @default(cuid())
+  companyId        String
+  cashRegisterId   String
+  type             CashTransactionType // COLLECTION (Tahsilat/Giriş), PAYMENT (Tediye/Çıkış), TRANSFER (Virman)
+  amount           Decimal             @default(0) @db.Decimal(15, 2)
+  date             DateTime            @default(now())
+  description      String?             @db.Text
+  documentNo       String?             // Makbuz / Dekont No
+  accountId        String?             // İlgili Cari (Müşteri / Tedarikçi)
+  invoiceType      String?             // "sales" | "purchase" | "rental" | "expense"
+  invoiceId        String?             // İlgili Fatura / Masraf
+  vehicleId        String?             // İlgili Araç
+  targetRegisterId String?             // Virman için hedef kasa
+
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  cashRegister     CashRegister        @relation("SourceRegister", fields: [cashRegisterId], references: [id], onDelete: Cascade)
+  targetRegister   CashRegister?       @relation("TargetRegister", fields: [targetRegisterId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([cashRegisterId])
+  @@index([accountId])
+  @@index([date])
 }
 
 model Account {
@@ -1311,4 +1348,16 @@ enum QuoteStatus {
   ACCEPTED
   REJECTED
   EXPIRED
+}
+
+enum CashRegisterType {
+  CASH
+  BANK
+  POS
+}
+
+enum CashTransactionType {
+  COLLECTION
+  PAYMENT
+  TRANSFER
 }
