@@ -80,19 +80,22 @@ model Tenant {
 }
 
 model Company {
-  id        String   @id @default(cuid())
-  tenantId  String
-  name      String
-  legalName String?
-  taxOffice String?
-  taxNumber String?
-  address   String?  @db.Text
-  phone     String?
-  email     String?
-  logoUrl   String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String   @id @default(cuid())
+  tenantId        String
+  name            String
+  legalName       String?
+  taxOffice       String?
+  taxNumber       String?
+  address         String?  @db.Text
+  phone           String?
+  email           String?
+  logoUrl         String?
+  website         String?
+  mersisNo        String?
+  tradeRegistryNo String? // ticaret sicil no
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   tenant      Tenant              @relation(fields: [tenantId], references: [id])
   memberships CompanyMembership[]
@@ -200,12 +203,13 @@ model Setting {
 // ========================================================================
 
 model VehicleCategory {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   tenantId  String
   name      String // otomobil, suv, elektrikli, ticari, motosiklet...
   code      String? // slug / value: otomobil, suv, elektrikli_ara_, etc.
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant Tenant  @relation(fields: [tenantId], references: [id])
   brands Brand[]
@@ -215,11 +219,12 @@ model VehicleCategory {
 }
 
 model Brand {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   tenantId   String
   name       String
   categoryId String? // Hangi araç kategorisine ait
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  deletedAt  DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant   Tenant           @relation(fields: [tenantId], references: [id])
   category VehicleCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
@@ -230,10 +235,11 @@ model Brand {
 }
 
 model VehicleModel {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   brandId   String
   name      String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
 
@@ -241,11 +247,12 @@ model VehicleModel {
 }
 
 model BodyType {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   tenantId  String
   name      String
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 
@@ -253,12 +260,13 @@ model BodyType {
 }
 
 model Color {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   tenantId  String
   name      String
   hex       String?
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 
@@ -267,11 +275,12 @@ model Color {
 
 // Araç tipi: Filo, 2.El, Konsinye...
 model VehicleType {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   tenantId  String
   name      String
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 
@@ -280,13 +289,14 @@ model VehicleType {
 
 // İlan kaynakları (sahibinden, arabam.com...)
 model ListingSource {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   tenantId   String
   label      String
   domainLink String?
   iconUrl    String?
-  sortOrder  Int      @default(0)
-  createdAt  DateTime @default(now())
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  deletedAt  DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 }
@@ -316,13 +326,14 @@ model ProductCategory {
 }
 
 model DocumentCategory {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   tenantId  String
   value     String // arac, musteri, sozlesme...
   label     String
-  module    String   @default("ALL") // VEHICLE, CUSTOMER, CONTRACT, INVOICE, ALL veya virgülle ayrılmış liste
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  module    String    @default("ALL") // VEHICLE, CUSTOMER, CONTRACT, INVOICE, ALL veya virgülle ayrılmış liste
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant Tenant         @relation(fields: [tenantId], references: [id])
   types  DocumentType[]
@@ -331,13 +342,14 @@ model DocumentCategory {
 }
 
 model DocumentType {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   tenantId   String
   categoryId String
   value      String // trafik_sigortasi, kasko, ruhsat...
   label      String
-  sortOrder  Int      @default(0)
-  createdAt  DateTime @default(now())
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  deletedAt  DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant   Tenant           @relation(fields: [tenantId], references: [id])
   category DocumentCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -354,6 +366,7 @@ model ContractTemplate {
   isDefault Boolean      @default(false)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
 }
@@ -408,6 +421,7 @@ model CashRegister {
   isActive       Boolean          @default(true)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
+  deletedAt      DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   linkedBank    CashRegister?     @relation("LinkedBank", fields: [linkedBankId], references: [id], onDelete: SetNull)
   linkedSources CashRegister[]    @relation("LinkedBank")
@@ -444,6 +458,7 @@ model FinanceMovement {
   createdById    String?
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
+  deletedAt      DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   cashRegister CashRegister?       @relation(fields: [cashRegisterId], references: [id], onDelete: Restrict)
   cheque       Cheque?             @relation(fields: [chequeId], references: [id], onDelete: Restrict)
@@ -477,6 +492,7 @@ model Cheque {
   description     String?         @db.Text
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+  deletedAt       DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   movements FinanceMovement[]
 
@@ -560,6 +576,7 @@ model Vehicle {
   companyId String
   status    VehicleStatus @default(STOKTA)
   isActive  Boolean       @default(true)
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   // Kimlik / katalog
   plate             String
@@ -673,6 +690,7 @@ model VehicleShareLink {
   isActive     Boolean   @default(true)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
@@ -690,6 +708,7 @@ model VehiclePhoto {
   thumbUrl  String?
   sortOrder Int              @default(0)
   createdAt DateTime         @default(now())
+  deletedAt DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
@@ -697,13 +716,14 @@ model VehiclePhoto {
 }
 
 model VehicleTramerRecord {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   vehicleId   String
   date        DateTime
-  amount      Decimal  @db.Decimal(15, 2)
-  description String   @db.Text
+  amount      Decimal   @db.Decimal(15, 2)
+  description String    @db.Text
   photoUrl    String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+  deletedAt   DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
@@ -725,11 +745,12 @@ model VehiclePurchaseInstallment {
 }
 
 model VehicleListingUrl {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   vehicleId       String
   listingSourceId String?
-  url             String   @db.Text
-  createdAt       DateTime @default(now())
+  url             String    @db.Text
+  createdAt       DateTime  @default(now())
+  deletedAt       DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
@@ -825,6 +846,7 @@ model PurchaseInvoice {
   erpCode               String?
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
+  deletedAt             DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   @@index([companyId])
   @@index([vehicleId])
@@ -861,6 +883,7 @@ model SalesInvoice {
   erpCode               String?
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
+  deletedAt             DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   @@index([companyId])
   @@index([vehicleId])
@@ -886,6 +909,7 @@ model RentalInvoice {
   erpCode           String?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+  deletedAt         DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   @@index([companyId])
   @@index([vehicleId])
@@ -918,6 +942,7 @@ model Expense {
   erpCode           String?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+  deletedAt         DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   lines ExpenseLine[]
 
@@ -1035,6 +1060,7 @@ model SalesContract {
   documentNo              String
   contractDate            DateTime
   validUntil              DateTime?
+  deliveryDate            DateTime? // araç teslim tarihi (sözleşme maddesi)
   price                   Decimal             @db.Decimal(15, 2)
   vatRate                 Decimal             @default(0) @db.Decimal(5, 2)
   vatAmount               Decimal             @default(0) @db.Decimal(15, 2)
@@ -1094,6 +1120,7 @@ model Document {
   uploadedById  String
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
+  deletedAt     DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   @@index([companyId])
   @@index([companyId, referenceType, referenceId])
@@ -1175,6 +1202,7 @@ model Lead {
   convertedAt        DateTime?
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
+  deletedAt          DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
   interestedVehicles LeadInterestedVehicle[]
   testDrives         LeadTestDrive[]
@@ -1215,6 +1243,9 @@ model LeadTestDrive {
   feedbackNotes   String?         @db.Text
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+  // Silme yok: kayıt gizlenir (soft delete), kullanıcı silindi görür
+  deletedAt       DateTime?
+  deletedById     String?
 
   lead    Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
@@ -1226,28 +1257,74 @@ model LeadTestDrive {
 }
 
 model LeadQuote {
-  id             String      @id @default(cuid())
-  companyId      String
-  leadId         String
-  vehicleId      String
-  quoteNumber    String // Örn: TKL-2026-0001
-  vehiclePrice   Decimal     @db.Decimal(15, 2)
-  offeredPrice   Decimal     @db.Decimal(15, 2)
-  discountAmount Decimal?    @default(0) @db.Decimal(15, 2)
-  paymentType    String? // Nakit, Kredi, Takas, Kısmi Vadeli
-  validUntil     DateTime?
-  status         QuoteStatus @default(DRAFT)
-  terms          String?     @db.Text
-  notes          String?     @db.Text
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                  String                 @id @default(cuid())
+  companyId           String
+  leadId              String
+  vehicleId           String
+  quoteNumber         String // Örn: TKL-2026-0001
+  vehiclePrice        Decimal                @db.Decimal(15, 2)
+  offeredPrice        Decimal                @db.Decimal(15, 2)
+  discountAmount      Decimal?               @default(0) @db.Decimal(15, 2)
+  paymentType         String? // Nakit, Kredi, Takas, Kısmi Vadeli
+  validUntil          DateTime?
+  status              QuoteStatus            @default(DRAFT)
+  terms               String?                @db.Text
+  notes               String?                @db.Text
+  // Müşteriye özel paylaşım linki (/q/:shareToken) — araç satılınca, süre dolunca ya da iptal edilince kapanır
+  shareToken          String?                @unique
+  shareRevokedAt      DateTime?
+  viewCount           Int                    @default(0)
+  lastViewedAt        DateTime?
+  // Müşterinin linkten verdiği yanıt
+  customerResponse    QuoteCustomerResponse?
+  customerRespondedAt DateTime?
+  createdById         String?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  // Silme yok: kayıt gizlenir (soft delete), kullanıcı silindi görür
+  deletedAt           DateTime?
+  deletedById         String?
 
-  lead    Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  lead    Lead              @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  vehicle Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  options LeadQuoteOption[]
 
   @@index([companyId])
   @@index([leadId])
   @@index([vehicleId])
+}
+
+/// Teklifteki ödeme seçenekleri (peşin / kredili / takaslı / senetli)
+model LeadQuoteOption {
+  id               String          @id @default(cuid())
+  quoteId          String
+  type             QuoteOptionType
+  label            String
+  price            Decimal         @db.Decimal(15, 2) // bu seçenekte toplam araç bedeli
+  downPayment      Decimal?        @db.Decimal(15, 2) // peşinat
+  tradeInValue     Decimal?        @db.Decimal(15, 2) // takas aracı değeri
+  tradeInNote      String? // takas aracı (plaka/model)
+  installmentCount Int?
+  monthlyPayment   Decimal?        @db.Decimal(15, 2)
+  interestRate     Decimal?        @db.Decimal(5, 2) // aylık faiz %
+  note             String?         @db.Text
+  sortOrder        Int             @default(0)
+
+  quote LeadQuote @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@index([quoteId])
+}
+
+enum QuoteOptionType {
+  CASH // Peşin
+  LOAN // Banka kredisi
+  TRADE_IN // Takas
+  INSTALLMENT // Senet / taksit
+}
+
+enum QuoteCustomerResponse {
+  ACCEPTED // "Teklifi kabul ediyorum"
+  CALLBACK // "Beni arayın"
 }
 
 model LeadActivity {

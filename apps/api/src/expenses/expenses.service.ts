@@ -9,6 +9,7 @@ import {
   QueryExpensesDto,
   UpdateExpenseDto,
 } from "./dto/expense.dto";
+import { softDeleteData } from "../prisma/soft-delete";
 
 @Injectable()
 export class ExpensesService {
@@ -141,7 +142,7 @@ export class ExpensesService {
 
   async remove(companyId: string, id: string) {
     await this.ensureExists(companyId, id);
-    await this.prisma.expense.delete({ where: { id } });
+    await this.prisma.expense.update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 

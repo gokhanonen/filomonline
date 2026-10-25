@@ -16,6 +16,7 @@ import {
   UpdateDocumentTypeDto,
 } from "./dto/document-meta.dto";
 import { DemoVehicleDocContext } from "./demo-document-generator";
+import { createOrRestore, softDeleteData } from "../prisma/soft-delete";
 
 /** Varsayılan evrak yapısı ("Varsayılanları Yükle") */
 export const DEFAULT_DOCUMENT_STRUCTURE: {
@@ -101,7 +102,7 @@ export class DocumentsService {
           : {}),
       },
       orderBy: { sortOrder: "asc" },
-      include: { types: { orderBy: { sortOrder: "asc" } } },
+      include: { types: { where: { deletedAt: null }, orderBy: { sortOrder: "asc" } } },
     });
   }
 
@@ -109,14 +110,12 @@ export class DocumentsService {
 
   async createCategory(tenantId: string, dto: CreateDocumentCategoryDto) {
     try {
-      return await this.prisma.documentCategory.create({
-        data: {
-          tenantId,
-          value: dto.value,
-          label: dto.label,
-          module: dto.module || "ALL",
-          sortOrder: dto.sortOrder ?? 0,
-        },
+      return await createOrRestore(this.prisma.documentCategory, { tenantId, value: dto.value }, {
+        tenantId,
+        value: dto.value,
+        label: dto.label,
+        module: dto.module || "ALL",
+        sortOrder: dto.sortOrder ?? 0,
       });
     } catch (e) {
       throw this.mapError(e);
@@ -132,21 +131,19 @@ export class DocumentsService {
     await this.ensureCategory(tenantId, id);
     const used = await this.prisma.document.count({ where: { categoryId: id } });
     if (used) throw new BadRequestException("Bu kategoride kayıtlı evrak var, silinemez");
-    await this.prisma.documentCategory.delete({ where: { id } });
+    await this.prisma.documentCategory.update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 
   async createType(tenantId: string, dto: CreateDocumentTypeDto) {
     await this.ensureCategory(tenantId, dto.categoryId);
     try {
-      return await this.prisma.documentType.create({
-        data: {
-          tenantId,
-          categoryId: dto.categoryId,
-          value: dto.value,
-          label: dto.label,
-          sortOrder: dto.sortOrder ?? 0,
-        },
+      return await createOrRestore(this.prisma.documentType, { categoryId: dto.categoryId, value: dto.value }, {
+        tenantId,
+        categoryId: dto.categoryId,
+        value: dto.value,
+        label: dto.label,
+        sortOrder: dto.sortOrder ?? 0,
       });
     } catch (e) {
       throw this.mapError(e);
@@ -162,7 +159,7 @@ export class DocumentsService {
     await this.ensureType(tenantId, id);
     const used = await this.prisma.document.count({ where: { typeId: id } });
     if (used) throw new BadRequestException("Bu tipte kayıtlı evrak var, silinemez");
-    await this.prisma.documentType.delete({ where: { id } });
+    await this.prisma.documentType.update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -174,14 +171,12 @@ export class DocumentsService {
         where: { tenantId, value: cat.value },
       });
       if (!category) {
-        category = await this.prisma.documentCategory.create({
-          data: {
-            tenantId,
-            value: cat.value,
-            label: cat.label,
-            module: cat.module || "ALL",
-            sortOrder: ci + 1,
-          },
+        category = await createOrRestore<NonNullable<typeof category>>(this.prisma.documentCategory, { tenantId, value: cat.value }, {
+          tenantId,
+          value: cat.value,
+          label: cat.label,
+          module: cat.module || "ALL",
+          sortOrder: ci + 1,
         });
         created++;
       } else {
@@ -195,8 +190,8 @@ export class DocumentsService {
           where: { categoryId: category.id, value },
         });
         if (!exists) {
-          await this.prisma.documentType.create({
-            data: { tenantId, categoryId: category.id, value, label, sortOrder: ti + 1 },
+          await createOrRestore(this.prisma.documentType, { categoryId: category.id, value }, {
+            tenantId, categoryId: category.id, value, label, sortOrder: ti + 1,
           });
           created++;
         }
@@ -322,9 +317,8 @@ export class DocumentsService {
   async remove(companyId: string, id: string) {
     const doc = await this.prisma.document.findFirst({ where: { id, companyId } });
     if (!doc) throw new NotFoundException("Doküman bulunamadı");
-    await this.prisma.document.delete({ where: { id } });
-    if (doc.fileKey) await this.storage.delete(doc.fileKey);
-    if (doc.thumbKey) await this.storage.delete(doc.thumbKey);
+    // Dosya depoda kalır; kayıt gizlenir
+    await this.prisma.document.update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 }

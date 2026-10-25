@@ -15,6 +15,7 @@ import {
   UpdateSimpleCatalogDto,
 } from "./dto/catalog.dto";
 import { seedDefaultsForTenant } from "./catalog-seed.helper";
+import { createOrRestore, softDeleteData } from "../prisma/soft-delete";
 
 // İsim bazlı basit katalog varlıkları (hepsi tenant kapsamlı, unique [tenantId,name])
 type SimpleEntity = "color" | "bodyType" | "vehicleType" | "vehicleCategory";
@@ -41,7 +42,7 @@ export class CatalogService {
           where: { tenantId },
           orderBy: { name: "asc" },
           include: {
-            models: { orderBy: { name: "asc" } },
+            models: { where: { deletedAt: null }, orderBy: { name: "asc" } },
             category: { select: { id: true, name: true } },
           },
         }),
@@ -94,7 +95,7 @@ export class CatalogService {
   async removeListingSource(tenantId: string, id: string) {
     const found = await this.prisma.listingSource.findFirst({ where: { id, tenantId } });
     if (!found) throw new NotFoundException("İlan kaynağı bulunamadı");
-    await this.prisma.listingSource.delete({ where: { id } });
+    await this.prisma.listingSource.update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -110,7 +111,7 @@ export class CatalogService {
     const data: Record<string, unknown> = { tenantId, name: dto.name };
     if (entity === "color" && dto.hex) data.hex = dto.hex;
     try {
-      return await this.delegate(entity).create({ data });
+      return await createOrRestore(this.delegate(entity), { tenantId, name: dto.name }, data);
     } catch (e) {
       throw this.mapError(e);
     }
@@ -135,7 +136,7 @@ export class CatalogService {
 
   async remove(entity: SimpleEntity, tenantId: string, id: string) {
     await this.ensure(entity, tenantId, id);
-    await this.delegate(entity).delete({ where: { id } });
+    await this.delegate(entity).update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -148,7 +149,7 @@ export class CatalogService {
       },
       orderBy: { name: "asc" },
       include: {
-        models: { orderBy: { name: "asc" } },
+        models: { where: { deletedAt: null }, orderBy: { name: "asc" } },
         category: { select: { id: true, name: true } },
       },
     });
@@ -156,9 +157,11 @@ export class CatalogService {
 
   async createBrand(tenantId: string, dto: CreateBrandDto) {
     try {
-      return await this.prisma.brand.create({
-        data: { tenantId, name: dto.name, categoryId: dto.categoryId },
-      });
+      return await createOrRestore(
+        this.prisma.brand,
+        { tenantId, categoryId: dto.categoryId ?? null, name: dto.name },
+        { tenantId, name: dto.name, categoryId: dto.categoryId },
+      );
     } catch (e) {
       throw this.mapError(e);
     }
@@ -176,7 +179,7 @@ export class CatalogService {
   async removeBrand(tenantId: string, id: string) {
     const brand = await this.prisma.brand.findFirst({ where: { id, tenantId } });
     if (!brand) throw new NotFoundException("Marka bulunamadı");
-    await this.prisma.brand.delete({ where: { id } });
+    await this.prisma.brand.update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -184,7 +187,7 @@ export class CatalogService {
   async listModels(tenantId: string, brandId?: string) {
     if (brandId) await this.assertBrand(tenantId, brandId);
     return this.prisma.vehicleModel.findMany({
-      where: { brand: { tenantId }, ...(brandId ? { brandId } : {}) },
+      where: { brand: { tenantId, deletedAt: null }, ...(brandId ? { brandId } : {}) },
       orderBy: { name: "asc" },
     });
   }
@@ -192,9 +195,7 @@ export class CatalogService {
   async createModel(tenantId: string, dto: CreateModelDto) {
     await this.assertBrand(tenantId, dto.brandId);
     try {
-      return await this.prisma.vehicleModel.create({
-        data: { brandId: dto.brandId, name: dto.name },
-      });
+      return await createOrRestore(this.prisma.vehicleModel, { brandId: dto.brandId, name: dto.name }, { brandId: dto.brandId, name: dto.name });
     } catch (e) {
       throw this.mapError(e);
     }
@@ -205,7 +206,7 @@ export class CatalogService {
       where: { id, brand: { tenantId } },
     });
     if (!model) throw new NotFoundException("Model bulunamadı");
-    await this.prisma.vehicleModel.delete({ where: { id } });
+    await this.prisma.vehicleModel.update({ where: { id }, data: softDeleteData() });
     return { success: true };
   }
 

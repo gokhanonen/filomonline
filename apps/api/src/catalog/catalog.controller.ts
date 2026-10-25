@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -30,9 +31,16 @@ const ENTITY_MAP = {
   "body-types": "bodyType",
   "vehicle-types": "vehicleType",
   "vehicle-categories": "vehicleCategory",
+  categories: "vehicleCategory",
 } as const;
 
 type EntitySlug = keyof typeof ENTITY_MAP;
+
+function resolveEntity(slug: string): (typeof ENTITY_MAP)[EntitySlug] {
+  const mapped = (ENTITY_MAP as Record<string, (typeof ENTITY_MAP)[EntitySlug]>)[slug];
+  if (!mapped) throw new NotFoundException(`Bilinmeyen katalog varlığı: ${slug}`);
+  return mapped;
+}
 
 @ApiTags("catalog")
 @ApiBearerAuth()
@@ -123,40 +131,40 @@ export class CatalogController {
     return this.catalog.removeListingSource(activeTenantId(user), id);
   }
 
-  // --- Basit varlıklar (colors / body-types / vehicle-types / vehicle-categories) ---
+  // --- Basit varlıklar (colors / body-types / vehicle-types / vehicle-categories / categories) ---
   @Get(":entity")
-  list(@CurrentUser() user: AuthUser, @Param("entity") entity: EntitySlug) {
-    return this.catalog.list(ENTITY_MAP[entity], activeTenantId(user));
+  list(@CurrentUser() user: AuthUser, @Param("entity") entity: string) {
+    return this.catalog.list(resolveEntity(entity), activeTenantId(user));
   }
 
   @UseGuards(CompanyAdminGuard)
   @Post(":entity")
   create(
     @CurrentUser() user: AuthUser,
-    @Param("entity") entity: EntitySlug,
+    @Param("entity") entity: string,
     @Body() dto: SimpleCatalogDto,
   ) {
-    return this.catalog.create(ENTITY_MAP[entity], activeTenantId(user), dto);
+    return this.catalog.create(resolveEntity(entity), activeTenantId(user), dto);
   }
 
   @UseGuards(CompanyAdminGuard)
   @Patch(":entity/:id")
   update(
     @CurrentUser() user: AuthUser,
-    @Param("entity") entity: EntitySlug,
+    @Param("entity") entity: string,
     @Param("id") id: string,
     @Body() dto: UpdateSimpleCatalogDto,
   ) {
-    return this.catalog.update(ENTITY_MAP[entity], activeTenantId(user), id, dto);
+    return this.catalog.update(resolveEntity(entity), activeTenantId(user), id, dto);
   }
 
   @UseGuards(CompanyAdminGuard)
   @Delete(":entity/:id")
   remove(
     @CurrentUser() user: AuthUser,
-    @Param("entity") entity: EntitySlug,
+    @Param("entity") entity: string,
     @Param("id") id: string,
   ) {
-    return this.catalog.remove(ENTITY_MAP[entity], activeTenantId(user), id);
+    return this.catalog.remove(resolveEntity(entity), activeTenantId(user), id);
   }
 }

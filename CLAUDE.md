@@ -24,6 +24,19 @@ Mimari kararlar ve tenant kuralları: `ARCHITECTURE.md` (ÖNCE ONU OKU).
 - Para alanları `Decimal @db.Decimal(15,2)`, oranlar `Decimal(5,2)`.
 - Yeni endpoint'ler varsayılan JWT korumalı (`@Public` ile açılır); şirket bağlamı
   gerektirmeyenler `@SkipCompany` ile işaretlenir; yetki `@RequirePermissions('modul.eylem')`.
+- **Tek Giriş Noktası — Ürün/UX Bakış Açısı (Kalıcı Kural):**
+  - Sol menüde her modülün TEK giriş öğesi vardır: Operasyon (araçlar), CRM (potansiyeller), Finans (Panel + Hareketler), Tanımlar. Kullanıcı her şeye tek yerden, ana kaydın içinden ulaşır.
+  - Alt işler için ayrı menü öğesi / ayrı liste sayfası AÇILMAZ. İşler ait oldukları kaydın içinden yapılır:
+    - Araç kartı → radial menü (teklif ver, deneme sürüşü, masraf, satış, opsiyon, sözleşme, evrak, lokasyon, statü…).
+    - Potansiyel (CRM) detayı → sekmeler (ilgilendiği araçlar, deneme sürüşleri, teklifler, geçmiş).
+  - Yeni bir özellik eklerken ilk soru: "Bu iş hangi kaydın içinden yapılır?" Yeni menü öğesi değil, o kayda aksiyon/sekme eklenir.
+  - Genel bakış ihtiyacı (bugünkü sürüşler, bekleyen teklifler, toplamlar) ayrı sayfa olmaz; ilgili ana sayfaya sayaç/filtre/kart olarak eklenir.
+  - Kaldırılan sayfaların eski adresleri silinmez, ana sayfaya yönlendirilir (bildirim/yer imi linkleri kırılmasın). Örn. `/crm/test-drives`, `/crm/quotes` → `/crm/leads`.
+- **Veri Asla Fiziksel Silinmez (Kalıcı Kural):** "Sil" işlemi kaydı gizler — `update({ data: softDeleteData() })` ile `deletedAt` yazılır, satır kullanıcıya görünmez, dosyalar depoda kalır.
+  - Merkezi mekanizma `apps/api/src/prisma/soft-delete.ts`: `SOFT_DELETE_MODELS` listesindeki modellerde PrismaService üzerinden yapılan okuma/güncelleme sorgularına otomatik `deletedAt: null` eklenir; bu modellerde `delete`/`deleteMany` çalışma anında hata verir. Yeni iş kaydı modeli eklerken `deletedAt DateTime?` alanını ekle ve listeye yaz.
+  - Otomatik filtre YALNIZ üst seviye sorguları kapsar: iç içe `include` listelerine (`photos`, `tramerSet`, `listingUrls`, `models`, `types`, `quotes`, `testDrives`…) ve ilişki filtrelerine (`movement: {…}`) `deletedAt: null` elle yazılır.
+  - Gizli kayda bilerek erişmek (geri getirme, arşiv) için where'e `deletedAt` yaz; filtre devreye girmez. Benzersiz adlı tanımlarda (marka, renk, evrak tipi…) `createOrRestore` kullan — aynı adla tekrar eklenen gizli kayıt geri gelir.
+  - Fiziksel silme yalnız demo seed betiklerinde (düz `PrismaClient`) ve düzenlemede satır yenilemede (masraf satırı, sözleşme taksiti) kalır; yetki kayıtları (rol, firma üyeliği) güvenlik nedeniyle gerçekten silinir.
 - **UI & Form Standartları (Kalıcı Kural):**
   - Cari/Tedarikçi/Müşteri, Araç, Hizmet/Ürün/Parça kartı, Kasa, Lokasyon gibi liste verisi içeren TÜM seçim alanlarında standart HTML `<select>` YERİNE mutlaka aranabilir Autocomplete / Combobox (`SearchableSelect`) bileşeni kullanılmalıdır. 100+ kayıt olduğunda kullanıcının arayarak bulması şarttır.
   - Masraf formunda "Belge Tipi" seçtirilmez; masraf her zaman "Alınan Masraf"tır (`invoiceType: "RECEIVED"`). Masraf kalemlerinde anlamsız "Tip" ayrımı yerine doğrudan aranabilir Hizmet/Parça kartı seçilmeli ve kart seçildiğinde ad, birim fiyat ve KDV otomatik dolmalıdır.
@@ -49,6 +62,7 @@ Mimari kararlar ve tenant kuralları: `ARCHITECTURE.md` (ÖNCE ONU OKU).
 - Cariye bağlı satır ekstreye düşer: IN → cari alacak, OUT → cari borç. Cari bakiye = faturalar + hareketler (`LedgerService`), `Account.balance` sadece önbellek.
 - Fatura kapatma `PaymentAllocation` ile (SALES/PURCHASE/RENTAL/EXPENSE); karşılıksız/iade çekin eşleştirmesi faturayı kapatmaz. Vade: faturalarda `dueDate` (boşsa belge tarihi).
 - Şemayı `prisma db push` ile DEĞİL migration ile değiştir (uzak DB, geçmiş kopmasın).
+- UI: menüde yalnız **Panel** (`/finance`, `GET /finance/dashboard`) ve **Hareketler** (`/finance/movements`, `GET /finance/ledger` — hareketler + satış/alış/kira faturaları + masraflar tek akış). Kasa & Banka / Çek / Alacak-Borç / Ekstre panelden açılır; `/invoices` ve `/expenses` Hareketler'e yönlenir. Yeni kayıt girişleri `FinanceActions` bileşeninde.
 
 ## Komutlar
 ```bash

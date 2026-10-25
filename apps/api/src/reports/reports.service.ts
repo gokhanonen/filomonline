@@ -52,7 +52,7 @@ export class ReportsService {
         _count: true,
       }),
       this.prisma.document.count({ where: { companyId } }),
-      this.prisma.vehiclePhoto.count({ where: { vehicle: { companyId } } }),
+      this.prisma.vehiclePhoto.count({ where: { vehicle: { companyId, deletedAt: null } } }),
       this.prisma.expense.findMany({
         where: { companyId, documentDate: { gte: sixMonthsAgo } },
         select: { grandTotal: true, documentDate: true },

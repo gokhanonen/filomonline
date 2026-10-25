@@ -16,6 +16,7 @@ import {
 
 import { ActivityService } from "../activity/activity.service";
 import { calculateSalesRegime } from "./sales-regime.util";
+import { softDeleteData } from "../prisma/soft-delete";
 
 const round = (n: number) => Number(n.toFixed(2));
 
@@ -429,7 +430,7 @@ export class InvoicesService {
       if (inv.integrationStatus === "ENTEGRE_EDILDI") {
         throw new BadRequestException("Entegre edilmiş faturalar silinemez.");
       }
-      await this.prisma.salesInvoice.delete({ where: { id } });
+      await this.prisma.salesInvoice.update({ where: { id }, data: softDeleteData() });
 
       await this.prisma.vehicle.update({
         where: { id: inv.vehicleId },
@@ -451,7 +452,7 @@ export class InvoicesService {
       if (inv.integrationStatus === "ENTEGRE_EDILDI") {
         throw new BadRequestException("Entegre edilmiş faturalar silinemez.");
       }
-      await this.prisma.purchaseInvoice.delete({ where: { id } });
+      await this.prisma.purchaseInvoice.update({ where: { id }, data: softDeleteData() });
       return { success: true };
     } else if (type === "rental") {
       const inv = await this.prisma.rentalInvoice.findFirst({ where: { id, companyId } });
@@ -459,7 +460,7 @@ export class InvoicesService {
       if (inv.integrationStatus === "ENTEGRE_EDILDI") {
         throw new BadRequestException("Entegre edilmiş faturalar silinemez.");
       }
-      await this.prisma.rentalInvoice.delete({ where: { id } });
+      await this.prisma.rentalInvoice.update({ where: { id }, data: softDeleteData() });
       return { success: true };
     }
     throw new BadRequestException("Geçersiz fatura tipi");
