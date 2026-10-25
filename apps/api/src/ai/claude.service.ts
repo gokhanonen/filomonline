@@ -343,7 +343,18 @@ export class ClaudeService {
     const config = await this.getActiveConfig();
     const promptText = input.prompt?.trim() || "";
 
-    // Eğer API anahtarı tanımlı ise canlı Claude 3.5 Haiku ile çözümle
+    // 1. Gemini Vision Desteği (GEMINI_API_KEY ortam değişkeni varsa canlı görsel analizi yapar)
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey && input.image) {
+      try {
+        const geminiRes = await this.callGeminiVision(geminiKey, input);
+        if (geminiRes) return geminiRes;
+      } catch (err) {
+        this.logger.warn(`Canlı Gemini Vision çağrısı başarısız oldu: ${(err as Error).message}`);
+      }
+    }
+
+    // 2. Claude 3.5 Haiku Desteği (Eğer API anahtarı tanımlı ise)
     if (config.apiKey) {
       try {
         const images: ClaudeImageContent[] = input.image
@@ -374,8 +385,60 @@ export class ClaudeService {
       }
     }
 
-    // Fallback: API anahtarı henüz girilmemişse veya çevrimdışı testlerde kural tabanlı motor
+    // 3. Fallback: API anahtarı girilmemişse veya çevrimdışı testlerde kural tabanlı motor
     return this.fallbackAssist(input);
+  }
+
+  /** Google Gemini REST Vision Çağrısı */
+  private async callGeminiVision(apiKey: string, input: AiAssistInput): Promise<AiAssistResult | null> {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const promptText = input.prompt?.trim() || "Bu görseldeki ehliyet veya araç ruhsatı belgesini incele ve JSON formatında bilgileri çıkar.";
+
+    const payload = {
+      contents: [
+        {
+          parts: [
+            { text: `${ASSIST_SYSTEM_PROMPT}\n\nKullanıcı İsteği: ${promptText}` },
+            {
+              inlineData: {
+                mimeType: input.image!.mediaType,
+                data: input.image!.base64Data,
+              },
+            },
+          ],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.1,
+        maxOutputTokens: 1500,
+      },
+    };
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      this.logger.warn(`Gemini API yanıt hatası (${res.status}): ${errText}`);
+      return null;
+    }
+
+    const data: any = await res.json();
+    const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!candidateText) return null;
+
+    const cleaned = candidateText
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim();
+
+    const parsed = JSON.parse(cleaned) as AiAssistResult;
+    parsed.modelUsed = "Google Gemini 1.5 Flash (Canlı Vision)";
+    return parsed;
   }
 
   /** Kural tabanlı akıllı çıkarım motoru (API anahtarsız / çevrimdışı anında test için) */
@@ -385,8 +448,66 @@ export class ClaudeService {
     const hasImage = Boolean(input.image);
     const hint = input.docTypeHint;
 
-    // 1. Senaryo: Ehliyet / Sürücü Belgesi
-    if (hint === "EHLIYET" || prompt.includes("ehliyet") || prompt.includes("sürücü") || (hasImage && !prompt.includes("ruhsat"))) {
+    // 1. Senaryo: Ruhsat / Araç Tescil Belgesi
+    // Öncelik: Eğer kullanıcı Ruhsat demişse, hint RUHSAT ise veya görsel gelip ehliyet/müşteri denmemişse RUHSAT açılır.
+    const isExplicitRuhsat =
+      hint === "RUHSAT" ||
+      prompt.includes("ruhsat") ||
+      prompt.includes("tescil") ||
+      prompt.includes("plaka") ||
+      prompt.includes("şasi") ||
+      prompt.includes("motor no");
+
+    const isGenericVehicleImage =
+      hasImage &&
+      hint !== "EHLIYET" &&
+      !prompt.includes("ehliyet") &&
+      !prompt.includes("sürücü") &&
+      !prompt.includes("surucu") &&
+      !prompt.includes("kimlik") &&
+      !prompt.includes("müşteri");
+
+    if (isExplicitRuhsat || isGenericVehicleImage) {
+      const registration: ExtractedVehicleRegistration = {
+        plate: "34 FILO 2026",
+        brand: "Renault",
+        model: "Megane Sedan 1.5 dCi Touch",
+        year: 2022,
+        vin: "VF1RFB00465891234",
+        engineNo: "K9K872U123456",
+        color: "Beyaz",
+        fuelType: "DIZEL",
+        transmission: "OTOMATIK",
+        registrationDate: "2022-04-12",
+      };
+
+      return {
+        intent: "RUHSAT",
+        title: "Araç Ruhsat Belgesi Tespit Edildi",
+        summary: "Araç ruhsatı başarıyla okundu: 34 FILO 2026 - Renault Megane (2022, Beyaz). Araç kartı açmaya hazır.",
+        data: { registration },
+        action: {
+          type: "OPEN_VEHICLE_MODAL",
+          url: "/vehicles?openNew=1",
+          params: registration,
+        },
+        modelUsed: "Filomonline Kural Motoru (Çevrimdışı/Demo)",
+        latencyMs: 140,
+      };
+    }
+
+    // 2. Senaryo: Ehliyet / Sürücü Belgesi
+    const isEhliyet =
+      hint === "EHLIYET" ||
+      prompt.includes("ehliyet") ||
+      prompt.includes("sürücü") ||
+      prompt.includes("surucu") ||
+      prompt.includes("kimlik") ||
+      prompt.includes("müşteri") ||
+      prompt.includes("cari") ||
+      prompt.includes("aday");
+
+    if (isEhliyet) {
       const license: ExtractedDriverLicense = {
         tcNo: "28491028472",
         fullName: "Burak Kaya",
@@ -412,36 +533,6 @@ export class ClaudeService {
         },
         modelUsed: "Filomonline Kural Motoru (Çevrimdışı/Demo)",
         latencyMs: 120,
-      };
-    }
-
-    // 2. Senaryo: Ruhsat / Araç Tescil Belgesi
-    if (hint === "RUHSAT" || prompt.includes("ruhsat") || prompt.includes("şasi") || prompt.includes("tescil")) {
-      const registration: ExtractedVehicleRegistration = {
-        plate: "34 FILO 2026",
-        brand: "Renault",
-        model: "Megane Sedan 1.5 dCi Touch",
-        year: 2022,
-        vin: "VF1RFB00465891234",
-        engineNo: "K9K872U123456",
-        color: "Beyaz",
-        fuelType: "DIZEL",
-        transmission: "OTOMATIK",
-        registrationDate: "2022-04-12",
-      };
-
-      return {
-        intent: "RUHSAT",
-        title: "Araç Ruhsat Belgesi Tespit Edildi",
-        summary: "Araç ruhsatı başarıyla okundu: 34 FILO 2026 - Renault Megane (2022, Beyaz). Araç kartı açmaya hazır.",
-        data: { registration },
-        action: {
-          type: "OPEN_VEHICLE_MODAL",
-          url: "/vehicles",
-          params: registration,
-        },
-        modelUsed: "Filomonline Kural Motoru (Çevrimdışı/Demo)",
-        latencyMs: 140,
       };
     }
 

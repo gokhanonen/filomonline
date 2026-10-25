@@ -31,6 +31,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
 
   // Prompt ve Görsel durumu
   const [prompt, setPrompt] = useState("");
+  const [docTypeHint, setDocTypeHint] = useState<"RUHSAT" | "EHLIYET" | "AUTO">("RUHSAT");
   const [selectedImage, setSelectedImage] = useState<{
     file: File;
     previewUrl: string;
@@ -57,6 +58,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
   useEffect(() => {
     if (open) {
       setPrompt("");
+      setDocTypeHint("RUHSAT");
       setSelectedImage(null);
       setResult(null);
       setLoading(false);
@@ -168,16 +170,15 @@ export function AiAssistantModal({ open, onClose }: Props) {
           });
         }
 
-        // Eğer prompt boşsa akıllı öneri metni koy
-        if (!prompt) {
-          const lowerName = file.name.toLowerCase();
-          if (lowerName.includes("ehliyet") || lowerName.includes("surucu")) {
-            setPrompt("Bu ehliyet belgesindeki kişi ve kimlik bilgilerini çözümle.");
-          } else if (lowerName.includes("ruhsat") || lowerName.includes("tescil")) {
-            setPrompt("Bu araç ruhsatındaki plaka, marka, model ve şasi no bilgilerini oku.");
-          } else {
-            setPrompt("Lütfen bu görseldeki araç veya müşteri belgesini analiz et.");
-          }
+        // Görsel yüklendiğinde akıllı belge tipi ve prompt belirleme
+        const lowerName = file.name.toLowerCase();
+        if (lowerName.includes("ehliyet") || lowerName.includes("surucu") || lowerName.includes("kimlik")) {
+          setDocTypeHint("EHLIYET");
+          setPrompt("Bu ehliyet belgesindeki kişi ve kimlik bilgilerini çözümle ve müşteri kartı aç.");
+        } else {
+          // Filomonline filo ve araç odaklı bir sistem olduğundan varsayılan Ruhsat'tır
+          setDocTypeHint("RUHSAT");
+          setPrompt("Bu araç ruhsatındaki plaka, marka, model, motor ve şasi no bilgilerini oku ve araç kartı aç.");
         }
       };
 
@@ -262,6 +263,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
     try {
       const payload: any = {
         prompt: prompt.trim(),
+        docTypeHint: selectedImage ? docTypeHint : undefined,
       };
 
       if (selectedImage) {
@@ -278,7 +280,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [prompt, selectedImage]);
+  }, [prompt, selectedImage, docTypeHint]);
 
   // Aksiyon 1: Ehliyet ile CRM Aday Müşteri Aç
   const handleOpenLead = () => {
@@ -384,43 +386,82 @@ export function AiAssistantModal({ open, onClose }: Props) {
         <div className="space-y-4 p-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
           {/* Görsel Önizleme (Varsa) */}
           {selectedImage && (
-            <div className="relative flex items-center gap-3 rounded-xl border border-primary-200 bg-primary-50/50 p-2.5 dark:border-primary-900/50 dark:bg-primary-950/20">
-              <img
-                src={selectedImage.previewUrl}
-                alt="Yüklenen Belge"
-                className="size-16 rounded-lg object-cover border border-primary-200 dark:border-primary-800 shadow-2xs"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <Badge color="primary" variant="soft" className="text-[10px]">
-                    Belge Eklendi
-                  </Badge>
-                  {selectedImage.isResized && (
-                    <Badge color="success" variant="soft" className="text-[10px]">
-                      &lt;200 KB Optimize Edildi
+            <div className="relative rounded-xl border border-primary-200 bg-primary-50/50 p-3 dark:border-primary-900/50 dark:bg-primary-950/20">
+              <div className="flex items-center gap-3">
+                <img
+                  src={selectedImage.previewUrl}
+                  alt="Yüklenen Belge"
+                  className="size-16 rounded-lg object-cover border border-primary-200 dark:border-primary-800 shadow-2xs"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <Badge color="primary" variant="soft" className="text-[10px]">
+                      Belge Eklendi
                     </Badge>
-                  )}
-                  <span className="truncate text-xs font-semibold text-gray-800 dark:text-dark-100">
-                    {selectedImage.file.name}
-                  </span>
+                    {selectedImage.isResized && (
+                      <Badge color="success" variant="soft" className="text-[10px]">
+                        &lt;200 KB Optimize Edildi
+                      </Badge>
+                    )}
+                    <span className="truncate text-xs font-semibold text-gray-800 dark:text-dark-100">
+                      {selectedImage.file.name}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-500 dark:text-dark-300 mt-1">
+                    <strong className="text-primary-700 dark:text-primary-300">{selectedImage.sizeKb} KB</strong>
+                    {selectedImage.originalSizeKb > selectedImage.sizeKb && (
+                      <span className="text-gray-400 dark:text-dark-400"> (Orijinal: {selectedImage.originalSizeKb} KB)</span>
+                    )}
+                    {" "}• OCR ve yapay zeka analizi için hazır
+                  </p>
                 </div>
-                <p className="text-[11px] text-gray-500 dark:text-dark-300 mt-1">
-                  <strong className="text-primary-700 dark:text-primary-300">{selectedImage.sizeKb} KB</strong>
-                  {selectedImage.originalSizeKb > selectedImage.sizeKb && (
-                    <span className="text-gray-400 dark:text-dark-400"> (Orijinal: {selectedImage.originalSizeKb} KB)</span>
-                  )}
-                  {" "}• OCR ve yapay zeka analizi için hazır
-                </p>
+                <Button
+                  isIcon
+                  variant="flat"
+                  onClick={() => setSelectedImage(null)}
+                  className="size-7 rounded-full text-gray-400 hover:text-error"
+                  title="Görseli Kaldır"
+                >
+                  <XMarkIcon className="size-4" />
+                </Button>
               </div>
-              <Button
-                isIcon
-                variant="flat"
-                onClick={() => setSelectedImage(null)}
-                className="size-7 rounded-full text-gray-400 hover:text-error"
-                title="Görseli Kaldır"
-              >
-                <XMarkIcon className="size-4" />
-              </Button>
+
+              {/* Belge Türü Seçim Butonları (Ruhsat vs Ehliyet) */}
+              <div className="mt-2.5 pt-2 border-t border-primary-200/60 dark:border-primary-800/60 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold text-gray-600 dark:text-dark-300">
+                  Belge Türü:
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDocTypeHint("RUHSAT");
+                      setPrompt("Bu araç ruhsatındaki plaka, marka, model, motor ve şasi no bilgilerini oku ve araç kartı aç.");
+                    }}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      docTypeHint === "RUHSAT"
+                        ? "bg-primary-600 text-white shadow-sm ring-2 ring-primary-500/30"
+                        : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 dark:bg-dark-700 dark:border-dark-600 dark:text-dark-200"
+                    }`}
+                  >
+                    🚗 Araç Ruhsatı (Araç Kartı Aç)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDocTypeHint("EHLIYET");
+                      setPrompt("Bu ehliyet belgesindeki kişi ve kimlik bilgilerini çözümle ve müşteri kartı aç.");
+                    }}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      docTypeHint === "EHLIYET"
+                        ? "bg-purple-600 text-white shadow-sm ring-2 ring-purple-500/30"
+                        : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 dark:bg-dark-700 dark:border-dark-600 dark:text-dark-200"
+                    }`}
+                  >
+                    🪪 Sürücü Ehliyeti (Müşteri Aç)
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
