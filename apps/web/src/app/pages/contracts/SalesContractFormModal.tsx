@@ -38,6 +38,22 @@ const today = () => new Date().toISOString().slice(0, 10);
 const fmtMoney = (n: number) =>
   n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₺";
 
+/** Ay ekleme yardımcı fonksiyonu (Ay sonu gün taşmalarını önler) */
+function addMonths(dateStr: string, monthsToAdd: number): string {
+  if (!dateStr) return "";
+  const [y, m, d] = dateStr.split("-").map(Number);
+  if (!y || !m || !d) return dateStr;
+
+  const targetMonthIndex = m - 1 + monthsToAdd;
+  const targetYear = y + Math.floor(targetMonthIndex / 12);
+  const targetMonth = ((targetMonthIndex % 12) + 12) % 12;
+
+  const maxDays = new Date(targetYear, targetMonth + 1, 0).getDate();
+  const targetDay = Math.min(d, maxDays);
+
+  return `${targetYear}-${String(targetMonth + 1).padStart(2, "0")}-${String(targetDay).padStart(2, "0")}`;
+}
+
 export function SalesContractFormModal({
   open,
   onClose,
@@ -77,7 +93,8 @@ export function SalesContractFormModal({
   const [notes, setNotes] = useState("");
   const [paymentNotes, setPaymentNotes] = useState("");
 
-  // Taksitler
+  // Taksitler & Hızlı Oluşturma
+  const [quickCount, setQuickCount] = useState<number | "">("");
   const [installments, setInstallments] = useState<
     Array<{ date: string; amount: number; type: string }>
   >([]);
@@ -207,13 +224,17 @@ export function SalesContractFormModal({
 
   // Taksit Ekle
   const addInstallment = () => {
-    const nextDate = new Date();
-    nextDate.setMonth(nextDate.getMonth() + installments.length + 1);
-    const dateStr = nextDate.toISOString().slice(0, 10);
-    const remaining = Math.max(0, grandTotal - totalInstallments);
+    let nextDate: string;
+    if (installments.length > 0) {
+      const lastDate = installments[installments.length - 1].date;
+      nextDate = addMonths(lastDate, 1);
+    } else {
+      nextDate = addMonths(contractDate || today(), 1);
+    }
+    const remaining = Math.max(0, Number((grandTotal - totalInstallments).toFixed(2)));
     setInstallments((prev) => [
       ...prev,
-      { date: dateStr, amount: remaining, type: "SENET" },
+      { date: nextDate, amount: remaining, type: "SENET" },
     ]);
   };
 
@@ -222,15 +243,50 @@ export function SalesContractFormModal({
     setInstallments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Taksit Güncelle
+  // Taksit Güncelle (İlk tarih değişirse sonrakileri otomatik öteler; ara taksitlerde manuel düzenlemeye izin verir)
   const updateInstallment = (
     index: number,
     field: "date" | "amount" | "type",
     val: any,
   ) => {
+    if (index === 0 && field === "date" && val) {
+      // 1. Taksit tarihi değiştiğinde sonraki taksitlerin tarihlerini otomatik güncelle
+      setInstallments((prev) =>
+        prev.map((inst, i) => {
+          if (i === 0) return { ...inst, date: val };
+          return { ...inst, date: addMonths(val, i) };
+        }),
+      );
+      return;
+    }
+
+    // Diğer taksitler veya tutar/tür değişikliklerinde yalnızca ilgili satırı güncelle
     setInstallments((prev) =>
       prev.map((inst, i) => (i === index ? { ...inst, [field]: val } : inst)),
     );
+  };
+
+  // Hızlı Taksit / Ödeme Planı Oluştur
+  const handleQuickGenerate = () => {
+    const count = Number(quickCount);
+    if (!count || count <= 0) {
+      toast.error("Lütfen geçerli bir taksit sayısı girin");
+      return;
+    }
+
+    const baseDate = contractDate ? addMonths(contractDate, 1) : addMonths(today(), 1);
+    const totalToDivide = grandTotal > 0 ? grandTotal : 0;
+    const baseAmount = count > 0 ? Math.floor((totalToDivide / count) * 100) / 100 : 0;
+    const diff = count > 0 ? Number((totalToDivide - baseAmount * count).toFixed(2)) : 0;
+
+    const newInsts = Array.from({ length: count }, (_, idx) => ({
+      date: addMonths(baseDate, idx),
+      amount: idx === 0 ? Number((baseAmount + diff).toFixed(2)) : baseAmount,
+      type: "SENET",
+    }));
+
+    setInstallments(newInsts);
+    toast.success(`${count} taksitlik ödeme planı oluşturuldu.`);
   };
 
   // Kaydet
@@ -590,79 +646,143 @@ export function SalesContractFormModal({
             </div>
           </div>
 
-          {/* 4. TAKSİT VE SENET PLANI */}
-          <div className="rounded-xl border border-gray-200 p-4 dark:border-dark-700 bg-white dark:bg-dark-800 space-y-3">
-            <div className="flex items-center justify-between border-b border-gray-150 pb-2 dark:border-dark-700">
-              <div className="flex items-center gap-2">
-                <CalendarDaysIcon className="size-5 text-primary-600" />
-                <h3 className="font-semibold text-gray-800 dark:text-dark-50">Ödeme & Taksit Planı</h3>
+          {/* 4. TAKSİT VE SENET PLANI (ÖDEME PLANI) */}
+          <div className="rounded-xl border border-gray-200 p-4 dark:border-dark-700 bg-white dark:bg-dark-800 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-gray-150 pb-3 dark:border-dark-700">
+              <div>
+                <div className="flex items-center gap-2">
+                  <CalendarDaysIcon className="size-5 text-primary-600" />
+                  <h3 className="font-bold tracking-tight text-gray-800 dark:text-dark-50">
+                    ÖDEME PLANI
+                  </h3>
+                </div>
+                <p className="mt-0.5 text-xs text-gray-400 dark:text-dark-400">
+                  İlk taksit tarihi değişirse sonrakiler otomatik güncellenir; ara tarihler manuel revize edilebilir.
+                </p>
               </div>
-              <Button
-                type="button"
-                variant="outlined"
-                className="gap-1.5 py-1 px-2.5 text-xs"
-                onClick={addInstallment}
-              >
-                <PlusIcon className="size-4" /> Taksit Ekle
-              </Button>
+
+              {/* Taksit Sayısı & Hızlı Oluştur */}
+              <div className="flex items-center gap-2">
+                <div className="w-28">
+                  <label className="text-[11px] font-semibold text-gray-500 block mb-1">
+                    Taksit Sayısı
+                  </label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={60}
+                    value={quickCount}
+                    onChange={(e) =>
+                      setQuickCount(e.target.value ? parseInt(e.target.value, 10) : "")
+                    }
+                    placeholder="Örn: 5"
+                    className="text-xs h-9 font-medium"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  className="h-9 text-xs font-semibold px-3 mt-auto whitespace-nowrap bg-gray-50 hover:bg-gray-100 dark:bg-dark-700 dark:hover:bg-dark-600"
+                  onClick={handleQuickGenerate}
+                >
+                  Hızlı Oluştur
+                </Button>
+              </div>
             </div>
 
             {installments.length === 0 ? (
-              <p className="text-xs italic text-gray-400 dark:text-dark-300 py-3 text-center">
-                Henüz taksit veya senet eklenmedi (Tamamı peşinat olarak kabul edilir).
+              <p className="text-xs italic text-gray-400 dark:text-dark-300 py-4 text-center">
+                Henüz taksit veya senet eklenmedi (Taksit sayısı girip Hızlı Oluştur'a tıklayabilir veya Taksit Ekle butonuyla manuel ekleyebilirsiniz).
               </p>
             ) : (
               <div className="space-y-2">
+                {/* Tablo Başlıkları */}
+                <div className="grid grid-cols-12 gap-2 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-dark-400 border-b border-gray-100 dark:border-dark-700">
+                  <div className="col-span-1 text-center">#</div>
+                  <div className="col-span-4">TARİH</div>
+                  <div className="col-span-4">TUTAR</div>
+                  <div className="col-span-2">TÜR</div>
+                  <div className="col-span-1 text-right"></div>
+                </div>
+
+                {/* Satırlar */}
                 {installments.map((inst, idx) => (
                   <div
                     key={idx}
-                    className="flex flex-wrap items-center gap-3 rounded-lg border border-gray-150 bg-gray-50/70 p-2.5 dark:border-dark-700 dark:bg-dark-700/40"
+                    className="grid grid-cols-12 items-center gap-2 rounded-lg border border-gray-150 bg-gray-50/70 p-2 dark:border-dark-700 dark:bg-dark-700/40"
                   >
-                    <span className="w-16 font-mono text-xs font-bold text-gray-600 dark:text-dark-300">
-                      {idx + 1}. Taksit
-                    </span>
+                    <div className="col-span-1 text-center font-mono text-xs font-bold text-gray-500 dark:text-dark-300">
+                      {idx + 1}
+                    </div>
 
-                    <div className="w-36">
+                    <div className="col-span-4">
                       <Input
                         type="date"
                         value={inst.date}
                         onChange={(e) => updateInstallment(idx, "date", e.target.value)}
-                        className="text-xs"
+                        className="text-xs h-9"
+                        title={
+                          idx === 0
+                            ? "İlk taksit tarihi (değiştirilirse sonraki tüm taksitler otomatik 1'er ay ötelenir)"
+                            : "Taksit vadesi"
+                        }
                       />
                     </div>
 
-                    <div className="w-40">
+                    <div className="col-span-4">
                       <NumericInput
                         value={inst.amount}
                         onValueChange={(val) => updateInstallment(idx, "amount", val || 0)}
-                        placeholder="Tutar (₺)"
+                        placeholder="0,00"
+                        className="h-9 font-medium"
                       />
                     </div>
 
-                    <div className="w-36">
+                    <div className="col-span-2">
                       <Select
                         value={inst.type}
                         onChange={(e) => updateInstallment(idx, "type", e.target.value)}
-                        className="text-xs"
+                        className="text-xs h-9 font-medium"
                       >
                         <option value="SENET">Senet</option>
-                        <option value="HAVALE">Banka Havalesi</option>
+                        <option value="HAVALE">Havale</option>
                         <option value="KREDİ KARTI">Kredi Kartı</option>
                         <option value="ÇEK">Çek</option>
                         <option value="NAKİT">Nakit</option>
                       </Select>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => removeInstallment(idx)}
-                      className="ml-auto text-rose-500 hover:text-rose-700 p-1"
-                      title="Taksiti Sil"
-                    >
-                      <TrashIcon className="size-4" />
-                    </button>
+                    <div className="col-span-1 text-right">
+                      <button
+                        type="button"
+                        onClick={() => removeInstallment(idx)}
+                        className="text-gray-400 hover:text-rose-500 p-1.5 transition rounded hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                        title="Taksiti Sil"
+                      >
+                        <TrashIcon className="size-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
+
+                {/* Alt Aksiyonlar & Toplam */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    className="gap-1.5 py-1.5 px-3 text-xs font-semibold"
+                    onClick={addInstallment}
+                  >
+                    <PlusIcon className="size-4" /> Taksit Ekle
+                  </Button>
+
+                  <div className="text-xs text-gray-600 dark:text-dark-300">
+                    Taksitler Toplamı:{" "}
+                    <span className="font-mono font-bold text-gray-900 dark:text-dark-50 text-sm">
+                      {fmtMoney(totalInstallments)}
+                    </span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
