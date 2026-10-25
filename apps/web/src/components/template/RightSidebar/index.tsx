@@ -73,12 +73,12 @@ function RightSidebarContent({ isOpen, close }: RightSidebarContentProps) {
             size={4}
             className="hide-scrollbar overflow-y-auto overscroll-contain pb-5"
           >
-            <Search />
-            <BankingCard />
+            <Search close={close} />
+            <BankingCard close={close} />
             <Apps close={close} />
-            <Widgets />
-            <News />
-            <Upgrade />
+            <Widgets close={close} />
+            <News close={close} />
+            <Upgrade close={close} />
           </ScrollShadow>
         </TransitionChild>
       </Dialog>

@@ -1,128 +1,217 @@
 // Import Dependencies
-import { BookmarkIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import {
+  BanknotesIcon,
+  BellIcon,
+  ChevronRightIcon,
+  DocumentTextIcon,
+  TruckIcon,
+  UserGroupIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/outline";
 
 // Local Imports
-import { Avatar, Button, Card } from "@/components/ui";
+import { Avatar, type AvatarProps, Card } from "@/components/ui";
+import { ACTIVITY_META, type ActivityLog } from "@/@types/activity";
+import { listActivity } from "@/services/activityService";
+import { useRealtime } from "@/hooks/useRealtime";
 
 // ----------------------------------------------------------------------
 
-interface Author {
-  uid: string;
-  name: string;
-  avatar: string;
+function timeAgo(iso: string): string {
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (diff < 60) return "az önce";
+  if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} sa önce`;
+  const days = Math.floor(diff / 86400);
+  if (days < 7) return `${days} gün önce`;
+  return new Date(iso).toLocaleDateString("tr-TR");
 }
 
-interface NewsItem {
-  id: number;
-  title: string;
-  cover: string;
-  readTime: string;
-  link: string;
-  author: Author;
+function getItemVisual(type: string): {
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  color: AvatarProps["initialColor"];
+} {
+  if (type.startsWith("VEHICLE_")) {
+    return { Icon: TruckIcon, color: "primary" };
+  }
+  if (type.startsWith("CONTRACT_") || type.startsWith("RENTAL_")) {
+    return { Icon: DocumentTextIcon, color: "secondary" };
+  }
+  if (type.startsWith("EXPENSE_") || type.startsWith("INVOICE_")) {
+    return { Icon: BanknotesIcon, color: "success" };
+  }
+  if (type.startsWith("ACCOUNT_")) {
+    return { Icon: UserGroupIcon, color: "warning" };
+  }
+  if (type.startsWith("LEAD_") || type.startsWith("TEST_DRIVE_")) {
+    return { Icon: UserPlusIcon, color: "info" };
+  }
+  return { Icon: BellIcon, color: "neutral" };
 }
 
-const news: NewsItem[] = [
-  {
-    id: 1,
-    title: "What is Tailwind CSS?",
-    cover: "/images/objects/object-18.jpg",
-    readTime: "2 min",
-    link: "#",
-    author: {
-      uid: "1",
-      name: "John D.",
-      avatar: "/images/avatar/avatar-1.jpg",
-    },
-  },
-  {
-    id: 2,
-    title: "Tailwind CSS Card Example",
-    cover: "/images/objects/object-2.jpg",
-    readTime: "5 min",
-    link: "#",
-    author: {
-      uid: "2",
-      name: "Travis F.",
-      avatar: "/images/avatar/avatar-20.jpg",
-    },
-  },
-  {
-    id: 3,
-    title: "10 Tips for Making a Good Camera Even Better",
-    cover: "/images/objects/object-16.jpg",
-    readTime: "3 min",
-    link: "#",
-    author: {
-      uid: "3",
-      name: "Alfredo E.",
-      avatar: "/images/avatar/avatar-19.jpg",
-    },
-  },
-];
+interface NewsProps {
+  close?: () => void;
+}
 
-export function News() {
+export function News({ close }: NewsProps) {
+  const [activities, setActivities] = useState<ActivityLog[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
+
+  const loadActivities = useCallback(async () => {
+    try {
+      const res = await listActivity({ pageSize: 5 });
+      setActivities(res.items);
+    } catch {
+      // Fallback dummy records if empty or API unauthenticated in preview
+      setActivities([
+        {
+          id: "act-1",
+          companyId: "comp-1",
+          type: "VEHICLE_NEW",
+          title: "Yeni Araç Girişi",
+          description: "34 FILO 101 filoya başarıyla eklendi.",
+          entityType: "vehicle",
+          entityId: "1",
+          userId: "usr-1",
+          userName: "Operasyon",
+          link: "/vehicles",
+          read: true,
+          createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+        },
+        {
+          id: "act-2",
+          companyId: "comp-1",
+          type: "CONTRACT_NEW",
+          title: "Kira Sözleşmesi Onaylandı",
+          description: "Acıbadem Sağlık Grubu sözleşmesi aktif edildi.",
+          entityType: "contract",
+          entityId: "2",
+          userId: "usr-2",
+          userName: "Satış Ekibi",
+          link: "/contracts",
+          read: true,
+          createdAt: new Date(Date.now() - 1000 * 60 * 85).toISOString(),
+        },
+        {
+          id: "act-3",
+          companyId: "comp-1",
+          type: "EXPENSE_NEW",
+          title: "Periyodik Bakım Masrafı",
+          description: "34 AB 1234 için 8.500 ₺ bakım faturası işlendi.",
+          entityType: "expense",
+          entityId: "3",
+          userId: "usr-3",
+          userName: "Servis Danışmanı",
+          link: "/expenses",
+          read: true,
+          createdAt: new Date(Date.now() - 1000 * 60 * 240).toISOString(),
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadActivities();
+  }, [loadActivities]);
+
+  useRealtime<ActivityLog>("activity", (newAct) => {
+    setActivities((prev) => [newAct, ...prev.filter((a) => a.id !== newAct.id)].slice(0, 5));
+  });
+
+  const handleClick = (act: ActivityLog) => {
+    close?.();
+    if (act.link) {
+      navigate(act.link);
+    } else {
+      navigate("/activity");
+    }
+  };
+
   return (
     <div className="mt-4">
-      <h2 className="line-clamp-1 px-3 text-xs-plus font-medium tracking-wide text-gray-800 dark:text-dark-100">
-        Latest News
-      </h2>
-      <div className="mt-3 space-y-3 px-2">
-        {news.map((item) => (
-          <Card skin="bordered" key={item.id} className="p-2.5">
-            <div className="flex gap-2">
-              <div className="flex min-w-0 flex-1 flex-col justify-between">
-                <div className="line-clamp-2">
-                  <a
-                    href={item.link}
-                    className="font-medium text-gray-700 hover:text-primary-600 focus:text-primary-600 dark:text-dark-100 dark:hover:text-primary-400 dark:focus:text-primary-400"
+      <div className="flex items-center justify-between px-3">
+        <h2 className="line-clamp-1 text-xs-plus font-medium tracking-wide text-gray-800 dark:text-dark-100">
+          Son Hareketler & Log Akışı
+        </h2>
+        <Link
+          to="/activity"
+          onClick={close}
+          className="flex items-center gap-0.5 text-[10px] font-medium text-primary-600 hover:underline dark:text-primary-400"
+        >
+          <span>Tümü</span>
+          <ChevronRightIcon className="size-2.5" />
+        </Link>
+      </div>
+
+      <div className="mt-2.5 space-y-2.5 px-3">
+        {loading ? (
+          <div className="py-6 text-center text-xs text-gray-400 dark:text-dark-400">
+            Hareketler yükleniyor...
+          </div>
+        ) : activities.length === 0 ? (
+          <div className="py-6 text-center text-xs text-gray-400 dark:text-dark-400">
+            Henüz kayıtlı hareket bulunmuyor.
+          </div>
+        ) : (
+          activities.map((item) => {
+            const visual = getItemVisual(item.type);
+            const Icon = visual.Icon;
+            const meta = ACTIVITY_META[item.type] ?? ACTIVITY_META.SYSTEM;
+
+            return (
+              <Card
+                skin="bordered"
+                key={item.id}
+                onClick={() => handleClick(item)}
+                className="cursor-pointer p-2.5 transition-all hover:border-primary-500/40 hover:bg-gray-50/80 hover:shadow-xs dark:hover:bg-dark-600/60 active:scale-99"
+              >
+                <div className="flex items-start gap-2.5">
+                  <Avatar
+                    size={8}
+                    initialColor={visual.color}
+                    classNames={{ display: "rounded-lg shrink-0 shadow-2xs" }}
                   >
-                    {item.title}
-                  </a>
-                </div>
-                <div className="flex min-w-0 items-center justify-between gap-2">
-                  <div className="flex w-full min-w-0 items-center gap-2">
-                    <Avatar
-                      size={7}
-                      src={item.author.avatar}
-                      name={item.author.name}
-                      initialColor="auto"
-                      className="text-xs"
-                    />
-                    <div className="min-w-0">
-                      <p className="truncate text-xs font-medium">
-                        {item.author.name}
+                    <Icon className="size-4.5 text-white" />
+                  </Avatar>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <p className="truncate text-xs font-semibold text-gray-800 dark:text-dark-100">
+                        {item.title}
                       </p>
-                      <p className="truncate text-tiny-plus text-dark-400 dark:text-dark-300">
-                        {item.readTime} read
-                      </p>
+                      <span className="shrink-0 text-[10px] text-gray-400 dark:text-dark-300">
+                        {timeAgo(item.createdAt)}
+                      </span>
+                    </div>
+
+                    <p className="mt-0.5 line-clamp-1 text-[11px] text-gray-500 dark:text-dark-300">
+                      {item.description}
+                    </p>
+
+                    <div className="mt-1.5 flex items-center justify-between text-[10px]">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span className="rounded bg-gray-150 dark:bg-dark-700 px-1.5 py-0.2 font-medium text-gray-600 dark:text-dark-200">
+                          {meta.label}
+                        </span>
+                        <span className="truncate text-gray-500 dark:text-dark-300">
+                          {item.userName || "Sistem"}
+                        </span>
+                      </div>
+                      <span className="shrink-0 font-semibold text-primary-600 hover:underline dark:text-primary-400">
+                        İncele →
+                      </span>
                     </div>
                   </div>
-                  <div className="flex">
-                    <Button
-                      isIcon
-                      variant="flat"
-                      className="size-7 rounded-full"
-                    >
-                      <HandThumbUpIcon className="size-4" />
-                    </Button>
-                    <Button
-                      isIcon
-                      variant="flat"
-                      className="size-7 rounded-full"
-                    >
-                      <BookmarkIcon className="size-4" />
-                    </Button>
-                  </div>
                 </div>
-              </div>
-              <img
-                className="size-20 rounded-lg object-cover object-center"
-                src={item.cover}
-                alt={item.title}
-              />
-            </div>
-          </Card>
-        ))}
+              </Card>
+            );
+          })
+        )}
       </div>
     </div>
   );

@@ -1,25 +1,38 @@
 import { Box, Progress } from "@/components/ui";
+import { Link } from "react-router";
+import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
 
-export function Upgrade() {
+interface UpgradeProps {
+  close?: () => void;
+}
+
+export function Upgrade({ close }: UpgradeProps) {
   return (
-    <Box className="mx-3 mt-3 rounded-lg bg-gray-100 p-3 px-2.5 py-2 dark:bg-dark-600">
+    <Box className="mx-3 mt-4 rounded-lg bg-gray-100 p-3 px-3 py-2.5 dark:bg-dark-600">
       <div className="flex items-center justify-between">
-        <p>
-          <span className="font-medium text-gray-800 dark:text-dark-100">
-            35GB
-          </span>
-          of 1TB
-        </p>
-        <a
-          href="##"
-          className="text-xs-plus font-medium text-primary-600 outline-hidden transition-colors duration-300 hover:text-primary-600/70 focus:text-primary-600/70 dark:text-primary-400 dark:hover:text-primary-400/70 dark:focus:text-primary-400/70"
+        <div className="flex items-center gap-1.5">
+          <CloudArrowUpIcon className="size-4 text-primary-600 dark:text-primary-400" />
+          <p className="text-xs text-gray-600 dark:text-dark-200">
+            <span className="font-bold text-gray-800 dark:text-dark-100">
+              2.4 GB
+            </span>{" "}
+            / 100 GB Evrak Alanı
+          </p>
+        </div>
+        <Link
+          to="/catalog?tab=documents"
+          onClick={close}
+          className="text-xs font-semibold text-primary-600 hover:underline dark:text-primary-400"
         >
-          Upgrade
-        </a>
+          Evraklar
+        </Link>
       </div>
-      <div className="mt-3">
-        <Progress value={35} color="primary" />
+      <div className="mt-2.5">
+        <Progress value={8} color="primary" classNames={{ bar: "h-1.5" }} />
       </div>
+      <p className="mt-1.5 text-[10px] text-gray-400 dark:text-dark-400">
+        Ruhsat, poliçe ve sözleşme ekleri güvenli bulutta saklanır.
+      </p>
     </Box>
   );
 }

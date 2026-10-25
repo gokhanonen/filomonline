@@ -1,10 +1,13 @@
 // Import Dependencies
 import {
   BanknotesIcon,
-  ChatBubbleBottomCenterIcon,
-  CloudIcon,
-  CurrencyDollarIcon,
-  ViewColumnsIcon,
+  ChatBubbleLeftRightIcon,
+  DocumentTextIcon,
+  ReceiptPercentIcon,
+  Squares2X2Icon,
+  TruckIcon,
+  UserGroupIcon,
+  UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import { ComponentType } from "react";
 
@@ -24,66 +27,92 @@ interface AppItem {
 
 const apps: AppItem[] = [
   {
-    id: "1",
-    Icon: ViewColumnsIcon,
-    title: "Kanban Board",
-    color: "success",
-    to: "/apps/kanban",
+    id: "vehicles",
+    Icon: TruckIcon,
+    title: "Araçlar",
+    color: "primary",
+    to: "/vehicles",
   },
   {
-    id: "2",
-    Icon: CurrencyDollarIcon,
-    title: "Analytics",
-    color: "warning",
-    to: "/dashboards/crm-analytics",
-  },
-  {
-    id: "3",
-    Icon: ChatBubbleBottomCenterIcon,
-    title: "Chat",
-    color: "info",
-    to: "/apps/chat",
-  },
-  {
-    id: "4",
-    Icon: CloudIcon,
-    title: "File Manager",
-    color: "error",
-    to: "/apps/filemanager",
-  },
-  {
-    id: "5",
-    Icon: BanknotesIcon,
-    title: "Banking",
+    id: "contracts",
+    Icon: DocumentTextIcon,
+    title: "Sözleşmeler",
     color: "secondary",
-    to: "/dashboards/banking/banking-2",
+    to: "/contracts",
+  },
+  {
+    id: "accounts",
+    Icon: UserGroupIcon,
+    title: "Cariler",
+    color: "warning",
+    to: "/accounts",
+  },
+  {
+    id: "crm",
+    Icon: UserPlusIcon,
+    title: "CRM / Aday",
+    color: "success",
+    to: "/crm/leads",
+  },
+  {
+    id: "invoices",
+    Icon: BanknotesIcon,
+    title: "Faturalar",
+    color: "info",
+    to: "/invoices",
+  },
+  {
+    id: "expenses",
+    Icon: ReceiptPercentIcon,
+    title: "Masraflar",
+    color: "error",
+    to: "/expenses",
+  },
+  {
+    id: "catalog",
+    Icon: Squares2X2Icon,
+    title: "Tanımlar",
+    color: "neutral",
+    to: "/catalog",
+  },
+  {
+    id: "chat",
+    Icon: ChatBubbleLeftRightIcon,
+    title: "Sohbet",
+    color: "info",
+    to: "/chat",
   },
 ];
 
 export function Apps({ close }: { close: () => void }) {
   return (
     <div className="mt-4">
-      <h2 className="text-xs-plus dark:text-dark-100 line-clamp-1 px-3 font-medium tracking-wide text-gray-800">
-        Pinned Apps
-      </h2>
-      <div className="mt-3 flex gap-3 px-3">
+      <div className="flex items-center justify-between px-3">
+        <h2 className="text-xs-plus dark:text-dark-100 line-clamp-1 font-medium tracking-wide text-gray-800">
+          Hızlı Menü & Uygulamalar
+        </h2>
+        <span className="text-[10px] text-gray-400 dark:text-dark-300">
+          Kaydırılabilir
+        </span>
+      </div>
+      <div className="mt-2.5 flex gap-3 overflow-x-auto hide-scrollbar px-3 pb-1 scroll-smooth">
         {apps.map((app) => (
           <Link
             key={app.id}
             to={app.to}
             onClick={close}
-            className="w-12 shrink-0 text-center"
+            className="group w-14 shrink-0 text-center transition-transform hover:-translate-y-0.5"
           >
             <Avatar
-              size={10}
+              size={11}
               initialColor={app.color}
               classNames={{
-                display: "mask is-squircle rounded-none",
+                display: "mask is-squircle rounded-none shadow-xs group-hover:shadow-md transition-shadow",
               }}
             >
-              <app.Icon className="size-5.5" />
+              <app.Icon className="size-5.5 text-white" />
             </Avatar>
-            <span className="dark:text-dark-100 mt-1.5 block truncate text-xs whitespace-nowrap text-gray-800">
+            <span className="dark:text-dark-100 mt-1.5 block truncate text-[11px] font-medium text-gray-700 group-hover:text-primary-600 dark:group-hover:text-primary-400">
               {app.title}
             </span>
           </Link>

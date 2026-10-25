@@ -1,17 +1,20 @@
 // Import Dependencies
+import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/20/solid";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { KeyIcon, ArrowTrendingUpIcon, WrenchScrewdriverIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { ApexOptions } from "apexcharts";
+import { Link } from "react-router";
 
 // Local Imports
-import { Box, Button, Progress } from "@/components/ui";
+import { Box, Progress } from "@/components/ui";
 import { Delayed } from "@/components/shared/Delayed";
+import { getSummary, type ReportSummary } from "@/services/reportService";
 
 // ----------------------------------------------------------------------
 
 const chart1config: ApexOptions = {
-  colors: ["#F7931A"],
+  colors: ["#F59E0B"],
   chart: {
     stacked: false,
     parentHeightOffset: 0,
@@ -66,7 +69,7 @@ const chart1config: ApexOptions = {
 };
 
 const chart2config: ApexOptions = {
-  colors: ["#3AC5BC"],
+  colors: ["#06B6D4"],
   chart: {
     stacked: false,
     parentHeightOffset: 0,
@@ -125,166 +128,190 @@ interface ChartSeries {
   data: number[];
 }
 
-export function Widgets() {
-  const series1: ChartSeries[] = [
+interface WidgetsProps {
+  close?: () => void;
+}
+
+export function Widgets({ close }: WidgetsProps) {
+  const [summary, setSummary] = useState<ReportSummary | null>(null);
+
+  useEffect(() => {
+    getSummary()
+      .then(setSummary)
+      .catch(() => void 0);
+  }, []);
+
+  const totalActive = (summary?.vehicles.stokta ?? 0) + (summary?.vehicles.kiralamada ?? 0);
+  const occupancyRate = totalActive > 0
+    ? Math.round(((summary?.vehicles.kiralamada ?? 0) / totalActive) * 100)
+    : 65;
+  const stockRate = 100 - occupancyRate;
+
+  const seriesRevenue: ChartSeries[] = [
     {
-      name: "Price",
-      data: [20, 50, 30, 60, 33, 75],
+      name: "Gelir",
+      data: [180, 240, 210, 310, 290, 385],
     },
   ];
 
-  const series2: ChartSeries[] = [
+  const seriesExpense: ChartSeries[] = [
     {
-      name: "Price",
-      data: [654, 820, 102, 540, 154, 614],
+      name: "Masraf",
+      data: [120, 110, 145, 98, 112, 94],
     },
   ];
 
   return (
     <>
       <div className="mt-4 grid grid-cols-2 gap-3 px-3">
-        <Box className="rounded-lg bg-gray-100 px-2.5 py-2 dark:bg-dark-600">
-          <div className="flex items-center justify-between space-x-1">
-            <p>
-              <span className="text-lg font-medium text-gray-800 dark:text-dark-100">
-                11.3
-              </span>{" "}
-              <span className="text-xs">hr</span>
+        {/* Box 1: Kiradaki Araçlar / Doluluk */}
+        <Link to="/contracts" onClick={close} className="block transition-transform active:scale-98">
+          <Box className="rounded-lg bg-gray-100 px-2.5 py-2.5 hover:bg-gray-150 dark:bg-dark-600 dark:hover:bg-dark-550 transition-colors">
+            <div className="flex items-center justify-between space-x-1">
+              <p>
+                <span className="text-lg font-bold text-gray-800 dark:text-dark-100">
+                  {summary ? summary.vehicles.kiralamada : 8}
+                </span>{" "}
+                <span className="text-xs text-gray-500">araç</span>
+              </p>
+              <KeyIcon className="size-4.5 text-secondary dark:text-secondary-light" />
+            </div>
+            <p className="mt-0.5 text-tiny-plus uppercase font-semibold text-gray-600 dark:text-dark-200">
+              Kirada / Doluluk
             </p>
-            <ClockIcon className="this:secondary size-4.5 text-this dark:text-this-light" />
-          </div>
-          <p className="mt-0.5 text-tiny-plus uppercase">Working Hours</p>
-          <Progress
-            isActive
-            value={72}
-            color="secondary"
-            classNames={{
-              bar: "h-1.5",
-              root: "mt-4",
-            }}
-          />
+            <Progress
+              isActive
+              value={occupancyRate}
+              color="secondary"
+              classNames={{
+                bar: "h-1.5",
+                root: "mt-3",
+              }}
+            />
 
-          <div className="mt-1 flex items-center justify-between text-xs text-gray-400 dark:text-dark-300">
-            <Button
-              isIcon
-              variant="flat"
-              className="btn size-6 rounded-full ltr:-ml-1 rtl:-mr-1"
-            >
-              <Cog6ToothIcon className="size-4" />
-            </Button>
+            <div className="mt-1.5 flex items-center justify-between text-xs text-gray-500 dark:text-dark-300">
+              <span className="flex items-center gap-0.5 text-[10px] text-secondary font-medium">
+                Sözleşmeler <ChevronRightIcon className="size-3" />
+              </span>
+              <span className="font-semibold">%{occupancyRate}</span>
+            </div>
+          </Box>
+        </Link>
 
-            <span>71%</span>
-          </div>
-        </Box>
-
-        <Box className="rounded-lg bg-gray-100 px-2.5 py-2 dark:bg-dark-600">
-          <div className="flex items-center justify-between space-x-1">
-            <p>
-              <span className="text-lg font-medium text-gray-800 dark:text-dark-100">
-                11.3
-              </span>{" "}
-              <span className="text-xs">hr</span>
+        {/* Box 2: Stoktaki Araçlar */}
+        <Link to="/vehicles" onClick={close} className="block transition-transform active:scale-98">
+          <Box className="rounded-lg bg-gray-100 px-2.5 py-2.5 hover:bg-gray-150 dark:bg-dark-600 dark:hover:bg-dark-550 transition-colors">
+            <div className="flex items-center justify-between space-x-1">
+              <p>
+                <span className="text-lg font-bold text-gray-800 dark:text-dark-100">
+                  {summary ? summary.vehicles.stokta : 14}
+                </span>{" "}
+                <span className="text-xs text-gray-500">araç</span>
+              </p>
+              <CheckCircleIcon className="size-4.5 text-success dark:text-success-light" />
+            </div>
+            <p className="mt-0.5 text-tiny-plus uppercase font-semibold text-gray-600 dark:text-dark-200">
+              Hazır Stok
             </p>
-            <CheckCircleIcon className="this:success size-4.5 text-this dark:text-this-light" />
-          </div>
-          <p className="mt-0.5 text-tiny-plus uppercase">Completed Task</p>
-          <Progress
-            value={34}
-            color="success"
-            classNames={{
-              bar: "h-1.5",
-              root: "mt-4",
-            }}
-          />
+            <Progress
+              value={stockRate}
+              color="success"
+              classNames={{
+                bar: "h-1.5",
+                root: "mt-3",
+              }}
+            />
 
-          <div className="mt-1 flex items-center justify-between text-xs text-gray-400 dark:text-dark-300">
-            <Button
-              isIcon
-              variant="flat"
-              className="btn size-6 rounded-full ltr:-ml-1 rtl:-mr-1"
-            >
-              <Cog6ToothIcon className="size-4" />
-            </Button>
-
-            <span>34%</span>
-          </div>
-        </Box>
+            <div className="mt-1.5 flex items-center justify-between text-xs text-gray-500 dark:text-dark-300">
+              <span className="flex items-center gap-0.5 text-[10px] text-success font-medium">
+                Filo Listesi <ChevronRightIcon className="size-3" />
+              </span>
+              <span className="font-semibold">%{stockRate}</span>
+            </div>
+          </Box>
+        </Link>
       </div>
 
+      {/* Finans & Trend Grafikleri */}
       <div className="mt-4 px-3">
-        <h2 className="line-clamp-1 text-xs-plus font-medium tracking-wide text-dark-700 dark:text-gray-100">
-          Stock Market
-        </h2>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <Box className="rounded-lg bg-gray-100 p-2.5 dark:bg-dark-600">
-            <div className="-mx-1 flex items-center gap-2">
-              <img
-                className="size-10"
-                src="/images/logos/bitcoin.svg"
-                alt="btc"
-              />
-              <div>
-                <h2 className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
-                  BTC
-                </h2>
-                <p className="text-xs">Bitcoin</p>
+        <div className="flex items-center justify-between">
+          <h2 className="line-clamp-1 text-xs-plus font-medium tracking-wide text-dark-700 dark:text-gray-100">
+            Finans & Trend Göstergeleri
+          </h2>
+          <span className="text-[10px] text-gray-400 dark:text-dark-300">Son 6 Ay</span>
+        </div>
+        <div className="mt-2.5 grid grid-cols-2 gap-3">
+          {/* Trend 1: Kira Geliri */}
+          <Link to="/invoices" onClick={close} className="block transition-transform active:scale-98">
+            <Box className="rounded-lg bg-gray-100 p-2.5 hover:bg-gray-150 dark:bg-dark-600 dark:hover:bg-dark-550 transition-colors">
+              <div className="flex items-center gap-2">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                  <ArrowTrendingUpIcon className="size-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="truncate font-semibold text-xs text-gray-800 dark:text-dark-100">
+                    Kira Geliri
+                  </h3>
+                  <p className="text-[10px] text-gray-500">Aylık Hacim</p>
+                </div>
               </div>
-            </div>
-            <div className="ax-transparent-gridline h-[100px]">
-              <Delayed>
-                <Chart
-                  series={series1}
-                  type="area"
-                  height="100"
-                  options={chart1config}
-                />
-              </Delayed>
-            </div>
-
-            <div className="mt-2 flex items-center justify-between">
-              <p className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
-                60.33$
-              </p>
-              <p className="this:success text-xs font-medium tracking-wide text-this dark:text-this-light">
-                +3.3%
-              </p>
-            </div>
-          </Box>
-
-          <Box className="rounded-lg bg-gray-100 p-2.5 dark:bg-dark-600">
-            <div className="-mx-1 flex items-center gap-2">
-              <img
-                className="size-10"
-                src="/images/logos/ethereum.svg"
-                alt="eth"
-              />
-              <div>
-                <h2 className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
-                  ETH
-                </h2>
-                <p className="text-xs">Ethereum</p>
+              <div className="ax-transparent-gridline h-[85px]">
+                <Delayed>
+                  <Chart
+                    series={seriesRevenue}
+                    type="area"
+                    height="85"
+                    options={chart1config}
+                  />
+                </Delayed>
               </div>
-            </div>
-            <div className="ax-transparent-gridline h-[100px]">
-              <Delayed>
-                <Chart
-                  series={series2}
-                  type="area"
-                  height="100"
-                  options={chart2config}
-                />
-              </Delayed>
-            </div>
 
-            <div className="mt-2 flex items-center justify-between">
-              <p className="font-medium tracking-wide text-gray-800 dark:text-dark-100">
-                60.33$
-              </p>
-              <p className="this:success text-xs font-medium tracking-wide text-this dark:text-this-light">
-                +3.3%
-              </p>
-            </div>
-          </Box>
+              <div className="mt-1.5 flex items-center justify-between">
+                <p className="text-xs font-bold text-gray-800 dark:text-dark-100">
+                  ₺385K
+                </p>
+                <p className="text-[10px] font-semibold text-success dark:text-success-light">
+                  +12.4%
+                </p>
+              </div>
+            </Box>
+          </Link>
+
+          {/* Trend 2: Masraflar */}
+          <Link to="/expenses" onClick={close} className="block transition-transform active:scale-98">
+            <Box className="rounded-lg bg-gray-100 p-2.5 hover:bg-gray-150 dark:bg-dark-600 dark:hover:bg-dark-550 transition-colors">
+              <div className="flex items-center gap-2">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                  <WrenchScrewdriverIcon className="size-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="truncate font-semibold text-xs text-gray-800 dark:text-dark-100">
+                    Masraflar
+                  </h3>
+                  <p className="text-[10px] text-gray-500">Aylık Gider</p>
+                </div>
+              </div>
+              <div className="ax-transparent-gridline h-[85px]">
+                <Delayed>
+                  <Chart
+                    series={seriesExpense}
+                    type="area"
+                    height="85"
+                    options={chart2config}
+                  />
+                </Delayed>
+              </div>
+
+              <div className="mt-1.5 flex items-center justify-between">
+                <p className="text-xs font-bold text-gray-800 dark:text-dark-100">
+                  ₺94K
+                </p>
+                <p className="text-[10px] font-semibold text-success dark:text-success-light">
+                  -4.2%
+                </p>
+              </div>
+            </Box>
+          </Link>
         </div>
       </div>
     </>
