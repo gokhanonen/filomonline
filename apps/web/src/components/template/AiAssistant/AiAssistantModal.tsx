@@ -36,6 +36,9 @@ export function AiAssistantModal({ open, onClose }: Props) {
     previewUrl: string;
     base64Data: string;
     mediaType: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
+    sizeKb: number;
+    originalSizeKb: number;
+    isResized: boolean;
   } | null>(null);
 
   // Sesle tanıma (Speech-to-Text) durumu
@@ -65,48 +68,93 @@ export function AiAssistantModal({ open, onClose }: Props) {
     }
   }, [open]);
 
-  // Dosyayı istemcide optimize edip Base64'e dönüştürme (413 Payload Too Large engelleme)
+  // Görseli istemcide 200 KB'ın altına optimize eden akıllı sıkıştırma & boyutlandırma
   const handleFileProcess = (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Lütfen geçerli bir görsel dosyası (JPG, PNG, WEBP) seçin.");
       return;
     }
 
+    const originalKb = Math.round(file.size / 1024);
+
     const reader = new FileReader();
     reader.onload = () => {
       const rawDataUrl = reader.result as string;
       const img = new Image();
       img.onload = () => {
-        // En yüksek çözünürlüklü telefon fotoğraflarını max 1600px boyutuna çek
-        const maxDim = 1600;
+        // Hedef azami boyut: 200 KB (200 * 1024 = 204,800 byte)
+        // Güvenli üst sınır: 190 KB (194,560 byte) ile kesinlikle 200 KB altında kalması garanti edilir.
+        const TARGET_MAX_BYTES = 190 * 1024;
+
+        // Başlangıç azami boyutu: 1600px (ehliyet ve ruhsat metinlerinin OCR netliği için)
         let width = img.width;
         let height = img.height;
+        const maxInitialDim = 1600;
 
-        if (width > maxDim || height > maxDim) {
+        if (width > maxInitialDim || height > maxInitialDim) {
           if (width > height) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
+            height = Math.round((height * maxInitialDim) / width);
+            width = maxInitialDim;
           } else {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
+            width = Math.round((width * maxInitialDim) / height);
+            height = maxInitialDim;
           }
         }
 
         const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
         const ctx = canvas.getContext("2d");
+
         if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          const optimizedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
-          const base64Data = optimizedDataUrl.split(",")[1];
+          let quality = 0.85;
+          let optimizedDataUrl = "";
+          let base64Data = "";
+          let byteSize = Infinity;
+          let iterations = 0;
+
+          // 200 KB altına inene kadar iteratif sıkıştırma & boyutlandırma
+          while (iterations < 12) {
+            iterations++;
+            canvas.width = width;
+            canvas.height = height;
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+
+            optimizedDataUrl = canvas.toDataURL("image/jpeg", quality);
+            base64Data = optimizedDataUrl.split(",")[1] || "";
+            // Base64 dizesinden yaklaşık ikili dosya boyutunu hesapla
+            byteSize = Math.round((base64Data.length * 3) / 4);
+
+            // Eğer hedef boyut olan 200 KB'ın altına indiyse döngüyü bitir
+            if (byteSize <= TARGET_MAX_BYTES) {
+              break;
+            }
+
+            // 200 KB'ın üzerindeyse önce kaliteyi kademeli indir
+            if (quality > 0.45) {
+              quality -= 0.10;
+            } else {
+              // Kalite 0.45'e kadar indiyse çözünürlüğü %15 küçült
+              width = Math.max(400, Math.round(width * 0.85));
+              height = Math.max(300, Math.round(height * 0.85));
+            }
+          }
+
+          const finalSizeKb = Math.round(byteSize / 1024);
+          const isResized = originalKb > 200 || iterations > 1 || file.size > TARGET_MAX_BYTES;
 
           setSelectedImage({
             file,
             previewUrl: optimizedDataUrl,
             base64Data,
             mediaType: "image/jpeg",
+            sizeKb: finalSizeKb,
+            originalSizeKb: originalKb,
+            isResized,
           });
+
+          if (isResized) {
+            toast.success(`Fotoğraf 200 KB altına optimize edildi (${finalSizeKb} KB)`);
+          }
         } else {
           const base64Data = rawDataUrl.split(",")[1];
           setSelectedImage({
@@ -114,6 +162,9 @@ export function AiAssistantModal({ open, onClose }: Props) {
             previewUrl: rawDataUrl,
             base64Data,
             mediaType: file.type as any,
+            sizeKb: originalKb,
+            originalSizeKb: originalKb,
+            isResized: false,
           });
         }
 
@@ -129,6 +180,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
           }
         }
       };
+
       img.onerror = () => {
         const base64Data = rawDataUrl.split(",")[1];
         setSelectedImage({
@@ -136,6 +188,9 @@ export function AiAssistantModal({ open, onClose }: Props) {
           previewUrl: rawDataUrl,
           base64Data,
           mediaType: file.type as any,
+          sizeKb: originalKb,
+          originalSizeKb: originalKb,
+          isResized: false,
         });
       };
       img.src = rawDataUrl;
@@ -336,16 +391,25 @@ export function AiAssistantModal({ open, onClose }: Props) {
                 className="size-16 rounded-lg object-cover border border-primary-200 dark:border-primary-800 shadow-2xs"
               />
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <Badge color="primary" variant="soft" className="text-[10px]">
                     Belge Eklendi
                   </Badge>
+                  {selectedImage.isResized && (
+                    <Badge color="success" variant="soft" className="text-[10px]">
+                      &lt;200 KB Optimize Edildi
+                    </Badge>
+                  )}
                   <span className="truncate text-xs font-semibold text-gray-800 dark:text-dark-100">
                     {selectedImage.file.name}
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-500 dark:text-dark-300 mt-0.5">
-                  {(selectedImage.file.size / 1024).toFixed(0)} KB • OCR ve veri çıkarımı için hazır
+                <p className="text-[11px] text-gray-500 dark:text-dark-300 mt-1">
+                  <strong className="text-primary-700 dark:text-primary-300">{selectedImage.sizeKb} KB</strong>
+                  {selectedImage.originalSizeKb > selectedImage.sizeKb && (
+                    <span className="text-gray-400 dark:text-dark-400"> (Orijinal: {selectedImage.originalSizeKb} KB)</span>
+                  )}
+                  {" "}• OCR ve yapay zeka analizi için hazır
                 </p>
               </div>
               <Button
