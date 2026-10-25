@@ -1,822 +1,751 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import clsx from "clsx";
 import { toast } from "sonner";
 import {
-  SparklesIcon,
-  CameraIcon,
-  PhotoIcon,
-  MicrophoneIcon,
-  XMarkIcon,
-  PaperAirplaneIcon,
-  UserPlusIcon,
-  UserGroupIcon,
-  TruckIcon,
-  AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
+  TbAlertTriangle,
+  TbArrowRight,
+  TbCamera,
+  TbCar,
+  TbCircleCheck,
+  TbMicrophone,
+  TbPhoto,
+  TbSearch,
+  TbSparkles,
+  TbUser,
+  TbUserPlus,
+  TbX,
+} from "react-icons/tb";
 
 import { Modal } from "@/components/shared/Modal";
-import { Button, Spinner, Badge } from "@/components/ui";
+import { Button, Input, NumericInput } from "@/components/ui";
+import { useAuthContext } from "@/app/contexts/auth/context";
+import { DOCUMENT_PHOTO_MAX_BYTES, resizeImage, resizeWithThumbnail } from "@/utils/imageResize";
+import { INFERRED_FIELD_LABEL, matchBodyType, matchBrandModel, matchColor } from "@/utils/vehicleCatalogMatch";
+import type { VehicleFormValues } from "@/@types/vehicle";
+import type { CatalogAll } from "@/@types/catalog";
+import { getCatalog } from "@/services/catalogService";
+import { createDocument, getDocumentMeta } from "@/services/documentService";
+import { uploadBlob } from "@/services/storageService";
 import {
   sendAiAssist,
+  type AiAssistOption,
   type AiAssistResult,
+  type AiDocumentType,
 } from "@/services/aiService";
+import { createAccount, listAccounts } from "@/services/accountService";
+import { createLead, listLeads } from "@/services/crmService";
+import { createVehicle, listVehicles } from "@/services/vehicleService";
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
+const MAX_PHOTOS = 3;
+/** AI'a giden görsel (saklanmaz): küçük yazılar okunabilsin diye daha yüksek çözünürlük */
+const AI_PHOTO_MAX_BYTES = 500 * 1024;
+const AI_PHOTO_MAX_DIM = 2000;
+
+interface Photo {
+  id: string;
+  /** Evraklara eklemek için asıl dosya */
+  file: File;
+  previewUrl: string;
+  base64Data: string;
+}
+
+const DOC_LABEL: Record<AiDocumentType, string> = { EHLIYET: "Ehliyet", KIMLIK: "Kimlik", RUHSAT: "Ruhsat", DIGER: "Diğer belge" };
+
+const OPTION_META: Record<AiAssistOption, { label: string; Icon: React.ElementType }> = {
+  LEAD: { label: "Potansiyel", Icon: TbUserPlus },
+  CUSTOMER: { label: "Müşteri", Icon: TbUser },
+  VEHICLE: { label: "Araç", Icon: TbCar },
+  VEHICLE_SEARCH: { label: "Araçları Göster", Icon: TbSearch },
+};
+
+type PersonForm = { fullName: string; phone: string; email: string; tckn: string; city: string; district: string; address: string };
+type VehicleForm = {
+  plate: string; brand: string; model: string; registrationModel: string; year: string; vin: string; engineNo: string;
+  color: string; fuelType: string; transmission: string; bodyType: string; driveType: string;
+  engineVolume: string; horsePower: string; enginePower: string;
+};
+const EMPTY_VEHICLE: VehicleForm = {
+  plate: "", brand: "", model: "", registrationModel: "", year: "", vin: "", engineNo: "", color: "", fuelType: "",
+  transmission: "", bodyType: "", driveType: "", engineVolume: "", horsePower: "", enginePower: "",
+};
+
+const FUEL_OPTS = [["BENZIN", "Benzin"], ["DIZEL", "Dizel"], ["LPG", "LPG"], ["ELEKTRIK", "Elektrik"], ["HIBRIT", "Hibrit"]];
+const GEAR_OPTS = [["OTOMATIK", "Otomatik"], ["MANUEL", "Manuel"], ["YARI_OTOMATIK", "Yarı Otomatik"]];
+const BODY_OPTS = [["SEDAN", "Sedan"], ["HATCHBACK", "Hatchback"], ["STATION_WAGON", "Station Wagon"], ["SUV", "SUV"], ["COUPE", "Coupe"], ["CABRIO", "Cabrio"], ["MINIVAN", "Minivan"], ["TICARI", "Ticari"]];
+const DRIVE_OPTS = [["ONDEN_CEKIS", "Önden Çekiş"], ["ARKADAN_ITIS", "Arkadan İtiş"], ["FOUR_WD", "4x4"], ["AWD", "AWD"]];
+
+/** Fotoğrafın belge sınıfı → evrak tipi değeri (Evrak Tanımları) */
+const DOC_TYPE_VALUE: Partial<Record<AiDocumentType, string>> = { RUHSAT: "ruhsat", EHLIYET: "ehliyet", KIMLIK: "kimlik" };
+
+const blobToBase64 = (blob: Blob) =>
+  new Promise<string>((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(",")[1] ?? "");
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+
+const errMsg = (err: unknown) =>
+  [(err as { message?: string | string[] })?.message ?? "İşlem başarısız"].flat().join(", ");
+
+/**
+ * Sade AI asistan: metin yaz ya da en fazla 3 fotoğraf (ehliyet / kimlik / ruhsat) ekle.
+ * AI belgeyi tanır, hangi kartın açılacağını önerir; kullanıcı seçip telefon/e-posta ekleyerek kaydı oluşturur.
+ */
 export function AiAssistantModal({ open, onClose }: Props) {
   const navigate = useNavigate();
-
-  // Prompt ve Görsel durumu
+  const { can } = useAuthContext();
   const [prompt, setPrompt] = useState("");
-  const [docTypeHint, setDocTypeHint] = useState<"RUHSAT" | "EHLIYET" | "AUTO">("RUHSAT");
-  const [selectedImage, setSelectedImage] = useState<{
-    file: File;
-    previewUrl: string;
-    base64Data: string;
-    mediaType: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
-    sizeKb: number;
-    originalSizeKb: number;
-    isResized: boolean;
-  } | null>(null);
-
-  // Sesle tanıma (Speech-to-Text) durumu
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<any>(null);
-
-  // Kamera ve dosya input referansları
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
-
-  // Yükleme ve Sonuç durumu
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AiAssistResult | null>(null);
+  const [choice, setChoice] = useState<AiAssistOption | null>(null);
+  const [person, setPerson] = useState<PersonForm>({ fullName: "", phone: "", email: "", tckn: "", city: "", district: "", address: "" });
+  const [vehicle, setVehicle] = useState<VehicleForm>(EMPTY_VEHICLE);
+  const [attachDocs, setAttachDocs] = useState(true);
+  // Araç tipi (Sıfır / 2.El / Filo / Konsinye — katalogdan) ve KM: sıfırda 0 kilitli, diğerlerinde zorunlu
+  const [catalog, setCatalog] = useState<CatalogAll | null>(null);
+  const [vehicleTypeId, setVehicleTypeId] = useState("");
+  const [km, setKm] = useState<number | undefined>();
+  const [existing, setExisting] = useState<{ label: string; to: string } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [created, setCreated] = useState<{ title: string; to: string } | null>(null);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<{ stop: () => void; abort: () => void } | null>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
-  // Modal sıfırlama
+  const reset = () => {
+    setPrompt("");
+    setPhotos([]);
+    setResult(null);
+    setError(null);
+    setChoice(null);
+    setExisting(null);
+    setCreated(null);
+  };
+
   useEffect(() => {
-    if (open) {
-      setPrompt("");
-      setDocTypeHint("RUHSAT");
-      setSelectedImage(null);
-      setResult(null);
-      setLoading(false);
-      setIsListening(false);
-    } else {
-      if (recognitionRef.current) {
-        recognitionRef.current.abort();
-      }
-    }
+    if (open) reset();
+    else recognitionRef.current?.abort();
   }, [open]);
 
-  // Görseli istemcide 200 KB'ın altına optimize eden akıllı sıkıştırma & boyutlandırma
-  const handleFileProcess = (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Lütfen geçerli bir görsel dosyası (JPG, PNG, WEBP) seçin.");
-      return;
-    }
+  // ---- Girdi ----
 
-    const originalKb = Math.round(file.size / 1024);
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const rawDataUrl = reader.result as string;
-      const img = new Image();
-      img.onload = () => {
-        // Hedef azami boyut: 200 KB (200 * 1024 = 204,800 byte)
-        // Güvenli üst sınır: 190 KB (194,560 byte) ile kesinlikle 200 KB altında kalması garanti edilir.
-        const TARGET_MAX_BYTES = 190 * 1024;
-
-        // Başlangıç azami boyutu: 1600px (ehliyet ve ruhsat metinlerinin OCR netliği için)
-        let width = img.width;
-        let height = img.height;
-        const maxInitialDim = 1600;
-
-        if (width > maxInitialDim || height > maxInitialDim) {
-          if (width > height) {
-            height = Math.round((height * maxInitialDim) / width);
-            width = maxInitialDim;
-          } else {
-            width = Math.round((width * maxInitialDim) / height);
-            height = maxInitialDim;
-          }
-        }
-
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        if (ctx) {
-          let quality = 0.85;
-          let optimizedDataUrl = "";
-          let base64Data = "";
-          let byteSize = Infinity;
-          let iterations = 0;
-
-          // 200 KB altına inene kadar iteratif sıkıştırma & boyutlandırma
-          while (iterations < 12) {
-            iterations++;
-            canvas.width = width;
-            canvas.height = height;
-            ctx.clearRect(0, 0, width, height);
-            ctx.drawImage(img, 0, 0, width, height);
-
-            optimizedDataUrl = canvas.toDataURL("image/jpeg", quality);
-            base64Data = optimizedDataUrl.split(",")[1] || "";
-            // Base64 dizesinden yaklaşık ikili dosya boyutunu hesapla
-            byteSize = Math.round((base64Data.length * 3) / 4);
-
-            // Eğer hedef boyut olan 200 KB'ın altına indiyse döngüyü bitir
-            if (byteSize <= TARGET_MAX_BYTES) {
-              break;
-            }
-
-            // 200 KB'ın üzerindeyse önce kaliteyi kademeli indir
-            if (quality > 0.45) {
-              quality -= 0.10;
-            } else {
-              // Kalite 0.45'e kadar indiyse çözünürlüğü %15 küçült
-              width = Math.max(400, Math.round(width * 0.85));
-              height = Math.max(300, Math.round(height * 0.85));
-            }
-          }
-
-          const finalSizeKb = Math.round(byteSize / 1024);
-          const isResized = originalKb > 200 || iterations > 1 || file.size > TARGET_MAX_BYTES;
-
-          setSelectedImage({
-            file,
-            previewUrl: optimizedDataUrl,
-            base64Data,
-            mediaType: "image/jpeg",
-            sizeKb: finalSizeKb,
-            originalSizeKb: originalKb,
-            isResized,
-          });
-
-          if (isResized) {
-            toast.success(`Fotoğraf 200 KB altına optimize edildi (${finalSizeKb} KB)`);
-          }
-        } else {
-          const base64Data = rawDataUrl.split(",")[1];
-          setSelectedImage({
-            file,
-            previewUrl: rawDataUrl,
-            base64Data,
-            mediaType: file.type as any,
-            sizeKb: originalKb,
-            originalSizeKb: originalKb,
-            isResized: false,
-          });
-        }
-
-        // Görsel yüklendiğinde akıllı belge tipi ve prompt belirleme
-        const lowerName = file.name.toLowerCase();
-        if (lowerName.includes("ehliyet") || lowerName.includes("surucu") || lowerName.includes("kimlik")) {
-          setDocTypeHint("EHLIYET");
-          setPrompt("Bu ehliyet belgesindeki kişi ve kimlik bilgilerini çözümle ve müşteri kartı aç.");
-        } else {
-          // Filomonline filo ve araç odaklı bir sistem olduğundan varsayılan Ruhsat'tır
-          setDocTypeHint("RUHSAT");
-          setPrompt("Bu araç ruhsatındaki plaka, marka, model, motor ve şasi no bilgilerini oku ve araç kartı aç.");
-        }
-      };
-
-      img.onerror = () => {
-        const base64Data = rawDataUrl.split(",")[1];
-        setSelectedImage({
-          file,
-          previewUrl: rawDataUrl,
-          base64Data,
-          mediaType: file.type as any,
-          sizeKb: originalKb,
-          originalSizeKb: originalKb,
-          isResized: false,
-        });
-      };
-      img.src = rawDataUrl;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Speech-to-Text Başlat / Durdur
-  const toggleSpeechRecognition = () => {
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      toast.error("Tarayıcınız ses tanımayı desteklemiyor.");
-      return;
-    }
-
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-      return;
-    }
-
+  const addFiles = async (files: FileList | null) => {
+    if (!files?.length) return;
+    const room = MAX_PHOTOS - photos.length;
+    if (room <= 0) return toast.error(`En fazla ${MAX_PHOTOS} fotoğraf eklenebilir`);
+    const picked = Array.from(files).filter((f) => f.type.startsWith("image/")).slice(0, room);
+    if (files.length > room) toast.info(`İlk ${room} fotoğraf alındı (en fazla ${MAX_PHOTOS})`);
     try {
-      const recognition = new SpeechRecognition();
-      recognition.lang = "tr-TR";
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        toast.info("Mikrofon dinleniyor, lütfen konuşun...");
-      };
-
-      recognition.onresult = (event: any) => {
-        const text = event.results[0]?.[0]?.transcript || "";
-        if (text) {
-          setPrompt((prev) => (prev ? `${prev.trim()} ${text}` : text));
-        }
-      };
-
-      recognition.onerror = (err: any) => {
-        console.warn("Ses tanıma hatası:", err);
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current = recognition;
-      recognition.start();
+      const next = await Promise.all(
+        picked.map(async (file) => {
+          const blob = await resizeImage(file, { maxBytes: AI_PHOTO_MAX_BYTES, maxDimension: AI_PHOTO_MAX_DIM });
+          return { id: crypto.randomUUID(), file, previewUrl: URL.createObjectURL(blob), base64Data: await blobToBase64(blob) };
+        }),
+      );
+      setPhotos((p) => [...p, ...next]);
+      setResult(null);
+      setCreated(null);
     } catch {
-      setIsListening(false);
-      toast.error("Mikrofon başlatılamadı.");
+      toast.error("Fotoğraf okunamadı");
     }
   };
 
-  // AI Gönderim
-  const handleSubmit = useCallback(async () => {
-    if (!prompt.trim() && !selectedImage) {
-      toast.error("Lütfen bir soru yazın, konuşun veya bir görsel ekleyin.");
+  const toggleMic = () => {
+    const w = window as unknown as { SpeechRecognition?: new () => any; webkitSpeechRecognition?: new () => any };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR) return toast.error("Tarayıcınız sesle yazmayı desteklemiyor");
+    if (listening) {
+      recognitionRef.current?.stop();
       return;
     }
+    const rec = new SR();
+    rec.lang = "tr-TR";
+    rec.interimResults = false;
+    rec.onresult = (e: { results: { 0: { transcript: string } }[] }) => {
+      const text = e.results[0]?.[0]?.transcript ?? "";
+      if (text) setPrompt((p) => (p ? `${p.trim()} ${text}` : text));
+    };
+    rec.onstart = () => setListening(true);
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+    recognitionRef.current = rec;
+    rec.start();
+  };
 
+  const submit = async () => {
+    if (!prompt.trim() && !photos.length) return;
     setLoading(true);
+    setError(null);
     setResult(null);
-
+    setCreated(null);
     try {
-      const payload: any = {
-        prompt: prompt.trim(),
-        docTypeHint: selectedImage ? docTypeHint : undefined,
-      };
-
-      if (selectedImage) {
-        payload.image = {
-          mediaType: selectedImage.mediaType,
-          base64Data: selectedImage.base64Data,
-        };
-      }
-
-      const res = await sendAiAssist(payload);
+      const res = await sendAiAssist({
+        prompt: prompt.trim() || undefined,
+        images: photos.length ? photos.map((p) => ({ mediaType: "image/jpeg" as const, base64Data: p.base64Data })) : undefined,
+      });
       setResult(res);
-    } catch (err: any) {
-      toast.error(err?.message || "Yapay zeka analizinde hata oluştu.");
+      const p = res.person;
+      setPerson({
+        fullName: [p?.firstName, p?.lastName].filter(Boolean).join(" "),
+        phone: p?.phone ?? "",
+        email: p?.email ?? "",
+        tckn: p?.tckn ?? "",
+        city: p?.city ?? "",
+        district: p?.district ?? "",
+        address: p?.address ?? "",
+      });
+      const v = res.vehicle;
+      const num = (n?: number | null) => (n ? String(n) : "");
+      setVehicle({
+        plate: v?.plate ?? "",
+        brand: v?.brand ?? "",
+        model: v?.model ?? "",
+        registrationModel: v?.registrationModel ?? "",
+        year: num(v?.modelYear),
+        vin: v?.vin ?? "",
+        engineNo: v?.engineNo ?? "",
+        color: v?.color ?? "",
+        fuelType: v?.fuelType ?? "",
+        transmission: v?.transmission ?? "",
+        bodyType: v?.bodyType ?? "",
+        driveType: v?.driveType ?? "",
+        engineVolume: num(v?.engineVolume),
+        horsePower: num(v?.horsePower),
+        enginePower: num(v?.enginePower),
+      });
+      setVehicleTypeId("");
+      setKm(undefined);
+      setChoice(res.options.find(allowed) ?? null);
+    } catch (err) {
+      setError(errMsg(err));
     } finally {
       setLoading(false);
     }
-  }, [prompt, selectedImage, docTypeHint]);
-
-  // Aksiyon 1: Ehliyet ile CRM Potansiyel Müşteri Aç
-  const handleOpenLead = () => {
-    if (!result?.data?.license) return;
-    const l = result.data.license;
-
-    sessionStorage.setItem(
-      "filomonline_ai_lead_prefill",
-      JSON.stringify({
-        fullName: l.fullName || `${l.firstName || ""} ${l.lastName || ""}`.trim(),
-        phone: l.phone || "",
-        notes: `AI Ehliyet Analizi: TC: ${l.tcNo || "-"} | Ehliyet Sınıfı: ${l.licenseClass || "-"} | Belge No: ${l.documentNo || "-"} | Doğum Tarihi: ${l.birthDate || "-"}`,
-      }),
-    );
-
-    onClose();
-    navigate("/crm/leads?openNew=1");
-    toast.success("Ehliyet bilgileri CRM Potansiyel formuna aktarıldı.");
   };
 
-  // Aksiyon 2: Ehliyet ile Cari Hesap Aç
-  const handleOpenAccount = () => {
-    if (!result?.data?.license) return;
-    const l = result.data.license;
+  // ---- Seçim ----
 
-    sessionStorage.setItem(
-      "filomonline_ai_account_prefill",
-      JSON.stringify({
-        name: l.fullName || `${l.firstName || ""} ${l.lastName || ""}`.trim(),
-        nationalId: l.tcNo || "",
-        phone: l.phone || "",
-        accountType: "CUSTOMER",
-      }),
-    );
+  const allowed = (o: AiAssistOption) =>
+    o === "CUSTOMER" ? can("accounts.write") : o === "VEHICLE" ? can("vehicles.write") : true;
 
+  useEffect(() => {
+    if (choice === "VEHICLE" && !catalog) getCatalog().then(setCatalog).catch(() => void 0);
+  }, [choice, catalog]);
+
+  const vehicleTypes = catalog?.vehicleTypes ?? [];
+  const isZeroKm = (id: string) => {
+    const name = vehicleTypes.find((t) => t.id === id)?.name.toLocaleLowerCase("tr-TR") ?? "";
+    return name.includes("sıfır") || name.includes("sifir");
+  };
+  const zeroKm = isZeroKm(vehicleTypeId);
+
+  // Aynı kayıt zaten var mı?
+  useEffect(() => {
+    setExisting(null);
+    if (!result || !choice) return;
+    let cancelled = false;
+    const check = async () => {
+      if (choice === "VEHICLE" && vehicle.plate.trim()) {
+        const plate = vehicle.plate.replace(/\s/g, "").toLocaleUpperCase("tr-TR");
+        const r = await listVehicles({ search: vehicle.plate.trim(), pageSize: 5 });
+        const hit = r.items.find((x) => x.plate.replace(/\s/g, "").toLocaleUpperCase("tr-TR") === plate);
+        if (hit && !cancelled) setExisting({ label: `${hit.plate} zaten kayıtlı`, to: `/vehicles/${hit.id}` });
+      } else if (choice === "CUSTOMER" && (person.tckn || person.phone)) {
+        const r = await listAccounts({ search: person.tckn || person.phone, pageSize: 5 });
+        const hit = r.items.find((a) => (person.tckn && a.tckn === person.tckn) || (person.phone && a.phone === person.phone));
+        if (hit && !cancelled) setExisting({ label: `${hit.name} zaten cari olarak kayıtlı`, to: `/accounts?search=${encodeURIComponent(hit.name)}` });
+      } else if (choice === "LEAD" && person.phone) {
+        const r = await listLeads({ search: person.phone });
+        const hit = r.find((l) => l.phone === person.phone);
+        if (hit && !cancelled) setExisting({ label: `${hit.fullName} zaten potansiyel listesinde`, to: "/crm/leads" });
+      }
+    };
+    check().catch(() => void 0);
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result, choice]);
+
+  const searchUrl = useMemo(() => {
+    const f = result?.filter;
+    if (!f) return "/vehicles";
+    const q = new URLSearchParams();
+    if (f.query) q.set("search", f.query);
+    if (f.minPrice) q.set("minPrice", String(f.minPrice));
+    if (f.maxPrice) q.set("maxPrice", String(f.maxPrice));
+    if (f.minYear) q.set("minYear", String(f.minYear));
+    if (f.transmission) q.set("transmission", f.transmission);
+    q.set("status", "STOKTA");
+    return `/vehicles?${q.toString()}`;
+  }, [result]);
+
+  const go = (to: string) => {
     onClose();
-    navigate("/accounts?openNew=1");
-    toast.success("Ehliyet bilgileri Cari Hesap formuna aktarıldı.");
+    navigate(to);
   };
 
-  // Aksiyon 3: Ruhsat ile Araç Kartı Aç
-  const handleOpenVehicle = () => {
-    if (!result?.data?.registration) return;
-    const r = result.data.registration;
-
-    sessionStorage.setItem(
-      "filomonline_ai_vehicle_prefill",
-      JSON.stringify({
-        plate: r.plate || "",
-        year: r.year || new Date().getFullYear(),
-        vin: r.vin || "",
-        engineNo: r.engineNo || "",
-        fuelType: r.fuelType || "DIZEL",
-        transmission: r.transmission || "OTOMATIK",
-        status: "STOKTA",
-        brandName: r.brand || "",
-        modelName: r.model || "",
-      }),
-    );
-
-    onClose();
-    navigate("/vehicles?openNew=1");
-    toast.success("Ruhsat bilgileri Araç Kartı formuna aktarıldı.");
+  /**
+   * Fotoğrafları kartın evraklarına ekler (Evrak Tanımları'ndaki tiple). AI'ın sınıflandırdığı
+   * belge tipi eşleşmezse fotoğraf atlanır. Hata kaydı engellemez, uyarı olarak gösterilir.
+   */
+  const attachPhotos = async (module: "VEHICLE" | "CUSTOMER", referenceId: string, docTypes: AiDocumentType[]) => {
+    if (!attachDocs || !photos.length || !result) return 0;
+    try {
+      const meta = await getDocumentMeta(module);
+      let count = 0;
+      for (const [i, photo] of photos.entries()) {
+        const docType = result.documents.find((d) => d.photo === i + 1)?.type;
+        if (!docType || !docTypes.includes(docType)) continue;
+        const value = DOC_TYPE_VALUE[docType];
+        const cat = meta.find((c) => c.types.some((t) => t.value === value));
+        const type = cat?.types.find((t) => t.value === value);
+        if (!cat || !type) continue;
+        const { full, thumb } = await resizeWithThumbnail(photo.file, DOCUMENT_PHOTO_MAX_BYTES);
+        const base = `${type.value}-${i + 1}`;
+        const [fileKey, thumbKey] = await Promise.all([
+          uploadBlob(full, `${base}.jpg`, "documents"),
+          uploadBlob(thumb, `${base}-thumb.jpg`, "documents"),
+        ]);
+        await createDocument({
+          categoryId: cat.id, typeId: type.id, referenceType: module, referenceId,
+          fileName: `${type.label} ${i + 1}.jpg`, fileKey, thumbKey, fileType: "image/jpeg", fileSize: full.size,
+        });
+        count++;
+      }
+      return count;
+    } catch (err) {
+      toast.warning(`Kayıt oluşturuldu ama evrak eklenemedi: ${errMsg(err)}`);
+      return 0;
+    }
   };
 
-  // Aksiyon 4: Filtrelenmiş Araçları Listele
-  const handleNavigateFilter = () => {
-    if (!result?.action?.url) return;
-    onClose();
-    navigate(result.action.url);
-    toast.success("Araç filtreleri uygulandı.");
+  const create = async () => {
+    if (!choice || !result) return;
+    if (choice === "VEHICLE_SEARCH") return go(searchUrl);
+    setSaving(true);
+    try {
+      const p = result.person;
+      if (choice === "LEAD") {
+        if (!person.fullName.trim()) throw { message: "Ad soyad giriniz" };
+        const notes = [
+          p?.tckn && `TCKN: ${p.tckn}`,
+          p?.birthDate && `Doğum: ${p.birthDate}`,
+          p?.licenseClasses && `Ehliyet: ${p.licenseClasses}`,
+          p?.validUntil && `Geçerlilik: ${p.validUntil}`,
+        ].filter(Boolean).join(" · ");
+        await createLead({
+          fullName: person.fullName.trim(),
+          phone: person.phone || undefined,
+          email: person.email || undefined,
+          source: "WALK_IN",
+          notes: notes ? `AI ile okundu — ${notes}` : undefined,
+        });
+        setCreated({ title: `${person.fullName} potansiyel olarak eklendi`, to: "/crm/leads" });
+      } else if (choice === "CUSTOMER") {
+        if (!person.fullName.trim()) throw { message: "Ad soyad giriniz" };
+        const acc = await createAccount({
+          type: "CUSTOMER",
+          entityType: "INDIVIDUAL",
+          ledgerCode: "L120",
+          name: person.fullName.trim(),
+          phone: person.phone || undefined,
+          email: person.email || undefined,
+          tckn: person.tckn || undefined,
+          city: person.city || undefined,
+          district: person.district || undefined,
+          address: person.address || undefined,
+        });
+        const docs = await attachPhotos("CUSTOMER", acc.id, ["EHLIYET", "KIMLIK"]);
+        setCreated({
+          title: `${person.fullName} müşteri olarak eklendi${docs ? ` · ${docs} evrak eklendi` : ""}`,
+          to: `/accounts?search=${encodeURIComponent(person.fullName.trim())}`,
+        });
+      } else {
+        if (!vehicle.plate.trim()) throw { message: "Plaka giriniz" };
+        if (vehicleTypes.length && !vehicleTypeId) throw { message: "Araç tipini seçiniz (Sıfır / 2. El …)" };
+        if (!zeroKm && km === undefined) throw { message: "Kilometre giriniz (0 da girilebilir)" };
+        const { brandId, modelId } = matchBrandModel(catalog, vehicle.brand, vehicle.model);
+        const n = (x: string) => (x ? Number(x) : undefined);
+        const v = await createVehicle({
+          plate: vehicle.plate.trim().toLocaleUpperCase("tr-TR"),
+          status: "STOKTA",
+          brandId,
+          modelId,
+          brandName: vehicle.brand || undefined,
+          modelName: vehicle.model || undefined,
+          registrationModel: vehicle.registrationModel || undefined,
+          year: n(vehicle.year),
+          vehicleTypeId: vehicleTypeId || undefined,
+          km: zeroKm ? 0 : km,
+          chassisNo: vehicle.vin || undefined,
+          engineNo: vehicle.engineNo || undefined,
+          colorId: matchColor(catalog?.colors, vehicle.color),
+          colorName: vehicle.color || undefined,
+          bodyTypeId: matchBodyType(catalog?.bodyTypes, vehicle.bodyType),
+          fuelType: (vehicle.fuelType || undefined) as VehicleFormValues["fuelType"],
+          transmission: (vehicle.transmission || undefined) as VehicleFormValues["transmission"],
+          driveType: (vehicle.driveType || undefined) as VehicleFormValues["driveType"],
+          engineVolume: n(vehicle.engineVolume),
+          horsePower: n(vehicle.horsePower),
+          enginePower: n(vehicle.enginePower),
+        });
+        const docs = await attachPhotos("VEHICLE", v.id, ["RUHSAT"]);
+        setCreated({ title: `${v.plate} araç kartı oluşturuldu${docs ? ` · ${docs} evrak eklendi` : ""}`, to: `/vehicles/${v.id}` });
+      }
+    } catch (err) {
+      toast.error(errMsg(err));
+    } finally {
+      setSaving(false);
+    }
   };
+
+  const options = result?.options.filter(allowed) ?? [];
+  const inferred = result?.vehicle?.inferred ?? [];
+  const setV = (k: keyof VehicleForm, val: string) => setVehicle((v) => ({ ...v, [k]: val }));
+  const Lbl = ({ t, f }: { t: string; f: string }) => (
+    <span className="inline-flex items-center gap-1">
+      {t}
+      {inferred.includes(f) && <span className="rounded bg-info/15 px-1 text-[10px] font-bold text-info" title="Ruhsatta yazmıyor, AI tahmini">AI</span>}
+    </span>
+  );
+  const canSend = Boolean(prompt.trim() || photos.length) && !loading;
 
   return (
-    <Modal open={open} onClose={onClose} noPadding className="max-w-2xl">
-      <div className="flex flex-col overflow-hidden rounded-2xl bg-white dark:bg-dark-750 shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-150 px-5 py-4 dark:border-dark-600 bg-gradient-to-r from-primary-600/10 via-purple-500/10 to-transparent">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 text-white shadow-md">
-              <SparklesIcon className="size-5.5 animate-pulse" />
+    <Modal open={open} onClose={onClose} noPadding hideHeader className="max-w-2xl">
+      <div className="relative px-5 pb-6 pt-8 sm:px-8">
+        <button type="button" onClick={onClose} className="absolute right-4 top-4 rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-dark-600" aria-label="Kapat">
+          <TbX className="size-5" />
+        </button>
+
+        {/* Başlık */}
+        <div className="mb-5 flex items-center justify-center gap-2">
+          <TbSparkles className="size-7 text-primary-500" />
+          <span className="bg-linear-to-r from-primary-600 to-purple-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Filomonline AI</span>
+        </div>
+
+        {/* Arama kutusu */}
+        <div className="rounded-3xl border border-gray-200 bg-white shadow-sm transition focus-within:shadow-md dark:border-dark-500 dark:bg-dark-700">
+          <textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                void submit();
+              }
+            }}
+            rows={photos.length ? 1 : 2}
+            placeholder="Yazın ya da ehliyet, kimlik, ruhsat fotoğrafı ekleyin…"
+            className="block w-full resize-none rounded-t-3xl bg-transparent px-5 pt-4 text-base text-gray-800 placeholder:text-gray-400 focus:outline-hidden dark:text-dark-50"
+          />
+          {photos.length > 0 && (
+            <div className="flex gap-2 px-5 pt-2">
+              {photos.map((p, i) => (
+                <div key={p.id} className="group relative">
+                  <img src={p.previewUrl} alt={`Fotoğraf ${i + 1}`} className="size-16 rounded-xl object-cover ring-1 ring-gray-200 dark:ring-dark-500" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotos((ps) => ps.filter((x) => x.id !== p.id))}
+                    className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-gray-800 text-white"
+                    aria-label="Fotoğrafı kaldır"
+                  >
+                    <TbX className="size-3" />
+                  </button>
+                </div>
+              ))}
             </div>
+          )}
+          <div className="flex items-center justify-between px-3 pb-2.5 pt-1">
+            <div className="flex items-center gap-1">
+              <IconBtn title="Kamera" onClick={() => cameraRef.current?.click()} disabled={photos.length >= MAX_PHOTOS}>
+                <TbCamera className="size-5" />
+              </IconBtn>
+              <IconBtn title="Galeri" onClick={() => galleryRef.current?.click()} disabled={photos.length >= MAX_PHOTOS}>
+                <TbPhoto className="size-5" />
+              </IconBtn>
+              <IconBtn title={listening ? "Dinlemeyi durdur" : "Sesle yaz"} onClick={toggleMic} active={listening}>
+                <TbMicrophone className="size-5" />
+              </IconBtn>
+              {photos.length > 0 && <span className="ml-1 text-xs text-gray-400">{photos.length}/{MAX_PHOTOS}</span>}
+            </div>
+            <button
+              type="button"
+              onClick={submit}
+              disabled={!canSend}
+              className="flex size-9 items-center justify-center rounded-full bg-primary-600 text-white transition hover:bg-primary-700 disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-dark-600"
+              aria-label="Gönder"
+            >
+              {loading ? <span className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" /> : <TbArrowRight className="size-5" />}
+            </button>
+          </div>
+          <input ref={cameraRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
+          <input ref={galleryRef} type="file" accept="image/*" multiple hidden onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
+        </div>
+
+        {/* Yükleniyor */}
+        {loading && (
+          <div className="mt-6 space-y-2.5">
+            <p className="text-center text-sm text-gray-500 dark:text-dark-300">{photos.length ? "Belgeler okunuyor…" : "Düşünüyor…"}</p>
+            <div className="h-3 animate-pulse rounded-full bg-gray-100 dark:bg-dark-600" />
+            <div className="h-3 w-4/5 animate-pulse rounded-full bg-gray-100 dark:bg-dark-600" />
+          </div>
+        )}
+
+        {/* Hata */}
+        {error && (
+          <div className="mt-5 flex items-start gap-2 rounded-2xl bg-error/10 px-4 py-3 text-sm text-error">
+            <TbAlertTriangle className="mt-0.5 size-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Sonuç */}
+        {result && !loading && (
+          <div className="mt-6 space-y-4">
             <div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-dark-50">
-                Filomonline AI Asistan
-              </h3>
-              <p className="text-xs text-gray-500 dark:text-dark-300">
-                Ehliyet & Ruhsat okuma, sesli komut ve akıllı araç filtreleme
-              </p>
-            </div>
-          </div>
-          <Button
-            onClick={onClose}
-            variant="flat"
-            isIcon
-            className="size-8 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-dark-100"
-          >
-            <XMarkIcon className="size-5" />
-          </Button>
-        </div>
-
-        {/* Content Body */}
-        <div className="space-y-4 p-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
-          {/* Görsel Önizleme (Varsa) */}
-          {selectedImage && (
-            <div className="relative rounded-xl border border-primary-200 bg-primary-50/50 p-3 dark:border-primary-900/50 dark:bg-primary-950/20">
-              <div className="flex items-center gap-3">
-                <img
-                  src={selectedImage.previewUrl}
-                  alt="Yüklenen Belge"
-                  className="size-16 rounded-lg object-cover border border-primary-200 dark:border-primary-800 shadow-2xs"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <Badge color="primary" variant="soft" className="text-[10px]">
-                      Belge Eklendi
-                    </Badge>
-                    {selectedImage.isResized && (
-                      <Badge color="success" variant="soft" className="text-[10px]">
-                        &lt;200 KB Optimize Edildi
-                      </Badge>
-                    )}
-                    <span className="truncate text-xs font-semibold text-gray-800 dark:text-dark-100">
-                      {selectedImage.file.name}
+              <p className="text-base text-gray-800 dark:text-dark-50">{result.summary}</p>
+              {result.documents.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {result.documents.map((d) => (
+                    <span key={d.photo} className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-dark-600 dark:text-dark-200">
+                      {d.photo}. {DOC_LABEL[d.type]}
+                      {d.side !== "BELIRSIZ" ? ` (${d.side === "ON" ? "ön" : "arka"})` : ""}
                     </span>
-                  </div>
-                  <p className="text-[11px] text-gray-500 dark:text-dark-300 mt-1">
-                    <strong className="text-primary-700 dark:text-primary-300">{selectedImage.sizeKb} KB</strong>
-                    {selectedImage.originalSizeKb > selectedImage.sizeKb && (
-                      <span className="text-gray-400 dark:text-dark-400"> (Orijinal: {selectedImage.originalSizeKb} KB)</span>
+                  ))}
+                </div>
+              )}
+              {result.warnings.length > 0 && (
+                <ul className="mt-2 space-y-0.5 text-xs text-warning">
+                  {result.warnings.map((w) => (
+                    <li key={w} className="flex gap-1.5"><TbAlertTriangle className="mt-0.5 size-3.5 shrink-0" />{w}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {result.answer && <p className="whitespace-pre-line rounded-2xl bg-gray-50 px-4 py-3 text-sm text-gray-700 dark:bg-dark-800 dark:text-dark-100">{result.answer}</p>}
+
+            {created ? (
+              <div className="flex flex-col items-center gap-3 rounded-2xl bg-success/10 px-4 py-6 text-center">
+                <TbCircleCheck className="size-10 text-success" />
+                <p className="font-semibold text-gray-800 dark:text-dark-50">{created.title}</p>
+                <div className="flex gap-2">
+                  <Button color="primary" onClick={() => go(created.to)}>Kartı Aç</Button>
+                  <Button variant="flat" onClick={reset}>Yeni</Button>
+                </div>
+              </div>
+            ) : options.length > 0 && choice ? (
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  {options.map((o) => {
+                    const { label, Icon } = OPTION_META[o];
+                    const active = choice === o;
+                    return (
+                      <button
+                        key={o}
+                        type="button"
+                        onClick={() => setChoice(o)}
+                        className={clsx(
+                          "flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition",
+                          active ? "border-primary-500 bg-primary-500 text-white shadow-sm" : "border-gray-200 text-gray-600 hover:border-gray-300 dark:border-dark-500 dark:text-dark-200",
+                        )}
+                      >
+                        <Icon className="size-4.5" />
+                        {label}
+                        {o === result.recommended && <span className={clsx("rounded-full px-1.5 text-tiny", active ? "bg-white/25" : "bg-primary-500/10 text-primary-600")}>önerilen</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+                {choice === result.recommended && result.reason && <p className="-mt-2 text-xs text-gray-400">{result.reason}</p>}
+
+                {(choice === "LEAD" || choice === "CUSTOMER") && (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="sm:col-span-2">
+                      <Input label="Ad Soyad" value={person.fullName} onChange={(e) => setPerson({ ...person, fullName: e.target.value })} />
+                    </div>
+                    <Input label="Telefon" type="tel" placeholder="05xx xxx xx xx" value={person.phone} onChange={(e) => setPerson({ ...person, phone: e.target.value })} />
+                    <Input label="E-posta" type="email" placeholder="ornek@mail.com" value={person.email} onChange={(e) => setPerson({ ...person, email: e.target.value })} />
+                    {choice === "CUSTOMER" && (
+                      <>
+                        <Input label="T.C. Kimlik No" value={person.tckn} onChange={(e) => setPerson({ ...person, tckn: e.target.value.replace(/\D/g, "").slice(0, 11) })} />
+                        <Input label="İl / İlçe" value={[person.city, person.district].filter(Boolean).join(" / ")} readOnly placeholder="—" />
+                      </>
                     )}
-                    {" "}• OCR ve yapay zeka analizi için hazır
-                  </p>
-                </div>
-                <Button
-                  isIcon
-                  variant="flat"
-                  onClick={() => setSelectedImage(null)}
-                  className="size-7 rounded-full text-gray-400 hover:text-error"
-                  title="Görseli Kaldır"
-                >
-                  <XMarkIcon className="size-4" />
-                </Button>
-              </div>
-
-              {/* Belge Türü Seçim Butonları (Ruhsat vs Ehliyet) */}
-              <div className="mt-2.5 pt-2 border-t border-primary-200/60 dark:border-primary-800/60 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs font-semibold text-gray-600 dark:text-dark-300">
-                  Belge Türü:
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDocTypeHint("RUHSAT");
-                      setPrompt("Bu araç ruhsatındaki plaka, marka, model, motor ve şasi no bilgilerini oku ve araç kartı aç.");
-                    }}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      docTypeHint === "RUHSAT"
-                        ? "bg-primary-600 text-white shadow-sm ring-2 ring-primary-500/30"
-                        : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 dark:bg-dark-700 dark:border-dark-600 dark:text-dark-200"
-                    }`}
-                  >
-                    🚗 Araç Ruhsatı (Araç Kartı Aç)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDocTypeHint("EHLIYET");
-                      setPrompt("Bu ehliyet belgesindeki kişi ve kimlik bilgilerini çözümle ve müşteri kartı aç.");
-                    }}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      docTypeHint === "EHLIYET"
-                        ? "bg-purple-600 text-white shadow-sm ring-2 ring-purple-500/30"
-                        : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 dark:bg-dark-700 dark:border-dark-600 dark:text-dark-200"
-                    }`}
-                  >
-                    🪪 Sürücü Ehliyeti (Müşteri Aç)
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Prompt Girdi Alanı */}
-          <div className="relative rounded-xl border border-gray-200 bg-gray-50/70 p-3 transition-colors focus-within:border-primary-500 focus-within:bg-white dark:border-dark-600 dark:bg-dark-800 dark:focus-within:bg-dark-700">
-            <textarea
-              rows={3}
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit();
-                }
-              }}
-              placeholder="Örn: Bana 2020 üstü, 200k - 300k arası otomatik araba lazım... veya ehliyet/ruhsat görseli yükleyin"
-              className="w-full resize-none bg-transparent text-xs sm:text-sm text-gray-800 placeholder:text-gray-400 focus:outline-hidden dark:text-dark-100 dark:placeholder:text-dark-400"
-            />
-
-            {/* Alt İşlem Butonları */}
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-200/60 pt-2.5 dark:border-dark-600/60">
-              {/* Sol Araçlar: Kamera, Galeri, Ses */}
-              <div className="flex items-center gap-1.5">
-                {/* 1. Kamera Butonu */}
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  ref={cameraInputRef}
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleFileProcess(file);
-                    e.target.value = "";
-                  }}
-                />
-                <Button
-                  type="button"
-                  variant="flat"
-                  onClick={() => cameraInputRef.current?.click()}
-                  className="h-8 gap-1.5 rounded-lg px-2.5 text-xs text-gray-700 hover:bg-gray-200/60 dark:text-dark-200 dark:hover:bg-dark-600"
-                  title="Kamera ile çek"
-                >
-                  <CameraIcon className="size-4 text-primary-600 dark:text-primary-400" />
-                  <span className="hidden sm:inline">Kamera</span>
-                </Button>
-
-                {/* 2. Galeri / Dosya Butonu */}
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={galleryInputRef}
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleFileProcess(file);
-                    e.target.value = "";
-                  }}
-                />
-                <Button
-                  type="button"
-                  variant="flat"
-                  onClick={() => galleryInputRef.current?.click()}
-                  className="h-8 gap-1.5 rounded-lg px-2.5 text-xs text-gray-700 hover:bg-gray-200/60 dark:text-dark-200 dark:hover:bg-dark-600"
-                  title="Galeriden / Dosyadan seç"
-                >
-                  <PhotoIcon className="size-4 text-secondary-600 dark:text-secondary-400" />
-                  <span className="hidden sm:inline">Galeri / Belge</span>
-                </Button>
-
-                {/* 3. Ses Tanıma (Speech to Text) Butonu */}
-                <Button
-                  type="button"
-                  variant="flat"
-                  onClick={toggleSpeechRecognition}
-                  className={`h-8 gap-1.5 rounded-lg px-2.5 text-xs transition-colors ${
-                    isListening
-                      ? "bg-error/15 text-error font-semibold animate-pulse"
-                      : "text-gray-700 hover:bg-gray-200/60 dark:text-dark-200 dark:hover:bg-dark-600"
-                  }`}
-                  title={isListening ? "Dinlemeyi Durdur" : "Sesle Yazdır (Speech to Text)"}
-                >
-                  <MicrophoneIcon
-                    className={`size-4 ${isListening ? "text-error" : "text-amber-500"}`}
-                  />
-                  <span>{isListening ? "Dinleniyor..." : "Sesle Söyle"}</span>
-                </Button>
-              </div>
-
-              {/* Sağ: Gönder Butonu */}
-              <Button
-                type="button"
-                color="primary"
-                onClick={handleSubmit}
-                disabled={loading || (!prompt.trim() && !selectedImage)}
-                className="h-8 gap-1.5 rounded-lg px-4 text-xs shadow-xs"
-              >
-                {loading ? (
-                  <>
-                    <Spinner color="neutral" className="size-3.5 border-2" />
-                    <span>İnceleniyor...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Analiz Et</span>
-                    <PaperAirplaneIcon className="size-3.5" />
-                  </>
+                  </div>
                 )}
-              </Button>
-            </div>
-          </div>
 
-          {/* Hızlı Örnek Çipleri */}
-          {!result && !loading && (
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold text-gray-500 dark:text-dark-300">
-                Hızlı Deneme Örnekleri:
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPrompt("Bana 2020 üstü, 200k 300k arası otomatik vites araba lazım");
-                  }}
-                  className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs text-gray-700 transition-colors hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-700 dark:text-dark-200 dark:hover:border-primary-400 dark:hover:text-primary-300"
-                >
-                  🚗 2020+ Otomatik 200k-300k Arası Araç
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPrompt("Ehliyet belgesi fotoğrafından müşteri ve potansiyel kartı aç");
-                  }}
-                  className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs text-gray-700 transition-colors hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-700 dark:text-dark-200 dark:hover:border-primary-400 dark:hover:text-primary-300"
-                >
-                  🪪 Ehliyetten Potansiyel / Müşteri Kartı Aç
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPrompt("Araç ruhsatı fotoğrafından yeni araç kartı oluştur");
-                  }}
-                  className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs text-gray-700 transition-colors hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-700 dark:text-dark-200 dark:hover:border-primary-400 dark:hover:text-primary-300"
-                >
-                  📄 Ruhsattan Araç Kartı Aç
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Yükleniyor Göstergesi */}
-          {loading && (
-            <div className="flex flex-col items-center justify-center py-8 text-center space-y-3">
-              <div className="relative flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 text-white shadow-lg animate-bounce">
-                <SparklesIcon className="size-7" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-800 dark:text-dark-100">
-                  Yapay Zeka Analiz Ediyor...
-                </p>
-                <p className="text-xs text-gray-400 dark:text-dark-300 mt-0.5">
-                  Görsel veya metindeki veriler ayrıştırılıyor ve aksiyon hazırlanıyor
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* AI Çözümleme Sonucu */}
-          {result && !loading && (
-            <div className="rounded-xl border border-primary-200 bg-gradient-to-br from-primary-50/60 via-purple-50/30 to-white p-4 shadow-sm dark:border-primary-900/60 dark:from-primary-950/30 dark:via-dark-700 dark:to-dark-750 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Badge color="primary" variant="soft" className="text-xs font-semibold px-2">
-                    {result.intent === "EHLIYET" && "Ehliyet / Müşteri"}
-                    {result.intent === "RUHSAT" && "Araç Ruhsatı"}
-                    {result.intent === "VEHICLE_SEARCH" && "Araç Filtresi"}
-                    {result.intent === "GENERAL" && "Genel Yanıt"}
-                  </Badge>
-                  <span className="text-xs font-bold text-gray-800 dark:text-dark-50">
-                    {result.title}
-                  </span>
-                </div>
-                {result.modelUsed && (
-                  <span className="text-[10px] text-gray-400 dark:text-dark-400">
-                    {result.modelUsed} ({result.latencyMs}ms)
-                  </span>
+                {choice === "VEHICLE" && (
+                  <div className="space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-[1fr_12rem]">
+                      <div>
+                        <span className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-dark-100">Araç Tipi *</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {vehicleTypes.map((t) => (
+                            <button
+                              key={t.id}
+                              type="button"
+                              onClick={() => {
+                                setVehicleTypeId(t.id);
+                                if (isZeroKm(t.id)) setKm(0);
+                              }}
+                              className={clsx(
+                                "rounded-full border px-3.5 py-1.5 text-sm font-semibold transition",
+                                vehicleTypeId === t.id
+                                  ? "border-primary-500 bg-primary-500 text-white"
+                                  : "border-gray-200 text-gray-600 hover:border-gray-300 dark:border-dark-500 dark:text-dark-200",
+                              )}
+                            >
+                              {t.name}
+                            </button>
+                          ))}
+                          {!catalog && <span className="text-xs text-gray-400">Yükleniyor…</span>}
+                        </div>
+                      </div>
+                      <NumericInput
+                        label={zeroKm ? "Kilometre" : "Kilometre *"}
+                        value={zeroKm ? 0 : (km ?? null)}
+                        onValueChange={setKm}
+                        numeralDecimalScale={0}
+                        suffix="km"
+                        disabled={zeroKm || !vehicleTypeId}
+                        placeholder={vehicleTypeId ? "0" : "Önce tip seçin"}
+                      />
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <Input label="Plaka" value={vehicle.plate} onChange={(e) => setV("plate", e.target.value)} />
+                      <Input label="Marka" value={vehicle.brand} onChange={(e) => setV("brand", e.target.value)} />
+                      <Input label="Model" value={vehicle.model} onChange={(e) => setV("model", e.target.value)} />
+                      <div className="sm:col-span-2">
+                        <Input label="Ruhsat Model Adı" value={vehicle.registrationModel} onChange={(e) => setV("registrationModel", e.target.value)} />
+                      </div>
+                      <Input label={<Lbl t="Model Yılı" f="modelYear" />} inputMode="numeric" value={vehicle.year} onChange={(e) => setV("year", e.target.value.replace(/\D/g, "").slice(0, 4))} />
+                      <div className="sm:col-span-2">
+                        <Input label="Şasi No" value={vehicle.vin} onChange={(e) => setV("vin", e.target.value.toUpperCase())} />
+                      </div>
+                      <Input label="Motor No" value={vehicle.engineNo} onChange={(e) => setV("engineNo", e.target.value)} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      <Pick label={<Lbl t="Yakıt" f="fuelType" />} value={vehicle.fuelType} opts={FUEL_OPTS} onChange={(x) => setV("fuelType", x)} />
+                      <Pick label={<Lbl t="Vites" f="transmission" />} value={vehicle.transmission} opts={GEAR_OPTS} onChange={(x) => setV("transmission", x)} />
+                      <Pick label={<Lbl t="Kasa" f="bodyType" />} value={vehicle.bodyType} opts={BODY_OPTS} onChange={(x) => setV("bodyType", x)} />
+                      <Pick label={<Lbl t="Çekiş" f="driveType" />} value={vehicle.driveType} opts={DRIVE_OPTS} onChange={(x) => setV("driveType", x)} />
+                      <Input label={<Lbl t="Renk" f="color" />} value={vehicle.color} onChange={(e) => setV("color", e.target.value)} />
+                      <Input label={<Lbl t="Hacim (cc)" f="engineVolume" />} inputMode="numeric" value={vehicle.engineVolume} onChange={(e) => setV("engineVolume", e.target.value.replace(/\D/g, ""))} />
+                      <Input label={<Lbl t="Güç (HP)" f="horsePower" />} inputMode="numeric" value={vehicle.horsePower} onChange={(e) => setV("horsePower", e.target.value.replace(/\D/g, ""))} />
+                      <Input label={<Lbl t="Güç (kW)" f="enginePower" />} inputMode="numeric" value={vehicle.enginePower} onChange={(e) => setV("enginePower", e.target.value.replace(/\D/g, ""))} />
+                    </div>
+                    {inferred.length > 0 && (
+                      <p className="flex items-start gap-1.5 text-xs text-info">
+                        <TbSparkles className="mt-0.5 size-3.5 shrink-0" />
+                        <span>
+                          <b>AI</b> işaretli alanlar ruhsatta yazmıyor; {inferred.map((k) => INFERRED_FIELD_LABEL[k]).filter(Boolean).join(", ")} marka, model ve yıldan tahmin edildi. Kontrol edin.
+                        </span>
+                      </p>
+                    )}
+                  </div>
                 )}
-              </div>
 
-              <p className="text-xs sm:text-sm text-gray-700 dark:text-dark-200 leading-relaxed">
-                {result.summary}
-              </p>
-
-              {/* 1. Senaryo: Ehliyet Sonuç Detayları */}
-              {result.intent === "EHLIYET" && result.data?.license && (
-                <div className="rounded-lg bg-white/80 p-3 dark:bg-dark-800/80 border border-gray-150 dark:border-dark-600 space-y-2">
-                  <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                    Ayrıştırılan Bilgiler:
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span className="text-gray-400">Ad Soyad: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.license.fullName || "-"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">TC Kimlik: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.license.tcNo || "-"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Ehliyet Sınıfı: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.license.licenseClass || "B"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Doğum Tarihi: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.license.birthDate || "-"}
-                      </strong>
-                    </div>
-                  </div>
-
-                  {/* Ehliyet Aksiyon Butonları */}
-                  <div className="mt-3 flex flex-wrap gap-2 pt-2 border-t border-gray-150 dark:border-dark-600">
-                    <Button
-                      type="button"
-                      color="success"
-                      onClick={handleOpenLead}
-                      className="h-8 gap-1.5 rounded-lg px-3 text-xs"
-                    >
-                      <UserPlusIcon className="size-4" />
-                      <span>CRM Potansiyel Müşteri Aç</span>
-                    </Button>
-                    <Button
-                      type="button"
-                      color="primary"
-                      onClick={handleOpenAccount}
-                      className="h-8 gap-1.5 rounded-lg px-3 text-xs"
-                    >
-                      <UserGroupIcon className="size-4" />
-                      <span>Cari Hesap (Müşteri) Aç</span>
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {/* 2. Senaryo: Ruhsat Sonuç Detayları */}
-              {result.intent === "RUHSAT" && result.data?.registration && (
-                <div className="rounded-lg bg-white/80 p-3 dark:bg-dark-800/80 border border-gray-150 dark:border-dark-600 space-y-2">
-                  <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                    Ayrıştırılan Araç Verileri:
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span className="text-gray-400">Plaka: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.registration.plate || "-"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Marka / Model: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.registration.brand} {result.data.registration.model}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Model Yılı: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.registration.year || "-"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Şasi No (VIN): </span>
-                      <strong className="text-gray-800 dark:text-dark-100 truncate block">
-                        {result.data.registration.vin || "-"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Vites: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.registration.transmission || "OTOMATIK"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Yakıt: </span>
-                      <strong className="text-gray-800 dark:text-dark-100">
-                        {result.data.registration.fuelType || "DIZEL"}
-                      </strong>
-                    </div>
-                  </div>
-
-                  {/* Ruhsat Aksiyon Butonu */}
-                  <div className="mt-3 flex gap-2 pt-2 border-t border-gray-150 dark:border-dark-600">
-                    <Button
-                      type="button"
-                      color="primary"
-                      onClick={handleOpenVehicle}
-                      className="h-8 gap-1.5 rounded-lg px-4 text-xs shadow-xs"
-                    >
-                      <TruckIcon className="size-4" />
-                      <span>Yeni Araç Kartı Aç</span>
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {/* 3. Senaryo: Araç Filtreleme Detayları */}
-              {result.intent === "VEHICLE_SEARCH" && result.data?.filter && (
-                <div className="rounded-lg bg-white/80 p-3 dark:bg-dark-800/80 border border-gray-150 dark:border-dark-600 space-y-2">
-                  <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                    Uygulanacak Filtreler:
-                  </p>
+                {choice === "VEHICLE_SEARCH" && result.filter && (
                   <div className="flex flex-wrap gap-1.5">
-                    {result.data.filter.minYear && (
-                      <Badge color="secondary" variant="soft" className="text-xs">
-                        {result.data.filter.minYear}+ Model
-                      </Badge>
-                    )}
-                    {result.data.filter.transmission && (
-                      <Badge color="info" variant="soft" className="text-xs">
-                        {result.data.filter.transmission === "OTOMATIK" ? "Otomatik Vites" : "Manuel"}
-                      </Badge>
-                    )}
-                    {result.data.filter.minPrice && result.data.filter.maxPrice && (
-                      <Badge color="warning" variant="soft" className="text-xs">
-                        {result.data.filter.minPrice.toLocaleString("tr-TR")} ₺ - {result.data.filter.maxPrice.toLocaleString("tr-TR")} ₺
-                      </Badge>
-                    )}
-                    <Badge color="success" variant="soft" className="text-xs">
-                      Stoktaki Araçlar
-                    </Badge>
+                    {[
+                      result.filter.query,
+                      result.filter.minPrice && `≥ ${result.filter.minPrice.toLocaleString("tr-TR")} ₺`,
+                      result.filter.maxPrice && `≤ ${result.filter.maxPrice.toLocaleString("tr-TR")} ₺`,
+                      result.filter.minYear && `${result.filter.minYear}+`,
+                      result.filter.transmission && (result.filter.transmission === "OTOMATIK" ? "Otomatik" : "Manuel"),
+                      result.filter.fuelType,
+                    ]
+                      .filter(Boolean)
+                      .map((t) => (
+                        <span key={String(t)} className="rounded-full bg-primary-500/10 px-3 py-1 text-sm font-medium text-primary-700 dark:text-primary-300">{t}</span>
+                      ))}
                   </div>
+                )}
 
-                  {/* Filtre Aksiyon Butonu */}
-                  <div className="mt-3 flex gap-2 pt-2 border-t border-gray-150 dark:border-dark-600">
-                    <Button
-                      type="button"
-                      color="primary"
-                      onClick={handleNavigateFilter}
-                      className="h-8 gap-1.5 rounded-lg px-4 text-xs shadow-xs"
-                    >
-                      <AdjustmentsHorizontalIcon className="size-4" />
-                      <span>Filtrelenmiş Araçları Listele →</span>
-                    </Button>
+                {photos.length > 0 && (choice === "VEHICLE" || choice === "CUSTOMER") && (
+                  <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-dark-200">
+                    <input type="checkbox" checked={attachDocs} onChange={(e) => setAttachDocs(e.target.checked)} className="size-4 accent-primary-600" />
+                    Fotoğrafları {choice === "VEHICLE" ? "aracın" : "müşterinin"} evraklarına ekle ({choice === "VEHICLE" ? "ruhsat" : "ehliyet / kimlik"})
+                  </label>
+                )}
+
+                {existing && (
+                  <div className="flex items-center justify-between gap-2 rounded-xl bg-warning/10 px-3 py-2 text-sm text-warning">
+                    <span className="flex items-center gap-1.5"><TbAlertTriangle className="size-4" />{existing.label}</span>
+                    <button type="button" className="font-semibold hover:underline" onClick={() => go(existing.to)}>Kartı aç</button>
                   </div>
+                )}
+
+                <div className="flex justify-end">
+                  <Button
+                    color="primary"
+                    className="gap-1.5 rounded-full px-6"
+                    onClick={create}
+                    disabled={saving || (choice === "VEHICLE" && ((vehicleTypes.length > 0 && !vehicleTypeId) || (!zeroKm && km === undefined)))}
+                  >
+                    {saving ? "Kaydediliyor…" : choice === "VEHICLE_SEARCH" ? "Araçları Göster" : `${OPTION_META[choice].label} Oluştur`}
+                    {!saving && <TbArrowRight className="size-4" />}
+                  </Button>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+              </div>
+            ) : null}
+          </div>
+        )}
+
+        {!result && !loading && !error && (
+          <p className="mt-4 text-center text-xs text-gray-400">
+            En fazla {MAX_PHOTOS} fotoğraf · ön ve arka yüz birlikte okunur · ne açılacağına AI karar verir, siz onaylarsınız
+          </p>
+        )}
       </div>
     </Modal>
+  );
+}
+
+function IconBtn({ title, onClick, disabled, active, children }: { title: string; onClick: () => void; disabled?: boolean; active?: boolean; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      onClick={onClick}
+      disabled={disabled}
+      className={clsx(
+        "flex size-9 items-center justify-center rounded-full transition disabled:opacity-40",
+        active ? "animate-pulse bg-error/15 text-error" : "text-gray-500 hover:bg-gray-100 hover:text-primary-600 dark:text-dark-300 dark:hover:bg-dark-600",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Pick({ label, value, opts, onChange }: { label: React.ReactNode; value: string; opts: string[][]; onChange: (v: string) => void }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-dark-100">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-9 w-full rounded-lg border border-gray-300 bg-transparent px-2.5 text-sm text-gray-800 outline-hidden focus:border-primary-600 dark:border-dark-450 dark:text-dark-100"
+      >
+        <option value="">—</option>
+        {opts.map(([v, l]) => (
+          <option key={v} value={v}>{l}</option>
+        ))}
+      </select>
+    </label>
   );
 }

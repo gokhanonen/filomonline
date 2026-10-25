@@ -18,6 +18,7 @@ import {
 
 import { Button, Input, NumericInput, Switch, Textarea, Spinner, Tag } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
+import { INFERRED_FIELD_LABEL, matchBodyType, matchBrandModel, matchColor } from "@/utils/vehicleCatalogMatch";
 import { SearchableSelect, type SearchableOption } from "@/components/shared/SearchableSelect";
 import {
   DRIVE_LABELS,
@@ -26,7 +27,10 @@ import {
   STATUS_TAG_COLOR,
   TRANSMISSION_LABELS,
   VEHICLE_STATUS_LABELS,
+  type DriveType,
+  type FuelType,
   type PurchaseRegime,
+  type TransmissionType,
   type Vehicle,
   type VehicleFormValues,
 } from "@/@types/vehicle";
@@ -356,48 +360,34 @@ export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }
         return;
       }
 
-      if (ocrResult.brand && catalog?.brands) {
-        const bTarget = ocrResult.brand.toLowerCase().trim();
-        const brandObj = catalog.brands.find(
-          (b) => b.name.toLowerCase().trim() === bTarget || bTarget.includes(b.name.toLowerCase().trim()),
-        );
-        if (brandObj) {
-          setValue("brandId", brandObj.id);
-          if (ocrResult.model && brandObj.models) {
-            const mTarget = ocrResult.model.toLowerCase().trim();
-            const modelObj = brandObj.models.find(
-              (m) =>
-                m.name.toLowerCase().trim() === mTarget || mTarget.includes(m.name.toLowerCase().trim()),
-            );
-            if (modelObj) {
-              setValue("modelId", modelObj.id);
-            }
-          }
-        }
-      }
+      const { brandId, modelId } = matchBrandModel(catalog, ocrResult.brand, ocrResult.model);
+      if (brandId) setValue("brandId", brandId);
+      if (modelId) setValue("modelId", modelId);
 
       if (ocrResult.plate) setValue("plate", ocrResult.plate.toUpperCase().trim());
       if (ocrResult.year) setValue("year", Number(ocrResult.year));
       if (ocrResult.vin) setValue("chassisNo", ocrResult.vin.toUpperCase().trim());
       if (ocrResult.engineNo) setValue("engineNo", ocrResult.engineNo.toUpperCase().trim());
-      if (ocrResult.fuelType) {
-        const ft = ocrResult.fuelType.toUpperCase();
-        if (["BENZIN", "DIZEL", "ELEKTRIK", "HIBRIT", "LPG"].includes(ft)) {
-          setValue("fuelType", ft as any);
-        }
+      if (ocrResult.registrationModel) setValue("registrationModel", ocrResult.registrationModel.trim());
+      if (ocrResult.fuelType && ["BENZIN", "DIZEL", "ELEKTRIK", "HIBRIT", "LPG"].includes(ocrResult.fuelType)) {
+        setValue("fuelType", ocrResult.fuelType as FuelType);
       }
-      if (ocrResult.transmission) {
-        const tr = ocrResult.transmission.toUpperCase();
-        if (["OTOMATIK", "MANUEL"].includes(tr)) {
-          setValue("transmission", tr as any);
-        }
+      if (ocrResult.transmission && ["OTOMATIK", "MANUEL", "YARI_OTOMATIK"].includes(ocrResult.transmission)) {
+        setValue("transmission", ocrResult.transmission as TransmissionType);
       }
-      if (ocrResult.color) {
-        const cTarget = ocrResult.color.toLowerCase().trim();
-        const colorList = catalog?.colors?.length ? catalog.colors : DEFAULT_COLORS;
-        const colorObj = colorList.find((c) => c.name.toLowerCase().includes(cTarget));
-        if (colorObj) setValue("colorId", colorObj.id);
+      if (ocrResult.driveType && ["ONDEN_CEKIS", "ARKADAN_ITIS", "FOUR_WD", "AWD"].includes(ocrResult.driveType)) {
+        setValue("driveType", ocrResult.driveType as DriveType);
       }
+      if (ocrResult.engineVolume) setValue("engineVolume", ocrResult.engineVolume);
+      if (ocrResult.horsePower) setValue("horsePower", ocrResult.horsePower);
+      if (ocrResult.enginePower) setValue("enginePower", ocrResult.enginePower);
+      const bodyTypeId = matchBodyType(catalog?.bodyTypes, ocrResult.bodyType);
+      if (bodyTypeId) setValue("bodyTypeId", bodyTypeId);
+      const colorId = matchColor(catalog?.colors?.length ? catalog.colors : DEFAULT_COLORS, ocrResult.color);
+      if (colorId) setValue("colorId", colorId);
+
+      const inferred = (ocrResult.inferred ?? []).map((k) => INFERRED_FIELD_LABEL[k]).filter(Boolean);
+      if (inferred.length) toast.info(`AI tahmini (ruhsatta yazmıyor, kontrol edin): ${inferred.join(", ")}`);
 
       setActiveStep(0);
       toast.success(

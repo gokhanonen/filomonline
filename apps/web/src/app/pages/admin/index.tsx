@@ -53,8 +53,7 @@ export default function AdminConsolePage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [selectedModel, setSelectedModel] = useState("claude-haiku-5-5");
-  const [maxTokens, setMaxTokens] = useState<number>(1024);
-  const [temperature, setTemperature] = useState<number>(0.7);
+  const [maxTokens, setMaxTokens] = useState<number>(16000);
   const [showKey, setShowKey] = useState(false);
   const [isSavingAi, setIsSavingAi] = useState(false);
 
@@ -93,8 +92,7 @@ export default function AdminConsolePage() {
       const cfg = await getClaudeConfig();
       setAiConfig(cfg);
       setSelectedModel(cfg.model || "claude-haiku-5-5");
-      setMaxTokens(cfg.maxTokens || 1024);
-      setTemperature(cfg.temperature ?? 0.7);
+      setMaxTokens(cfg.maxTokens || 16000);
     } catch (err) {
       toast.error((err as { message?: string })?.message ?? "AI konfigürasyonu alınamadı");
     } finally {
@@ -141,8 +139,7 @@ export default function AdminConsolePage() {
       const updated = await updateClaudeConfig({
         apiKey: apiKeyInput.trim() || undefined,
         model: selectedModel,
-        maxTokens: Number(maxTokens) || 1024,
-        temperature: Number(temperature) ?? 0.7,
+        maxTokens: Number(maxTokens) || 16000,
       });
       setAiConfig(updated);
       setApiKeyInput("");
@@ -432,24 +429,15 @@ export default function AdminConsolePage() {
                       </p>
                     </div>
 
-                    {/* Gelişmiş Ayarlar (Token & Sıcaklık) */}
+                    {/* Gelişmiş Ayarlar */}
                     <div className="grid grid-cols-2 gap-4 pt-2">
                       <Input
                         label="Maksimum Token"
                         type="number"
                         value={maxTokens}
                         onChange={(e) => setMaxTokens(Number(e.target.value))}
-                        min={128}
-                        max={4096}
-                      />
-                      <Input
-                        label="Sıcaklık (Temperature)"
-                        type="number"
-                        step="0.1"
-                        min={0}
-                        max={1}
-                        value={temperature}
-                        onChange={(e) => setTemperature(Number(e.target.value))}
+                        min={4096}
+                        max={64000}
                       />
                     </div>
 

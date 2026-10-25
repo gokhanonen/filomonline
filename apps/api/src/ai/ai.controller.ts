@@ -6,17 +6,16 @@ import {
   Put,
   UseGuards,
 } from "@nestjs/common";
-import { IsOptional, IsString, IsNumber, ValidateNested } from "class-validator";
+import { ArrayMaxSize, IsArray, IsIn, IsOptional, IsString, IsNumber, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { SuperAdminGuard } from "../tenancy/super-admin.guard";
 import { SkipCompany } from "../tenancy/skip-company.decorator";
-import { ClaudeService, AiAssistInput } from "./claude.service";
+import { ClaudeService, AiAssistInput, MAX_ASSIST_IMAGES } from "./claude.service";
 
 class UpdateClaudeConfigDto {
   @IsOptional() @IsString() apiKey?: string;
   @IsOptional() @IsString() model?: string;
   @IsOptional() @IsNumber() maxTokens?: number;
-  @IsOptional() @IsNumber() temperature?: number;
 }
 
 class TestClaudeDto {
@@ -28,18 +27,17 @@ class ClaudeQueryDto {
   @IsOptional() @IsString() system?: string;
   @IsOptional() @IsString() model?: string;
   @IsOptional() @IsNumber() maxTokens?: number;
-  @IsOptional() @IsNumber() temperature?: number;
 }
 
 class AiImageDto {
-  @IsString() mediaType!: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
+  @IsIn(["image/jpeg", "image/png", "image/webp", "image/gif"]) mediaType!: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
   @IsString() base64Data!: string;
 }
 
 class AiAssistDto implements AiAssistInput {
   @IsOptional() @IsString() prompt?: string;
-  @IsOptional() @ValidateNested() @Type(() => AiImageDto) image?: AiImageDto;
-  @IsOptional() @IsString() docTypeHint?: "EHLIYET" | "RUHSAT" | "AUTO";
+  @IsOptional() @IsArray() @ArrayMaxSize(MAX_ASSIST_IMAGES) @ValidateNested({ each: true }) @Type(() => AiImageDto)
+  images?: AiImageDto[];
 }
 
 @SkipCompany()
@@ -76,11 +74,10 @@ export class AiController {
       system: dto.system,
       model: dto.model,
       maxTokens: dto.maxTokens,
-      temperature: dto.temperature,
     });
   }
 
-  /** Filomonline Akıllı Asistan: Metin, Ses veya Görseli (Ehliyet, Ruhsat) analiz edip aksiyon üretir */
+  /** Akıllı asistan: metin ya da en fazla 3 fotoğraf (ehliyet/kimlik/ruhsat) → çıkarılan veri + kart önerisi */
   @Post("ai/assist")
   assist(@Body() dto: AiAssistDto) {
     return this.claude.assist(dto);
