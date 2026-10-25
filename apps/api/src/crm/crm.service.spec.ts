@@ -58,7 +58,7 @@ describe("CrmService", () => {
   const mockClaude = {
     sendMessage: jest.fn().mockResolvedValue({
       text: "Merhaba Ahmet Bey! 34 ABC 123 plakalı BMW 320i aracımız sizi bekliyor.",
-      model: "claude-3-5-haiku-20241022",
+      model: "claude-haiku-5-5",
       latencyMs: 320,
     }),
   };

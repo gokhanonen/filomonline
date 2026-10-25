@@ -115,32 +115,31 @@ export interface AiAssistInput {
   docTypeHint?: "EHLIYET" | "RUHSAT" | "AUTO";
 }
 
+export const DEFAULT_CLAUDE_MODEL = "claude-haiku-5-5";
+
 export const CLAUDE_MODELS = [
   {
-    id: "claude-3-5-haiku-20241022",
-    name: "Claude 3.5 Haiku (Önerilen)",
+    id: DEFAULT_CLAUDE_MODEL,
+    name: "Claude Haiku 5.5 (Önerilen)",
     description: "Hızlı, maliyet etkin ve yüksek zeka performansı.",
     default: true,
   },
   {
-    id: "claude-3-haiku-20240307",
-    name: "Claude 3 Haiku",
-    description: "Ultra hafif ve ekonomik temel model.",
-    default: false,
-  },
-  {
-    id: "claude-3-5-sonnet-20241022",
-    name: "Claude 3.5 Sonnet",
+    id: "claude-sonnet-5-5",
+    name: "Claude Sonnet 5.5",
     description: "Karmaşık analiz, kodlama ve ileri düzey akıl yürütme.",
     default: false,
   },
   {
-    id: "claude-3-opus-20240229",
-    name: "Claude 3 Opus",
+    id: "claude-opus-5-5",
+    name: "Claude Opus 5.5",
     description: "En kapsamlı ve detaylı akıl yürütme modeli.",
     default: false,
   },
 ];
+
+/** DB'de listede olmayan (emekli edilmiş) bir model kayıtlıysa varsayılana düşer */
+const isKnownModel = (id?: string) => !!id && CLAUDE_MODELS.some((m) => m.id === id);
 
 const SETTING_KEY = "integrations.claude";
 const SYSTEM_COMPANY_ID = "system";
@@ -209,7 +208,7 @@ export class ClaudeService {
       apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY || "";
     }
 
-    const model = raw?.model || process.env.CLAUDE_MODEL || "claude-3-5-haiku-20241022";
+    const model = (isKnownModel(raw?.model) && raw?.model) || process.env.CLAUDE_MODEL || DEFAULT_CLAUDE_MODEL;
     const maxTokens = raw?.maxTokens || 1024;
     const temperature = raw?.temperature ?? 0.7;
 
@@ -240,7 +239,7 @@ export class ClaudeService {
 
     const newConfig: ClaudeConfig = {
       apiKey: newApiKey,
-      model: dto.model || active.model || "claude-3-5-haiku-20241022",
+      model: dto.model || active.model || DEFAULT_CLAUDE_MODEL,
       maxTokens: dto.maxTokens || active.maxTokens || 1024,
       temperature: dto.temperature ?? active.temperature ?? 0.7,
     };
@@ -365,7 +364,7 @@ export class ClaudeService {
           prompt: promptText || "Lütfen ekteki görseli veya belgeyi incele ve talimatlara göre JSON üret.",
           images,
           system: ASSIST_SYSTEM_PROMPT,
-          model: config.model || "claude-3-5-haiku-20241022",
+          model: config.model || DEFAULT_CLAUDE_MODEL,
           maxTokens: 1500,
           temperature: 0.2, // Yüksek doğruluk ve JSON determinizmi
         });

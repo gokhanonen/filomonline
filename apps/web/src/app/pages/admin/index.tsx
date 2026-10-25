@@ -52,7 +52,7 @@ export default function AdminConsolePage() {
   const [aiConfig, setAiConfig] = useState<ClaudeConfigData | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState("");
-  const [selectedModel, setSelectedModel] = useState("claude-3-5-haiku-20241022");
+  const [selectedModel, setSelectedModel] = useState("claude-haiku-5-5");
   const [maxTokens, setMaxTokens] = useState<number>(1024);
   const [temperature, setTemperature] = useState<number>(0.7);
   const [showKey, setShowKey] = useState(false);
@@ -92,7 +92,7 @@ export default function AdminConsolePage() {
     try {
       const cfg = await getClaudeConfig();
       setAiConfig(cfg);
-      setSelectedModel(cfg.model || "claude-3-5-haiku-20241022");
+      setSelectedModel(cfg.model || "claude-haiku-5-5");
       setMaxTokens(cfg.maxTokens || 1024);
       setTemperature(cfg.temperature ?? 0.7);
     } catch (err) {
