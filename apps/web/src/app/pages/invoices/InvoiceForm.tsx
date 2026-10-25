@@ -58,6 +58,7 @@ export function InvoiceForm({
   const [accountId, setAccountId] = useState("");
   const [invoiceNo, setInvoiceNo] = useState("");
   const [invoiceDate, setInvoiceDate] = useState(today());
+  const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [notaryJournalNo, setNotaryJournalNo] = useState("");
   const [locationId, setLocationId] = useState("");
@@ -137,6 +138,7 @@ export function InvoiceForm({
         setAccountId(inv.accountId || "");
         setInvoiceNo(inv.invoiceNo || "");
         setInvoiceDate(inv.invoiceDate ? new Date(inv.invoiceDate).toISOString().slice(0, 10) : today());
+        setDueDate(inv.dueDate ? new Date(inv.dueDate).toISOString().slice(0, 10) : "");
         setDescription(inv.description || "");
         setNotaryJournalNo(inv.notaryJournalNo || "");
         setLocationId(inv.locationId || "");
@@ -368,6 +370,7 @@ export function InvoiceForm({
           accountId,
           invoiceNo,
           invoiceDate,
+          dueDate: dueDate || undefined,
           notaryAmount,
           otherAmount,
           vatRate,
@@ -381,6 +384,7 @@ export function InvoiceForm({
             accountId,
             invoiceNo,
             invoiceDate,
+            dueDate: dueDate || undefined,
             purchaseRegime: vehicleRegime,
             entityType,
             saleAmount: saleAmount || notarySalePrice,
@@ -403,6 +407,7 @@ export function InvoiceForm({
             accountId,
             invoiceNo,
             invoiceDate,
+            dueDate: dueDate || undefined,
             purchaseRegime: vehicleRegime,
             entityType,
             saleAmount: saleAmount || notarySalePrice,
@@ -537,6 +542,13 @@ export function InvoiceForm({
               type="date"
               value={invoiceDate}
               onChange={(e) => setInvoiceDate(e.target.value)}
+              disabled={isLocked}
+            />
+            <Input
+              label="Vade Tarihi"
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
               disabled={isLocked}
             />
             {type === "sales" ? (

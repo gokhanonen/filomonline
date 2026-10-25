@@ -44,12 +44,19 @@ Mimari kararlar ve tenant kuralları: `ARCHITECTURE.md` (ÖNCE ONU OKU).
     - Evrak kategori ve tipleri `http://localhost:5173/catalog` adresindeki "Evrak Tanımları" sekmesinden dinamik olarak yönetilir ve modüllerle (`VEHICLE`, `CUSTOMER`, `CONTRACT`, `INVOICE`, `ALL`) ilişkilendirilir.
     - Tüm modüllerde evrak yükleme için `@/components/shared/DocumentManager` bileşeni kullanılır; bileşen `referenceType` ile çağrıldığında modüle uygun evrak kategorilerini otomatik filtreler.
 
+## Finans modülü
+- Tek hareket tablosu `FinanceMovement`: her satır bir ana kaydı etkiler (`CashRegister` = Kasa/Banka/POS/Kredi Kartı, ya da `Cheque`). Çok bacaklı işlemler (virman, POS→banka, KK ödemesi, çek tahsil) ortak `groupId` taşır; silme grup bazında.
+- Cariye bağlı satır ekstreye düşer: IN → cari alacak, OUT → cari borç. Cari bakiye = faturalar + hareketler (`LedgerService`), `Account.balance` sadece önbellek.
+- Fatura kapatma `PaymentAllocation` ile (SALES/PURCHASE/RENTAL/EXPENSE); karşılıksız/iade çekin eşleştirmesi faturayı kapatmaz. Vade: faturalarda `dueDate` (boşsa belge tarihi).
+- Şemayı `prisma db push` ile DEĞİL migration ile değiştir (uzak DB, geçmiş kopmasın).
+
 ## Komutlar
 ```bash
 npm run prisma:migrate   # şema değişikliği sonrası migration
 npm --workspace apps/api run seed   # süper admin + demo tenant
 npx ts-node prisma/seed-catalog.ts  # (apps/api) katalog + ilan kaynakları (Sahibinden/Arabam/DOD)
 npx ts-node prisma/seed-extras.ts   # (apps/api) demo ilan linkleri + opsiyonlar
+npx ts-node prisma/seed-finance.ts  # (apps/api) demo kasa/banka/POS/KK hesapları, tahsilat/ödeme, çek/senet
 npm run build:api
 ```
 

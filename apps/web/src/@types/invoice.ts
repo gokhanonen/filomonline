@@ -21,6 +21,7 @@ export interface PurchaseInvoiceForm {
   accountId: string;
   invoiceNo: string;
   invoiceDate: string;
+  dueDate?: string; // vade (boşsa fatura tarihi)
   notaryAmount: number;
   otherAmount?: number;
   vatRate?: number;
@@ -35,6 +36,7 @@ export interface SalesInvoiceForm {
   accountId: string;
   invoiceNo: string;
   invoiceDate: string;
+  dueDate?: string; // vade (boşsa fatura tarihi)
   entityType?: "INDIVIDUAL" | "CORPORATE";
   purchaseRegime?: PurchaseRegime;
   saleAmount: number; // Satış Tutarı
@@ -57,6 +59,7 @@ export interface SalesInvoiceDetail {
   locationId?: string | null;
   invoiceNo: string;
   invoiceDate: string;
+  dueDate?: string | null;
   accountId: string;
   entityType: "INDIVIDUAL" | "CORPORATE";
   purchaseRegime: PurchaseRegime;

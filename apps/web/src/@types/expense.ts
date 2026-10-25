@@ -25,6 +25,7 @@ export interface Expense {
   locationId?: string | null;
   documentNo?: string | null;
   documentDate: string;
+  dueDate?: string | null;
   category?: string | null;
   description?: string | null;
   supplierId?: string | null;
@@ -56,6 +57,7 @@ export interface ExpenseFormValues {
   supplierId?: string;
   documentNo?: string;
   documentDate: string;
+  dueDate?: string | null;
   category?: string;
   description?: string;
   lines: ExpenseLineInput[];

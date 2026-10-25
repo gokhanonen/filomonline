@@ -5,6 +5,7 @@ import { StorageService } from "../storage/storage.service";
 import { NotFoundException } from "@nestjs/common";
 
 import { ActivityService } from "../activity/activity.service";
+import { ClaudeService } from "../ai/claude.service";
 
 describe("VehiclesService - Public Share Links", () => {
   let service: VehiclesService;
@@ -47,6 +48,7 @@ describe("VehiclesService - Public Share Links", () => {
         { provide: PrismaService, useValue: mockPrisma },
         { provide: StorageService, useValue: mockStorage },
         { provide: ActivityService, useValue: mockActivity },
+        { provide: ClaudeService, useValue: {} },
       ],
     }).compile();
 

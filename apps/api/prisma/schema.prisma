@@ -29,7 +29,7 @@ model City {
 model District {
   id            Int            @id @default(autoincrement())
   cityId        Int
-  name          String         // İlçe adı
+  name          String // İlçe adı
   city          City           @relation(fields: [cityId], references: [id])
   neighborhoods Neighborhood[]
 
@@ -40,8 +40,8 @@ model District {
 model Neighborhood {
   id         Int      @id @default(autoincrement())
   districtId Int
-  name       String   // Mahalle adı
-  postalCode String   // Posta kodu
+  name       String // Mahalle adı
+  postalCode String // Posta kodu
   district   District @relation(fields: [districtId], references: [id])
 
   @@unique([districtId, name])
@@ -381,58 +381,127 @@ model Location {
   @@index([companyId])
 }
 
+/// Finans hesabı: Kasa / Banka / POS / Şirket Kredi Kartı (hareketlerin "ana kaydı")
 model CashRegister {
-  id             String            @id @default(cuid())
+  id             String           @id @default(cuid())
   companyId      String
   locationId     String?
   erpCode        String?
   name           String
-  type           CashRegisterType  @default(CASH)
-  currency       String            @default("TRY")
+  type           CashRegisterType @default(CASH)
+  currency       String           @default("TRY")
   bankName       String?
   branchName     String?
   iban           String?
   accountNumber  String?
-  openingBalance Decimal           @default(0) @db.Decimal(15, 2)
-  isActive       Boolean           @default(true)
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  openingBalance Decimal          @default(0) @db.Decimal(15, 2)
+  // POS / Kredi kartı: bağlı banka hesabı (POS'un yatacağı, kartın ödeneceği)
+  linkedBankId   String?
+  // POS
+  commissionRate Decimal?         @db.Decimal(5, 2)
+  valorDays      Int?
+  // Kredi kartı
+  cardLastFour   String?
+  creditLimit    Decimal?         @db.Decimal(15, 2)
+  statementDay   Int? // hesap kesim günü (1-31)
+  paymentDueDay  Int? // son ödeme günü (1-31)
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
-  transactions     CashTransaction[] @relation("SourceRegister")
-  incomingTransfers CashTransaction[] @relation("TargetRegister")
+  linkedBank    CashRegister?     @relation("LinkedBank", fields: [linkedBankId], references: [id], onDelete: SetNull)
+  linkedSources CashRegister[]    @relation("LinkedBank")
+  movements     FinanceMovement[]
 
   @@index([companyId])
 }
 
-model CashTransaction {
-  id               String              @id @default(cuid())
-  companyId        String
-  cashRegisterId   String
-  type             CashTransactionType // COLLECTION (Tahsilat/Giriş), PAYMENT (Tediye/Çıkış), TRANSFER (Virman)
-  amount           Decimal             @default(0) @db.Decimal(15, 2)
-  date             DateTime            @default(now())
-  description      String?             @db.Text
-  documentNo       String?             // Makbuz / Dekont No
-  accountId        String?             // İlgili Cari (Müşteri / Tedarikçi)
-  invoiceType      String?             // "sales" | "purchase" | "rental" | "expense"
-  invoiceId        String?             // İlgili Fatura / Masraf
-  vehicleId        String?             // İlgili Araç
-  targetRegisterId String?             // Virman için hedef kasa
+/// Tek hareket tablosu: her satır bir ana kaydı (hesap ya da çek) etkiler.
+/// Cariye bağlı satır cari ekstresine düşer: IN → cari alacak, OUT → cari borç.
+/// Çok bacaklı işlemler (virman, POS→banka, KK ödeme, çek tahsil) ortak groupId taşır.
+model FinanceMovement {
+  id             String              @id @default(cuid())
+  companyId      String
+  groupId        String
+  date           DateTime
+  type           FinanceMovementType
+  module         FinanceModule
+  direction      FinanceDirection
+  cashRegisterId String?
+  chequeId       String?
+  amount         Decimal             @db.Decimal(15, 2) // ana kaydın dövizinde
+  currency       String              @default("TRY")
+  exchangeRate   Decimal             @default(1) @db.Decimal(12, 6)
+  amountTry      Decimal             @db.Decimal(15, 2)
+  accountId      String?
+  vehicleId      String?
+  // POS tahsilatı: valör tarihi ve bankaya aktarılma durumu
+  valueDate      DateTime?
+  settled        Boolean             @default(true)
+  settlementId   String? // aktarıldığı POS→banka işleminin groupId'si
+  documentNo     String?
+  description    String?             @db.Text
+  createdById    String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  cashRegister CashRegister?       @relation(fields: [cashRegisterId], references: [id], onDelete: Restrict)
+  cheque       Cheque?             @relation(fields: [chequeId], references: [id], onDelete: Restrict)
+  allocations  PaymentAllocation[]
 
-  cashRegister     CashRegister        @relation("SourceRegister", fields: [cashRegisterId], references: [id], onDelete: Cascade)
-  targetRegister   CashRegister?       @relation("TargetRegister", fields: [targetRegisterId], references: [id], onDelete: SetNull)
-
-  @@index([companyId])
+  @@index([companyId, date])
+  @@index([companyId, groupId])
   @@index([cashRegisterId])
+  @@index([chequeId])
   @@index([accountId])
-  @@index([date])
+}
+
+/// Çek / Senet — her biri kendi ana kaydı
+model Cheque {
+  id              String          @id @default(cuid())
+  companyId       String
+  kind            ChequeKind      @default(CHEQUE)
+  direction       ChequeDirection
+  status          ChequeStatus
+  serialNo        String
+  bankName        String?
+  branchName      String?
+  drawer          String? // keşideci / borçlu
+  issueDate       DateTime?
+  dueDate         DateTime
+  amount          Decimal         @db.Decimal(15, 2)
+  currency        String          @default("TRY")
+  accountId       String? // alındığı / verildiği cari
+  holderAccountId String? // ciro edilen cari
+  bankRegisterId  String? // verilen çek: ödeneceği banka; alınan çek: tahsile verildiği banka
+  description     String?         @db.Text
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  movements FinanceMovement[]
+
+  @@index([companyId, status])
+  @@index([companyId, dueDate])
+}
+
+/// Tahsilat/ödeme ↔ fatura eşleştirmesi (fatura bazlı kapatma)
+model PaymentAllocation {
+  id          String             @id @default(cuid())
+  companyId   String
+  movementId  String
+  invoiceType FinanceInvoiceType
+  invoiceId   String
+  amount      Decimal            @db.Decimal(15, 2) // TL
+  createdAt   DateTime           @default(now())
+
+  movement FinanceMovement @relation(fields: [movementId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, invoiceType, invoiceId])
+  @@index([movementId])
 }
 
 model Account {
-  id              String            @id @default(cuid())
+  id              String             @id @default(cuid())
   companyId       String
   type            AccountType
   entityType      EntityType
@@ -440,7 +509,7 @@ model Account {
   contactPerson   String?
   email           String?
   phone           String?
-  address         String?           @db.Text
+  address         String?            @db.Text
   neighborhood    String?
   city            String?
   district        String?
@@ -450,11 +519,12 @@ model Account {
   tckn            String?
   categoryId      String?
   integrationCode String?
-  isPotential     Boolean           @default(false)
-  isActive        Boolean           @default(true)
-  balance         Decimal           @default(0) @db.Decimal(15, 2)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  ledgerCode      AccountLedgerCode?
+  isPotential     Boolean            @default(false)
+  isActive        Boolean            @default(true)
+  balance         Decimal            @default(0) @db.Decimal(15, 2)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
   @@index([companyId])
   @@index([companyId, name])
@@ -521,15 +591,15 @@ model Vehicle {
   notes        String?           @db.Text
 
   // Fiyatlandırma
-  listPrice            Decimal? @db.Decimal(15, 2)
-  tensf                Decimal? @db.Decimal(15, 2) // TENSF
-  tenListPrice         Decimal? @db.Decimal(15, 2)
-  purchaseRegime       String   @default("sahis") // 'sahis' | 'sirket_1' | 'sirket_20' | 'galeri_ozel'
-  specialBase          Boolean  @default(false) // Özel matrah
-  specialBaseAmount    Decimal? @db.Decimal(15, 2)
-  profitVatRate        Decimal? @db.Decimal(5, 2) // Kâr KDV oranı
-  vatRate              Decimal? @db.Decimal(5, 2)
-  erpCode              String?
+  listPrice         Decimal? @db.Decimal(15, 2)
+  tensf             Decimal? @db.Decimal(15, 2) // TENSF
+  tenListPrice      Decimal? @db.Decimal(15, 2)
+  purchaseRegime    String   @default("sahis") // 'sahis' | 'sirket_1' | 'sirket_20' | 'galeri_ozel'
+  specialBase       Boolean  @default(false) // Özel matrah
+  specialBaseAmount Decimal? @db.Decimal(15, 2)
+  profitVatRate     Decimal? @db.Decimal(5, 2) // Kâr KDV oranı
+  vatRate           Decimal? @db.Decimal(5, 2)
+  erpCode           String?
 
   // Alış
   purchasePrice              Decimal?  @db.Decimal(15, 2)
@@ -573,13 +643,13 @@ model Vehicle {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  shareToken   String?                      @unique
-  photos       VehiclePhoto[]
-  tramerSet    VehicleTramerRecord[]
-  installments VehiclePurchaseInstallment[]
-  listingUrls  VehicleListingUrl[]
-  options      VehicleOption[]
-  shareLinks   VehicleShareLink[]
+  shareToken     String?                      @unique
+  photos         VehiclePhoto[]
+  tramerSet      VehicleTramerRecord[]
+  installments   VehiclePurchaseInstallment[]
+  listingUrls    VehicleListingUrl[]
+  options        VehicleOption[]
+  shareLinks     VehicleShareLink[]
   leadInterests  LeadInterestedVehicle[]
   leadTestDrives LeadTestDrive[]
   leadQuotes     LeadQuote[]
@@ -611,15 +681,15 @@ model VehicleShareLink {
 }
 
 model VehiclePhoto {
-  id        String             @id @default(cuid())
+  id        String           @id @default(cuid())
   vehicleId String
   category  VehiclePhotoKind
   fileKey   String // S3 object key (tam görsel, max 300KB)
   thumbKey  String? // S3 object key (thumbnail, ~50KB — liste/kart için)
   url       String?
   thumbUrl  String?
-  sortOrder Int                @default(0)
-  createdAt DateTime           @default(now())
+  sortOrder Int              @default(0)
+  createdAt DateTime         @default(now())
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
@@ -668,24 +738,24 @@ model VehicleListingUrl {
 
 // Opsiyon (kapora/rezervasyon)
 model VehicleOption {
-  id            String              @id @default(cuid())
-  companyId     String
-  vehicleId     String
-  customerId    String // Account
-  optionDate    DateTime
-  validUntil    DateTime
-  amount        Decimal             @db.Decimal(15, 2)
-  note          String?             @db.Text
-  status        VehicleOptionStatus @default(ACTIVE)
-  createdById   String
-  updatedById   String?
-  cancelledById String?
-  cancelledAt   DateTime?
-  convertedAt   DateTime?
-  saleId        String?
+  id             String              @id @default(cuid())
+  companyId      String
+  vehicleId      String
+  customerId     String // Account
+  optionDate     DateTime
+  validUntil     DateTime
+  amount         Decimal             @db.Decimal(15, 2)
+  note           String?             @db.Text
+  status         VehicleOptionStatus @default(ACTIVE)
+  createdById    String
+  updatedById    String?
+  cancelledById  String?
+  cancelledAt    DateTime?
+  convertedAt    DateTime?
+  saleId         String?
   supersededById String?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 
   vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
@@ -740,6 +810,7 @@ model PurchaseInvoice {
   locationId            String?
   invoiceNo             String
   invoiceDate           DateTime
+  dueDate               DateTime?
   notaryAmount          Decimal            @default(0) @db.Decimal(15, 2)
   otherAmount           Decimal            @default(0) @db.Decimal(15, 2)
   vatRate               Decimal            @default(0) @db.Decimal(5, 2)
@@ -760,35 +831,36 @@ model PurchaseInvoice {
 }
 
 model SalesInvoice {
-  id                   String             @id @default(cuid())
-  companyId            String
-  vehicleId            String
-  locationId           String?
-  invoiceNo            String
-  invoiceDate          DateTime
-  accountId            String
-  entityType           EntityType         @default(CORPORATE)
-  purchaseRegime       String?            // 'sahis' | 'sirket_1' | 'sirket_20' | 'galeri_ozel'
-  saleAmount           Decimal            @default(0) @db.Decimal(15, 2) // Satış Tutarı
-  notarySalePrice      Decimal?           @db.Decimal(15, 2) // Satış Noter Fiyatı
-  notaryPurchasePrice  Decimal?           @db.Decimal(15, 2) // Alış Noter Fiyatı
-  profitMargin         Decimal?           @db.Decimal(15, 2) // Noter Satış - Noter Alış
-  matrah               Decimal            @default(0) @db.Decimal(15, 2)
-  vatRate              Decimal            @default(0) @db.Decimal(5, 2)
-  vatAmount            Decimal            @default(0) @db.Decimal(15, 2)
-  serviceFee           Decimal?           @db.Decimal(15, 2) // Hizmet Matrahı
-  serviceFeeVat        Decimal?           @db.Decimal(15, 2) // Hizmet KDV'si (%20)
-  totalWithVat         Decimal            @default(0) @db.Decimal(15, 2)
-  otherAmountExclNotary Decimal           @default(0) @db.Decimal(15, 2)
-  saleType             String? // 'T' vb.
-  notaryJournalNo      String?
-  description          String?            @db.Text
-  integrationStatus    IntegrationStatus? @default(BEKLIYOR)
-  toDelete             Boolean            @default(false) // T tipi güncelleme sonrası eski fatura
-  integrationRefNo     String?
-  erpCode              String?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
+  id                    String             @id @default(cuid())
+  companyId             String
+  vehicleId             String
+  locationId            String?
+  invoiceNo             String
+  invoiceDate           DateTime
+  dueDate               DateTime?
+  accountId             String
+  entityType            EntityType         @default(CORPORATE)
+  purchaseRegime        String? // 'sahis' | 'sirket_1' | 'sirket_20' | 'galeri_ozel'
+  saleAmount            Decimal            @default(0) @db.Decimal(15, 2) // Satış Tutarı
+  notarySalePrice       Decimal?           @db.Decimal(15, 2) // Satış Noter Fiyatı
+  notaryPurchasePrice   Decimal?           @db.Decimal(15, 2) // Alış Noter Fiyatı
+  profitMargin          Decimal?           @db.Decimal(15, 2) // Noter Satış - Noter Alış
+  matrah                Decimal            @default(0) @db.Decimal(15, 2)
+  vatRate               Decimal            @default(0) @db.Decimal(5, 2)
+  vatAmount             Decimal            @default(0) @db.Decimal(15, 2)
+  serviceFee            Decimal?           @db.Decimal(15, 2) // Hizmet Matrahı
+  serviceFeeVat         Decimal?           @db.Decimal(15, 2) // Hizmet KDV'si (%20)
+  totalWithVat          Decimal            @default(0) @db.Decimal(15, 2)
+  otherAmountExclNotary Decimal            @default(0) @db.Decimal(15, 2)
+  saleType              String? // 'T' vb.
+  notaryJournalNo       String?
+  description           String?            @db.Text
+  integrationStatus     IntegrationStatus? @default(BEKLIYOR)
+  toDelete              Boolean            @default(false) // T tipi güncelleme sonrası eski fatura
+  integrationRefNo      String?
+  erpCode               String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
 
   @@index([companyId])
   @@index([vehicleId])
@@ -802,6 +874,7 @@ model RentalInvoice {
   locationId        String?
   invoiceNo         String
   invoiceDate       DateTime
+  dueDate           DateTime?
   rentAmount        Decimal            @db.Decimal(15, 2) // KDV hariç
   vatRate           Decimal            @default(20) @db.Decimal(5, 2)
   totalWithVat      Decimal            @db.Decimal(15, 2)
@@ -832,6 +905,7 @@ model Expense {
   documentType      String? // T tipi vb.
   documentNo        String?
   documentDate      DateTime
+  dueDate           DateTime?
   category          String? // bakim, sigorta, vergi, yakıt, lastik, hasar, diger
   description       String?            @db.Text
   supplierId        String? // Tedarikçi cari
@@ -874,28 +948,28 @@ model ExpenseLine {
 // ------------------------------------------------------------------------
 
 model RentalContract {
-  id                   String               @id @default(cuid())
-  companyId            String
-  vehicleId            String
-  customerId           String? // Account
-  customerName         String // Snapshot
-  customerTcTaxNo      String?
-  customerAddress      String?              @db.Text
-  customerPhone        String?
-  durationMonths       Int
-  kmLimit              Int                  @default(0)
-  startDate            DateTime
-  endDate              DateTime?
-  monthlyPrice         Decimal              @db.Decimal(15, 2)
-  currency             String               @default("TRY")
-  vatRate              Decimal              @default(20) @db.Decimal(5, 2)
-  drivers              Json // string[] — sürücü ad/TC listesi
-  contractDate         DateTime
-  documentNo           String?
-  salesRegime          String?
-  status               RentalContractStatus @default(DRAFT)
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
+  id              String               @id @default(cuid())
+  companyId       String
+  vehicleId       String
+  customerId      String? // Account
+  customerName    String // Snapshot
+  customerTcTaxNo String?
+  customerAddress String?              @db.Text
+  customerPhone   String?
+  durationMonths  Int
+  kmLimit         Int                  @default(0)
+  startDate       DateTime
+  endDate         DateTime?
+  monthlyPrice    Decimal              @db.Decimal(15, 2)
+  currency        String               @default("TRY")
+  vatRate         Decimal              @default(20) @db.Decimal(5, 2)
+  drivers         Json // string[] — sürücü ad/TC listesi
+  contractDate    DateTime
+  documentNo      String?
+  salesRegime     String?
+  status          RentalContractStatus @default(DRAFT)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
 
   @@index([companyId])
   @@index([vehicleId])
@@ -1086,21 +1160,21 @@ model ActivityLog {
 // ========================================================================
 
 model Lead {
-  id                 String                  @id @default(cuid())
+  id                 String     @id @default(cuid())
   companyId          String
-  fullName           String                  // Ad Soyad
+  fullName           String // Ad Soyad
   phone              String?
   email              String?
-  source             LeadSource              @default(WALK_IN)
-  status             LeadStatus              @default(NEW)
-  budget             Decimal?                @db.Decimal(15, 2)
-  notes              String?                 @db.Text
-  lostReason         String?                 // Kaybedilme nedeni
-  assignedUserId     String?                 // İlgilenen satış danışmanı
-  convertedAccountId String?                 // Dönüştüğü Cari ID (Account)
+  source             LeadSource @default(WALK_IN)
+  status             LeadStatus @default(NEW)
+  budget             Decimal?   @db.Decimal(15, 2)
+  notes              String?    @db.Text
+  lostReason         String? // Kaybedilme nedeni
+  assignedUserId     String? // İlgilenen satış danışmanı
+  convertedAccountId String? // Dönüştüğü Cari ID (Account)
   convertedAt        DateTime?
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
 
   interestedVehicles LeadInterestedVehicle[]
   testDrives         LeadTestDrive[]
@@ -1132,12 +1206,12 @@ model LeadTestDrive {
   companyId       String
   leadId          String
   vehicleId       String
-  scheduledAt     DateTime        // Randevu tarihi & saati
+  scheduledAt     DateTime // Randevu tarihi & saati
   durationMinutes Int             @default(30)
-  driverLicenseNo String?         // Ehliyet No
+  driverLicenseNo String? // Ehliyet No
   status          TestDriveStatus @default(SCHEDULED)
   assignedUserId  String?
-  feedbackRating  Int?            // 1-5 puan
+  feedbackRating  Int? // 1-5 puan
   feedbackNotes   String?         @db.Text
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -1156,11 +1230,11 @@ model LeadQuote {
   companyId      String
   leadId         String
   vehicleId      String
-  quoteNumber    String      // Örn: TKL-2026-0001
+  quoteNumber    String // Örn: TKL-2026-0001
   vehiclePrice   Decimal     @db.Decimal(15, 2)
   offeredPrice   Decimal     @db.Decimal(15, 2)
   discountAmount Decimal?    @default(0) @db.Decimal(15, 2)
-  paymentType    String?     // Nakit, Kredi, Takas, Kısmi Vadeli
+  paymentType    String? // Nakit, Kredi, Takas, Kısmi Vadeli
   validUntil     DateTime?
   status         QuoteStatus @default(DRAFT)
   terms          String?     @db.Text
@@ -1181,7 +1255,7 @@ model LeadActivity {
   leadId    String
   userId    String?
   userName  String?
-  type      String   // NOTE, CALL, MEETING, STATUS_CHANGE, TEST_DRIVE, QUOTE, CONVERTED
+  type      String // NOTE, CALL, MEETING, STATUS_CHANGE, TEST_DRIVE, QUOTE, CONVERTED
   title     String
   content   String?  @db.Text
   createdAt DateTime @default(now())
@@ -1354,10 +1428,69 @@ enum CashRegisterType {
   CASH
   BANK
   POS
+  CREDIT_CARD
 }
 
-enum CashTransactionType {
-  COLLECTION
-  PAYMENT
-  TRANSFER
+enum FinanceModule {
+  CASH
+  BANK
+  POS
+  CREDIT_CARD
+  CHEQUE
+}
+
+enum FinanceDirection {
+  IN
+  OUT
+}
+
+enum FinanceMovementType {
+  COLLECTION // Tahsilat
+  PAYMENT // Ödeme / Tediye
+  TRANSFER // Virman
+  POS_COLLECTION // POS tahsilatı (valör bekler)
+  POS_SETTLEMENT // POS → banka aktarımı
+  COMMISSION // POS komisyonu / banka masrafı
+  CARD_EXPENSE // Şirket kredi kartı harcaması
+  CARD_PAYMENT // Kredi kartı borç ödemesi
+  CHEQUE_RECEIVED // Çek/senet alındı
+  CHEQUE_ENDORSED // Çek ciro edildi
+  CHEQUE_COLLECTED // Çek tahsil edildi
+  CHEQUE_BOUNCED // Karşılıksız / iade
+  CHEQUE_ISSUED // Çek/senet verildi
+  CHEQUE_PAID // Verilen çek ödendi
+}
+
+enum ChequeKind {
+  CHEQUE
+  NOTE
+}
+
+enum ChequeDirection {
+  RECEIVED
+  ISSUED
+}
+
+enum ChequeStatus {
+  PORTFOLIO // Portföyde
+  IN_COLLECTION // Tahsile verildi
+  ENDORSED // Ciro edildi
+  COLLECTED // Tahsil edildi
+  BOUNCED // Karşılıksız
+  RETURNED // İade edildi
+  ISSUED // Verildi (ödenmedi)
+  PAID // Ödendi
+}
+
+enum FinanceInvoiceType {
+  SALES
+  PURCHASE
+  RENTAL
+  EXPENSE
+}
+
+enum AccountLedgerCode {
+  L120 // Alıcılar
+  L320 // Satıcılar
+  L329 // Diğer Ticari Borçlar
 }

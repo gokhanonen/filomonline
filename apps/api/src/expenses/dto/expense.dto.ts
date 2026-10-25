@@ -37,6 +37,7 @@ export class CreateExpenseDto {
   @IsOptional() @IsString() documentType?: string;
   @IsOptional() @IsString() documentNo?: string;
   @Type(() => Date) @IsDate() documentDate: Date;
+  @IsOptional() @Type(() => Date) @IsDate() dueDate?: Date; // vade (boşsa belge tarihi)
   @IsOptional() @IsString() category?: string;
   @IsOptional() @IsString() description?: string;
   @IsOptional() @IsString() supplierId?: string;

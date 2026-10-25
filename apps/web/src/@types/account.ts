@@ -1,5 +1,13 @@
 export type AccountType = "CUSTOMER" | "SUPPLIER" | "BOTH";
 export type EntityType = "INDIVIDUAL" | "CORPORATE";
+/** Tek düzen hesap planı cari grubu */
+export type AccountLedgerCode = "L120" | "L320" | "L329";
+
+export const LEDGER_CODE_LABELS: Record<AccountLedgerCode, string> = {
+  L120: "120 Alıcılar",
+  L320: "320 Satıcılar",
+  L329: "329 Diğer Ticari Borçlar",
+};
 
 export interface Account {
   id: string;
@@ -20,6 +28,7 @@ export interface Account {
   tckn?: string | null;
   categoryId?: string | null;
   integrationCode?: string | null;
+  ledgerCode?: AccountLedgerCode | null;
   isPotential: boolean;
   isActive: boolean;
   balance: string; // Prisma Decimal -> string
@@ -43,6 +52,7 @@ export interface AccountFormValues {
   taxNumber?: string;
   tckn?: string;
   integrationCode?: string;
+  ledgerCode?: AccountLedgerCode | "";
 }
 
 export interface Paginated<T> {

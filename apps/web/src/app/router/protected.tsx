@@ -115,16 +115,38 @@ const protectedRoutes: RouteObject = {
             Component: (await import("@/app/pages/contracts")).default,
           }),
         },
+        // --- Finans ---
+        { path: "finance", element: <Navigate to="/finance/accounts" replace /> },
+        { path: "cash-bank", element: <Navigate to="/finance/accounts" replace /> },
+        { path: "finance/cash-bank", element: <Navigate to="/finance/accounts" replace /> },
         {
-          path: "cash-bank",
+          path: "finance/accounts",
           lazy: async () => ({
-            Component: (await import("@/app/pages/finance/cash-bank")).default,
+            Component: (await import("@/app/pages/finance/accounts")).default,
           }),
         },
         {
-          path: "finance/cash-bank",
+          path: "finance/movements",
           lazy: async () => ({
-            Component: (await import("@/app/pages/finance/cash-bank")).default,
+            Component: (await import("@/app/pages/finance/movements")).default,
+          }),
+        },
+        {
+          path: "finance/cheques",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/finance/cheques")).default,
+          }),
+        },
+        {
+          path: "finance/receivables",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/finance/receivables")).default,
+          }),
+        },
+        {
+          path: "finance/statement/:accountId?",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/finance/statement")).default,
           }),
         },
         {

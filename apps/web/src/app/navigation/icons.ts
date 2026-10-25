@@ -29,6 +29,10 @@ import {
   TbUserPlus,
   TbSteeringWheel,
   TbFileDollar,
+  TbArrowsDiff,
+  TbReceipt2,
+  TbScale,
+  TbFileText,
 } from "react-icons/tb";
 
 /**
@@ -56,6 +60,10 @@ export const navigationIcons: Record<string, ElementType> = {
   contracts: TbContract,
   transfers: TbTransfer,
   cashBank: TbCoins,
+  financeMovements: TbArrowsDiff,
+  cheques: TbReceipt2,
+  receivables: TbScale,
+  statement: TbFileText,
 
   // Ayarlar segmenti
   settings: TbSettings,

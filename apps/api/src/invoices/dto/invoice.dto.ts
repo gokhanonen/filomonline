@@ -16,6 +16,7 @@ export class CreatePurchaseInvoiceDto {
   @IsString() accountId: string; // satıcı cari
   @IsString() invoiceNo: string;
   @Type(() => Date) @IsDate() invoiceDate: Date;
+  @IsOptional() @Type(() => Date) @IsDate() dueDate?: Date; // vade (boşsa fatura tarihi)
 
   @Type(() => Number) @IsNumber() @Min(0) notaryAmount: number; // araç alış (noter)
   @IsOptional() @Type(() => Number) @IsNumber() @Min(0) otherAmount?: number;
@@ -34,6 +35,7 @@ export class CreateSalesInvoiceDto {
   @IsString() accountId: string; // alıcı cari
   @IsString() invoiceNo: string;
   @Type(() => Date) @IsDate() invoiceDate: Date;
+  @IsOptional() @Type(() => Date) @IsDate() dueDate?: Date; // vade (boşsa fatura tarihi)
   @IsOptional() @IsEnum(EntityType) entityType?: EntityType;
 
   @IsOptional() @IsString() purchaseRegime?: string; // 'sahis' | 'sirket_1' | 'sirket_20' | 'galeri_ozel'
@@ -56,6 +58,7 @@ export class UpdateSalesInvoiceDto {
   @IsOptional() @IsString() accountId?: string;
   @IsOptional() @IsString() invoiceNo?: string;
   @IsOptional() @Type(() => Date) @IsDate() invoiceDate?: Date;
+  @IsOptional() @Type(() => Date) @IsDate() dueDate?: Date;
   @IsOptional() @IsEnum(EntityType) entityType?: EntityType;
 
   @IsOptional() @IsString() purchaseRegime?: string;

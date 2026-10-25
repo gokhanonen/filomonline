@@ -158,6 +158,7 @@ export function ExpenseForm({ open, onClose, onSaved, expense, initialVehicleId 
       documentDate: exp?.documentDate
         ? exp.documentDate.slice(0, 10)
         : new Date().toISOString().slice(0, 10),
+      dueDate: exp?.dueDate ? exp.dueDate.slice(0, 10) : "",
       category: exp?.category ?? "",
       description: exp?.description ?? "",
       lines:
@@ -213,7 +214,8 @@ export function ExpenseForm({ open, onClose, onSaved, expense, initialVehicleId 
   const grand = totals.sub + totals.vat;
   const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2 });
 
-  const onSubmit = async (values: ExpenseFormValues) => {
+  const onSubmit = async (form: ExpenseFormValues) => {
+    const values = { ...form, dueDate: form.dueDate || undefined };
     try {
       if (isEdit) {
         await updateExpense(expense!.id, values);
@@ -303,9 +305,10 @@ export function ExpenseForm({ open, onClose, onSaved, expense, initialVehicleId 
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <Input label="Belge No" placeholder="Fatura / Fiş No" {...register("documentNo")} />
           <Input label="Belge Tarihi" type="date" {...register("documentDate")} error={errors.documentDate?.message} />
+          <Input label="Vade Tarihi" type="date" {...register("dueDate")} />
           <Input label="Açıklama" placeholder="Not veya detay..." {...register("description")} />
         </div>
 

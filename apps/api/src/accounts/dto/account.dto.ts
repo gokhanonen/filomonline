@@ -7,7 +7,7 @@ import {
   IsString,
   MinLength,
 } from "class-validator";
-import { AccountType, EntityType } from "@prisma/client";
+import { AccountLedgerCode, AccountType, EntityType } from "@prisma/client";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 
 export class CreateAccountDto {
@@ -34,6 +34,7 @@ export class CreateAccountDto {
   @IsOptional() @IsString() tckn?: string;
   @IsOptional() @IsString() categoryId?: string;
   @IsOptional() @IsString() integrationCode?: string;
+  @IsOptional() @IsEnum(AccountLedgerCode) ledgerCode?: AccountLedgerCode; // 120 / 320 / 329
   @IsOptional() @IsBoolean() isPotential?: boolean;
 }
 
@@ -54,6 +55,7 @@ export class UpdateAccountDto {
   @IsOptional() @IsString() tckn?: string;
   @IsOptional() @IsString() categoryId?: string;
   @IsOptional() @IsString() integrationCode?: string;
+  @IsOptional() @IsEnum(AccountLedgerCode) ledgerCode?: AccountLedgerCode; // 120 / 320 / 329
   @IsOptional() @IsBoolean() isPotential?: boolean;
   @IsOptional() @IsBoolean() isActive?: boolean;
 }

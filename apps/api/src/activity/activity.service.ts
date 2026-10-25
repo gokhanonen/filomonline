@@ -27,6 +27,7 @@ export type ActivityType =
   | "LEAD_UPDATE"
   | "TEST_DRIVE_SCHEDULED"
   | "LEAD_CONVERTED"
+  | "FINANCE_MOVEMENT"
   | "SYSTEM";
 
 export interface LogInput {

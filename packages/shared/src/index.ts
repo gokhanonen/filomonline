@@ -8,6 +8,7 @@ export const PERMISSIONS = {
   products: ["products.read", "products.write", "products.delete"],
   invoices: ["invoices.read", "invoices.write", "invoices.delete"],
   expenses: ["expenses.read", "expenses.write", "expenses.delete"],
+  finance: ["finance.read", "finance.write", "finance.delete"],
   rentals: ["rentals.read", "rentals.write", "rentals.delete"],
   contracts: ["contracts.read", "contracts.write", "contracts.delete"],
   locations: ["locations.read", "locations.write"],

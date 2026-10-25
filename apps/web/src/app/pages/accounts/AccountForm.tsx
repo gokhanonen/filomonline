@@ -12,8 +12,15 @@ import {
   ENTITY_TYPE_LABELS,
   type Account,
   type AccountFormValues,
+  type AccountLedgerCode,
+  LEDGER_CODE_LABELS,
 } from "@/@types/account";
 import { createAccount, updateAccount } from "@/services/accountService";
+
+const ledgerOptions = [
+  { value: "", label: "Otomatik (tipe göre)" },
+  ...(Object.keys(LEDGER_CODE_LABELS) as AccountLedgerCode[]).map((k) => ({ value: k, label: LEDGER_CODE_LABELS[k] })),
+];
 
 const schema = Yup.object().shape({
   type: Yup.string().oneOf(["CUSTOMER", "SUPPLIER", "BOTH"]).required(),
@@ -31,6 +38,7 @@ const schema = Yup.object().shape({
   taxNumber: Yup.string().trim().optional(),
   tckn: Yup.string().trim().optional(),
   integrationCode: Yup.string().trim().optional(),
+  ledgerCode: Yup.string().oneOf(["", "L120", "L320", "L329"]).optional(),
 });
 
 interface Props {
@@ -85,13 +93,19 @@ export function AccountForm({ open, onClose, onSaved, account }: Props) {
         taxNumber: account?.taxNumber ?? "",
         tckn: account?.tckn ?? "",
         integrationCode: account?.integrationCode ?? "",
+        ledgerCode: account?.ledgerCode ?? "",
       });
     }
   }, [open, account, reset]);
 
   const entityType = watch("entityType");
 
-  const onSubmit = async (values: AccountFormValues) => {
+  const onSubmit = async (form: AccountFormValues) => {
+    // Hesap grubu boşsa cari tipinden: müşteri → 120, tedarikçi → 320
+    const values = {
+      ...form,
+      ledgerCode: form.ledgerCode || (form.type === "CUSTOMER" ? "L120" : form.type === "SUPPLIER" ? "L320" : undefined),
+    } as AccountFormValues;
     try {
       if (isEdit) {
         await updateAccount(account!.id, values);
@@ -112,7 +126,7 @@ export function AccountForm({ open, onClose, onSaved, account }: Props) {
     <Modal open={open} onClose={onClose} title={isEdit ? "Cari Düzenle" : "Yeni Cari"}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Cari tipi + Tür */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Controller
             name="type"
             control={control}
@@ -140,6 +154,20 @@ export function AccountForm({ open, onClose, onSaved, account }: Props) {
                 onBlur={field.onBlur}
                 name={field.name}
                 error={errors.entityType?.message}
+              />
+            )}
+          />
+          <Controller
+            name="ledgerCode"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Hesap Grubu"
+                data={ledgerOptions}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
               />
             )}
           />

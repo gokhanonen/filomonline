@@ -34,11 +34,15 @@ export const navigation: NavigationTree[] = [
   {
     id: "finance",
     type: "root",
-    path: "/expenses",
+    path: "/finance/accounts",
     title: "Finans",
     icon: "finance",
     childs: [
-      { id: "cash-bank", type: "item", path: "/finance/cash-bank", title: "Kasa & Banka", icon: "cashBank" },
+      { id: "finance-accounts", type: "item", path: "/finance/accounts", title: "Kasa & Banka", icon: "cashBank" },
+      { id: "finance-movements", type: "item", path: "/finance/movements", title: "Hareketler", icon: "financeMovements" },
+      { id: "finance-cheques", type: "item", path: "/finance/cheques", title: "Çek & Senet", icon: "cheques" },
+      { id: "finance-receivables", type: "item", path: "/finance/receivables", title: "Alacak & Borç", icon: "receivables" },
+      { id: "finance-statement", type: "item", path: "/finance/statement", title: "Cari Ekstre", icon: "statement" },
       { id: "invoices", type: "item", path: "/invoices", title: "Faturalar", icon: "invoices" },
       { id: "expenses", type: "item", path: "/expenses", title: "Masraflar", icon: "expenses" },
       { id: "contracts", type: "item", path: "/contracts", title: "Sözleşmeler", icon: "contracts" },
