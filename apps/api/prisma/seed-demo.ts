@@ -13,6 +13,7 @@
  *   FORCE=1 npx ts-node prisma/seed-demo.ts
  */
 import { PrismaClient, VehicleStatus, FuelType, TransmissionType, DriveType } from "@prisma/client";
+import { seedCrmForCompany } from "./seed-crm";
 
 const prisma = new PrismaClient();
 
@@ -53,7 +54,7 @@ const LOCATIONS = [
   { name: "Anlaşmalı Servis", code: "SERVIS", city: "İstanbul", isExternal: true },
 ];
 
-interface DemoVehicleBlueprint {
+export interface DemoVehicleBlueprint {
   plate: string;
   categoryCode: "otomobil" | "suv" | "minivanpanelvan" | "ticari" | "elektrikli_ara_";
   brandName: string;
@@ -82,7 +83,7 @@ interface DemoVehicleBlueprint {
 }
 
 // 22 adet özenle hazırlanmış, tüm kategorileri kapsayan araç filosu
-const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
+export const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
   // 1. BMW 520i
   {
     plate: "34 TU 5566",
@@ -105,8 +106,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "KIRALAMADA",
     coverPhoto: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
-      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
       { url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -135,8 +138,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
-      { url: "https://images.unsplash.com/photo-1541348263662-e0c866657962?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
       { url: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1541348263662-e0c866657962?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -166,8 +171,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     isOptioned: true,
     coverPhoto: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
-      { url: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
-      { url: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1609521263047-f8f205293f24?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -200,6 +207,9 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     coverPhoto: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
       { url: "https://images.unsplash.com/photo-1471444668990-2a8d21b44d32?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
   },
@@ -225,6 +235,12 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     listPrice: 1100000,
     status: "KIRALAMADA",
     coverPhoto: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1559297434-fae8a1916a79?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1562911791-c7a97b74992a?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1586191582056-a60d164627bb?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
   },
 
@@ -248,7 +264,13 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     purchasePrice: 720000,
     listPrice: 830000,
     status: "STOKTA",
-    coverPhoto: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80",
+    coverPhoto: "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1541443131876-44b03de101c5?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
   },
 
@@ -273,6 +295,12 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     listPrice: 1260000,
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
   },
 
@@ -296,9 +324,12 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     purchasePrice: 3200000,
     listPrice: 3550000,
     status: "STOKTA",
-    coverPhoto: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80",
+    coverPhoto: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
       { url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1541348263662-e0c866657962?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -325,6 +356,12 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     listPrice: 1240000,
     status: "KIRALAMADA",
     coverPhoto: "https://images.unsplash.com/photo-1586191582056-a60d164627bb?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1559297434-fae8a1916a79?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1562911791-c7a97b74992a?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
   },
 
@@ -350,7 +387,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "SATILDI",
     coverPhoto: "https://images.unsplash.com/photo-1536700503339-1e4b06520771?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
       { url: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -378,7 +418,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
-      { url: "https://images.unsplash.com/photo-1538592116845-119a3974c958?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1538592116845-119a3974c958?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1541348263662-e0c866657962?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -407,7 +450,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
       { url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1541348263662-e0c866657962?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -435,7 +481,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
-      { url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -464,7 +513,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1609521263047-f8f205293f24?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
       { url: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -492,7 +544,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "KIRALAMADA",
     coverPhoto: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
       { url: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     notes: "Tam VIP donanım, ara bölmeli, Apple TV, buzdolabı ve masajlı koltuklar.",
@@ -519,6 +574,12 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     listPrice: 1090000,
     status: "KIRALAMADA",
     coverPhoto: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1541348263662-e0c866657962?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
     warranty: true,
   },
@@ -545,7 +606,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
-      { url: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1520050206274-a1ae44613e6d?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -572,7 +636,13 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     purchasePrice: 1380000,
     listPrice: 1520000,
     status: "STOKTA",
-    coverPhoto: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
+    coverPhoto: "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
   },
 
@@ -598,6 +668,9 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "KIRALAMADA",
     coverPhoto: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1471444668990-2a8d21b44d32?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
       { url: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
@@ -625,7 +698,10 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80",
     galleryPhotos: [
-      { url: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1609521263047-f8f205293f24?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
     ],
     spareKey: true,
     warranty: true,
@@ -651,7 +727,13 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     purchasePrice: 1550000,
     listPrice: 1720000,
     status: "STOKTA",
-    coverPhoto: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
+    coverPhoto: "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
     warranty: true,
   },
@@ -677,6 +759,12 @@ const DEMO_BLUEPRINTS: DemoVehicleBlueprint[] = [
     listPrice: 1680000,
     status: "STOKTA",
     coverPhoto: "https://images.unsplash.com/photo-1536700503339-1e4b06520771?auto=format&fit=crop&w=1200&q=80",
+    galleryPhotos: [
+      { url: "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80", category: "EXTERIOR" },
+      { url: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+      { url: "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=1200&q=80", category: "INTERIOR" },
+    ],
     spareKey: true,
     warranty: true,
   },
@@ -1135,6 +1223,7 @@ async function main() {
     console.log(`\n🏢 Tenant: ${tenant.name} (${tenant.slug})`);
     for (const company of tenant.companies) {
       await seedCompany(company.id, tenant.id, company.name);
+      await seedCrmForCompany(company.id, company.name);
     }
   }
 
