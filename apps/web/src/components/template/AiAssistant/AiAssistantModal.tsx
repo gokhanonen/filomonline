@@ -65,7 +65,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
     }
   }, [open]);
 
-  // Dosyayı Base64'e dönüştürme
+  // Dosyayı istemcide optimize edip Base64'e dönüştürme (413 Payload Too Large engelleme)
   const handleFileProcess = (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Lütfen geçerli bir görsel dosyası (JPG, PNG, WEBP) seçin.");
@@ -74,28 +74,71 @@ export function AiAssistantModal({ open, onClose }: Props) {
 
     const reader = new FileReader();
     reader.onload = () => {
-      const dataUrl = reader.result as string;
-      const base64Data = dataUrl.split(",")[1];
-      const mediaType = file.type as any;
+      const rawDataUrl = reader.result as string;
+      const img = new Image();
+      img.onload = () => {
+        // En yüksek çözünürlüklü telefon fotoğraflarını max 1600px boyutuna çek
+        const maxDim = 1600;
+        let width = img.width;
+        let height = img.height;
 
-      setSelectedImage({
-        file,
-        previewUrl: dataUrl,
-        base64Data,
-        mediaType,
-      });
-
-      // Eğer prompt boşsa akıllı öneri metni koy
-      if (!prompt) {
-        const lowerName = file.name.toLowerCase();
-        if (lowerName.includes("ehliyet") || lowerName.includes("surucu")) {
-          setPrompt("Bu ehliyet belgesindeki kişi ve kimlik bilgilerini çözümle.");
-        } else if (lowerName.includes("ruhsat") || lowerName.includes("tescil")) {
-          setPrompt("Bu araç ruhsatındaki plaka, marka, model ve şasi no bilgilerini oku.");
-        } else {
-          setPrompt("Lütfen bu görseldeki araç veya müşteri belgesini analiz et.");
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
         }
-      }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const optimizedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+          const base64Data = optimizedDataUrl.split(",")[1];
+
+          setSelectedImage({
+            file,
+            previewUrl: optimizedDataUrl,
+            base64Data,
+            mediaType: "image/jpeg",
+          });
+        } else {
+          const base64Data = rawDataUrl.split(",")[1];
+          setSelectedImage({
+            file,
+            previewUrl: rawDataUrl,
+            base64Data,
+            mediaType: file.type as any,
+          });
+        }
+
+        // Eğer prompt boşsa akıllı öneri metni koy
+        if (!prompt) {
+          const lowerName = file.name.toLowerCase();
+          if (lowerName.includes("ehliyet") || lowerName.includes("surucu")) {
+            setPrompt("Bu ehliyet belgesindeki kişi ve kimlik bilgilerini çözümle.");
+          } else if (lowerName.includes("ruhsat") || lowerName.includes("tescil")) {
+            setPrompt("Bu araç ruhsatındaki plaka, marka, model ve şasi no bilgilerini oku.");
+          } else {
+            setPrompt("Lütfen bu görseldeki araç veya müşteri belgesini analiz et.");
+          }
+        }
+      };
+      img.onerror = () => {
+        const base64Data = rawDataUrl.split(",")[1];
+        setSelectedImage({
+          file,
+          previewUrl: rawDataUrl,
+          base64Data,
+          mediaType: file.type as any,
+        });
+      };
+      img.src = rawDataUrl;
     };
     reader.readAsDataURL(file);
   };
