@@ -7,6 +7,7 @@ import {
   TbFileCheck,
   TbBuildingCommunity,
   TbBan,
+  TbTrash,
 } from "react-icons/tb";
 
 import { Button } from "@/components/ui";
@@ -17,12 +18,14 @@ import {
   type VehicleStatus,
 } from "@/@types/vehicle";
 import { updateVehicle } from "@/services/vehicleService";
+import { DeleteVehicleModal } from "./DeleteVehicleModal";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   vehicle: Vehicle | null;
   onStatusChanged: (newStatus: VehicleStatus) => void;
+  onVehicleDeleted?: (vehicleId: string) => void;
 }
 
 interface StatusOption {
@@ -94,9 +97,11 @@ export function VehicleStatusModal({
   onClose,
   vehicle,
   onStatusChanged,
+  onVehicleDeleted,
 }: Props) {
   const [selectedStatus, setSelectedStatus] = useState<VehicleStatus>("STOKTA");
   const [saving, setSaving] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (vehicle) {
@@ -205,21 +210,49 @@ export function VehicleStatusModal({
         </div>
 
         {/* Butonlar */}
-        <div className="mt-6 flex items-center justify-end gap-2 border-t border-gray-150 pt-4 dark:border-dark-600">
-          <Button variant="flat" onClick={onClose} disabled={saving}>
-            Vazgeç
-          </Button>
-          <Button
-            color="primary"
-            onClick={handleSave}
-            disabled={(!isChanged && !saving) || saving}
-            className="gap-1.5"
-          >
-            <TbArrowsExchange className="size-4" />
-            {saving ? "Güncelleniyor..." : "Statüyü Güncelle"}
-          </Button>
+        <div className="mt-6 flex items-center justify-between border-t border-gray-150 pt-4 dark:border-dark-600">
+          {currentStatus === "KULLANIM_DISI" ? (
+            <Button
+              color="error"
+              variant="soft"
+              onClick={() => setDeleteModalOpen(true)}
+              className="gap-1.5 text-xs text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400"
+            >
+              <TbTrash className="size-4" />
+              Aracı Sil
+            </Button>
+          ) : (
+            <div />
+          )}
+
+          <div className="flex items-center gap-2">
+            <Button variant="flat" onClick={onClose} disabled={saving}>
+              Vazgeç
+            </Button>
+            <Button
+              color="primary"
+              onClick={handleSave}
+              disabled={(!isChanged && !saving) || saving}
+              className="gap-1.5"
+            >
+              <TbArrowsExchange className="size-4" />
+              {saving ? "Güncelleniyor..." : "Statüyü Güncelle"}
+            </Button>
+          </div>
         </div>
       </div>
+
+      {/* Kullanım dışı araç silme modalı */}
+      <DeleteVehicleModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        vehicle={vehicle}
+        onDeleted={() => {
+          setDeleteModalOpen(false);
+          onClose();
+          onVehicleDeleted?.(vehicle.id);
+        }}
+      />
     </Modal>
   );
 }

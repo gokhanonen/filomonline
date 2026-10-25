@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { MagnifyingGlassIcon, PlusIcon, SparklesIcon } from "@heroicons/react/24/outline";
-import { toast } from "sonner";
-
 import { Page } from "@/components/shared/Page";
 import { Button, Input, Select } from "@/components/ui";
 import { InfiniteSentinel } from "@/components/shared/InfiniteSentinel";
@@ -14,13 +12,16 @@ import {
   type VehicleStatus,
 } from "@/@types/vehicle";
 import type { ListingSource } from "@/@types/catalog";
-import { deactivateVehicle, listVehicles } from "@/services/vehicleService";
+import { listVehicles } from "@/services/vehicleService";
 import { listListingSources } from "@/services/catalogService";
 import { VehicleCard } from "./VehicleCard";
 import { VehicleForm } from "./VehicleForm";
 import { ListingLinksModal } from "./ListingLinksModal";
 import { VehicleOptionModal } from "./VehicleOptionModal";
 import { WhatsAppModal } from "./WhatsAppModal";
+import { QuickQuoteModal } from "./QuickQuoteModal";
+import { QuickTestDriveModal } from "./QuickTestDriveModal";
+import { ContractPrintModal } from "@/app/pages/contracts/ContractPrintModal";
 import { VehicleDocumentsModal } from "./VehicleDocumentsModal";
 import { VehiclePreviewModal } from "./VehiclePreviewModal";
 import { ExpenseForm } from "@/app/pages/expenses/ExpenseForm";
@@ -42,7 +43,6 @@ const statusFilterOptions = [
 export default function VehiclesPage() {
   const { can } = useAuthContext();
   const canWrite = can("vehicles.write");
-  const canDelete = can("vehicles.delete");
   const canRental = can("rentals.write") || canWrite;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -97,6 +97,9 @@ export default function VehiclesPage() {
   const [linksVehicle, setLinksVehicle] = useState<Vehicle | null>(null);
   const [optionVehicle, setOptionVehicle] = useState<Vehicle | null>(null);
   const [waVehicle, setWaVehicle] = useState<Vehicle | null>(null);
+  const [quoteVehicle, setQuoteVehicle] = useState<Vehicle | null>(null);
+  const [testDriveVehicle, setTestDriveVehicle] = useState<Vehicle | null>(null);
+  const [purchaseContractVehicle, setPurchaseContractVehicle] = useState<Vehicle | null>(null);
   const [docsVehicle, setDocsVehicle] = useState<Vehicle | null>(null);
   const [transferVehicle, setTransferVehicle] = useState<Vehicle | null>(null);
   const [statusVehicle, setStatusVehicle] = useState<Vehicle | null>(null);
@@ -136,17 +139,6 @@ export default function VehiclesPage() {
     if (maxPriceParam && price > parseFloat(maxPriceParam)) return false;
     return true;
   });
-
-  const handleDelete = async (v: Vehicle) => {
-    if (!window.confirm(`${v.plate} pasifleştirilsin mi?`)) return;
-    try {
-      await deactivateVehicle(v.id);
-      toast.success("Araç pasifleştirildi");
-      removeItem((x) => x.id === v.id);
-    } catch (err) {
-      toast.error((err as { message?: string })?.message ?? "İşlem başarısız");
-    }
-  };
 
   return (
     <Page title="Operasyon">
@@ -232,11 +224,13 @@ export default function VehiclesPage() {
                 onLinks={() => setLinksVehicle(v)}
                 onOption={canWrite ? () => setOptionVehicle(v) : undefined}
                 onWhatsApp={() => setWaVehicle(v)}
+                onQuote={() => setQuoteVehicle(v)}
+                onTestDrive={() => setTestDriveVehicle(v)}
+                onPurchaseContract={() => setPurchaseContractVehicle(v)}
                 onDocuments={() => setDocsVehicle(v)}
                 onCopy={canWrite ? () => setCloningVehicle(v) : undefined}
                 onTransfer={canWrite ? () => setTransferVehicle(v) : undefined}
                 onChangeStatus={canWrite ? () => setStatusVehicle(v) : undefined}
-                onDelete={canDelete && v.isActive ? () => handleDelete(v) : undefined}
               />
             ))}
             <InfiniteSentinel onReach={loadMore} hasMore={hasMore} loading={loading} />
@@ -306,6 +300,16 @@ export default function VehiclesPage() {
 
       {/* WhatsApp ile araç bilgisi gönder */}
       <WhatsAppModal open={!!waVehicle} onClose={() => setWaVehicle(null)} vehicle={waVehicle} />
+      <QuickQuoteModal open={!!quoteVehicle} onClose={() => setQuoteVehicle(null)} vehicle={quoteVehicle} />
+      <QuickTestDriveModal open={!!testDriveVehicle} onClose={() => setTestDriveVehicle(null)} vehicle={testDriveVehicle} />
+      {/* Alış sözleşmesi: alış bilgileri aracın üzerinde, sözleşme no yerine plaka */}
+      <ContractPrintModal
+        open={!!purchaseContractVehicle}
+        onClose={() => setPurchaseContractVehicle(null)}
+        contractType="PURCHASE"
+        contractId={purchaseContractVehicle?.id ?? ""}
+        documentNo={purchaseContractVehicle?.plate}
+      />
 
       {/* Evraklar modalı — tekerlek menüden doğrudan evrak yükleme/yönetme */}
       <VehicleDocumentsModal
@@ -354,6 +358,10 @@ export default function VehiclesPage() {
               (x) => ({ ...x, status: newStatus }),
             );
           }
+        }}
+        onVehicleDeleted={(id) => {
+          removeItem((x) => x.id === id);
+          setStatusVehicle(null);
         }}
       />
     </Page>

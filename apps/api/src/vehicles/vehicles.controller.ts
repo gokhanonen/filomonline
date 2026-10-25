@@ -72,6 +72,12 @@ export class VehiclesController {
     return this.vehicles.update(companyId, id, dto);
   }
 
+  @RequirePermissions("vehicles.read")
+  @Get(":id/can-delete")
+  canDelete(@CompanyId() companyId: string, @Param("id") id: string) {
+    return this.vehicles.canDelete(companyId, id);
+  }
+
   @RequirePermissions("vehicles.delete")
   @Delete(":id")
   remove(@CompanyId() companyId: string, @Param("id") id: string) {

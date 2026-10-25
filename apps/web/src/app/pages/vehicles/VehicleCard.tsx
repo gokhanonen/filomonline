@@ -12,7 +12,6 @@ import {
   TbCopy,
   TbMapPin,
   TbTag,
-  TbTrash,
   TbCar,
   TbReceipt2,
   TbCashBanknote,
@@ -20,6 +19,9 @@ import {
   TbBrandWhatsapp,
   TbFileCheck,
   TbArrowsExchange,
+  TbFileDollar,
+  TbSteeringWheel,
+  TbFileDescription,
 } from "react-icons/tb";
 
 import {
@@ -65,8 +67,10 @@ interface Props {
   onDocuments?: () => void;
   onCopy?: () => void;
   onTransfer?: () => void;
-  onDelete?: () => void;
   onChangeStatus?: () => void;
+  onQuote?: () => void;
+  onTestDrive?: () => void;
+  onPurchaseContract?: () => void;
 }
 
 export function VehicleCard({
@@ -83,8 +87,10 @@ export function VehicleCard({
   onDocuments,
   onCopy,
   onTransfer,
-  onDelete,
   onChangeStatus,
+  onQuote,
+  onTestDrive,
+  onPurchaseContract,
 }: Props) {
   const fuel = v.fuelType ? FUEL_LABELS[v.fuelType] : null;
   const trans = v.transmission ? TRANSMISSION_LABELS[v.transmission] : null;
@@ -105,6 +111,15 @@ export function VehicleCard({
     { icon: TbReceipt2, label: "Masraf Ekle", color: "text-warning", onClick: onAddExpense ?? onView },
     ...(v.status !== "SATILDI"
       ? [{ icon: TbCashBanknote, label: "Satış Yap", color: "text-success", onClick: onSale ?? onView }]
+      : []),
+    ...(onQuote && v.status !== "SATILDI"
+      ? [{ icon: TbFileDollar, label: "Teklif Ver", color: "text-emerald-600 dark:text-emerald-400", onClick: onQuote }]
+      : []),
+    ...(onTestDrive && v.status !== "SATILDI"
+      ? [{ icon: TbSteeringWheel, label: "Deneme Sürüşü", color: "text-sky-600 dark:text-sky-400", onClick: onTestDrive }]
+      : []),
+    ...(onPurchaseContract && (v.supplierId || v.purchasePrice)
+      ? [{ icon: TbFileDescription, label: "Alış Sözleşmesi", color: "text-slate-600 dark:text-slate-300", onClick: onPurchaseContract }]
       : []),
     ...(onOption
       ? [{ icon: TbTag, label: option ? "Opsiyonu Düzenle" : "Opsiyon Ekle", color: "text-amber-500", onClick: onOption }]
@@ -136,8 +151,6 @@ export function VehicleCard({
             onClick: onChangeStatus,
           },
         ]
-      : onDelete
-      ? [{ icon: TbTrash, label: "Pasifleştir", color: "text-error", onClick: onDelete }]
       : []),
   ];
 

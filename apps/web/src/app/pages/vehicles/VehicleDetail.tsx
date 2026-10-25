@@ -18,6 +18,7 @@ import {
   TbFileInvoice,
   TbLock,
   TbContract,
+  TbArrowsExchange,
 } from "react-icons/tb";
 import { toast } from "sonner";
 
@@ -48,6 +49,7 @@ import { ListingLinksModal } from "./ListingLinksModal";
 import { VehicleOptionModal } from "./VehicleOptionModal";
 import { WhatsAppModal } from "./WhatsAppModal";
 import { VehicleTransferModal } from "./VehicleTransferModal";
+import { VehicleStatusModal } from "./VehicleStatusModal";
 import { InvoiceForm } from "../invoices/InvoiceForm";
 import {
   getRentalContractsByVehicle,
@@ -112,6 +114,7 @@ export default function VehicleDetailPage() {
     contractType: "SALES",
     contractId: "",
   });
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -341,6 +344,14 @@ export default function VehicleDetailPage() {
               onClick={() => setTransferOpen(true)}
             >
               <TbMapPin className="size-5" /> Lokasyon
+            </Button>
+            <Button
+              color="secondary"
+              variant="soft"
+              className="gap-2"
+              onClick={() => setStatusModalOpen(true)}
+            >
+              <TbArrowsExchange className="size-5" /> Statü Değiştir
             </Button>
             <Button color="primary" className="gap-2" onClick={() => setFormOpen(true)}>
               <PencilSquareIcon className="size-5" /> Düzenle
@@ -905,6 +916,19 @@ export default function VehicleDetailPage() {
         contractType={contractPrintModal.contractType}
         contractId={contractPrintModal.contractId}
         documentNo={contractPrintModal.documentNo}
+      />
+
+      {/* Araç Statüsü Değiştirme Modalı */}
+      <VehicleStatusModal
+        open={statusModalOpen}
+        onClose={() => setStatusModalOpen(false)}
+        vehicle={v}
+        onStatusChanged={(newStatus) => {
+          setVehicle((prev) => (prev ? { ...prev, status: newStatus } : null));
+        }}
+        onVehicleDeleted={() => {
+          navigate("/vehicles");
+        }}
       />
     </Page>
   );

@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { Prisma, VehicleOption } from "@prisma/client";
+import { DocumentReferenceType, Prisma, VehicleOption } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { StorageService } from "../storage/storage.service";
 import { Paginated } from "../common/dto/pagination.dto";
@@ -26,11 +26,13 @@ import { CreateVehicleShareLinkDto } from "./dto/vehicle-share.dto";
 import { randomBytes } from "crypto";
 import { ActivityService } from "../activity/activity.service";
 import { ClaudeService } from "../ai/claude.service";
+import { softDeleteData } from "../prisma/soft-delete";
 
 const fullInclude = {
-  photos: { orderBy: { sortOrder: "asc" } },
-  tramerSet: true,
-  listingUrls: { orderBy: { createdAt: "desc" } },
+  // Gizlenen (silinen) alt kayıtlar listelenmez
+  photos: { where: { deletedAt: null }, orderBy: { sortOrder: "asc" } },
+  tramerSet: { where: { deletedAt: null } },
+  listingUrls: { where: { deletedAt: null }, orderBy: { createdAt: "desc" } },
   installments: true,
   // Aktif opsiyon (varsa) — kart/detayda "Opsiyonlu" rozeti için
   options: { where: { status: "ACTIVE" }, take: 1 },
@@ -56,15 +58,31 @@ export class VehiclesService {
     const mediaType = (body.mediaType as any) || "image/jpeg";
 
     const res = await this.claude.assist({
-      prompt: "Bu araç ruhsatındaki plaka, marka, model, model yılı, şasi/vin no, motor no, renk, yakıt tipi ve vites bilgilerini oku.",
-      image: {
-        mediaType,
-        base64Data: cleanBase64,
-      },
-      docTypeHint: "RUHSAT",
+      prompt: "Bu bir araç ruhsatı. Araç bilgilerini oku.",
+      images: [{ mediaType, base64Data: cleanBase64 }],
     });
-
-    return res.data?.registration || null;
+    const v = res.vehicle;
+    if (!v) return null;
+    // Araç formunun beklediği alan adları
+    return {
+      plate: v.plate ?? undefined,
+      brand: v.brand ?? undefined,
+      model: v.model ?? undefined,
+      year: v.modelYear ?? undefined,
+      vin: v.vin ?? undefined,
+      engineNo: v.engineNo ?? undefined,
+      color: v.color ?? undefined,
+      fuelType: v.fuelType ?? undefined,
+      transmission: v.transmission ?? undefined,
+      registrationDate: v.registrationDate ?? undefined,
+      registrationModel: v.registrationModel ?? undefined,
+      bodyType: v.bodyType ?? undefined,
+      driveType: v.driveType ?? undefined,
+      engineVolume: v.engineVolume ?? undefined,
+      horsePower: v.horsePower ?? undefined,
+      enginePower: v.enginePower ?? undefined,
+      inferred: v.inferred ?? [],
+    };
   }
 
   async create(companyId: string, dto: CreateVehicleDto) {
@@ -152,8 +170,8 @@ export class VehiclesService {
         skip: (q.page - 1) * q.pageSize,
         take: q.pageSize,
         include: {
-          photos: { where: { category: "COVER" }, take: 1 },
-          listingUrls: { orderBy: { createdAt: "desc" } },
+          photos: { where: { category: "COVER", deletedAt: null }, take: 1 },
+          listingUrls: { where: { deletedAt: null }, orderBy: { createdAt: "desc" } },
           options: { where: { status: "ACTIVE" }, take: 1 },
         },
       }),
@@ -243,7 +261,7 @@ export class VehiclesService {
       where: { id: urlId, vehicleId: id },
     });
     if (!found) throw new NotFoundException("İlan linki bulunamadı");
-    await this.prisma.vehicleListingUrl.delete({ where: { id: urlId } });
+    await this.prisma.vehicleListingUrl.update({ where: { id: urlId }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -477,26 +495,145 @@ export class VehiclesService {
     return updated;
   }
 
-  async remove(companyId: string, id: string) {
+  async canDelete(companyId: string, id: string) {
     const existing = await this.prisma.vehicle.findFirst({
       where: { id, companyId },
-      select: { id: true, plate: true },
+      select: { id: true, plate: true, brandName: true, modelName: true, status: true },
     });
     if (!existing) throw new NotFoundException("Araç bulunamadı");
-    await this.prisma.vehicle.update({
-      where: { id },
-      data: { isActive: false },
+
+    const reasons: string[] = [];
+    if (existing.status !== "KULLANIM_DISI") {
+      reasons.push(
+        "Yalnızca 'KULLANIM DIŞI' statüsündeki araçlar silinebilir. Lütfen önce aracın statüsünü 'Kullanım Dışı' yapın.",
+      );
+    }
+
+    // 1. Bloklayıcı Mali & Finansal İşlemler (Transaction'lar)
+    const expenseCount = await this.prisma.expense.count({
+      where: { vehicleId: id },
     });
+
+    const purchaseInvoiceCount = await this.prisma.purchaseInvoice.count({
+      where: { vehicleId: id },
+    });
+
+    const salesInvoiceCount = await this.prisma.salesInvoice.count({
+      where: { vehicleId: id },
+    });
+
+    const rentalInvoiceCount = await this.prisma.rentalInvoice.count({
+      where: { vehicleId: id },
+    });
+
+    const financeMovementCount = await this.prisma.financeMovement.count({
+      where: { vehicleId: id },
+    });
+
+    const rentalContractCount = await this.prisma.rentalContract.count({
+      where: { vehicleId: id },
+    });
+
+    const salesContractCount = await this.prisma.salesContract.count({
+      where: { vehicleId: id },
+    });
+
+    const rentalCount = await this.prisma.rental.count({
+      where: { vehicleId: id },
+    });
+
+    if (expenseCount > 0) {
+      reasons.push(
+        `Bu araca ait sisteme kayıtlı ${expenseCount} adet masraf/gider faturası bulunmaktadır.`,
+      );
+    }
+    const totalInvoices = purchaseInvoiceCount + salesInvoiceCount + rentalInvoiceCount;
+    if (totalInvoices > 0) {
+      reasons.push(
+        `Bu araca ait sisteme kayıtlı ${totalInvoices} adet resmi fatura (alış, satış veya kira faturası) bulunmaktadır.`,
+      );
+    }
+    if (financeMovementCount > 0) {
+      reasons.push(
+        `Bu araca ait kasa veya banka finans hareketi / ödeme kaydı bulunmaktadır.`,
+      );
+    }
+    if (rentalContractCount > 0 || rentalCount > 0) {
+      reasons.push(
+        `Bu araca ait kiralama sözleşmesi veya kira dönemi kaydı bulunmaktadır.`,
+      );
+    }
+    if (salesContractCount > 0) {
+      reasons.push(
+        `Bu araca ait satış sözleşmesi kaydı bulunmaktadır.`,
+      );
+    }
+
+    // 2. Yumuşak Uyarılar: Evrak ve Fotoğraflar (Aracı silerken kullanıcı onayıyla silinir)
+    const documentCount = await this.prisma.document.count({
+      where: {
+        companyId,
+        referenceType: DocumentReferenceType.VEHICLE,
+        referenceId: id,
+      },
+    });
+
+    const photoCount = await this.prisma.vehiclePhoto.count({
+      where: { vehicleId: id },
+    });
+
+    const warnings: string[] = [];
+    if (documentCount > 0) {
+      warnings.push(
+        `Bu araca ait ${documentCount} adet resmi evrak (ruhsat, kasko, sigorta, muayene vb.) bulunmaktadır.`,
+      );
+    }
+    if (photoCount > 0) {
+      warnings.push(
+        `Bu araca ait ${photoCount} adet araç fotoğrafı bulunmaktadır.`,
+      );
+    }
+
+    return {
+      canDelete: reasons.length === 0,
+      reasons,
+      hasWarnings: warnings.length > 0,
+      warnings,
+      documentCount,
+      photoCount,
+      contractCount: rentalContractCount + salesContractCount + rentalCount,
+      transactionCount:
+        expenseCount +
+        totalInvoices +
+        financeMovementCount,
+    };
+  }
+
+  async remove(companyId: string, id: string) {
+    const existing = await this.prisma.vehicle.findFirst({ where: { id, companyId } });
+    if (!existing) throw new NotFoundException("Araç bulunamadı");
+
+    const check = await this.canDelete(companyId, id);
+    if (!check.canDelete) {
+      throw new BadRequestException(
+        `${check.reasons.join(" ")} Finansal işlem, masraf, fatura veya sözleşme kaydı bulunan araçlar silinemez. Lütfen aracın statüsünü 'KULLANIM DIŞI' olarak bırakın.`,
+      );
+    }
+
+    // Silme yok: araç gizlenir. Evrak, fotoğraf, transfer ve mesaj kayıtları (dosyalar dahil) yerinde kalır.
+    await this.prisma.vehicle.update({ where: { id }, data: { ...softDeleteData(), isActive: false } });
+
     void this.activity.log({
       companyId,
       type: "VEHICLE_UPDATE",
-      title: `Araç Pasife Alındı: ${existing.plate || "Araç"}`,
-      description: `Araç envanterden pasifleştirildi.`,
+      title: `Araç Silindi: ${existing.plate || "Araç"}`,
+      description: `Araç kartı kaldırıldı (kayıt ve belgeleri arşivde saklanır).`,
       entityType: "vehicle",
       entityId: id,
       link: `/vehicles`,
     });
-    return { success: true };
+
+    return { success: true, message: "Araç başarıyla silindi" };
   }
 
   // --- Fotoğraflar ---
@@ -515,9 +652,8 @@ export class VehiclesService {
       where: { id: photoId, vehicleId: id },
     });
     if (!photo) throw new NotFoundException("Fotoğraf bulunamadı");
-    await this.prisma.vehiclePhoto.delete({ where: { id: photoId } });
-    if (photo.fileKey) await this.storage.delete(photo.fileKey);
-    if (photo.thumbKey) await this.storage.delete(photo.thumbKey);
+    // Dosya depoda kalır; kayıt gizlenir
+    await this.prisma.vehiclePhoto.update({ where: { id: photoId }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -542,7 +678,7 @@ export class VehiclesService {
       where: { id: tramerId, vehicleId: id },
     });
     if (!tramer) throw new NotFoundException("Tramer kaydı bulunamadı");
-    await this.prisma.vehicleTramerRecord.delete({ where: { id: tramerId } });
+    await this.prisma.vehicleTramerRecord.update({ where: { id: tramerId }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -1154,7 +1290,7 @@ export class VehiclesService {
     });
     if (!link) throw new NotFoundException("Paylaşım bağlantısı bulunamadı");
 
-    await this.prisma.vehicleShareLink.delete({ where: { id: linkId } });
+    await this.prisma.vehicleShareLink.update({ where: { id: linkId }, data: softDeleteData() });
     return { success: true };
   }
 
@@ -1193,8 +1329,8 @@ export class VehiclesService {
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
       include: {
-        photos: { orderBy: { sortOrder: "asc" } },
-        tramerSet: { orderBy: { date: "desc" } },
+        photos: { where: { deletedAt: null }, orderBy: { sortOrder: "asc" } },
+        tramerSet: { where: { deletedAt: null }, orderBy: { date: "desc" } },
         options: { where: { status: "ACTIVE" } },
       },
     });

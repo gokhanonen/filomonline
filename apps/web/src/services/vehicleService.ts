@@ -114,9 +114,28 @@ export async function updateVehicle(
   return data;
 }
 
-export async function deactivateVehicle(id: string): Promise<void> {
-  await axios.delete(`/vehicles/${id}`);
+export interface CanDeleteVehicleResult {
+  canDelete: boolean;
+  reasons: string[];
+  hasWarnings?: boolean;
+  warnings?: string[];
+  documentCount: number;
+  photoCount?: number;
+  contractCount?: number;
+  transactionCount?: number;
 }
+
+export async function checkCanDeleteVehicle(id: string): Promise<CanDeleteVehicleResult> {
+  const { data } = await axios.get<CanDeleteVehicleResult>(`/vehicles/${id}/can-delete`);
+  return data;
+}
+
+export async function deleteVehicle(id: string): Promise<{ success: boolean; message: string }> {
+  const { data } = await axios.delete<{ success: boolean; message: string }>(`/vehicles/${id}`);
+  return data;
+}
+
+export const deactivateVehicle = deleteVehicle;
 
 export interface PhotoInput {
   category: "COVER" | "INTERIOR" | "EXTERIOR";
@@ -222,6 +241,14 @@ export interface OcrRegistrationResult {
   fuelType?: string;
   transmission?: string;
   registrationDate?: string;
+  registrationModel?: string;
+  bodyType?: string;
+  driveType?: string;
+  engineVolume?: number;
+  horsePower?: number;
+  enginePower?: number;
+  /** Belgede yazmayıp AI'ın marka/model/yıldan çıkardığı alanlar */
+  inferred?: string[];
 }
 
 export async function ocrRegistration(
