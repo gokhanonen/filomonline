@@ -20,9 +20,20 @@ import {
   DOCUMENT_PHOTO_MAX_BYTES,
 } from "@/utils/imageResize";
 
+import { API_BASE_URL } from "@/configs/auth";
+
 interface Props {
   referenceType: DocReferenceType;
   referenceId: string;
+}
+
+function resolveDocUrl(url?: string | null): string {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:") || url.startsWith("blob:")) {
+    return url;
+  }
+  const base = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
+  return `${base}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 
 function fmtSize(bytes: number): string {
@@ -161,9 +172,9 @@ export function DocumentManager({ referenceType, referenceId }: Props) {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {docs.map((d) => (
             <div key={d.id} className="group relative overflow-hidden rounded-lg border border-gray-150 dark:border-dark-500">
-              <a href={d.url} target="_blank" rel="noreferrer" className="block aspect-[4/3] bg-gray-100 dark:bg-dark-800">
+              <a href={resolveDocUrl(d.url)} target="_blank" rel="noreferrer" className="block aspect-[4/3] bg-gray-100 dark:bg-dark-800">
                 {d.thumbUrl ? (
-                  <img src={d.thumbUrl} alt={d.fileName} className="size-full object-cover" />
+                  <img src={resolveDocUrl(d.thumbUrl)} alt={d.fileName} className="size-full object-cover" />
                 ) : (
                   <div className="flex size-full flex-col items-center justify-center gap-1 text-gray-400">
                     <DocumentTextIcon className="size-8" />

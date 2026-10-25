@@ -15,6 +15,7 @@ import {
   UpdateDocumentCategoryDto,
   UpdateDocumentTypeDto,
 } from "./dto/document-meta.dto";
+import { DemoVehicleDocContext } from "./demo-document-generator";
 
 /** Varsayılan evrak yapısı ("Varsayılanları Yükle") */
 export const DEFAULT_DOCUMENT_STRUCTURE: {
@@ -235,12 +236,68 @@ export class DocumentsService {
       orderBy: { createdAt: "desc" },
     });
     return Promise.all(
-      docs.map(async (d) => ({
-        ...d,
-        url: await this.storage.presignDownload(d.fileKey),
-        thumbUrl: d.thumbKey ? await this.storage.presignDownload(d.thumbKey) : null,
-      })),
+      docs.map(async (d) => {
+        let url: string;
+        let thumbUrl: string | null = null;
+        if (d.fileKey.startsWith("demo-doc:")) {
+          url = `/api/v1/documents/view/${d.id}`;
+          thumbUrl = `/api/v1/documents/thumb/${d.id}`;
+        } else if (d.fileKey.startsWith("http://") || d.fileKey.startsWith("https://")) {
+          url = d.fileKey;
+          thumbUrl = d.thumbKey ?? d.fileKey;
+        } else {
+          url = await this.storage.presignDownload(d.fileKey).catch(() => "");
+          thumbUrl = d.thumbKey ? await this.storage.presignDownload(d.thumbKey).catch(() => null) : null;
+        }
+        return {
+          ...d,
+          url,
+          thumbUrl,
+        };
+      }),
     );
+  }
+
+  async getDocumentWithVehicle(id: string) {
+    const doc = await this.prisma.document.findUnique({ where: { id } });
+    if (!doc) throw new NotFoundException("Doküman bulunamadı");
+
+    let vehicle: any = null;
+    let company: any = null;
+    if (doc.referenceType === "VEHICLE" && doc.referenceId) {
+      vehicle = await this.prisma.vehicle.findUnique({
+        where: { id: doc.referenceId },
+      });
+    }
+    if (doc.companyId) {
+      company = await this.prisma.company.findUnique({
+        where: { id: doc.companyId },
+      });
+    }
+
+    const typeParts = doc.fileKey.split(":");
+    const docType = (typeParts[1] || "ruhsat") as any;
+
+    const ctx: DemoVehicleDocContext = {
+      plate: vehicle?.plate || "34 PLK 01",
+      brandName: vehicle?.brandName || "",
+      modelName: vehicle?.modelName || "",
+      year: vehicle?.year || 2023,
+      colorName: vehicle?.colorName || "Beyaz",
+      fuelType: vehicle?.fuelType || "BENZIN",
+      chassisNo: vehicle?.chassisNo || "WBA5A51080G12894",
+      engineNo: vehicle?.engineNo || "ENG291824",
+      km: vehicle?.km || 45000,
+      engineVolume: vehicle?.engineVolume || 1597,
+      horsePower: vehicle?.horsePower || 170,
+      companyName: company?.name || "Demo Otomotiv A.Ş.",
+      purchasePrice: vehicle?.purchasePrice ? Number(vehicle.purchasePrice) : 1850000,
+      docType,
+      documentNo: doc.description || doc.fileName,
+      expiryDate: doc.expiryDate || undefined,
+    };
+
+    return { doc, vehicle, ctx };
   }
 
   async create(companyId: string, userId: string, dto: CreateDocumentDto) {

@@ -56,8 +56,22 @@ export class StorageService {
 
   /** Nesneyi okumak için geçici imzalı URL. */
   async presignDownload(key: string, expiresIn = 3600): Promise<string> {
-    const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
-    return getSignedUrl(this.client, command, { expiresIn });
+    if (!key) return "";
+    if (
+      key.startsWith("http://") ||
+      key.startsWith("https://") ||
+      key.startsWith("data:") ||
+      key.startsWith("blob:")
+    ) {
+      return key;
+    }
+    try {
+      const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
+      return await getSignedUrl(this.client, command, { expiresIn });
+    } catch (e) {
+      this.logger.warn(`presignDownload başarısız: ${key} — ${(e as Error).message}`);
+      return "";
+    }
   }
 
   async delete(key: string): Promise<void> {

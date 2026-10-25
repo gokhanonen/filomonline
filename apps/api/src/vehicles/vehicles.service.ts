@@ -149,9 +149,18 @@ export class VehiclesService {
     const items = await Promise.all(
       vehicles.map(async (v) => {
         const cover = v.photos[0];
-        const coverUrl = cover
-          ? await this.storage.presignDownload(cover.thumbKey ?? cover.fileKey)
-          : null;
+        let coverUrl: string | null = null;
+        if (cover) {
+          if (cover.url && (cover.url.startsWith("http") || cover.url.startsWith("data:"))) {
+            coverUrl = cover.url;
+          } else if (cover.thumbKey && (cover.thumbKey.startsWith("http") || cover.thumbKey.startsWith("data:"))) {
+            coverUrl = cover.thumbKey;
+          } else if (cover.fileKey && (cover.fileKey.startsWith("http") || cover.fileKey.startsWith("data:"))) {
+            coverUrl = cover.fileKey;
+          } else {
+            coverUrl = await this.storage.presignDownload(cover.thumbKey ?? cover.fileKey).catch(() => null);
+          }
+        }
         const { options, ...rest } = v;
         return {
           ...rest,

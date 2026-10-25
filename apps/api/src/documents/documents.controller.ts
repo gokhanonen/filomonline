@@ -7,8 +7,10 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from "@nestjs/common";
+import type { Response } from "express";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
@@ -16,6 +18,7 @@ import { AuthUser } from "../auth/auth.types";
 import { activeTenantId } from "../tenancy/tenant-context";
 import { RequirePermissions } from "../tenancy/permissions.decorator";
 import { CompanyAdminGuard } from "../tenancy/company-admin.guard";
+import { Public } from "../auth/decorators/public.decorator";
 import { DocumentsService } from "./documents.service";
 import { CreateDocumentDto, QueryDocumentsDto } from "./dto/document.dto";
 import {
@@ -24,6 +27,10 @@ import {
   UpdateDocumentCategoryDto,
   UpdateDocumentTypeDto,
 } from "./dto/document-meta.dto";
+import {
+  generateDocHtmlView,
+  generateDocSvgThumbnail,
+} from "./demo-document-generator";
 
 @ApiTags("documents")
 @ApiBearerAuth()
@@ -110,5 +117,26 @@ export class DocumentsController {
   @Delete(":id")
   remove(@CompanyId() companyId: string, @Param("id") id: string) {
     return this.documents.remove(companyId, id);
+  }
+
+  // --- Demo Evrak Görünüm & Küçük Resim (SVG/HTML) ---
+
+  @Public()
+  @Get("thumb/:id")
+  async renderThumb(@Param("id") id: string, @Res() res: Response) {
+    const { ctx } = await this.documents.getDocumentWithVehicle(id);
+    const svg = generateDocSvgThumbnail(ctx);
+    res.setHeader("Content-Type", "image/svg+xml");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    return res.send(svg);
+  }
+
+  @Public()
+  @Get("view/:id")
+  async renderView(@Param("id") id: string, @Res() res: Response) {
+    const { ctx } = await this.documents.getDocumentWithVehicle(id);
+    const html = generateDocHtmlView(ctx);
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    return res.send(html);
   }
 }

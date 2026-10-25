@@ -37,6 +37,15 @@ export async function uploadBlob(
 
 /** Nesneyi görüntülemek için geçici imzalı URL. */
 export async function presignDownload(key: string): Promise<string> {
+  if (!key) return "";
+  if (
+    key.startsWith("http://") ||
+    key.startsWith("https://") ||
+    key.startsWith("blob:") ||
+    key.startsWith("data:")
+  ) {
+    return key;
+  }
   const { data } = await axios.post<{ url: string }>("/storage/presign-download", { key });
   return data.url;
 }

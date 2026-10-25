@@ -34,8 +34,18 @@ export class StorageController {
     const parts = dto.key.split("/");
     const scope = parts[1];
     const isPublicScope = scope === "logos" || scope === "avatars";
+    const isDirectUrl =
+      dto.key.startsWith("http://") ||
+      dto.key.startsWith("https://") ||
+      dto.key.startsWith("data:") ||
+      dto.key.startsWith("demo-doc:");
 
-    if (!user.isSuperAdmin && !dto.key.startsWith(`${companyId}/`) && !isPublicScope) {
+    if (
+      !user.isSuperAdmin &&
+      !dto.key.startsWith(`${companyId}/`) &&
+      !isPublicScope &&
+      !isDirectUrl
+    ) {
       throw new ForbiddenException("Bu dosyaya erişim yetkiniz yok");
     }
     const url = await this.storage.presignDownload(dto.key);

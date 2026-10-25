@@ -123,7 +123,11 @@ export default function VehicleDetailPage() {
       const v = await getVehicle(id);
       setVehicle(v);
       const urls = await Promise.all(
-        (v.photos ?? []).map((p) => presignDownload(p.fileKey).catch(() => "")),
+        (v.photos ?? []).map((p) => {
+          if (p.url && (p.url.startsWith("http") || p.url.startsWith("data:"))) return Promise.resolve(p.url);
+          if (p.thumbUrl && (p.thumbUrl.startsWith("http") || p.thumbUrl.startsWith("data:"))) return Promise.resolve(p.thumbUrl);
+          return presignDownload(p.fileKey).catch(() => "");
+        }),
       );
       setPhotoUrls(urls.filter(Boolean));
       setActivePhoto(0);
