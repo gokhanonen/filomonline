@@ -19,6 +19,7 @@ import {
   TbLink,
   TbBrandWhatsapp,
   TbFileCheck,
+  TbArrowsExchange,
 } from "react-icons/tb";
 
 import {
@@ -35,6 +36,8 @@ const STATUS_BADGE: Record<string, string> = {
   STOKTA: "bg-success",
   KIRALAMADA: "bg-warning",
   SATILDI: "bg-gray-500",
+  IC_KULLANIM: "bg-blue-600",
+  KULLANIM_DISI: "bg-rose-600",
 };
 
 function money(v?: string | null): string {
@@ -63,6 +66,7 @@ interface Props {
   onCopy?: () => void;
   onTransfer?: () => void;
   onDelete?: () => void;
+  onChangeStatus?: () => void;
 }
 
 export function VehicleCard({
@@ -80,6 +84,7 @@ export function VehicleCard({
   onCopy,
   onTransfer,
   onDelete,
+  onChangeStatus,
 }: Props) {
   const fuel = v.fuelType ? FUEL_LABELS[v.fuelType] : null;
   const trans = v.transmission ? TRANSMISSION_LABELS[v.transmission] : null;
@@ -122,7 +127,18 @@ export function VehicleCard({
       color: "text-amber-500",
       onClick: onTransfer ?? (() => toast.info("Lokasyon transferi yakında aktif olacak")),
     },
-    ...(onDelete ? [{ icon: TbTrash, label: "Pasifleştir", color: "text-error", onClick: onDelete }] : []),
+    ...(onChangeStatus
+      ? [
+          {
+            icon: TbArrowsExchange,
+            label: "Statü Değiştir",
+            color: "text-purple-600 dark:text-purple-400",
+            onClick: onChangeStatus,
+          },
+        ]
+      : onDelete
+      ? [{ icon: TbTrash, label: "Pasifleştir", color: "text-error", onClick: onDelete }]
+      : []),
   ];
 
   return (

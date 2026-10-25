@@ -27,6 +27,7 @@ import { ExpenseForm } from "@/app/pages/expenses/ExpenseForm";
 import { InvoiceForm } from "@/app/pages/invoices/InvoiceForm";
 import { RentalForm } from "@/app/pages/rentals/RentalForm";
 import { VehicleTransferModal } from "./VehicleTransferModal";
+import { VehicleStatusModal } from "./VehicleStatusModal";
 
 const PAGE_SIZE = 24;
 
@@ -98,6 +99,7 @@ export default function VehiclesPage() {
   const [waVehicle, setWaVehicle] = useState<Vehicle | null>(null);
   const [docsVehicle, setDocsVehicle] = useState<Vehicle | null>(null);
   const [transferVehicle, setTransferVehicle] = useState<Vehicle | null>(null);
+  const [statusVehicle, setStatusVehicle] = useState<Vehicle | null>(null);
   const [previewVehicle, setPreviewVehicle] = useState<Vehicle | null>(null);
   const [sources, setSources] = useState<ListingSource[]>([]);
 
@@ -233,6 +235,7 @@ export default function VehiclesPage() {
                 onDocuments={() => setDocsVehicle(v)}
                 onCopy={canWrite ? () => setCloningVehicle(v) : undefined}
                 onTransfer={canWrite ? () => setTransferVehicle(v) : undefined}
+                onChangeStatus={canWrite ? () => setStatusVehicle(v) : undefined}
                 onDelete={canDelete && v.isActive ? () => handleDelete(v) : undefined}
               />
             ))}
@@ -328,6 +331,7 @@ export default function VehiclesPage() {
         onOption={canWrite ? (v) => setOptionVehicle(v) : undefined}
         onContract={canRental ? (v) => setContractVehicle(v) : undefined}
         onTransfer={canWrite ? (v) => setTransferVehicle(v) : undefined}
+        onChangeStatus={canWrite ? (v) => setStatusVehicle(v) : undefined}
       />
 
       {/* Lokasyon Transfer Modalı — tekerlek menüdeki lokasyon butonu */}
@@ -336,6 +340,21 @@ export default function VehiclesPage() {
         onClose={() => setTransferVehicle(null)}
         vehicle={transferVehicle}
         onSuccess={() => setRefreshKey((k) => k + 1)}
+      />
+
+      {/* Araç Statü Değiştirme Modalı */}
+      <VehicleStatusModal
+        open={!!statusVehicle}
+        onClose={() => setStatusVehicle(null)}
+        vehicle={statusVehicle}
+        onStatusChanged={(newStatus) => {
+          if (statusVehicle) {
+            updateItem(
+              (x) => x.id === statusVehicle.id,
+              (x) => ({ ...x, status: newStatus }),
+            );
+          }
+        }}
       />
     </Page>
   );

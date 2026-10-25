@@ -82,7 +82,10 @@ const schema = Yup.object().shape({
     .required("Plaka zorunludur")
     .min(3, "Plaka en az 3 karakter olmalıdır"),
   status: Yup.string()
-    .oneOf(["STOKTA", "KIRALAMADA", "SATILDI"], "Geçerli bir durum seçiniz")
+    .oneOf(
+      ["STOKTA", "KIRALAMADA", "SATILDI", "IC_KULLANIM", "KULLANIM_DISI"],
+      "Geçerli bir durum seçiniz",
+    )
     .required("Durum seçimi zorunludur"),
   categoryId: Yup.string().optional(),
   vehicleTypeId: Yup.string().optional(),
@@ -1019,6 +1022,8 @@ export function VehicleForm({ open, onClose, onSaved, vehicle, isClone = false }
                         <option value="STOKTA">Stokta</option>
                         <option value="KIRALAMADA">Kiralamada</option>
                         <option value="SATILDI">Satıldı</option>
+                        <option value="IC_KULLANIM">İç Kullanım</option>
+                        <option value="KULLANIM_DISI">Kullanım Dışı</option>
                       </select>
                       {errors.status && (
                         <p className="mt-1 text-[11px] font-medium text-red-500">{errors.status.message}</p>

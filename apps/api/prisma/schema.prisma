@@ -1291,6 +1291,8 @@ enum VehicleStatus {
   STOKTA
   KIRALAMADA
   SATILDI
+  IC_KULLANIM
+  KULLANIM_DISI
 }
 
 enum FuelType {

@@ -1,7 +1,14 @@
 import axios from "@/utils/axios";
 
 export interface ReportSummary {
-  vehicles: { stokta: number; kiralamada: number; satildi: number; toplam: number };
+  vehicles: {
+    stokta: number;
+    kiralamada: number;
+    satildi: number;
+    icKullanim?: number;
+    kullanimDisi?: number;
+    toplam: number;
+  };
   stokMaliyeti: number;
   stokListeDeğeri: number;
   toplamSatis: number;

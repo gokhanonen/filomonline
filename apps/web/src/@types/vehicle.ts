@@ -1,4 +1,9 @@
-export type VehicleStatus = "STOKTA" | "KIRALAMADA" | "SATILDI";
+export type VehicleStatus =
+  | "STOKTA"
+  | "KIRALAMADA"
+  | "SATILDI"
+  | "IC_KULLANIM"
+  | "KULLANIM_DISI";
 export type FuelType = "BENZIN" | "DIZEL" | "LPG" | "ELEKTRIK" | "HIBRIT";
 export type TransmissionType = "MANUEL" | "OTOMATIK" | "YARI_OTOMATIK";
 export type DriveType = "ONDEN_CEKIS" | "ARKADAN_ITIS" | "FOUR_WD" | "AWD";
@@ -200,6 +205,8 @@ export const VEHICLE_STATUS_LABELS: Record<VehicleStatus, string> = {
   STOKTA: "Stokta",
   KIRALAMADA: "Kiralamada",
   SATILDI: "Satıldı",
+  IC_KULLANIM: "İç Kullanım",
+  KULLANIM_DISI: "Kullanım Dışı",
 };
 
 export const FUEL_LABELS: Record<FuelType, string> = {
@@ -233,11 +240,13 @@ export const OPTION_STATUS_LABELS: Record<VehicleOptionStatus, string> = {
 
 export const STATUS_TAG_COLOR: Record<
   VehicleStatus,
-  "success" | "warning" | "neutral"
+  "success" | "warning" | "neutral" | "info" | "error"
 > = {
   STOKTA: "success",
   KIRALAMADA: "warning",
   SATILDI: "neutral",
+  IC_KULLANIM: "info",
+  KULLANIM_DISI: "error",
 };
 
 export interface VehicleShareLink {

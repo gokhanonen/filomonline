@@ -19,6 +19,7 @@ import {
   TbCopy,
   TbFileCheck,
   TbMapPin,
+  TbArrowsExchange,
 } from "react-icons/tb";
 
 import { Button, Tag, Spinner } from "@/components/ui";
@@ -49,6 +50,7 @@ interface Props {
   onOption?: (v: Vehicle) => void;
   onContract?: (v: Vehicle) => void;
   onTransfer?: (v: Vehicle) => void;
+  onChangeStatus?: (v: Vehicle) => void;
 }
 
 function money(v?: string | null): string {
@@ -69,6 +71,7 @@ export function VehiclePreviewModal({
   onOption,
   onContract,
   onTransfer,
+  onChangeStatus,
 }: Props) {
   const navigate = useNavigate();
   const [full, setFull] = useState<Vehicle | null>(vehicle);
@@ -443,6 +446,19 @@ export function VehiclePreviewModal({
               }}
             >
               <TbMapPin className="size-4" /> Lokasyon
+            </Button>
+          )}
+
+          {onChangeStatus && (
+            <Button
+              variant="outlined"
+              className="gap-1 px-3 py-1.5 text-xs text-purple-600 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:text-purple-400 dark:hover:bg-purple-950/30"
+              onClick={() => {
+                onClose();
+                onChangeStatus(v);
+              }}
+            >
+              <TbArrowsExchange className="size-4" /> Statü Değiştir
             </Button>
           )}
 
