@@ -9,44 +9,32 @@ import { NavigationTree } from "@/@types/navigation";
  */
 export const navigation: NavigationTree[] = [
   {
-    id: "operations",
-    type: "root",
+    id: "dashboard",
+    type: "item",
     path: "/dashboard",
-    title: "Operasyon",
+    title: "Dashboard",
     icon: "dashboard",
-    childs: [
-      { id: "dashboard", type: "item", path: "/dashboard", title: "Dashboard", icon: "dashboard" },
-      { id: "vehicles", type: "item", path: "/vehicles", title: "Operasyon", icon: "vehicles" },
-    ],
+  },
+  {
+    id: "vehicles",
+    type: "item",
+    path: "/vehicles",
+    title: "Operasyon",
+    icon: "vehicles",
   },
   {
     id: "crm",
-    type: "root",
+    type: "item",
     path: "/crm/leads",
     title: "CRM",
     icon: "crm",
-    childs: [
-      { id: "leads", type: "item", path: "/crm/leads", title: "Potansiyeller", icon: "leads" },
-      { id: "test-drives", type: "item", path: "/crm/test-drives", title: "Deneme Sürüşleri", icon: "testDrives" },
-      { id: "quotes", type: "item", path: "/crm/quotes", title: "Teklifler", icon: "quotes" },
-    ],
   },
   {
     id: "finance",
-    type: "root",
-    path: "/finance/accounts",
+    type: "item",
+    path: "/finance",
     title: "Finans",
     icon: "finance",
-    childs: [
-      { id: "finance-accounts", type: "item", path: "/finance/accounts", title: "Kasa & Banka", icon: "cashBank" },
-      { id: "finance-movements", type: "item", path: "/finance/movements", title: "Hareketler", icon: "financeMovements" },
-      { id: "finance-cheques", type: "item", path: "/finance/cheques", title: "Çek & Senet", icon: "cheques" },
-      { id: "finance-receivables", type: "item", path: "/finance/receivables", title: "Alacak & Borç", icon: "receivables" },
-      { id: "finance-statement", type: "item", path: "/finance/statement", title: "Cari Ekstre", icon: "statement" },
-      { id: "invoices", type: "item", path: "/invoices", title: "Faturalar", icon: "invoices" },
-      { id: "expenses", type: "item", path: "/expenses", title: "Masraflar", icon: "expenses" },
-      { id: "contracts", type: "item", path: "/contracts", title: "Sözleşmeler", icon: "contracts" },
-    ],
   },
   {
     id: "administration",

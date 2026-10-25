@@ -69,9 +69,10 @@ const MOVEMENT_LABEL: Record<string, string> = {
   CHEQUE_ISSUED: "Çek/Senet Verildi",
 };
 
-/** Karşılıksız / iade çeklerle yapılan eşleştirmeler faturayı kapatmaz */
-const effectiveAllocation: Prisma.PaymentAllocationWhereInput = {
+/** Karşılıksız / iade çeklerle ya da silinmiş (gizlenmiş) işlemlerle yapılan eşleştirmeler faturayı kapatmaz */
+export const effectiveAllocation: Prisma.PaymentAllocationWhereInput = {
   movement: {
+    deletedAt: null,
     OR: [{ chequeId: null }, { cheque: { status: { notIn: ["BOUNCED", "RETURNED"] } } }],
   },
 };

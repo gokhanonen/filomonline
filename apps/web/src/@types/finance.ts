@@ -298,3 +298,85 @@ export interface OperationResult {
   groupId: string;
   movements: FinanceMovement[];
 }
+
+// ---- Birleşik akış (hareketler + faturalar + masraflar) ----
+
+export type LedgerKind = "MOVEMENT" | "SALES" | "PURCHASE" | "RENTAL" | "EXPENSE";
+export type LedgerFlow = "IN" | "OUT" | "TRANSFER" | "RECEIVABLE" | "PAYABLE";
+export type LedgerView = "ALL" | "IN" | "OUT" | "TRANSFER" | "SALES" | "PURCHASE" | "EXPENSE";
+
+export interface LedgerRow {
+  key: string;
+  kind: LedgerKind;
+  flow: LedgerFlow;
+  date: string;
+  /** TL karşılığı */
+  amount: number;
+  currency: Currency;
+  foreignAmount: number | null;
+  documentNo: string | null;
+  description: string | null;
+  accountId: string | null;
+  accountName: string | null;
+  vehicleId: string | null;
+  vehiclePlate: string | null;
+  groupId?: string;
+  movementType?: FinanceMovementType;
+  legs?: { module: FinanceModule; direction: FinanceDirection; name: string; amount: number; currency: Currency }[];
+  cheque?: { id: string; serialNo: string; kind: ChequeKind; status: ChequeStatus; dueDate: string } | null;
+  recordId?: string;
+  dueDate?: string;
+  total?: number;
+  paid?: number;
+  open?: number;
+  integrationStatus?: string | null;
+  expenseCategory?: string | null;
+}
+
+export interface LedgerTotals {
+  cashIn: number;
+  cashOut: number;
+  sales: number;
+  purchases: number;
+  expenses: number;
+}
+
+export interface LedgerPage {
+  items: LedgerRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totals: LedgerTotals;
+}
+
+export interface FinanceDashboard {
+  summary: FinanceSummary;
+  accounts: {
+    id: string;
+    name: string;
+    type: FinanceAccountType;
+    currency: Currency;
+    bankName: string | null;
+    balance: number;
+    pendingPos: number;
+    cardDebt: number | null;
+    availableLimit: number | null;
+    creditLimit: number | null;
+    dueDate: string | null;
+  }[];
+  cashflow: { month: string; in: number; out: number }[];
+  upcomingCheques: {
+    id: string;
+    kind: ChequeKind;
+    direction: ChequeDirection;
+    status: ChequeStatus;
+    serialNo: string;
+    dueDate: string;
+    amount: number;
+    currency: Currency;
+    accountName: string | null;
+  }[];
+  topReceivables: AgingRow[];
+  topPayables: AgingRow[];
+  recent: LedgerRow[];
+}

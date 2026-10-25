@@ -1,6 +1,7 @@
 import { Navigate, RouteObject } from "react-router";
 
 import AuthGuard from "@/middleware/AuthGuard";
+import { LegacyFinanceRedirect } from "@/app/pages/finance/LegacyRedirect";
 import { DynamicLayout } from "../layouts/DynamicLayout";
 
 /**
@@ -77,32 +78,13 @@ const protectedRoutes: RouteObject = {
             Component: (await import("@/app/pages/crm")).default,
           }),
         },
-        {
-          path: "crm/test-drives",
-          lazy: async () => ({
-            Component: (await import("@/app/pages/crm/TestDrivesPage")).default,
-          }),
-        },
-        {
-          path: "crm/quotes",
-          lazy: async () => ({
-            Component: (await import("@/app/pages/crm/QuotesPage")).default,
-          }),
-        },
+        // Eski ayrı sayfalar (bildirim/yer imi linkleri) → CRM
+        { path: "crm/test-drives", element: <Navigate to="/crm/leads" replace /> },
+        { path: "crm/quotes", element: <Navigate to="/crm/leads" replace /> },
 
         // --- Finans ---
-        {
-          path: "invoices",
-          lazy: async () => ({
-            Component: (await import("@/app/pages/invoices")).default,
-          }),
-        },
-        {
-          path: "expenses",
-          lazy: async () => ({
-            Component: (await import("@/app/pages/expenses")).default,
-          }),
-        },
+        { path: "invoices", element: <LegacyFinanceRedirect view="SALES" /> },
+        { path: "expenses", element: <LegacyFinanceRedirect view="EXPENSE" /> },
         {
           path: "contracts",
           lazy: async () => ({
@@ -116,7 +98,12 @@ const protectedRoutes: RouteObject = {
           }),
         },
         // --- Finans ---
-        { path: "finance", element: <Navigate to="/finance/accounts" replace /> },
+        {
+          path: "finance",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/finance/dashboard")).default,
+          }),
+        },
         { path: "cash-bank", element: <Navigate to="/finance/accounts" replace /> },
         { path: "finance/cash-bank", element: <Navigate to="/finance/accounts" replace /> },
         {

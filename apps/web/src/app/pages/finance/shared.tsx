@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import clsx from "clsx";
 import {
-  TbArrowsExchange,
   TbBuildingBank,
   TbCash,
   TbCreditCard,
@@ -301,39 +300,51 @@ export function Kpi({
   );
 }
 
-export const FINANCE_TABS = [
-  { id: "accounts", label: "Kasa & Banka", to: "/finance/accounts", Icon: TbLayoutGrid },
+const FINANCE_TABS = [
+  { id: "dashboard", label: "Panel", to: "/finance", Icon: TbLayoutGrid },
   { id: "movements", label: "Hareketler", to: "/finance/movements", Icon: TbListDetails },
-  { id: "cheques", label: "Çek & Senet", to: "/finance/cheques", Icon: TbReceipt2 },
-  { id: "receivables", label: "Alacak & Borç", to: "/finance/receivables", Icon: TbScale },
-  { id: "statement", label: "Cari Ekstre", to: "/finance/statement", Icon: TbFileInvoice },
-  { id: "transfer", label: "Virman", to: "/finance/accounts?op=transfer", Icon: TbArrowsExchange },
 ] as const;
 
-/** Finans sayfaları arası sekme menüsü */
+/** Panelden açılan detay ekranları (menüde yok) */
+const FINANCE_SUBPAGES: { to: string; label: string; Icon: React.ElementType }[] = [
+  { to: "/finance/accounts", label: "Kasa & Banka", Icon: TbBuildingBank },
+  { to: "/finance/cheques", label: "Çek & Senet", Icon: TbReceipt2 },
+  { to: "/finance/receivables", label: "Alacak & Borç", Icon: TbScale },
+  { to: "/finance/statement", label: "Cari Ekstre", Icon: TbFileInvoice },
+];
+
+/** Finans üst menüsü: Panel · Hareketler (+ açık olan detay ekranı) */
 export function FinanceNav({ actions }: { actions?: React.ReactNode }) {
   const { pathname } = useLocation();
+  const sub = FINANCE_SUBPAGES.find((p) => pathname.startsWith(p.to));
+  const pill = (active: boolean) =>
+    clsx(
+      "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
+      active
+        ? "bg-primary-500 font-bold text-white shadow-xs shadow-primary-500/25"
+        : "border border-gray-200 bg-white text-gray-700 shadow-xs hover:border-gray-300 hover:bg-gray-50 dark:border-dark-700 dark:bg-dark-800 dark:text-dark-200 dark:hover:border-dark-600 dark:hover:bg-dark-700",
+    );
   return (
     <div className="flex flex-col gap-2 border-b border-gray-200/80 pb-2 dark:border-dark-700/80 sm:flex-row sm:items-center sm:justify-between">
       <div className="hide-scrollbar flex items-center gap-1.5 overflow-x-auto">
-        {FINANCE_TABS.filter((t) => t.id !== "transfer").map(({ id, label, to, Icon }) => {
-          const active = pathname.startsWith(to);
+        {FINANCE_TABS.map(({ id, label, to, Icon }) => {
+          const active = !sub && (id === "dashboard" ? pathname === "/finance" : pathname.startsWith(to));
           return (
-            <Link
-              key={id}
-              to={to}
-              className={clsx(
-                "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
-                active
-                  ? "bg-primary-500 font-bold text-white shadow-xs shadow-primary-500/25"
-                  : "border border-gray-200 bg-white text-gray-700 shadow-xs hover:border-gray-300 hover:bg-gray-50 dark:border-dark-700 dark:bg-dark-800 dark:text-dark-200 dark:hover:border-dark-600 dark:hover:bg-dark-700",
-              )}
-            >
+            <Link key={id} to={to} className={pill(active)}>
               <Icon className={clsx("size-4 shrink-0", active ? "text-white" : "text-gray-500 dark:text-dark-400")} />
               <span>{label}</span>
             </Link>
           );
         })}
+        {sub && (
+          <>
+            <span className="px-0.5 text-gray-300 dark:text-dark-500">/</span>
+            <span className={pill(true)}>
+              <sub.Icon className="size-4 shrink-0 text-white" />
+              <span>{sub.label}</span>
+            </span>
+          </>
+        )}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
     </div>

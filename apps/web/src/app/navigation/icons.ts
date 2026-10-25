@@ -27,8 +27,6 @@ import {
   TbTransfer,
   TbHeartHandshake,
   TbUserPlus,
-  TbSteeringWheel,
-  TbFileDollar,
   TbArrowsDiff,
   TbReceipt2,
   TbScale,
@@ -60,6 +58,7 @@ export const navigationIcons: Record<string, ElementType> = {
   contracts: TbContract,
   transfers: TbTransfer,
   cashBank: TbCoins,
+  financeDashboard: TbLayoutDashboard,
   financeMovements: TbArrowsDiff,
   cheques: TbReceipt2,
   receivables: TbScale,
@@ -80,6 +79,4 @@ export const navigationIcons: Record<string, ElementType> = {
   // CRM & Satış
   crm: TbHeartHandshake,
   leads: TbUserPlus,
-  testDrives: TbSteeringWheel,
-  quotes: TbFileDollar,
 };

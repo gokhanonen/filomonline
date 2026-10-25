@@ -11,9 +11,12 @@ import type {
   FinanceModule,
   FinanceMovement,
   FinanceMovementType,
+  FinanceDashboard,
   FinanceSummary,
   FxRates,
   InvoiceSide,
+  LedgerPage,
+  LedgerView,
   OpenInvoice,
   OperationResult,
   PaymentInput,
@@ -21,6 +24,30 @@ import type {
   Statement,
   TransferInput,
 } from "@/@types/finance";
+
+// ---- Panel / birleşik akış ----
+
+export async function getFinanceDashboard(): Promise<FinanceDashboard> {
+  const { data } = await axios.get<FinanceDashboard>("/finance/dashboard");
+  return data;
+}
+
+export interface LedgerParams {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  view?: LedgerView;
+  accountId?: string;
+  cashRegisterId?: string;
+  chequeId?: string;
+  from?: string;
+  to?: string;
+}
+
+export async function getLedger(params: LedgerParams = {}): Promise<LedgerPage> {
+  const { data } = await axios.get<LedgerPage>("/finance/ledger", { params });
+  return data;
+}
 
 // ---- Özet / kur ----
 

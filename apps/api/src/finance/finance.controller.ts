@@ -8,6 +8,7 @@ import { FinanceService } from "./finance.service";
 import { LedgerService } from "./ledger.service";
 import { ChequesService } from "./cheques.service";
 import { FxService } from "./fx.service";
+import { OverviewService } from "./overview.service";
 import {
   ChequeBounceDto,
   ChequeCollectDto,
@@ -17,6 +18,7 @@ import {
   PaymentDto,
   PosSettlementDto,
   QueryChequesDto,
+  QueryLedgerDto,
   QueryMovementsDto,
   QueryOpenInvoicesDto,
   QueryStatementDto,
@@ -33,9 +35,23 @@ export class FinanceController {
     private readonly ledger: LedgerService,
     private readonly cheques: ChequesService,
     private readonly fx: FxService,
+    private readonly overview: OverviewService,
   ) {}
 
-  // ---- Özet / kur ----
+  // ---- Panel / birleşik akış / özet / kur ----
+
+  @RequirePermissions("finance.read")
+  @Get("dashboard")
+  dashboard(@CompanyId() companyId: string, @CurrentUser() user: AuthUser) {
+    return this.overview.dashboard(companyId, user);
+  }
+
+  /** Hareketler + satış/alış/kira faturaları + masraflar tek akışta */
+  @RequirePermissions("finance.read")
+  @Get("ledger")
+  ledgerFeed(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Query() q: QueryLedgerDto) {
+    return this.overview.feed(companyId, user, q);
+  }
 
   @RequirePermissions("finance.read")
   @Get("summary")

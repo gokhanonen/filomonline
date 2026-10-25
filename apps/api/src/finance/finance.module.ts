@@ -5,11 +5,12 @@ import { FinanceService } from "./finance.service";
 import { LedgerService } from "./ledger.service";
 import { ChequesService } from "./cheques.service";
 import { FxService } from "./fx.service";
+import { OverviewService } from "./overview.service";
 
 @Module({
   imports: [ActivityModule],
   controllers: [FinanceController],
-  providers: [FinanceService, LedgerService, ChequesService, FxService],
+  providers: [FinanceService, LedgerService, ChequesService, FxService, OverviewService],
   exports: [FinanceService, LedgerService],
 })
 export class FinanceModule {}

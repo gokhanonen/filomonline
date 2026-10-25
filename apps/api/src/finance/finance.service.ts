@@ -21,6 +21,7 @@ import {
   TransferDto,
   UpdateFinanceAccountDto,
 } from "./dto/finance.dto";
+import { softDeleteData } from "../prisma/soft-delete";
 
 type Tx = Prisma.TransactionClient;
 
@@ -62,8 +63,13 @@ const TYPE_LABEL: Partial<Record<FinanceMovementType, string>> = {
   CHEQUE_ISSUED: "Çek/Senet Verildi",
 };
 
-/** İç transfer tipleri: aylık giriş/çıkış özetine katılmaz */
-const INTERNAL_TYPES: FinanceMovementType[] = ["TRANSFER", "POS_SETTLEMENT", "CARD_PAYMENT", "CHEQUE_COLLECTED", "CHEQUE_PAID"];
+/**
+ * Nakit akışı: kasa/banka/POS modüllerindeki gerçek para hareketi.
+ * Kendi hesaplarımız arası aktarımlar (virman, POS→banka) sayılmaz; KK ödemesi ve
+ * çek tahsil/ödemesinin banka bacağı gerçek nakit olduğundan sayılır.
+ */
+export const CASH_MODULES: FinanceModule[] = ["CASH", "BANK", "POS"];
+export const NON_CASH_TYPES: FinanceMovementType[] = ["TRANSFER", "POS_SETTLEMENT"];
 
 export const fmtTry = (n: number) => `${n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺`;
 
@@ -304,7 +310,7 @@ export class FinanceService {
     if (moves || linked || cheques) {
       throw new BadRequestException("Bu hesaba bağlı hareket, POS/kart ya da çek bulunduğundan silinemez. Pasife alabilirsiniz.");
     }
-    await this.prisma.cashRegister.delete({ where: { id } });
+    await this.prisma.cashRegister.update({ where: { id }, data: { ...softDeleteData(), isActive: false } });
     return { success: true };
   }
 
@@ -320,7 +326,7 @@ export class FinanceService {
     const [monthFlows, chequeGroups, receivable, payable] = await Promise.all([
       this.prisma.financeMovement.groupBy({
         by: ["direction"],
-        where: { companyId, date: { gte: monthStart }, module: { in: ["CASH", "BANK", "POS"] }, type: { notIn: INTERNAL_TYPES } },
+        where: { companyId, date: { gte: monthStart }, module: { in: CASH_MODULES }, type: { notIn: NON_CASH_TYPES } },
         _sum: { amountTry: true },
       }),
       this.prisma.cheque.groupBy({
@@ -591,8 +597,10 @@ export class FinanceService {
         }
       }
 
-      await tx.financeMovement.deleteMany({ where: { companyId, groupId } });
-      if (deleteCheques.length) await tx.cheque.deleteMany({ where: { id: { in: deleteCheques } } });
+      // Silme yok: işlem ve (yalnız bu işlemle doğan) çek gizlenir; eşleştirmeleri hesaplarda yok sayılır
+      const now = new Date();
+      await tx.financeMovement.updateMany({ where: { companyId, groupId }, data: { deletedAt: now } });
+      if (deleteCheques.length) await tx.cheque.updateMany({ where: { id: { in: deleteCheques } }, data: { deletedAt: now } });
       for (const accountId of new Set(moves.map((m) => m.accountId).filter(Boolean) as string[])) {
         await this.ledger.recomputeAccountBalance(tx, companyId, accountId);
       }

@@ -9,6 +9,7 @@ import { navigation } from "@/app/navigation";
 import { Accordion } from "@/components/ui";
 import { isRouteActive } from "@/utils/isRouteActive";
 import { Group } from "./Group";
+import { MenuItem } from "./Group/MenuItem";
 
 // ----------------------------------------------------------------------
 
@@ -52,9 +53,18 @@ export function Menu() {
       className="h-full overflow-x-hidden pb-6"
     >
       <Accordion value={expanded} onChange={setExpanded} className="space-y-1">
-        {navigation.map((nav) => (
-          <Group key={nav.id} data={nav} />
-        ))}
+        {navigation.map((nav, idx) => {
+          if (nav.type === "item") {
+            const prev = navigation[idx - 1];
+            const isFirstItemInBlock = !prev || prev.type !== "item";
+            return (
+              <div key={nav.id} className={isFirstItemInBlock ? "pt-3" : "pt-1"}>
+                <MenuItem data={nav} />
+              </div>
+            );
+          }
+          return <Group key={nav.id} data={nav} />;
+        })}
       </Accordion>
     </SimpleBar>
   );

@@ -196,3 +196,13 @@ export class QueryOpenInvoicesDto {
   @IsOptional() @IsIn(["RECEIVABLE", "PAYABLE"]) side?: "RECEIVABLE" | "PAYABLE";
   @IsOptional() @IsIn(["true", "false"]) overdue?: string;
 }
+
+export class QueryLedgerDto extends PaginationDto {
+  /** Sekme: ALL | IN | OUT | TRANSFER | SALES | PURCHASE | EXPENSE */
+  @IsOptional() @IsIn(["ALL", "IN", "OUT", "TRANSFER", "SALES", "PURCHASE", "EXPENSE"]) view?: string;
+  @IsOptional() @IsString() accountId?: string;
+  @IsOptional() @IsString() cashRegisterId?: string;
+  @IsOptional() @IsString() chequeId?: string;
+  @IsOptional() @IsDateString() from?: string;
+  @IsOptional() @IsDateString() to?: string;
+}
