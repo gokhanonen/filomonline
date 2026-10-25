@@ -63,7 +63,7 @@ export default function TestDrivesPage() {
               Deneme Sürüşleri & Randevular
             </h2>
             <p className="text-sm text-gray-500 dark:text-dark-300">
-              Müşteri adayları ile planlanan araç deneme sürüşü randevuları ve sürüş değerlendirmeleri
+              Potansiyel müşteriler ile planlanan araç deneme sürüşü randevuları ve sürüş değerlendirmeleri
             </p>
           </div>
 
@@ -129,7 +129,7 @@ export default function TestDrivesPage() {
                       </div>
 
                       <div>
-                        <div className="text-tiny font-medium text-gray-400">Müşteri Adayı</div>
+                        <div className="text-tiny font-medium text-gray-400">Potansiyel Müşteri</div>
                         <div className="text-xs font-semibold text-gray-900 dark:text-dark-50">
                           {td.lead?.fullName}
                         </div>

@@ -78,7 +78,7 @@ export function NewLeadModal({ open, onClose, onSuccess }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) {
-      toast.error("Lütfen müşteri adayı adını ve soyadını girin.");
+      toast.error("Lütfen potansiyel müşteri adını ve soyadını girin.");
       return;
     }
 
@@ -99,7 +99,7 @@ export function NewLeadModal({ open, onClose, onSuccess }: Props) {
       onSuccess();
       onClose();
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Aday kaydedilirken hata oluştu.");
+      toast.error(err?.response?.data?.message || "Potansiyel kaydedilirken hata oluştu.");
     } finally {
       setLoading(false);
     }
@@ -144,7 +144,7 @@ export function NewLeadModal({ open, onClose, onSuccess }: Props) {
             onChange={(e) => setEmail(e.target.value)}
           />
           <Select
-            label="Aday Kaynağı"
+            label="Potansiyel Kaynağı"
             data={sourceOptions}
             value={source}
             onChange={(e) => setSource(e.target.value as LeadSource)}
@@ -229,7 +229,7 @@ export function NewLeadModal({ open, onClose, onSuccess }: Props) {
             Vazgeç
           </Button>
           <Button type="submit" color="primary" disabled={loading}>
-            {loading ? <Spinner className="size-4" /> : "Adayı Kaydet"}
+            {loading ? <Spinner className="size-4" /> : "Potansiyeli Kaydet"}
           </Button>
         </div>
       </form>

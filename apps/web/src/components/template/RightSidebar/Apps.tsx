@@ -50,7 +50,7 @@ const apps: AppItem[] = [
   {
     id: "crm",
     Icon: UserPlusIcon,
-    title: "CRM / Aday",
+    title: "CRM / Potansiyel",
     color: "success",
     to: "/crm/leads",
   },

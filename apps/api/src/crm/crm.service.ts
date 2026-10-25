@@ -38,7 +38,7 @@ export class CrmService {
   }
 
   // =========================================================================
-  // LEAD (Potansiyel Müşteri / Aday)
+  // LEAD (Potansiyel Müşteri)
   // =========================================================================
 
   async listLeads(companyId: string, q?: QueryLeadsDto) {
@@ -191,7 +191,7 @@ export class CrmService {
             userId,
             userName,
             type: "NOTE",
-            title: "Aday Oluşturuldu",
+            title: "Potansiyel Oluşturuldu",
             content: `Potansiyel alıcı sisteme kaydedildi. Kaynak: ${dto.source || "Doğrudan Ziyaret"}`,
           },
         },
@@ -217,7 +217,7 @@ export class CrmService {
       companyId,
       type: "LEAD_NEW",
       title: "Yeni Potansiyel Alıcı",
-      description: `${lead.fullName} sisteme müşteri adayı olarak eklendi.`,
+      description: `${lead.fullName} sisteme potansiyel müşteri olarak eklendi.`,
       entityType: "lead",
       entityId: lead.id,
       userId,
@@ -325,7 +325,7 @@ export class CrmService {
         leadId,
         type: "NOTE",
         title: "İlgilenilen Araç Eklendi",
-        content: `${vehicle.plate} (${vehicle.brandName} ${vehicle.modelName}) adayın ilgi listesine eklendi.`,
+        content: `${vehicle.plate} (${vehicle.brandName} ${vehicle.modelName}) potansiyelin ilgi listesine eklendi.`,
       },
     });
 
@@ -685,7 +685,7 @@ export class CrmService {
     const lead = await this.getLead(companyId, leadId);
 
     if (lead.status === LeadStatus.CONVERTED || lead.convertedAccountId) {
-      throw new BadRequestException("Bu aday zaten müşteriye (cariye) dönüştürülmüştür.");
+      throw new BadRequestException("Bu potansiyel zaten müşteriye (cariye) dönüştürülmüştür.");
     }
 
     // Yeni Account (Cari) oluştur
@@ -725,7 +725,7 @@ export class CrmService {
         userId,
         userName,
         type: "CONVERTED",
-        title: "Aday Müşteriye Dönüştürüldü 🎉",
+        title: "Potansiyel Müşteriye Dönüştürüldü 🎉",
         content: `Potansiyel alıcı başarıyla Cari Müşteri olarak sisteme kaydedildi. Cari ID: ${account.id}`,
       },
     });
@@ -772,7 +772,7 @@ export class CrmService {
 
     const prompt = `
 Sen FilomOnline sisteminde çalışan profesyonel ve müşteri odaklı bir otomotiv satış danışmanısın.
-Müşteri Adayı Bilgileri:
+Potansiyel Müşteri Bilgileri:
 - Ad Soyad: ${lead.fullName}
 - Telefon: ${lead.phone || "Belirtilmemiş"}
 

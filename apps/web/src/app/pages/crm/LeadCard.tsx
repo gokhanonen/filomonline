@@ -94,7 +94,7 @@ export function LeadCard({ lead, onSelect, onRefresh }: Props) {
           </div>
         </div>
 
-        {/* Başlık (Aday Adı & Durum Rozeti) */}
+        {/* Başlık (Potansiyel Müşteri Adı & Durum Rozeti) */}
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-sm font-bold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1 dark:text-dark-50">
             {lead.fullName}

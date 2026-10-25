@@ -165,11 +165,11 @@ export function KanbanView({ leads, onSelectLead, onRefresh }: Props) {
                 </span>
               </div>
 
-              {/* Aday Kartları */}
+              {/* Potansiyel Kartları */}
               <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto min-h-[140px]">
                 {stageLeads.length === 0 ? (
                   <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-gray-200 py-10 text-tiny text-gray-400 dark:border-dark-700">
-                    Bu aşamada aday yok
+                    Bu aşamada potansiyel yok
                   </div>
                 ) : (
                   stageLeads.map((lead) => {

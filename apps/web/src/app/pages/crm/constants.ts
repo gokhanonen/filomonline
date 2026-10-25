@@ -14,7 +14,7 @@ export const LEAD_STATUS_CONFIG: Record<
   }
 > = {
   NEW: {
-    label: "Yeni Aday",
+    label: "Yeni Potansiyel",
     color: "primary",
     description: "Sisteme yeni girmiş potansiyel alıcı",
   },

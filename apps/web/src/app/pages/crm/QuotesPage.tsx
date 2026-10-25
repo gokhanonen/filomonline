@@ -62,7 +62,7 @@ export default function QuotesPage() {
               </span>
             </div>
             <p className="text-sm text-gray-500 dark:text-dark-300">
-              Müşteri adayları için oluşturulan araç teklifleri ve onay durumları
+              Potansiyel müşteriler için oluşturulan araç teklifleri ve onay durumları
             </p>
           </div>
 
@@ -95,7 +95,7 @@ export default function QuotesPage() {
                 <thead className="border-b border-gray-150 bg-gray-50/70 text-tiny font-bold uppercase tracking-wider text-gray-500 dark:border-dark-700 dark:bg-dark-850 dark:text-dark-300">
                   <tr>
                     <th className="px-4 py-3">Teklif No</th>
-                    <th className="px-4 py-3">Müşteri Adayı</th>
+                    <th className="px-4 py-3">Potansiyel Müşteri</th>
                     <th className="px-4 py-3">Araç</th>
                     <th className="px-4 py-3 text-right">Teklif Tutarı</th>
                     <th className="px-4 py-3">Ödeme Şekli</th>

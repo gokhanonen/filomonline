@@ -57,10 +57,10 @@ export function LeadCardGrid({ leads, onSelectLead, onRefresh }: Props) {
           <SparklesIcon className="size-6" />
         </div>
         <h3 className="text-sm font-bold text-gray-900 dark:text-dark-50">
-          Kriterlere Uygun Aday Bulunamadı
+          Kriterlere Uygun Potansiyel Bulunamadı
         </h3>
         <p className="mt-1 text-xs text-gray-500 dark:text-dark-300 max-w-sm">
-          Arama kriterlerinizi değiştirebilir veya sağ üstteki "+" butonuyla yeni aday ekleyebilirsiniz.
+          Arama kriterlerinizi değiştirebilir veya sağ üstteki "+" butonuyla yeni potansiyel ekleyebilirsiniz.
         </p>
       </div>
     );
@@ -85,7 +85,7 @@ export function LeadCardGrid({ leads, onSelectLead, onRefresh }: Props) {
         <div ref={sentinelRef} className="flex justify-center py-6">
           <div className="flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-xs dark:bg-dark-750 dark:text-dark-200">
             <Spinner className="size-4" />
-            <span>Daha fazla aday yükleniyor ({displayedCount} / {leads.length})...</span>
+            <span>Daha fazla potansiyel yükleniyor ({displayedCount} / {leads.length})...</span>
           </div>
         </div>
       )}
@@ -94,7 +94,7 @@ export function LeadCardGrid({ leads, onSelectLead, onRefresh }: Props) {
       {!hasMore && leads.length > BATCH_SIZE && (
         <div className="flex justify-center py-4 text-center">
           <span className="text-xs text-gray-400 dark:text-dark-400">
-            Toplam <strong>{leads.length}</strong> aday listelendi • Tüm kayıtlar yüklendi ✨
+            Toplam <strong>{leads.length}</strong> potansiyel listelendi • Tüm kayıtlar yüklendi ✨
           </span>
         </div>
       )}

@@ -26,7 +26,7 @@ export const navigation: NavigationTree[] = [
     title: "CRM",
     icon: "crm",
     childs: [
-      { id: "leads", type: "item", path: "/crm/leads", title: "Adaylar", icon: "leads" },
+      { id: "leads", type: "item", path: "/crm/leads", title: "Potansiyeller", icon: "leads" },
       { id: "test-drives", type: "item", path: "/crm/test-drives", title: "Deneme Sürüşleri", icon: "testDrives" },
       { id: "quotes", type: "item", path: "/crm/quotes", title: "Teklifler", icon: "quotes" },
     ],

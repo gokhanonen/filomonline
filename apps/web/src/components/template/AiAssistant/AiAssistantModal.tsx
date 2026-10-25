@@ -282,7 +282,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
     }
   }, [prompt, selectedImage, docTypeHint]);
 
-  // Aksiyon 1: Ehliyet ile CRM Aday Müşteri Aç
+  // Aksiyon 1: Ehliyet ile CRM Potansiyel Müşteri Aç
   const handleOpenLead = () => {
     if (!result?.data?.license) return;
     const l = result.data.license;
@@ -298,7 +298,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
 
     onClose();
     navigate("/crm/leads?openNew=1");
-    toast.success("Ehliyet bilgileri CRM Aday formuna aktarıldı.");
+    toast.success("Ehliyet bilgileri CRM Potansiyel formuna aktarıldı.");
   };
 
   // Aksiyon 2: Ehliyet ile Cari Hesap Aç
@@ -593,11 +593,11 @@ export function AiAssistantModal({ open, onClose }: Props) {
                 <button
                   type="button"
                   onClick={() => {
-                    setPrompt("Ehliyet belgesi fotoğrafından müşteri ve potansiyel aday kartı aç");
+                    setPrompt("Ehliyet belgesi fotoğrafından müşteri ve potansiyel kartı aç");
                   }}
                   className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs text-gray-700 transition-colors hover:border-primary-500 hover:bg-primary-50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-700 dark:text-dark-200 dark:hover:border-primary-400 dark:hover:text-primary-300"
                 >
-                  🪪 Ehliyetten Aday / Müşteri Kartı Aç
+                  🪪 Ehliyetten Potansiyel / Müşteri Kartı Aç
                 </button>
                 <button
                   type="button"
@@ -697,7 +697,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
                       className="h-8 gap-1.5 rounded-lg px-3 text-xs"
                     >
                       <UserPlusIcon className="size-4" />
-                      <span>CRM Aday Müşteri Aç</span>
+                      <span>CRM Potansiyel Müşteri Aç</span>
                     </Button>
                     <Button
                       type="button"

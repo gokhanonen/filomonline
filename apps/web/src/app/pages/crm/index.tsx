@@ -112,11 +112,11 @@ export default function CrmPage() {
                 CRM & Satış Yönetimi
               </h2>
               <span className="rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-bold text-primary-600 dark:bg-primary-950/40 dark:text-primary-300">
-                {totalCount} Aday
+                {totalCount} Potansiyel
               </span>
             </div>
             <p className="text-sm text-gray-500 dark:text-dark-300">
-              Araç alıcı adayları, deneme sürüşü randevuları, teklif hazırlama ve müşteri kazanımı
+              Araç alıcı potansiyelleri, deneme sürüşü randevuları, teklif hazırlama ve müşteri kazanımı
             </p>
           </div>
 
@@ -125,8 +125,8 @@ export default function CrmPage() {
             isIcon
             className="size-9.5 rounded-lg shrink-0 shadow-xs"
             onClick={() => setShowNewLeadModal(true)}
-            title="Yeni Aday Ekle"
-            aria-label="Yeni Aday Ekle"
+            title="Yeni Potansiyel Ekle"
+            aria-label="Yeni Potansiyel Ekle"
           >
             <PlusIcon className="size-5" />
           </Button>
@@ -196,7 +196,7 @@ export default function CrmPage() {
           <div className="flex flex-1 flex-wrap items-center gap-2">
             <div className="w-full sm:w-64">
               <Input
-                placeholder="Aday adı, telefon, plaka ara..."
+                placeholder="Potansiyel adı, telefon, plaka ara..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 prefix={<MagnifyingGlassIcon className="size-4 text-gray-400" />}

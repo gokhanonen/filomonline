@@ -114,7 +114,7 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
       const data = await getLead(leadId);
       setLead(data);
     } catch {
-      toast.error("Aday bilgileri yüklenemedi.");
+      toast.error("Potansiyel bilgileri yüklenemedi.");
       onClose();
     } finally {
       setLoading(false);
@@ -151,7 +151,7 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
     setIsAddingVehicle(true);
     try {
       await addInterestedVehicle(leadId, selectedAddVehicleId);
-      toast.success("Araç adayın listesine eklendi.");
+      toast.success("Araç potansiyelin listesine eklendi.");
       setSelectedAddVehicleId("");
       loadData();
       onRefresh();
@@ -307,7 +307,7 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
         city: convCity.trim() || undefined,
         address: convAddress.trim() || undefined,
       });
-      toast.success("Aday başarıyla Cari Müşteri olarak sisteme aktarıldı!");
+      toast.success("Potansiyel başarıyla Cari Müşteri olarak sisteme aktarıldı!");
       setShowConvertModal(false);
       loadData();
       onRefresh();
@@ -318,13 +318,13 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
     }
   };
 
-  // Adayı Sil
+  // Potansiyeli Sil
   const handleDeleteLead = async () => {
     if (!confirm("Bu potansiyel alıcıyı ve tüm geçmişini silmek istediğinize emin misiniz?"))
       return;
     try {
       await deleteLead(leadId);
-      toast.success("Aday silindi.");
+      toast.success("Potansiyel silindi.");
       onClose();
       onRefresh();
     } catch {
@@ -424,7 +424,7 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                   color="neutral"
                   isIcon
                   onClick={handleDeleteLead}
-                  title="Adayı Sil"
+                  title="Potansiyeli Sil"
                 >
                   <TrashIcon className="size-4 text-error" />
                 </Button>
@@ -522,7 +522,7 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                 {/* Araç Kartları Listesi */}
                 {(!lead.interestedVehicles || lead.interestedVehicles.length === 0) ? (
                   <p className="py-10 text-center text-xs text-gray-400">
-                    Adayın ilgilendiği herhangi bir araç eklenmemiş. Yukarıdan stoktaki araçlardan seçebilirsiniz.
+                    Potansiyelin ilgilendiği herhangi bir araç eklenmemiş. Yukarıdan stoktaki araçlardan seçebilirsiniz.
                   </p>
                 ) : (
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -980,7 +980,7 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                 {/* Teklif Listesi */}
                 {(!lead.quotes || lead.quotes.length === 0) ? (
                   <p className="py-10 text-center text-xs text-gray-400">
-                    Aday için henüz teklif hazırlanmamış.
+                    Potansiyel için henüz teklif hazırlanmamış.
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -1169,7 +1169,7 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
         >
           <form onSubmit={handleConvert} className="space-y-4 pt-2">
             <p className="text-xs text-gray-600 dark:text-dark-300">
-              Bu işlem <strong>{lead?.fullName}</strong> için Cariler listesinde yeni bir resmi müşteri kaydı oluşturacak ve adayı &quot;Kazanıldı&quot; olarak işaretleyecektir.
+              Bu işlem <strong>{lead?.fullName}</strong> için Cariler listesinde yeni bir resmi müşteri kaydı oluşturacak ve potansiyeli &quot;Kazanıldı&quot; olarak işaretleyecektir.
             </p>
 
             <div className="grid grid-cols-2 gap-3">

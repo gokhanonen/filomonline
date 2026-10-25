@@ -505,6 +505,7 @@ export class ClaudeService {
       prompt.includes("kimlik") ||
       prompt.includes("müşteri") ||
       prompt.includes("cari") ||
+      prompt.includes("potansiyel") ||
       prompt.includes("aday");
 
     if (isEhliyet) {
@@ -524,7 +525,7 @@ export class ClaudeService {
       return {
         intent: "EHLIYET",
         title: "Ehliyet / Müşteri Belgesi Tespit Edildi",
-        summary: "Ehliyet belgesi başarıyla okundu: Burak Kaya (TC: 28491028472, B Sınıfı). Aday veya Cari olarak kaydedebilirsiniz.",
+        summary: "Ehliyet belgesi başarıyla okundu: Burak Kaya (TC: 28491028472, B Sınıfı). Potansiyel veya Cari olarak kaydedebilirsiniz.",
         data: { license },
         action: {
           type: "OPEN_LEAD_OR_ACCOUNT",
