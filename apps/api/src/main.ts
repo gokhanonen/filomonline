@@ -1,11 +1,15 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { json, urlencoded } from "express";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // Ters vekil (web-server.mjs / nginx) arkasında: X-Forwarded-For'a güven, req.ip gerçek istemci olsun.
+  // Not: DevOps zincirinin gerçek istemci IP'sini ilettiğinden emin olmalı (aksi halde IP bazlı limit tek IP'ye düşer).
+  app.set("trust proxy", 1);
 
   // Yüksek çözünürlüklü fotoğraflar ve AI OCR belgeleri için gövde boyutu limiti artırıldı (50MB)
   app.use(json({ limit: "50mb" }));

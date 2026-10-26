@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
 import { SkipCompany } from "../tenancy/skip-company.decorator";
@@ -45,6 +46,8 @@ export class QuoteShareController {
 @ApiTags("public")
 @Public()
 @SkipCompany()
+// Token tahminine karşı: IP başına 60 sn'de 40 istek
+@Throttle({ default: { limit: 40, ttl: 60_000 } })
 @Controller("public/quotes")
 export class PublicQuoteController {
   constructor(private readonly quotes: QuoteShareService) {}

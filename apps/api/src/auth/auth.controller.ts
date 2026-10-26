@@ -3,6 +3,9 @@ import type { Request } from "express";
 import { AuthService } from "./auth.service";
 import { CurrentUser } from "./decorators/current-user.decorator";
 import { Public } from "./decorators/public.decorator";
+import { Throttle } from "@nestjs/throttler";
+import { UseGuards } from "@nestjs/common";
+import { LoginThrottlerGuard } from "./guards/login-throttler.guard";
 import { SkipCompany } from "../tenancy/skip-company.decorator";
 import { AuthUser } from "./auth.types";
 import { LoginDto, RefreshDto, UpdateProfileDto } from "./dto/auth.dto";
@@ -12,6 +15,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  // Brute-force koruması: aynı e-postaya 5 dakikada en fazla 8 deneme (e-posta bazlı, IP'den bağımsız)
+  @UseGuards(LoginThrottlerGuard)
   @HttpCode(200)
   @Post("login")
   login(@Body() dto: LoginDto, @Req() req: Request) {
@@ -22,6 +27,8 @@ export class AuthController {
   }
 
   @Public()
+  // Token tahmini/suistimaline karşı: 5 dakikada 30 deneme (IP bazlı)
+  @Throttle({ default: { limit: 30, ttl: 300_000 } })
   @HttpCode(200)
   @Post("refresh")
   refresh(@Body() dto: RefreshDto, @Req() req: Request) {

@@ -10,6 +10,7 @@ import {
   Res,
   UseGuards,
 } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import type { Response } from "express";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
@@ -122,6 +123,7 @@ export class DocumentsController {
   // --- Demo Evrak Görünüm & Küçük Resim (SVG/HTML) ---
 
   @Public()
+  @Throttle({ default: { limit: 120, ttl: 60_000 } })
   @Get("thumb/:id")
   async renderThumb(@Param("id") id: string, @Res() res: Response) {
     const { ctx } = await this.documents.getDocumentWithVehicle(id);
@@ -132,6 +134,7 @@ export class DocumentsController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 120, ttl: 60_000 } })
   @Get("view/:id")
   async renderView(@Param("id") id: string, @Res() res: Response) {
     const { ctx } = await this.documents.getDocumentWithVehicle(id);

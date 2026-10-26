@@ -8,6 +8,7 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
 import { RequirePermissions } from "../tenancy/permissions.decorator";
@@ -265,6 +266,8 @@ export class VehiclesController {
   /** Login gerektirmeyen dışlink araç sayfası */
   @Public()
   @SkipCompany()
+  // Token tahminine karşı: IP başına 60 sn'de 40 istek
+  @Throttle({ default: { limit: 40, ttl: 60_000 } })
   @Get("public/:token")
   getPublicVehicle(@Param("token") token: string) {
     return this.vehicles.getPublicVehicleByToken(token);

@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { ConfigModule } from "@nestjs/config";
 import { PrismaModule } from "./prisma/prisma.module";
 import { AuthModule } from "./auth/auth.module";
@@ -36,6 +37,9 @@ import { MailModule } from "./mail/mail.module";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Genel güvenlik ağı: IP başına 60 sn'de 300 istek (zengin UI + sonsuz kaydırma için bol).
+    // Hassas uçlar (login, public token'lar) kendi daha sıkı @Throttle sınırını taşır.
+    ThrottlerModule.forRoot([{ name: "default", ttl: 60_000, limit: 300 }]),
     PrismaModule,
     RealtimeModule,
     ActivityModule,
@@ -67,6 +71,9 @@ import { MailModule } from "./mail/mail.module";
   ],
   controllers: [HealthController],
   providers: [
+    // Önce rate limit (kimlik doğrulamadan önce taşmaları durdurur),
+    // sonra JWT, sonra şirket bağlamı.
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
     // Varsayılan: tüm endpoint'ler JWT korumalı (@Public ile açılır),
     // ardından şirket bağlamı doğrulanır (@SkipCompany ile atlanır).
     { provide: APP_GUARD, useClass: JwtAuthGuard },
