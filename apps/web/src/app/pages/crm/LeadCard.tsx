@@ -135,28 +135,28 @@ export function LeadCard({ lead, onSelect, onRefresh }: Props) {
 
         {/* İlgilendiği Araç Bilgisi (Varsa) */}
         {primaryVehicle ? (
-          <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-gray-150 bg-gray-50/70 p-2 dark:border-dark-700 dark:bg-dark-850">
+          <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-gray-200/80 bg-gray-50/70 p-2.5 dark:border-dark-600 dark:bg-dark-850">
             {primaryVehicle.photos?.[0]?.url ? (
               <img
                 src={primaryVehicle.photos[0].thumbUrl || primaryVehicle.photos[0].url}
                 alt={primaryVehicle.plate}
-                className="size-11 rounded-lg object-cover shrink-0 border border-gray-200 dark:border-dark-700"
+                className="size-11 rounded-lg object-cover shrink-0 border border-gray-200 dark:border-dark-600"
               />
             ) : (
-              <div className="flex size-11 items-center justify-center rounded-lg bg-primary-100 text-primary-700 dark:bg-primary-950/60 dark:text-primary-300 shrink-0 font-bold text-xs">
+              <div className="flex size-11 items-center justify-center rounded-lg bg-primary-100 text-primary-700 dark:bg-primary-950/60 dark:text-primary-300 shrink-0 font-bold text-xs border border-primary-200/60 dark:border-primary-900/60">
                 {primaryVehicle.plate.slice(0, 2)}
               </div>
             )}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <span className="font-mono text-xs font-bold text-gray-900 dark:text-dark-100">
+                <span className="font-mono text-xs font-bold text-gray-900 dark:text-white">
                   {primaryVehicle.plate}
                 </span>
                 {primaryVehicle.year && (
-                  <span className="text-[11px] text-gray-400">({primaryVehicle.year})</span>
+                  <span className="text-[11px] text-gray-500 dark:text-dark-300">({primaryVehicle.year})</span>
                 )}
               </div>
-              <p className="truncate text-xs text-gray-600 dark:text-dark-300">
+              <p className="truncate text-xs text-gray-600 dark:text-dark-200">
                 {primaryVehicle.brandName} {primaryVehicle.modelName}
               </p>
               {primaryVehicle.saleAmount && (
@@ -167,7 +167,7 @@ export function LeadCard({ lead, onSelect, onRefresh }: Props) {
             </div>
           </div>
         ) : lead.budget ? (
-          <div className="mt-3 flex items-center gap-2 rounded-xl bg-gray-50 p-2 text-xs text-gray-700 dark:bg-dark-850 dark:text-dark-200">
+          <div className="mt-3 flex items-center gap-2 rounded-xl border border-gray-200/80 bg-gray-50/70 p-2.5 text-xs text-gray-700 dark:border-dark-600 dark:bg-dark-850 dark:text-dark-200">
             <BanknotesIcon className="size-4 text-emerald-500" />
             <span>
               Bütçe: <strong>{lead.budget.toLocaleString("tr-TR")} ₺</strong>
@@ -177,31 +177,31 @@ export function LeadCard({ lead, onSelect, onRefresh }: Props) {
 
         {/* Not Önizleme */}
         {lead.notes && (
-          <p className="mt-2.5 text-xs text-gray-500 dark:text-dark-400 line-clamp-2 leading-relaxed">
+          <p className="mt-2.5 text-xs text-gray-600 dark:text-dark-200 line-clamp-2 leading-relaxed">
             {lead.notes}
           </p>
         )}
       </div>
 
       {/* Kart Altı: Aktivite Sayaçları & Hızlı Aksiyon */}
-      <div className="mt-4 pt-3 border-t border-gray-150 dark:border-dark-700 flex items-center justify-between text-xs text-gray-500 dark:text-dark-400">
+      <div className="mt-4 pt-3 border-t border-gray-150 dark:border-dark-700 flex items-center justify-between text-xs text-gray-600 dark:text-dark-200">
         <div className="flex items-center gap-3">
           <span
-            className="flex items-center gap-1 text-[11px]"
+            className="flex items-center gap-1 text-[11px] font-medium text-gray-600 dark:text-dark-200"
             title={`${lead._count?.testDrives || 0} Test Sürüşü`}
           >
             <CalendarDaysIcon className="size-3.5 text-amber-500" />
             <span>{lead._count?.testDrives || 0}</span>
           </span>
           <span
-            className="flex items-center gap-1 text-[11px]"
+            className="flex items-center gap-1 text-[11px] font-medium text-gray-600 dark:text-dark-200"
             title={`${lead._count?.quotes || 0} Teklif`}
           >
             <DocumentTextIcon className="size-3.5 text-purple-500" />
             <span>{lead._count?.quotes || 0}</span>
           </span>
           <span
-            className="flex items-center gap-1 text-[11px]"
+            className="flex items-center gap-1 text-[11px] font-medium text-gray-600 dark:text-dark-200"
             title={`${lead._count?.activities || 0} Aktivite`}
           >
             <ChatBubbleLeftRightIcon className="size-3.5 text-blue-500" />

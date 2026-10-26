@@ -8,7 +8,7 @@ import {
 
 // Local Imports
 import { useEffect, useState } from "react";
-import { Button, ScrollShadow } from "@/components/ui";
+import { ScrollShadow } from "@/components/ui";
 import { useDisclosure } from "@/hooks";
 import VerticalSliderIcon from "@/assets/dualicons/vertical-slider.svg?react";
 import { getSummary, type ReportSummary } from "@/services/reportService";
@@ -27,14 +27,15 @@ export function RightSidebar() {
 
   return (
     <>
-      <Button
+      <button
+        type="button"
         onClick={open}
-        variant="flat"
-        isIcon
-        className="relative size-9 rounded-full"
+        className="group flex size-9 shrink-0 items-center justify-center rounded-full border border-gray-200/80 bg-gray-50/80 text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden dark:border-dark-600 dark:bg-dark-750/80 dark:text-dark-200 dark:hover:border-dark-500 dark:hover:bg-dark-700 dark:hover:text-dark-50 cursor-pointer"
+        title="Hızlı İşlemler & Raporlar"
+        aria-label="Hızlı İşlemler & Raporlar"
       >
-        <VerticalSliderIcon className="size-6" />
-      </Button>
+        <VerticalSliderIcon className="size-5 text-current transition-transform group-hover:scale-110" />
+      </button>
       <RightSidebarContent isOpen={isOpen} close={close} />
     </>
   );

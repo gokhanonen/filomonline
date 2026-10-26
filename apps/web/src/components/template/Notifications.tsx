@@ -165,17 +165,15 @@ export function Notifications() {
   };
 
   return (
-    <Popover className="relative flex">
+    <Popover className="relative flex items-center">
       <PopoverButton
-        as={Button}
-        variant="flat"
-        isIcon
-        className="relative size-9 rounded-full"
+        className="group relative flex size-9 shrink-0 items-center justify-center rounded-full border border-gray-200/80 bg-gray-50/80 text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden dark:border-dark-600 dark:bg-dark-750/80 dark:text-dark-200 dark:hover:border-dark-500 dark:hover:bg-dark-700 dark:hover:text-dark-50 cursor-pointer"
         title="Bildirimler"
+        aria-label="Bildirimler"
       >
-        <AlarmIcon className="size-6 text-gray-900 dark:text-dark-100" />
+        <AlarmIcon className="size-5 text-current transition-transform group-hover:rotate-12" />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex min-w-4.5 h-4.5 items-center justify-center rounded-full bg-error px-1 text-[10px] font-bold text-white shadow-xs">
+          <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white shadow-xs ring-2 ring-white dark:ring-dark-700">
             {unread > 99 ? "99+" : unread}
           </span>
         )}

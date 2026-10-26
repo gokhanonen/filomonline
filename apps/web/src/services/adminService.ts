@@ -87,3 +87,41 @@ export async function updateCurrentCompany(
   const { data } = await axios.patch<CompanyDetails>("/companies/current", patch);
   return data;
 }
+
+// --- Platform e-posta (SMTP) — yalnız süper admin ---
+
+export interface MailConfig {
+  isConfigured: boolean;
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string;
+  maskedPassword: string;
+  fromEmail: string;
+  fromName: string;
+}
+
+export interface MailConfigInput {
+  host?: string;
+  port?: number;
+  secure?: boolean;
+  username?: string;
+  password?: string;
+  fromEmail?: string;
+  fromName?: string;
+}
+
+export async function getMailConfig(): Promise<MailConfig> {
+  const { data } = await axios.get<MailConfig>("/admin/mail/config");
+  return data;
+}
+
+export async function updateMailConfig(input: MailConfigInput): Promise<MailConfig> {
+  const { data } = await axios.put<MailConfig>("/admin/mail/config", input);
+  return data;
+}
+
+export async function testMail(to?: string): Promise<{ success: boolean; sentTo: string | null; latencyMs: number }> {
+  const { data } = await axios.post("/admin/mail/test", { to: to || undefined });
+  return data;
+}

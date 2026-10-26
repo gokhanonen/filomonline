@@ -23,10 +23,10 @@ export function TableView({ leads, onSelectLead }: Props) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-150 bg-white shadow-2xs dark:border-dark-700 dark:bg-dark-800">
+    <div className="overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-2xs dark:border-dark-600 dark:bg-dark-800">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="border-b border-gray-150 bg-gray-50/70 text-tiny font-bold uppercase tracking-wider text-gray-500 dark:border-dark-700 dark:bg-dark-850 dark:text-dark-300">
+          <thead className="border-b border-gray-200/80 bg-gray-50/80 text-tiny font-bold uppercase tracking-wider text-gray-500 dark:border-dark-600 dark:bg-dark-850 dark:text-dark-200">
             <tr>
               <th className="px-4 py-3">Potansiyel Alıcı</th>
               <th className="px-4 py-3">İletişim</th>
@@ -39,7 +39,7 @@ export function TableView({ leads, onSelectLead }: Props) {
               <th className="px-4 py-3 text-right">Aksiyon</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-dark-700">
+          <tbody className="divide-y divide-gray-100 dark:divide-dark-600">
             {leads.map((lead) => {
               const statusCfg = LEAD_STATUS_CONFIG[lead.status];
               const sourceCfg = LEAD_SOURCE_CONFIG[lead.source];
@@ -151,7 +151,7 @@ export function TableView({ leads, onSelectLead }: Props) {
                   </td>
 
                   {/* Tarih */}
-                  <td className="px-4 py-3.5 text-tiny text-gray-500 dark:text-dark-400">
+                  <td className="px-4 py-3.5 text-tiny text-gray-500 dark:text-dark-300">
                     {new Date(lead.createdAt).toLocaleDateString("tr-TR")}
                   </td>
 

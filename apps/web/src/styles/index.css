@@ -106,10 +106,13 @@
   --color-dark-450: #383a41;
   --color-dark-500: #2a2c32;
   --color-dark-600: #232429;
+  --color-dark-650: #202126;
   --color-dark-700: #1c1d21;
   --color-dark-750: #1a1b1f;
   --color-dark-800: #15161a;
+  --color-dark-850: #111215;
   --color-dark-900: #0e0f11;
+  --color-dark-950: #070708;
 
   --color-primary-50: var(--color-indigo-50);
   --color-primary-100: var(--color-indigo-100);

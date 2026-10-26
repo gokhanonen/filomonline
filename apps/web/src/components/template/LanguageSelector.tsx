@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { useState } from "react";
 
 // Local Imports
-import { Button, Spinner } from "@/components/ui";
+import { Spinner } from "@/components/ui";
 import { useLocaleContext } from "@/app/contexts/locale/context";
 import { locales, LocaleCode } from "@/i18n/langs";
 
@@ -44,19 +44,18 @@ const LanguageSelector = () => {
   };
 
   return (
-    <Listbox as="div" value={locale} onChange={onLanguageSelect}>
-      <div className="relative">
+    <Listbox as="div" value={locale} onChange={onLanguageSelect} className="relative flex items-center">
+      <div className="relative flex items-center">
         <ListboxButton
-          as={Button}
-          variant="flat"
-          isIcon
-          className="size-9 rounded-full"
+          className="group flex size-9 shrink-0 items-center justify-center rounded-full border border-gray-200/80 bg-gray-50/80 transition-all hover:border-gray-300 hover:bg-gray-100 focus:outline-hidden dark:border-dark-600 dark:bg-dark-750/80 dark:hover:border-dark-500 dark:hover:bg-dark-700 cursor-pointer"
+          title="Dil Seçimi"
+          aria-label="Dil Seçimi"
         >
           {loading ? (
             <Spinner color="primary" className="size-5" />
           ) : (
             <img
-              className="size-6"
+              className="size-5 rounded-full object-cover shadow-xs transition-transform group-hover:scale-110"
               src={`/images/flags/svg/rounded/${locales[locale as LocaleCode].flag}.svg`}
               alt={locale}
             />

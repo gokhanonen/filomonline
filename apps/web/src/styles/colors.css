@@ -52,10 +52,13 @@
   --color-dark-450: #465675;
   --color-dark-500: #384766;
   --color-dark-600: #313e59;
+  --color-dark-650: #283752;
   --color-dark-700: #24314a;
   --color-dark-750: #222e45;
   --color-dark-800: #202b40;
+  --color-dark-850: #1c2537;
   --color-dark-900: #182030;
+  --color-dark-950: #111722;
 }
 
 [data-theme-dark="mirage"] {
@@ -67,10 +70,13 @@
   --color-dark-450: #293859;
   --color-dark-500: #1e2b47;
   --color-dark-600: #1a2640;
+  --color-dark-650: #142036;
   --color-dark-700: #101a2e;
   --color-dark-750: #0f1729;
   --color-dark-800: #0c1221;
+  --color-dark-850: #080d1a;
   --color-dark-900: #050a16;
+  --color-dark-950: #03060c;
 }
 
 [data-theme-dark="mint"] {
@@ -82,10 +88,13 @@
   --color-dark-450: #384954;
   --color-dark-500: #2a3942;
   --color-dark-600: #242f38;
+  --color-dark-650: #192730;
   --color-dark-700: #152129;
   --color-dark-750: #111b22;
   --color-dark-800: #0d161c;
+  --color-dark-850: #0b1318;
   --color-dark-900: #0a1014;
+  --color-dark-950: #060a0d;
 }
 
 [data-theme-dark="black"] {
@@ -97,10 +106,13 @@
   --color-dark-450: #333338;
   --color-dark-500: #242428;
   --color-dark-600: #1f1f21;
+  --color-dark-650: #171718;
   --color-dark-700: #131314;
   --color-dark-750: #0c0c0d;
   --color-dark-800: #080809;
+  --color-dark-850: #040405;
   --color-dark-900: #000000;
+  --color-dark-950: #000000;
 }
 
 [data-theme-dark="cinder"] {
@@ -112,10 +124,13 @@
   --color-dark-450: #383a41;
   --color-dark-500: #2a2c32;
   --color-dark-600: #232429;
+  --color-dark-650: #202126;
   --color-dark-700: #1c1d21;
   --color-dark-750: #1a1b1f;
   --color-dark-800: #15161a;
+  --color-dark-850: #111215;
   --color-dark-900: #0e0f11;
+  --color-dark-950: #070708;
 }
 
 [data-theme-primary="indigo"] {

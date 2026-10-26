@@ -51,6 +51,11 @@ export class QuickQuoteDto {
   @IsOptional() @IsBoolean() share?: boolean;
 }
 
+export class QuoteEmailDto {
+  /** Boşsa potansiyelin kayıtlı e-postası */
+  @IsOptional() @IsEmail() to?: string;
+}
+
 export class QuoteRespondDto {
   @IsIn(["ACCEPTED", "CALLBACK"]) response: "ACCEPTED" | "CALLBACK";
   @IsOptional() @IsString() @MaxLength(500) message?: string;

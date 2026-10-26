@@ -11,6 +11,7 @@ import {
   BoltIcon,
   EyeIcon,
   EyeSlashIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import clsx from "clsx";
@@ -33,12 +34,14 @@ import {
   type ClaudeConfigData,
   type TestClaudeResult,
 } from "@/services/aiService";
+import { getMailConfig } from "@/services/adminService";
+import { MailSettingsTab } from "./MailSettingsTab";
 
 export default function AdminConsolePage() {
   const { isSuperAdmin } = useAuthContext();
 
-  // Tab: "tenants" | "claude"
-  const [activeTab, setActiveTab] = useState<"tenants" | "claude">("tenants");
+  const [activeTab, setActiveTab] = useState<"tenants" | "claude" | "mail">("tenants");
+  const [mailConfigured, setMailConfigured] = useState<boolean | null>(null);
 
   // --- Şirket / Holding Durumu ---
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -104,6 +107,9 @@ export default function AdminConsolePage() {
     if (isSuperAdmin) {
       loadTenants();
       loadAiConfig();
+      getMailConfig()
+        .then((c) => setMailConfigured(c.isConfigured))
+        .catch(() => setMailConfigured(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuperAdmin]);
@@ -191,7 +197,7 @@ export default function AdminConsolePage() {
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-dark-50">Platform & Süper Admin Konsolu</h2>
             <p className="text-sm text-gray-500 dark:text-dark-300">
-              Holding/şirket organizasyonu ve Claude AI servis yapılandırması
+              Holding/şirket organizasyonu, Claude AI ve e-posta servis yapılandırması
             </p>
           </div>
 
@@ -225,6 +231,25 @@ export default function AdminConsolePage() {
                 <span className="size-2 rounded-full bg-success" title="Bağlantı Hazır" />
               ) : (
                 <span className="size-2 rounded-full bg-warning" title="Kurulum Bekliyor" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("mail")}
+              className={clsx(
+                "flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all",
+                activeTab === "mail"
+                  ? "bg-white text-gray-900 shadow-xs dark:bg-dark-700 dark:text-white"
+                  : "text-gray-600 hover:text-gray-900 dark:text-dark-300 dark:hover:text-white",
+              )}
+            >
+              <EnvelopeIcon className="size-4 text-primary-500" />
+              <span>E-posta (SMTP)</span>
+              {mailConfigured !== null && (
+                <span
+                  className={clsx("size-2 rounded-full", mailConfigured ? "bg-success" : "bg-warning")}
+                  title={mailConfigured ? "Tanımlı" : "Kurulum Bekliyor"}
+                />
               )}
             </button>
           </div>
@@ -525,6 +550,12 @@ export default function AdminConsolePage() {
                 </Card>
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === "mail" && (
+          <div className="mt-6">
+            <MailSettingsTab onStatus={setMailConfigured} />
           </div>
         )}
       </div>

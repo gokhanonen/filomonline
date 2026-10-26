@@ -77,11 +77,13 @@ export function Header() {
             )}
           />
         </div>
-        <AiAssistantButton />
-        <Notifications />
-        <RightSidebar />
-        <LanguageSelector />
-        <Profile />
+        <div className="flex items-center gap-2 shrink-0">
+          <AiAssistantButton />
+          <Notifications />
+          <RightSidebar />
+          <LanguageSelector />
+          <Profile />
+        </div>
       </div>
     </header>
   );

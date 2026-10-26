@@ -11,6 +11,7 @@ import {
   TbExternalLink,
   TbFileTypePdf,
   TbLinkOff,
+  TbMail,
   TbPlus,
   TbReceipt2,
   TbRefresh,
@@ -29,6 +30,7 @@ import {
   waPhone,
   type QuoteOptionType,
   type SharedQuote,
+  emailQuote,
 } from "@/services/quoteShareService";
 
 interface Props {
@@ -167,12 +169,26 @@ export function QuickQuoteModal({ open, onClose, vehicle }: Props) {
     await navigator.clipboard.writeText(shareUrl);
     toast.success("Link kopyalandı");
   };
+  const vehicleTitle = vehicle ? [vehicle.brandName, vehicle.modelName, vehicle.year].filter(Boolean).join(" ") : "";
+  const shareText = () =>
+    `Merhaba ${result!.lead.fullName.split(" ")[0]}, ${vehicleTitle} için size özel hazırladığımız teklifi aşağıdaki bağlantıdan inceleyebilirsiniz:\n${shareUrl}\n\nTeklif ${result!.validUntil ? new Date(result!.validUntil).toLocaleDateString("tr-TR") : ""} tarihine kadar geçerlidir.`;
   const whatsapp = () => {
-    if (!shareUrl || !result || !vehicle) return;
-    const title = [vehicle.brandName, vehicle.modelName, vehicle.year].filter(Boolean).join(" ");
-    const text = `Merhaba ${result.lead.fullName.split(" ")[0]}, ${title} için size özel hazırladığımız teklifi aşağıdaki bağlantıdan inceleyebilirsiniz:\n${shareUrl}\n\nTeklif ${result.validUntil ? new Date(result.validUntil).toLocaleDateString("tr-TR") : ""} tarihine kadar geçerlidir.`;
+    if (!shareUrl || !result) return;
     const phone = waPhone(result.lead.phone);
-    window.open(`https://wa.me/${phone ?? ""}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    window.open(`https://wa.me/${phone ?? ""}?text=${encodeURIComponent(shareText())}`, "_blank", "noopener");
+  };
+  // Sunucudan (platform SMTP hesabı, firma adıyla) gönderilir
+  const email = async (to: string) => {
+    if (!result) return false;
+    try {
+      const r = await emailQuote(result.id, to);
+      setResult(r);
+      toast.success(`Teklif ${r.emailedTo} adresine e-postayla gönderildi`);
+      return true;
+    } catch (err) {
+      toast.error([(err as { message?: string | string[] })?.message ?? "E-posta gönderilemedi"].flat().join(", "));
+      return false;
+    }
   };
   const runLink = async (fn: () => Promise<SharedQuote>, msg: string) => {
     try {
@@ -215,6 +231,7 @@ export function QuickQuoteModal({ open, onClose, vehicle }: Props) {
           shareUrl={shareUrl}
           onCopy={copy}
           onWhatsApp={whatsapp}
+          onEmail={email}
           onShare={() => runLink(() => shareQuote(result.id), "Müşteriye özel link oluşturuldu")}
           onRevoke={() => runLink(() => revokeQuoteLink(result.id), "Link kapatıldı; müşteri artık açamaz")}
           onClose={onClose}
@@ -373,6 +390,7 @@ function ResultPanel({
   shareUrl,
   onCopy,
   onWhatsApp,
+  onEmail,
   onShare,
   onRevoke,
   onClose,
@@ -381,10 +399,20 @@ function ResultPanel({
   shareUrl: string | null;
   onCopy: () => void;
   onWhatsApp: () => void;
+  onEmail: (to: string) => Promise<boolean>;
   onShare: () => void;
   onRevoke: () => void;
   onClose: () => void;
 }) {
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailTo, setEmailTo] = useState(quote.lead.email ?? "");
+  const [sending, setSending] = useState(false);
+  const sendEmail = async () => {
+    setSending(true);
+    if (await onEmail(emailTo.trim())) setEmailOpen(false);
+    setSending(false);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col items-center gap-1 text-center">
@@ -404,12 +432,30 @@ function ResultPanel({
               <TbCopy className="size-4" /> Kopyala
             </Button>
           </div>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
             <Action Icon={TbBrandWhatsapp} label="WhatsApp ile gönder" tone="text-green-600" onClick={onWhatsApp} />
+            <Action Icon={TbMail} label="E-posta ile gönder" tone="text-primary-600" onClick={() => setEmailOpen((o) => !o)} />
             <Action Icon={TbFileTypePdf} label="PDF indir" tone="text-error" onClick={() => window.open(`${shareUrl}?print=1`, "_blank", "noopener")} />
             <Action Icon={TbExternalLink} label="Müşteri gözüyle aç" tone="text-info" onClick={() => window.open(shareUrl, "_blank", "noopener")} />
             <Action Icon={TbLinkOff} label="Linki kapat" tone="text-gray-500" onClick={onRevoke} />
           </div>
+          {emailOpen && (
+            <div className="flex items-end gap-2 rounded-xl border border-primary-200 bg-primary-50/40 p-3 dark:border-primary-900/50 dark:bg-primary-950/20">
+              <Input
+                label="Alıcı e-posta"
+                type="email"
+                placeholder="musteri@ornek.com"
+                value={emailTo}
+                onChange={(e) => setEmailTo(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && emailTo.trim() && !sending && sendEmail()}
+                className="flex-1"
+                autoFocus
+              />
+              <Button color="primary" className="gap-1.5" disabled={!emailTo.trim() || sending} onClick={sendEmail}>
+                <TbMail className="size-4" /> {sending ? "Gönderiliyor..." : "Gönder"}
+              </Button>
+            </div>
+          )}
           <p className="text-center text-xs text-gray-400">
             Link müşteriye özeldir; araç satılınca, teklif süresi dolunca ya da siz kapatınca çalışmaz. Müşteri açtığında ve yanıt verdiğinde bildirim alırsınız.
           </p>

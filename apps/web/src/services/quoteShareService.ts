@@ -154,3 +154,9 @@ export function waPhone(phone?: string | null) {
   if (d.length === 10) return `90${d}`;
   return d;
 }
+
+/** Teklif linkini sunucudan (platform SMTP) e-postayla gönderir; `to` boşsa potansiyelin e-postası */
+export async function emailQuote(id: string, to?: string): Promise<SharedQuote & { emailedTo: string }> {
+  const { data } = await axios.post<SharedQuote & { emailedTo: string }>(`/crm/quotes/${id}/email`, { to: to || undefined });
+  return data;
+}

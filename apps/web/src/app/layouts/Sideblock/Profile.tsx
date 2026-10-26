@@ -70,14 +70,16 @@ export function Profile() {
   };
 
   return (
-    <Popover className="relative flex">
+    <Popover className="relative flex items-center">
       <PopoverButton
         as={Avatar}
         size={9}
         src={avatarUrl}
         role="button"
         initialColor="primary"
-        className="cursor-pointer"
+        className="cursor-pointer shrink-0 rounded-full ring-2 ring-transparent transition-all hover:ring-primary-500/50 hover:opacity-95 focus:outline-hidden"
+        title={user?.name ?? "Kullanıcı Profili"}
+        aria-label="Kullanıcı Profili"
       >
         {initialsOf(user?.name)}
       </PopoverButton>

@@ -6,7 +6,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Public } from "../auth/decorators/public.decorator";
 import { AuthUser } from "../auth/auth.types";
 import { QuoteShareService } from "./quote-share.service";
-import { QuickQuoteDto, QuoteRespondDto } from "./dto/quick-quote.dto";
+import { QuickQuoteDto, QuoteEmailDto, QuoteRespondDto } from "./dto/quick-quote.dto";
 
 @ApiTags("crm")
 @ApiBearerAuth()
@@ -28,6 +28,11 @@ export class QuoteShareController {
   @Post(":id/share")
   share(@CompanyId() companyId: string, @Param("id") id: string) {
     return this.quotes.share(companyId, id);
+  }
+
+  @Post(":id/email")
+  email(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Param("id") id: string, @Body() dto: QuoteEmailDto) {
+    return this.quotes.sendEmail(companyId, user, id, dto);
   }
 
   @Delete(":id/share")

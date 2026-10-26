@@ -31,6 +31,7 @@ import { AddressModule } from "./address/address.module";
 import { SearchModule } from "./search/search.module";
 import { CrmModule } from "./crm/crm.module";
 import { FinanceModule } from "./finance/finance.module";
+import { MailModule } from "./mail/mail.module";
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { FinanceModule } from "./finance/finance.module";
     RealtimeModule,
     ActivityModule,
     SettingsModule,
+    MailModule,
     AiModule,
     ChatModule,
     AuthModule,

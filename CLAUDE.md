@@ -64,6 +64,10 @@ Mimari kararlar ve tenant kuralları: `ARCHITECTURE.md` (ÖNCE ONU OKU).
 - Şemayı `prisma db push` ile DEĞİL migration ile değiştir (uzak DB, geçmiş kopmasın).
 - UI: menüde yalnız **Panel** (`/finance`, `GET /finance/dashboard`) ve **Hareketler** (`/finance/movements`, `GET /finance/ledger` — hareketler + satış/alış/kira faturaları + masraflar tek akış). Kasa & Banka / Çek / Alacak-Borç / Ekstre panelden açılır; `/invoices` ve `/expenses` Hareketler'e yönlenir. Yeni kayıt girişleri `FinanceActions` bileşeninde.
 
+## E-posta
+- Platform geneli tek SMTP hesabı: Süper Admin > E-posta (SMTP) sekmesi (`/admin/mail/*`, ayar `system` / `integrations.smtp`, şifre maskeli). Gönderim `MailService.send` (global `MailModule`); gönderen adı firma adı, `replyTo` gönderen kullanıcı.
+- Müşteriye giden linklerin kökü `WEB_URL` (yoksa `CORS_ORIGIN`'in ilki). Üretimde `WEB_URL` mutlaka tanımlanmalı.
+
 ## Komutlar
 ```bash
 npm run prisma:migrate   # şema değişikliği sonrası migration

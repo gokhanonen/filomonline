@@ -4,9 +4,11 @@ import { randomBytes } from "crypto";
 import { PrismaService } from "../prisma/prisma.service";
 import { ActivityService } from "../activity/activity.service";
 import { StorageService } from "../storage/storage.service";
+import { MailService } from "../mail/mail.service";
+import { quoteEmail } from "./quote-email";
 import { AuthUser } from "../auth/auth.types";
 import { resolveOption } from "./quote-calc";
-import { QuickQuoteDto, QuoteRespondDto } from "./dto/quick-quote.dto";
+import { QuickQuoteDto, QuoteEmailDto, QuoteRespondDto } from "./dto/quick-quote.dto";
 
 const OPTION_LABEL: Record<QuoteOptionType, string> = {
   CASH: "Peşin",
@@ -36,7 +38,13 @@ export class QuoteShareService {
     private readonly prisma: PrismaService,
     private readonly activity: ActivityService,
     private readonly storage: StorageService,
+    private readonly mail: MailService,
   ) {}
+
+  /** Müşteriye giden linklerin kökü (web uygulaması) */
+  private webOrigin() {
+    return (process.env.WEB_URL || process.env.CORS_ORIGIN?.split(",")[0] || "http://localhost:5173").replace(/\/+$/, "");
+  }
 
   private async nextQuoteNumber(companyId: string) {
     const prefix = `TKL-${new Date().getFullYear()}-`;
@@ -172,6 +180,53 @@ export class QuoteShareService {
       include: quoteInclude,
     });
     return this.serialize(updated);
+  }
+
+  /** Teklif linkini platform SMTP hesabından müşteriye e-postayla gönderir (link yoksa oluşturur) */
+  async sendEmail(companyId: string, user: AuthUser, id: string, dto: QuoteEmailDto) {
+    const shared = await this.share(companyId, id);
+    const to = dto.to?.trim() || shared.lead.email;
+    if (!to) throw new BadRequestException("Potansiyelin e-posta adresi yok; gönderilecek adresi yazın.");
+
+    const [company, sender] = await Promise.all([
+      this.prisma.company.findUnique({ where: { id: companyId }, select: { name: true, phone: true, email: true, address: true } }),
+      this.prisma.user.findUnique({ where: { id: user.id }, select: { name: true, email: true } }),
+    ]);
+    const v = shared.vehicle;
+    const vehicleTitle = [v.brandName, v.modelName, v.year].filter(Boolean).join(" ");
+    const mail = quoteEmail({
+      customerName: shared.lead.fullName,
+      quoteNumber: shared.quoteNumber,
+      vehicleTitle,
+      plate: v.plate,
+      offeredPrice: shared.offeredPrice,
+      options: shared.options,
+      validUntil: shared.validUntil,
+      link: `${this.webOrigin()}${shared.sharePath}`,
+      company: { name: company?.name ?? "", phone: company?.phone ?? null, email: company?.email ?? null, address: company?.address ?? null },
+      senderName: sender?.name ?? null,
+    });
+    // Müşteri yanıtlarsa satış danışmanına (yoksa firmaya) gider
+    await this.mail.send({ to, ...mail, fromName: company?.name, replyTo: sender?.email ?? company?.email });
+
+    // Potansiyelde e-posta yoksa yazılan adresi kaydet
+    if (!shared.lead.email) {
+      await this.prisma.lead.update({ where: { id: shared.lead.id }, data: { email: to } });
+    }
+    await this.prisma.leadActivity.create({
+      data: { leadId: shared.lead.id, userId: user.id, type: "QUOTE", title: "Teklif e-postayla gönderildi", content: `${shared.quoteNumber} → ${to}` },
+    });
+    void this.activity.log({
+      companyId,
+      userId: user.id,
+      type: "LEAD_UPDATE",
+      title: `Teklif e-postası: ${shared.lead.fullName}`,
+      description: `${shared.quoteNumber} numaralı teklif ${to} adresine gönderildi`,
+      entityType: "lead",
+      entityId: shared.lead.id,
+      link: "/crm/leads",
+    });
+    return { ...(await this.get(companyId, id)), emailedTo: to };
   }
 
   async revoke(companyId: string, id: string) {
