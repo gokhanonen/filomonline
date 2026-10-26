@@ -16,7 +16,8 @@ cleanup() { ssh -O exit -o ControlPath="${CS}" "${SSH_USER}@${SSH_HOST}" 2>/dev/
 trap cleanup EXIT
 
 echo "==> Sunucuya bağlanılıyor (${SSH_USER}@${SSH_HOST}) — şifre sorulursa gir"
-ssh ${SSH_OPTS} "${SSH_USER}@${SSH_HOST}" "sudo mkdir -p ${APP_DIR} && sudo chown -R ${SSH_USER}:${SSH_USER} ${APP_DIR}"
+# Klasörü hazırla (önceki kurulumdan zaten varsa sorun değil; sudo gerekmez)
+ssh ${SSH_OPTS} "${SSH_USER}@${SSH_HOST}" "mkdir -p ${APP_DIR}/apps/api 2>/dev/null || sudo mkdir -p ${APP_DIR}/apps/api"
 
 echo "==> Kod kopyalanıyor (rsync)"
 rsync -az --delete -e "ssh ${SSH_OPTS}" \
@@ -30,5 +31,6 @@ rsync -az -e "ssh ${SSH_OPTS}" \
   deploy/env/api.env.production "${SSH_USER}@${SSH_HOST}:${APP_DIR}/apps/api/.env"
 
 echo "==> Sunucuda kurulum çalışıyor (root/sudo ile, birkaç dakika)..."
-# -t: sudo şifre sorabilsin diye TTY ver
-ssh -t ${SSH_OPTS} "${SSH_USER}@${SSH_HOST}" "sudo bash ${APP_DIR}/deploy/_sunucu-kur.sh"
+echo "    (Not: 'password for tana:' çıkarsa aynı sunucu şifreni tekrar gir.)"
+# -tt: sudo şifre sorabilsin diye TTY'yi zorla ver
+ssh -tt ${SSH_OPTS} "${SSH_USER}@${SSH_HOST}" "sudo bash ${APP_DIR}/deploy/_sunucu-kur.sh"
