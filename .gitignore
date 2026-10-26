@@ -52,3 +52,10 @@ credentials*
 
 # Yerel araçlar (derlenmiş MinIO/mc binary'leri)
 tools/
+
+# Deploy sırları (örnek/şablon dosyaları hariç)
+deploy/config.env
+deploy/env/*
+!deploy/env/*.example
+# Üretim web build ayarı güvenli (yalnız göreli API yolu) — izinli
+!apps/web/.env.production

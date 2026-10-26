@@ -1,0 +1,31 @@
+# FilomOnline — MinIO (S3) ters vekil şablonu.
+# Değişkenler: ${S3_DOMAIN} ${MINIO_UPSTREAM}
+# Amaç: tarayıcı HTTPS sitedeyken foto/evrak'ı https://${S3_DOMAIN} üzerinden yükleyip indirsin
+# (http://IP:9000'e doğrudan erişim "mixed content" olarak engellenir).
+#
+# ÖNEMLİ: İmzalı (presigned) URL'ler ${S3_DOMAIN} host'u ve path-style yol üzerinden imzalanır.
+# İmza doğrulaması için nginx, Host başlığını OLDUĞU GİBİ (${S3_DOMAIN}) MinIO'ya iletmelidir.
+# Bu yüzden proxy_pass yolu DEĞİŞTİRMEZ ve `proxy_set_header Host $host` kullanılır.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${S3_DOMAIN};
+
+    # Büyük dosya yüklemeleri (PUT) — sınırsız ve tamponsuz
+    client_max_body_size 0;
+    proxy_request_buffering off;
+    proxy_buffering off;
+
+    location / {
+        proxy_pass http://${MINIO_UPSTREAM};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;            # imza bu host ile hesaplandı; değiştirme
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 300s;
+        proxy_read_timeout 300s;
+        chunked_transfer_encoding off;
+    }
+}
