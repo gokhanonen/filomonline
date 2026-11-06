@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# FilomOnline — TEK KOMUTLA KURULUM / GÜNCELLEME  (Nginx + HTTPS)
-# Kendi bilgisayarından (Mac) çalıştır:   bash deploy/deploy.sh
-# Sunucu şifresi birkaç kez sorulabilir; "tana" kullanıcısının şifresini gir.
+# FilomOnline — RUTİN DEPLOY (kesintisiz). Mac'ten:  bash deploy/deploy.sh
+#
+# Ne yapar: kodu rsync'ler → sunucuda npm ci + prisma migrate deploy + build +
+#           `pm2 startOrReload` (filomonline-web:5198, filomonline-api:5199).
+# Ne YAPMAZ: sudo / apt / nginx / certbot / SSL YOK; canlı pm2 süreçlerini SİLMEZ.
+#
+# ⚠️ MİMARİ SABİT: dış ters-proxy alan adını 22.6.102.180:5198'e yollar.
+#    filomonline-web (web-server.mjs) statik SPA'yı sunar + /api,/socket.io → :5199.
+#    Portları/isimleri DEĞİŞTİRME. İlk sunucu kurulumu (nginx/SSL) AYRI ve tek seferlik.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -15,22 +21,20 @@ SSH_OPTS="-p ${SSH_PORT:-22} -o ControlMaster=auto -o ControlPath=${CS} -o Contr
 cleanup() { ssh -O exit -o ControlPath="${CS}" "${SSH_USER}@${SSH_HOST}" 2>/dev/null || true; }
 trap cleanup EXIT
 
-echo "==> Sunucuya bağlanılıyor (${SSH_USER}@${SSH_HOST}) — şifre sorulursa gir"
-# Klasörü hazırla (önceki kurulumdan zaten varsa sorun değil; sudo gerekmez)
-ssh ${SSH_OPTS} "${SSH_USER}@${SSH_HOST}" "mkdir -p ${APP_DIR}/apps/api 2>/dev/null || sudo mkdir -p ${APP_DIR}/apps/api"
-
-echo "==> Kod kopyalanıyor (rsync)"
+echo "==> Kod kopyalanıyor (rsync) → ${SSH_USER}@${SSH_HOST}:${APP_DIR}"
 rsync -az --delete -e "ssh ${SSH_OPTS}" \
   --exclude ".git" --exclude "node_modules" --exclude "dist" \
   --exclude "logs" --exclude "scratchpad" --exclude "secure.md" \
   --exclude "apps/api/.env" --exclude "apps/api/dist" --exclude "apps/web/dist" \
   ./ "${SSH_USER}@${SSH_HOST}:${APP_DIR}/"
 
-echo "==> Üretim ayar dosyası yükleniyor (apps/api/.env)"
+echo "==> Üretim ayarı yükleniyor (apps/api/.env)"
 rsync -az -e "ssh ${SSH_OPTS}" \
   deploy/env/api.env.production "${SSH_USER}@${SSH_HOST}:${APP_DIR}/apps/api/.env"
 
-echo "==> Sunucuda kurulum çalışıyor (root/sudo ile, birkaç dakika)..."
-echo "    (Not: 'password for tana:' çıkarsa aynı sunucu şifreni tekrar gir.)"
-# -tt: sudo şifre sorabilsin diye TTY'yi zorla ver
-ssh -tt ${SSH_OPTS} "${SSH_USER}@${SSH_HOST}" "sudo bash ${APP_DIR}/deploy/_sunucu-kur.sh"
+echo "==> Sunucuda uygulama adımları (npm ci → migrate → build → pm2 reload) — KESİNTİSİZ"
+# _app-steps.sh kendi içinde nvm'yi yükler; sudo gerekmez.
+ssh ${SSH_OPTS} "${SSH_USER}@${SSH_HOST}" "cd ${APP_DIR} && bash deploy/_app-steps.sh"
+
+echo "==> Bitti. (filomonline-web :5198 + filomonline-api :5199 kesintisiz yenilendi)"
+echo "    Doğrulama: https://${DOMAIN}/login ve https://${DOMAIN}/api/v1/health → 200 beklenir."

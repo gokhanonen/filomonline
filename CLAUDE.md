@@ -89,6 +89,20 @@ Mimari kararlar ve tenant kuralları: `ARCHITECTURE.md` (ÖNCE ONU OKU).
 - **Hassas-veri gizleme sunucu-tarafında** (`FieldVisibilityInterceptor`, global `APP_INTERCEPTOR`): scope'u OLMAYAN kullanıcıdan ilgili alanlar API yanıtından çıkarılır (iç içe dahil). Alan eşlemesi `SCOPE_FIELDS`, muaf yollar `VISIBILITY_SKIP_PREFIXES` (auth/users/credits/subscription…). Yeni hassas alan eklerken `SCOPE_FIELDS`'e yaz.
 - UI: Kullanıcılar sayfası > "Roller & Yetkiler" (izin matrisi + şablon) ve kullanıcı formunda firma başına çoklu rol chip'leri + tek-tık hassas-veri switch'leri (grant/deny hesabı otomatik).
 
+## Deploy (DEĞİŞMEZ KURALLAR — her deploy'da uygula)
+- **Sunucu mimarisi (SABİT):** Dış ters-proxy (başka makine, 176.53.80.x) alan adını `22.6.102.180:5198`'e yönlendirir.
+  - `filomonline-web` (pm2) = `deploy/web-server.mjs`, **:5198** — statik SPA (`apps/web/dist`) + `/api`,`/socket.io` → `:5199` proxy.
+  - `filomonline-api` (pm2) = `apps/api/dist/main.js`, **PORT=5199** (NestJS).
+  - **Port/isimleri ASLA değiştirme** (3001'e taşıma yok). Dış proxy bunlara göre ayarlı; değişirse site 502 olur.
+- **Rutin deploy = `bash deploy/deploy.sh`** (Mac'ten). Yaptığı: rsync → `npm ci` → `prisma migrate deploy` → build → `pm2 startOrReload deploy/ecosystem.config.cjs`. **Kesintisiz.**
+- **ASLA `pm2 delete filomonline-web filomonline-api` yapma.** Yalnız `startOrReload` ile yerinde yenile. Silmek canlıyı düşürür → 502.
+- **Sudo / apt / nginx / certbot / SSL rutin deploy'da YOK.** Bunlar tek seferlik sunucu kurulumu (`deploy/_sunucu-kur.sh`) / DevOps işidir. Rutin deploy altyapıya dokunmaz.
+- **DB migration'ları yalnız ekleme olmalı** (ADD COLUMN / yeni tablo). `migrate deploy` uzak prod DB'ye uygular; eski kodu bozmamalı. `db push` yok.
+- **node/npm nvm altında** (`~/.nvm/.../v24`). Script'ler login-olmayan SSH'ta çalışsın diye `_app-steps.sh` nvm'yi kendisi yükler.
+- SSH parolası `secure.md` içindeki **"Sunucu (SSH)" bölümündeki** "Şifre:" (ilk "Şifre:" DEĞİL — o başka bir hesap). Sudo için `ssh -tt` (TTY) gerekir.
+- **Deploy sonrası doğrula:** `https://filomonline.com/login` ve `/api/v1/health` → 200; `pm2 ls` → filomonline-web + filomonline-api online.
+- Kontör/abonelik/rol gibi yeni modül verisi gerekiyorsa deploy sonrası sunucuda ilgili seed'i çalıştır (`seed-credits.ts`, `seed-roles.ts`). Idempotent.
+
 ## Komutlar
 ```bash
 npm run prisma:migrate   # şema değişikliği sonrası migration
