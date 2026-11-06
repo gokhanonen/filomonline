@@ -71,11 +71,16 @@ export class CompanyGuard implements CanActivate {
     user.companyId = companyId;
     user.activeTenantId = membership.company.tenantId;
     user.isCompanyAdmin = membership.isAdmin;
-    user.permissions = [
-      ...new Set(
-        membership.roles.flatMap((r) => (r.permissions as string[]) ?? []),
-      ),
-    ];
+
+    // Etkin izin = (rollerin birleşimi ∪ bireysel grant) − bireysel deny. Deny kazanır.
+    const fromRoles = membership.roles.flatMap(
+      (r) => (r.permissions as string[]) ?? [],
+    );
+    const grant = (membership.permissionsGrant as string[] | null) ?? [];
+    const deny = new Set((membership.permissionsDeny as string[] | null) ?? []);
+    user.permissions = [...new Set([...fromRoles, ...grant])].filter(
+      (p) => !deny.has(p),
+    );
     return true;
   }
 }

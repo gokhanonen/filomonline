@@ -110,9 +110,10 @@ export class CrmController {
   @Post("leads/ai-message")
   generateAiMessage(
     @CompanyId() companyId: string,
+    @CurrentUser() user: AuthUser,
     @Body() dto: GenerateAiMessageDto,
   ) {
-    return this.crm.generateAiMessage(companyId, dto);
+    return this.crm.generateAiMessage(companyId, dto, user.id);
   }
 
   // --- TEST DRIVES ---

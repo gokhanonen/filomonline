@@ -33,6 +33,10 @@ import { SearchModule } from "./search/search.module";
 import { CrmModule } from "./crm/crm.module";
 import { FinanceModule } from "./finance/finance.module";
 import { MailModule } from "./mail/mail.module";
+import { PaymentsModule } from "./payments/payments.module";
+import { CreditsModule } from "./credits/credits.module";
+import { SubscriptionModule } from "./subscription/subscription.module";
+import { AuthzModule } from "./authz/authz.module";
 
 @Module({
   imports: [
@@ -45,6 +49,10 @@ import { MailModule } from "./mail/mail.module";
     ActivityModule,
     SettingsModule,
     MailModule,
+    PaymentsModule,
+    CreditsModule,
+    SubscriptionModule,
+    AuthzModule,
     AiModule,
     ChatModule,
     AuthModule,

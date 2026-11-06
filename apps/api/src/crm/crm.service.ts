@@ -6,6 +6,7 @@ import {
 import { PrismaService } from "../prisma/prisma.service";
 import { ActivityService } from "../activity/activity.service";
 import { ClaudeService } from "../ai/claude.service";
+import { CreditsService } from "../credits/credits.service";
 import {
   ConvertLeadDto,
   CreateLeadActivityDto,
@@ -26,6 +27,7 @@ export class CrmService {
     private readonly prisma: PrismaService,
     private readonly activity: ActivityService,
     private readonly claude: ClaudeService,
+    private readonly credits: CreditsService,
   ) {}
 
   private async getUserName(userId?: string): Promise<string | undefined> {
@@ -158,6 +160,7 @@ export class CrmService {
                 year: true,
               },
             },
+            options: { orderBy: { sortOrder: "asc" } },
           },
           orderBy: { createdAt: "desc" },
         },
@@ -593,6 +596,13 @@ export class CrmService {
     const year = new Date().getFullYear();
     const quoteNumber = `TKL-${year}-${String(count + 1).padStart(4, "0")}`;
 
+    const DEFAULT_OPTION_LABELS: Record<string, string> = {
+      CASH: "Peşin",
+      LOAN: "Kredili",
+      TRADE_IN: "Takaslı",
+      INSTALLMENT: "Senetli / Taksitli",
+    };
+
     const quote = await this.prisma.leadQuote.create({
       data: {
         companyId,
@@ -607,11 +617,31 @@ export class CrmService {
         terms: dto.terms,
         notes: dto.notes,
         status: QuoteStatus.DRAFT,
+        ...(dto.options && dto.options.length
+          ? {
+              options: {
+                create: dto.options.map((o, i) => ({
+                  type: o.type,
+                  label: o.label || DEFAULT_OPTION_LABELS[o.type] || o.type,
+                  price: o.price,
+                  downPayment: o.downPayment,
+                  tradeInValue: o.tradeInValue,
+                  tradeInNote: o.tradeInNote,
+                  installmentCount: o.installmentCount,
+                  monthlyPayment: o.monthlyPayment,
+                  interestRate: o.interestRate,
+                  note: o.note,
+                  sortOrder: i,
+                })),
+              },
+            }
+          : {}),
       },
       include: {
         vehicle: {
           select: { plate: true, brandName: true, modelName: true, year: true },
         },
+        options: { orderBy: { sortOrder: "asc" } },
       },
     });
 
@@ -818,7 +848,11 @@ export class CrmService {
   // CLAUDE AI İLE TEKLİF & MESAJ TASLAĞI OLUŞTURMA
   // =========================================================================
 
-  async generateAiMessage(companyId: string, dto: GenerateAiMessageDto) {
+  async generateAiMessage(
+    companyId: string,
+    dto: GenerateAiMessageDto,
+    userId?: string,
+  ) {
     const lead = await this.getLead(companyId, dto.leadId);
     const vehicle = await this.prisma.vehicle.findFirst({
       where: { id: dto.vehicleId, companyId },
@@ -858,11 +892,28 @@ Müşteriye WhatsApp veya SMS üzerinden gönderilecek;
 Sadece mesaj metnini yaz, başında veya sonunda gereksiz açıklama ekleme.
 `;
 
-    const aiRes = await this.claude.sendMessage({
-      prompt,
-      system: "Sen Türkiye'deki seçkin galeriler için çalışan profesyonel bir otomotiv satış ve müşteri ilişkileri uzmanısın.",
-      maxTokens: 500,
+    // İşlem başına 1 kontör: harca → üret → hata olursa iade et.
+    await this.credits.spend(companyId, userId, {
+      operation: "crm.ai_message",
+      referenceType: "lead",
+      referenceId: dto.leadId,
     });
+    let aiRes;
+    try {
+      aiRes = await this.claude.sendMessage({
+        prompt,
+        system: "Sen Türkiye'deki seçkin galeriler için çalışan profesyonel bir otomotiv satış ve müşteri ilişkileri uzmanısın.",
+        maxTokens: 500,
+      });
+    } catch (err) {
+      await this.credits.refund(companyId, userId, {
+        operation: "crm.ai_message",
+        referenceType: "lead",
+        referenceId: dto.leadId,
+        note: "AI mesajı üretilemedi — iade",
+      });
+      throw err;
+    }
 
     return {
       message: aiRes.text,

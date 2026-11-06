@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
 // Local Imports
-import Logo from "@/assets/appLogo.svg?react";
+import { BrandLogo } from "@/components/shared/BrandLogo";
 import { Button, Card, Checkbox, Input, InputErrorMsg } from "@/components/ui";
 import { useAuthContext } from "@/app/contexts/auth/context";
 import { AuthFormValues, schema } from "./schema";
@@ -39,7 +39,7 @@ export default function SignIn() {
       <main className="min-h-100vh grid w-full grow grid-cols-1 place-items-center">
         <div className="w-full max-w-[26rem] p-4 sm:px-5">
           <div className="text-center">
-            <Logo className="mx-auto size-16" />
+            <BrandLogo variant="full" className="mx-auto h-16 w-auto shadow-sm" />
             <div className="mt-4">
               <h2 className="text-2xl font-semibold text-gray-600 dark:text-dark-100">
                 Welcome Back

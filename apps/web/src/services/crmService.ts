@@ -72,6 +72,23 @@ export interface LeadTestDrive {
   vehicle?: { id: string; plate: string; brandName?: string; modelName?: string; year?: number };
 }
 
+export type QuoteOptionType = "CASH" | "LOAN" | "TRADE_IN" | "INSTALLMENT";
+
+export interface LeadQuoteOption {
+  id?: string;
+  type: QuoteOptionType;
+  label?: string;
+  price: number;
+  downPayment?: number;
+  tradeInValue?: number;
+  tradeInNote?: string;
+  installmentCount?: number;
+  monthlyPayment?: number;
+  interestRate?: number;
+  note?: string;
+  sortOrder?: number;
+}
+
 export interface LeadQuote {
   id: string;
   companyId: string;
@@ -87,6 +104,7 @@ export interface LeadQuote {
   terms?: string;
   notes?: string;
   createdAt: string;
+  options?: LeadQuoteOption[];
   lead?: { id: string; fullName: string; phone?: string; email?: string };
   vehicle?: { id: string; plate: string; brandName?: string; modelName?: string; year?: number; km?: number };
 }
@@ -175,6 +193,7 @@ export interface CreateQuoteDto {
   validUntil?: string;
   terms?: string;
   notes?: string;
+  options?: Omit<LeadQuoteOption, "id" | "sortOrder">[];
 }
 
 export interface UpdateQuoteDto extends Partial<CreateQuoteDto> {

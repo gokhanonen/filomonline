@@ -87,6 +87,8 @@ export class AuthService {
           select: {
             isDefault: true,
             isAdmin: true,
+            permissionsGrant: true,
+            permissionsDeny: true,
             company: {
               select: { id: true, name: true, logoUrl: true, isActive: true },
             },

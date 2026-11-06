@@ -12,6 +12,8 @@ import {
   EyeIcon,
   EyeSlashIcon,
   EnvelopeIcon,
+  WalletIcon,
+  TrophyIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import clsx from "clsx";
@@ -36,11 +38,15 @@ import {
 } from "@/services/aiService";
 import { getMailConfig } from "@/services/adminService";
 import { MailSettingsTab } from "./MailSettingsTab";
+import { CreditsAdminTab } from "./CreditsAdminTab";
+import { SubscriptionAdminTab } from "./SubscriptionAdminTab";
 
 export default function AdminConsolePage() {
   const { isSuperAdmin } = useAuthContext();
 
-  const [activeTab, setActiveTab] = useState<"tenants" | "claude" | "mail">("tenants");
+  const [activeTab, setActiveTab] = useState<
+    "tenants" | "claude" | "mail" | "credits" | "subscription"
+  >("tenants");
   const [mailConfigured, setMailConfigured] = useState<boolean | null>(null);
 
   // --- Şirket / Holding Durumu ---
@@ -251,6 +257,32 @@ export default function AdminConsolePage() {
                   title={mailConfigured ? "Tanımlı" : "Kurulum Bekliyor"}
                 />
               )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("credits")}
+              className={clsx(
+                "flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all",
+                activeTab === "credits"
+                  ? "bg-white text-gray-900 shadow-xs dark:bg-dark-700 dark:text-white"
+                  : "text-gray-600 hover:text-gray-900 dark:text-dark-300 dark:hover:text-white",
+              )}
+            >
+              <WalletIcon className="size-4 text-primary-500" />
+              <span>Kontör Paketleri</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("subscription")}
+              className={clsx(
+                "flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all",
+                activeTab === "subscription"
+                  ? "bg-white text-gray-900 shadow-xs dark:bg-dark-700 dark:text-white"
+                  : "text-gray-600 hover:text-gray-900 dark:text-dark-300 dark:hover:text-white",
+              )}
+            >
+              <TrophyIcon className="size-4 text-primary-500" />
+              <span>Abonelik & Planlar</span>
             </button>
           </div>
         </div>
@@ -556,6 +588,18 @@ export default function AdminConsolePage() {
         {activeTab === "mail" && (
           <div className="mt-6">
             <MailSettingsTab onStatus={setMailConfigured} />
+          </div>
+        )}
+
+        {activeTab === "credits" && (
+          <div className="mt-6">
+            <CreditsAdminTab />
+          </div>
+        )}
+
+        {activeTab === "subscription" && (
+          <div className="mt-6">
+            <SubscriptionAdminTab />
           </div>
         )}
       </div>

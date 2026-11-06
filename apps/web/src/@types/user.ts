@@ -18,6 +18,8 @@ export interface Membership {
   isAdmin: boolean;
   company: CompanySummary;
   roles: RoleSummary[];
+  permissionsGrant?: string[] | null;
+  permissionsDeny?: string[] | null;
 }
 
 export interface User {

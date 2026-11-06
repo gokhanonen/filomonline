@@ -6,6 +6,7 @@ import { NotFoundException } from "@nestjs/common";
 
 import { ActivityService } from "../activity/activity.service";
 import { ClaudeService } from "../ai/claude.service";
+import { QuotaService } from "../subscription/quota.service";
 
 describe("VehiclesService - Public Share Links", () => {
   let service: VehiclesService;
@@ -49,6 +50,7 @@ describe("VehiclesService - Public Share Links", () => {
         { provide: StorageService, useValue: mockStorage },
         { provide: ActivityService, useValue: mockActivity },
         { provide: ClaudeService, useValue: {} },
+        { provide: QuotaService, useValue: { assertCanCreate: jest.fn() } },
       ],
     }).compile();
 

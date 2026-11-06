@@ -15,6 +15,7 @@ import {
 } from "./dto/invoice.dto";
 
 import { ActivityService } from "../activity/activity.service";
+import { QuotaService } from "../subscription/quota.service";
 import { calculateSalesRegime } from "./sales-regime.util";
 import { softDeleteData } from "../prisma/soft-delete";
 
@@ -26,6 +27,7 @@ export class InvoicesService {
     private readonly prisma: PrismaService,
     private readonly vehicles: VehiclesService,
     private readonly activity: ActivityService,
+    private readonly quota: QuotaService,
   ) {}
 
   private async assertVehicle(companyId: string, vehicleId: string) {
@@ -103,6 +105,8 @@ export class InvoicesService {
   // ---- Satış Faturası ----
 
   async createSales(companyId: string, dto: CreateSalesInvoiceDto) {
+    // Abonelik kotası: (Free) tamamlanan alış+satış işlemi tetikleyicisi (grace ile).
+    await this.quota.assertCanCreate(companyId, "sale");
     const vehicle = await this.prisma.vehicle.findFirst({
       where: { id: dto.vehicleId, companyId },
     });

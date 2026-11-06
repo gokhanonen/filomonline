@@ -16,9 +16,16 @@ import {
 import { StarIcon as StarSolid } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 
-import { Button, Card, Input, Select, Spinner, Tag, Badge, Textarea } from "@/components/ui";
+import { Button, Card, Input, NumericInput, Select, Spinner, Tag, Badge, Textarea } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
 import { SearchableSelect } from "@/components/shared/SearchableSelect";
+import {
+  QuoteOptionsEditor,
+  QuoteOptionsSummary,
+  draftsToPayload,
+  makeOptionDraft,
+  type QuoteOptionDraft,
+} from "@/components/shared/QuoteOptionsEditor";
 import {
   getLead,
   updateLead,
@@ -115,11 +122,12 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
   // Yeni Teklif Formu
   const [showNewQuote, setShowNewQuote] = useState(false);
   const [quoteVehicleId, setQuoteVehicleId] = useState("");
-  const [quoteVehiclePrice, setQuoteVehiclePrice] = useState("");
-  const [quoteOfferedPrice, setQuoteOfferedPrice] = useState("");
+  const [quoteVehiclePrice, setQuoteVehiclePrice] = useState<number | undefined>();
+  const [quoteOfferedPrice, setQuoteOfferedPrice] = useState<number | undefined>();
   const [quotePaymentType, setQuotePaymentType] = useState("Nakit");
   const [quoteValidUntil, setQuoteValidUntil] = useState("");
   const [quoteTerms, setQuoteTerms] = useState("");
+  const [quoteOptions, setQuoteOptions] = useState<QuoteOptionDraft[]>([]);
   const [isSavingQuote, setIsSavingQuote] = useState(false);
 
   // Claude AI Teklif Mesajı
@@ -291,19 +299,22 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
     }
     setIsSavingQuote(true);
     try {
+      const optionsPayload = draftsToPayload(quoteOptions);
       await createQuote({
         leadId,
         vehicleId: quoteVehicleId,
-        vehiclePrice: Number(quoteVehiclePrice) || Number(quoteOfferedPrice),
-        offeredPrice: Number(quoteOfferedPrice),
+        vehiclePrice: quoteVehiclePrice ?? quoteOfferedPrice ?? 0,
+        offeredPrice: quoteOfferedPrice ?? 0,
         paymentType: quotePaymentType,
         validUntil: quoteValidUntil ? new Date(quoteValidUntil).toISOString() : undefined,
         terms: quoteTerms.trim() || undefined,
+        options: optionsPayload.length ? optionsPayload : undefined,
       });
       toast.success("Teklif başarıyla hazırlandı.");
       setShowNewQuote(false);
-      setQuoteOfferedPrice("");
+      setQuoteOfferedPrice(undefined);
       setQuoteTerms("");
+      setQuoteOptions([]);
       loadData();
       onRefresh();
     } catch (err: any) {
@@ -693,8 +704,9 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                               type="button"
                               onClick={() => {
                                 setQuoteVehicleId(v.id);
-                                setQuoteVehiclePrice(v.saleAmount ? String(v.saleAmount) : "");
-                                setQuoteOfferedPrice(v.saleAmount ? String(v.saleAmount) : "");
+                                setQuoteVehiclePrice(v.saleAmount ? Number(v.saleAmount) : undefined);
+                                setQuoteOfferedPrice(v.saleAmount ? Number(v.saleAmount) : undefined);
+                                setQuoteOptions([]);
                                 setShowNewQuote(true);
                                 setActiveTab("quotes");
                               }}
@@ -963,32 +975,29 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                             const found = stockVehicles.find((v) => v.id === vId);
                             const price = found?.saleAmount ?? found?.listPrice;
                             if (price) {
-                              setQuoteVehiclePrice(String(price));
-                              setQuoteOfferedPrice(String(price));
+                              setQuoteVehiclePrice(Number(price));
+                              setQuoteOfferedPrice(Number(price));
                             }
                           }}
                           onClear={() => {
                             setQuoteVehicleId("");
-                            setQuoteVehiclePrice("");
-                            setQuoteOfferedPrice("");
+                            setQuoteVehiclePrice(undefined);
+                            setQuoteOfferedPrice(undefined);
                           }}
                           placeholder="Araç arayıp seçin..."
                         />
-                        <Input
+                        <NumericInput
                           label="Liste Fiyatı (TL)"
-                          type="number"
-                          value={quoteVehiclePrice}
-                          onChange={(e) => setQuoteVehiclePrice(e.target.value)}
+                          value={quoteVehiclePrice ?? null}
+                          onValueChange={setQuoteVehiclePrice}
                         />
                       </div>
 
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <Input
+                        <NumericInput
                           label="Teklif Edilen Fiyat (TL) *"
-                          type="number"
-                          value={quoteOfferedPrice}
-                          onChange={(e) => setQuoteOfferedPrice(e.target.value)}
-                          required
+                          value={quoteOfferedPrice ?? null}
+                          onValueChange={setQuoteOfferedPrice}
                         />
                         <Select
                           label="Ödeme Türü"
@@ -1007,6 +1016,36 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                           value={quoteValidUntil}
                           onChange={(e) => setQuoteValidUntil(e.target.value)}
                         />
+                      </div>
+
+                      {/* Çok ödeme seçenekli teklif (müşteri hepsini yan yana görür) */}
+                      <div className="rounded-xl border border-dashed border-purple-200 p-3 dark:border-purple-900/50">
+                        <div className="mb-2 flex items-center justify-between">
+                          <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                            Ödeme Seçenekleri (opsiyonel)
+                          </span>
+                          {quoteOptions.length === 0 && (quoteOfferedPrice ?? 0) > 0 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setQuoteOptions([makeOptionDraft("CASH", quoteOfferedPrice)])
+                              }
+                              className="text-tiny font-semibold text-primary-600 hover:underline dark:text-primary-400"
+                            >
+                              + Peşin seçeneğiyle başla
+                            </button>
+                          )}
+                        </div>
+                        <QuoteOptionsEditor
+                          value={quoteOptions}
+                          onChange={setQuoteOptions}
+                          basePrice={quoteOfferedPrice}
+                        />
+                        {quoteOptions.length === 0 && (
+                          <p className="mt-1 text-tiny text-gray-400">
+                            Eklemezseniz teklif tek fiyatlı kaydedilir.
+                          </p>
+                        )}
                       </div>
 
                       <Textarea
@@ -1169,6 +1208,10 @@ export function LeadDetailModal({ leadId, open, onClose, onRefresh }: Props) {
                               />
                             </div>
                           </div>
+
+                          {q.options && q.options.length > 0 && (
+                            <QuoteOptionsSummary options={q.options} />
+                          )}
 
                           {q.terms && (
                             <p className="mt-2 text-tiny italic text-gray-600 dark:text-dark-300">

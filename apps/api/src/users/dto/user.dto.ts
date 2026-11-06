@@ -20,6 +20,19 @@ export class MembershipDto {
   @IsString({ each: true })
   roleIds?: string[];
 
+  // Bireysel ince ayar: rollerin üstüne eklenen / çıkarılan izin-scope anahtarları.
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsString({ each: true })
+  permissionsGrant?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsString({ each: true })
+  permissionsDeny?: string[];
+
   @IsOptional() @IsBoolean() isAdmin?: boolean;
   @IsOptional() @IsBoolean() isDefault?: boolean;
 }

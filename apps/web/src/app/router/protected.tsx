@@ -157,6 +157,18 @@ const protectedRoutes: RouteObject = {
           }),
         },
         {
+          path: "billing",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/billing")).default,
+          }),
+        },
+        {
+          path: "subscription",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/subscription")).default,
+          }),
+        },
+        {
           path: "company",
           lazy: async () => ({
             Component: (await import("@/app/pages/company")).default,

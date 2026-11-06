@@ -94,7 +94,12 @@ function permissionsFor(user: User, companyId: string | null): string[] {
   ) as Membership | undefined;
   if (!membership) return [];
   if (membership.isAdmin) return ["*"];
-  return [...new Set(membership.roles.flatMap((r) => r.permissions))];
+  // Etkin izin = (roller ∪ grant) − deny. Deny kazanır.
+  const grant = membership.permissionsGrant ?? [];
+  const deny = new Set(membership.permissionsDeny ?? []);
+  return [
+    ...new Set([...membership.roles.flatMap((r) => r.permissions), ...grant]),
+  ].filter((p) => !deny.has(p));
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

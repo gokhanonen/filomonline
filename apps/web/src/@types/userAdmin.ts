@@ -10,7 +10,9 @@ export interface AdminMembership {
   isAdmin: boolean;
   isDefault: boolean;
   company: { id: string; name: string };
-  roles: { id: string; name: string }[];
+  roles: { id: string; name: string; permissions?: string[] }[];
+  permissionsGrant?: string[] | null;
+  permissionsDeny?: string[] | null;
 }
 
 export interface AdminUser {
@@ -29,6 +31,8 @@ export interface AdminUser {
 export interface MembershipInput {
   companyId: string;
   roleIds?: string[];
+  permissionsGrant?: string[];
+  permissionsDeny?: string[];
   isAdmin?: boolean;
   isDefault?: boolean;
 }

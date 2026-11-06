@@ -26,6 +26,7 @@ import { CreateVehicleShareLinkDto } from "./dto/vehicle-share.dto";
 import { randomBytes } from "crypto";
 import { ActivityService } from "../activity/activity.service";
 import { ClaudeService } from "../ai/claude.service";
+import { QuotaService } from "../subscription/quota.service";
 import { softDeleteData } from "../prisma/soft-delete";
 
 const fullInclude = {
@@ -48,6 +49,7 @@ export class VehiclesService {
     private readonly storage: StorageService,
     private readonly activity: ActivityService,
     private readonly claude: ClaudeService,
+    private readonly quota: QuotaService,
   ) {}
 
   async ocrRegistration(body: { imageBase64: string; mediaType?: string }) {
@@ -86,6 +88,8 @@ export class VehiclesService {
   }
 
   async create(companyId: string, dto: CreateVehicleDto) {
+    // Abonelik kotası: aktif araç limiti + (Free) işlem tetikleyicisi (grace ile).
+    await this.quota.assertCanCreate(companyId, "vehicle");
     const { photos, tramerSet, listingUrls, installments, ...scalars } = dto;
     const vehicle = await this.prisma.vehicle.create({
       data: {

@@ -1,5 +1,5 @@
 // Local Imports
-import Logo from "@/assets/appLogo.svg?react";
+import { BrandLogo } from "@/components/shared/BrandLogo";
 import { Progress } from "@/components/ui";
 
 // ----------------------------------------------------------------------
@@ -8,7 +8,7 @@ export function SplashScreen() {
   return (
     <>
       <div className="fixed grid h-full w-full place-content-center">
-        <Logo className="size-28" />
+        <BrandLogo variant="full" className="h-24 w-auto shadow-md" />
         <Progress
           color="primary"
           isIndeterminate

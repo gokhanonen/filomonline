@@ -54,17 +54,21 @@ model Neighborhood {
 // ========================================================================
 
 model Tenant {
-  id        String   @id @default(cuid())
-  name      String // Holding / firma grubu adı
-  slug      String   @unique
-  isActive  Boolean  @default(true)
-  plan      String? // İleride abonelik planı için rezerve
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  name               String // Holding / firma grubu adı
+  slug               String   @unique
+  isActive           Boolean  @default(true)
+  plan               String? // Eski/rezerve string alan (artık subscriptionPlan ilişkisi kullanılır)
+  // Abonelik planı: aylık hediye kontör miktarını belirler (plan bazlı)
+  subscriptionPlanId String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  companies Company[]
-  users     User[]
-  roles     Role[]
+  subscriptionPlan SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
+  subscription     Subscription?
+  companies        Company[]
+  users            User[]
+  roles            Role[]
 
   brands             Brand[]
   vehicleCategories  VehicleCategory[]
@@ -97,8 +101,9 @@ model Company {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  tenant      Tenant              @relation(fields: [tenantId], references: [id])
-  memberships CompanyMembership[]
+  tenant       Tenant              @relation(fields: [tenantId], references: [id])
+  memberships  CompanyMembership[]
+  creditWallet CreditWallet?
 
   @@index([tenantId])
 }
@@ -127,12 +132,16 @@ model User {
 
 // Kullanıcının bir şirketteki üyeliği + rolleri
 model CompanyMembership {
-  id        String   @id @default(cuid())
-  userId    String
-  companyId String
-  isDefault Boolean  @default(false) // Login sonrası varsayılan şirket
-  isAdmin   Boolean  @default(false) // Şirket yöneticisi kısayolu
-  createdAt DateTime @default(now())
+  id               String   @id @default(cuid())
+  userId           String
+  companyId        String
+  isDefault        Boolean  @default(false) // Login sonrası varsayılan şirket
+  isAdmin          Boolean  @default(false) // Şirket yöneticisi kısayolu (tüm yetkiler)
+  // Bireysel ince ayar (rollerin ÜSTÜNE): grant ekler, deny çıkarır. Deny kazanır.
+  // Etkin izin = (roller ∪ permissionsGrant) − permissionsDeny
+  permissionsGrant Json? // string[] — kişiye özel eklenen izinler/scope'lar
+  permissionsDeny  Json? // string[] — kişiye özel kaldırılan izinler/scope'lar (ör. "maliyet görmesin")
+  createdAt        DateTime @default(now())
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -1572,4 +1581,262 @@ enum AccountLedgerCode {
   L120 // Alıcılar
   L320 // Satıcılar
   L329 // Diğer Ticari Borçlar
+}
+
+// ============================================================================
+// ABONELİK PLANLARI + KONTÖR (AI kredisi) + ÖDEME (KK tahsilat) MODÜLLERİ
+// ----------------------------------------------------------------------------
+// Tasarım:
+//  - Kontör cüzdanı FİRMA (Company) bazlıdır; firmadaki herkes aynı havuzdan harcar.
+//  - Aylık HEDİYE kontör = tenant'ın abonelik planındaki `monthlyFreeCredits`;
+//    ay sonunda biter (lot expiry). Satın alınan kontör süresizdir.
+//  - Harcama FIFO: önce süresi yakın (bu ayki ücretsiz) lot, biterse ücretli lot.
+//  - Ödeme (Payment) ürün-bağımsızdır: `productType` ile ("CREDITS", yarın başka ürün)
+//    ilgili modül tahsilat başarılı olunca kendi ürününü teslim eder (fulfillment).
+//  - Bu kayıtlar mali/denetim defteridir; SİLİNMEZ (soft-delete listesine eklenmez).
+// ============================================================================
+
+/// Platform geneli abonelik kademesi (süper admin yönetir).
+/// Sabit kademe modeli: her planın dahil kotaları + fiyatları + aylık AI kontörü vardır.
+model SubscriptionPlan {
+  id                 String   @id @default(cuid())
+  code               String   @unique // "free", "starter", "pro", "enterprise"
+  name               String
+  monthlyFreeCredits Int      @default(0) // her ay yenilenen hediye AI kontör
+  monthlyPrice       Decimal? @db.Decimal(15, 2) // (eski/legacy; fiyatlar aşağıdaki alanlardan)
+
+  // Dahil kotalar (tenant genelinde toplanır)
+  includedUsers        Int  @default(0)
+  includedLocations    Int  @default(0)
+  includedVehicles     Int  @default(0) // aktif araç (status != SATILDI)
+  // Free kademe için ömür boyu "tamamlanan alış+satış işlemi" limiti (null = sınırsız)
+  freeTransactionLimit Int?
+
+  // Fiyatlandırma: liste + kampanya (üstü çizili liste gösterilir)
+  monthlyListPrice     Decimal?  @db.Decimal(15, 2)
+  monthlyCampaignPrice Decimal?  @db.Decimal(15, 2)
+  // Yıllık: 12 ay yerine kaç ay çekilir (ör. 10 → "10 öde 12 kullan"); null/12 = indirimsiz
+  annualMonthsCharged  Int?
+  annualListPrice      Decimal?  @db.Decimal(15, 2) // elle yıllık liste (yoksa monthlyList*12)
+  annualCampaignPrice  Decimal?  @db.Decimal(15, 2) // elle yıllık kampanya (yoksa monthly*annualMonthsCharged)
+  campaignEndsAt       DateTime?
+
+  trialDays       Int      @default(0) // ücretsiz deneme süresi
+  graceOveragePct Int      @default(10) // kota aşım toleransı % (hard limit = kota*(1+pct), yukarı yuvarla)
+  isPublic        Boolean  @default(true) // kullanıcıya listelensin mi (Free/Enterprise gizlenebilir)
+  isActive        Boolean  @default(true)
+  isDefault       Boolean  @default(false) // planı/aboneliği olmayan tenant'lar için varsayılan (Free)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenants       Tenant[]
+  subscriptions Subscription[]
+
+  @@index([isActive])
+}
+
+enum SubscriptionStatus {
+  TRIAL // deneme süresi
+  ACTIVE // aktif ve ödenmiş
+  PAST_DUE // ödeme başarısız / gecikmiş
+  CANCELED // dönem sonunda bitecek / bitti
+  EXPIRED // süresi dolmuş (salt-okunur)
+}
+
+enum BillingPeriod {
+  MONTHLY
+  ANNUAL
+}
+
+/// Tenant (holding) başına tek abonelik. Kota/fatura buradan yönetilir.
+model Subscription {
+  id                 String             @id @default(cuid())
+  tenantId           String             @unique
+  planId             String
+  status             SubscriptionStatus @default(TRIAL)
+  period             BillingPeriod      @default(MONTHLY)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  trialEndsAt        DateTime?
+  cancelAtPeriodEnd  Boolean            @default(false)
+  canceledAt         DateTime?
+  priceSnapshot      Decimal?           @db.Decimal(15, 2) // abone olunduğu andaki efektif dönem bedeli
+  customPrice        Decimal?           @db.Decimal(15, 2) // enterprise özel fiyat (set ise taban bu)
+  couponId           String?
+  note               String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  plan   SubscriptionPlan @relation(fields: [planId], references: [id])
+  coupon Coupon?          @relation(fields: [couponId], references: [id])
+
+  @@index([status])
+  @@index([planId])
+}
+
+enum CouponType {
+  PERCENT // value = yüzde (0-100)
+  FIXED // value = sabit indirim tutarı
+  MONTHS_FREE // value = ücretsiz ay sayısı
+}
+
+/// İndirim kuponu / kampanya kodu.
+model Coupon {
+  id                 String     @id @default(cuid())
+  code               String     @unique
+  type               CouponType
+  value              Decimal    @db.Decimal(15, 2)
+  description        String?
+  appliesToPlanCodes String? // virgüllü plan kodları; null = tüm planlar
+  maxRedemptions     Int?
+  redeemedCount      Int        @default(0)
+  validFrom          DateTime?
+  validUntil         DateTime?
+  isActive           Boolean    @default(true)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  subscriptions Subscription[]
+
+  @@index([isActive])
+}
+
+/// Satın alınabilir kontör paketi (süper admin tanımlar).
+model CreditPackage {
+  id        String   @id @default(cuid())
+  name      String // "1.000 Kontör"
+  credits   Int // paketin kontör adedi
+  price     Decimal  @db.Decimal(15, 2)
+  currency  String   @default("TRY")
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+/// Firma kontör cüzdanı. balance/free/paid = lotlardan türeyen ÖNBELLEK.
+model CreditWallet {
+  id              String   @id @default(cuid())
+  companyId       String   @unique
+  balance         Int      @default(0) // toplam kullanılabilir (free + paid)
+  freeBalance     Int      @default(0) // bu dönem kalan ücretsiz
+  paidBalance     Int      @default(0) // kalan ücretli (süresiz)
+  lastGrantPeriod String? // "2026-11" — en son hediye verilen dönem
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  company      Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  lots         CreditLot[]
+  transactions CreditTransaction[]
+}
+
+enum CreditLotType {
+  FREE_MONTHLY // aylık hediye (süreli)
+  PURCHASE // satın alınan (süresiz)
+  PROMO // kampanya/bonus
+  ADJUSTMENT // manuel düzeltme
+}
+
+/// Bir kontör partisi (grant). Kalanı biten lot tükenmiştir; süreli lot ay sonunda düşer.
+model CreditLot {
+  id        String        @id @default(cuid())
+  companyId String
+  walletId  String
+  type      CreditLotType
+  amount    Int // başlangıç adedi
+  remaining Int // kalan adet
+  periodKey String? // "2026-11" (ücretsiz lotlar için)
+  expiresAt DateTime? // ücretsiz: dönem sonu; ücretli: null (süresiz)
+  paymentId String? // satın alma lotu ise ilgili ödeme
+  note      String?
+  createdAt DateTime      @default(now())
+
+  wallet  CreditWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  payment Payment?     @relation(fields: [paymentId], references: [id])
+
+  @@index([companyId])
+  @@index([walletId, expiresAt])
+  @@index([walletId, remaining])
+}
+
+enum CreditTxnType {
+  GRANT // hediye verildi (+)
+  PURCHASE // satın alındı (+)
+  SPEND // harcandı (-)
+  REFUND // iade/geri yüklendi (+)
+  EXPIRE // süresi doldu (-)
+  ADJUST // manuel düzeltme (+/-)
+}
+
+/// Kontör hareket defteri (append-only). amount: + artış, - azalış.
+model CreditTransaction {
+  id            String        @id @default(cuid())
+  companyId     String
+  walletId      String
+  type          CreditTxnType
+  amount        Int // işaretli (+/-)
+  balanceAfter  Int // işlem sonrası toplam bakiye (önbellek)
+  operation     String? // "ai.assist", "ai.query", "crm.ai_message"
+  referenceType String? // ilişkili kayıt türü
+  referenceId   String?
+  lotId         String? // hangi lottan düştü/eklendi
+  paymentId     String?
+  userId        String? // işlemi yapan kullanıcı
+  note          String?
+  createdAt     DateTime      @default(now())
+
+  wallet CreditWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, createdAt])
+  @@index([walletId, createdAt])
+}
+
+enum PaymentProviderType {
+  MOCK
+  IYZICO
+  PAYTR
+  STRIPE
+}
+
+enum PaymentStatus {
+  PENDING // oluşturuldu, ödeme bekleniyor
+  REQUIRES_ACTION // 3D-Secure vb. yönlendirme gerekli
+  SUCCEEDED // tahsil edildi
+  FAILED // başarısız
+  CANCELED // iptal
+  REFUNDED // iade edildi
+}
+
+/// Ürün-bağımsız KK tahsilat kaydı. Kontör de dahil her ürün bunu kullanır.
+model Payment {
+  id          String              @id @default(cuid())
+  companyId   String
+  tenantId    String?
+  userId      String? // satın almayı başlatan kullanıcı
+  provider    PaymentProviderType @default(MOCK)
+  providerRef String? // sağlayıcı işlem/konuşma id'si
+  status      PaymentStatus       @default(PENDING)
+  amount      Decimal             @db.Decimal(15, 2)
+  currency    String              @default("TRY")
+  productType String // "CREDITS" — yarın başka ürün
+  productRef  String? // ör. CreditPackage id
+  quantity    Int? // satın alınan birim (ör. kontör adedi)
+  description String?
+  meta        Json? // sağlayıcıya/ürüne özel ek veri
+  failReason  String?
+  paidAt      DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  // productRef ürün-bağımsız bir string'tir (ör. CreditPackage id); FK DEĞİL,
+  // çünkü yarın başka ürünlerin referansı da buraya yazılabilir.
+  creditLots CreditLot[]
+
+  @@index([companyId, createdAt])
+  @@index([provider, providerRef])
+  @@index([status])
 }

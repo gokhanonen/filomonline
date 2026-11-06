@@ -29,8 +29,10 @@ const userSelect = {
       id: true,
       isAdmin: true,
       isDefault: true,
+      permissionsGrant: true,
+      permissionsDeny: true,
       company: { select: { id: true, name: true } },
-      roles: { select: { id: true, name: true } },
+      roles: { select: { id: true, name: true, permissions: true } },
     },
   },
 } satisfies Prisma.UserSelect;
@@ -127,6 +129,8 @@ export class UsersService {
       companyId: m.companyId,
       isAdmin: m.isAdmin ?? false,
       isDefault: m.isDefault ?? false,
+      permissionsGrant: m.permissionsGrant?.length ? m.permissionsGrant : undefined,
+      permissionsDeny: m.permissionsDeny?.length ? m.permissionsDeny : undefined,
       roles: m.roleIds?.length
         ? { connect: m.roleIds.map((rid) => ({ id: rid })) }
         : undefined,

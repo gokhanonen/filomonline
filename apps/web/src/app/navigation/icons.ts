@@ -31,6 +31,8 @@ import {
   TbReceipt2,
   TbScale,
   TbFileText,
+  TbWallet,
+  TbCrown,
 } from "react-icons/tb";
 
 /**
@@ -65,6 +67,8 @@ export const navigationIcons: Record<string, ElementType> = {
   statement: TbFileText,
 
   // Ayarlar segmenti
+  credits: TbWallet,
+  subscription: TbCrown,
   settings: TbSettings,
   "settings.general": TbUser,
   "settings.appearance": TbPalette,

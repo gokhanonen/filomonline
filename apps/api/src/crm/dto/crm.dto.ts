@@ -1,4 +1,5 @@
 import {
+  ArrayMaxSize,
   IsArray,
   IsDateString,
   IsEnum,
@@ -6,13 +7,16 @@ import {
   IsOptional,
   IsString,
   Min,
+  ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
 import {
   LeadSource,
   LeadStatus,
   QuoteStatus,
   TestDriveStatus,
 } from "@prisma/client";
+import { QuoteOptionDto } from "./quick-quote.dto";
 
 export class CreateLeadDto {
   @IsString()
@@ -209,6 +213,14 @@ export class CreateQuoteDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  // Çok ödeme seçenekli teklif (peşin / kredili / takaslı / senetli) — en çok 4
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(4)
+  @ValidateNested({ each: true })
+  @Type(() => QuoteOptionDto)
+  options?: QuoteOptionDto[];
 }
 
 export class UpdateQuoteDto {

@@ -91,8 +91,12 @@ const blobToBase64 = (blob: Blob) =>
     r.readAsDataURL(blob);
   });
 
-const errMsg = (err: unknown) =>
-  [(err as { message?: string | string[] })?.message ?? "İşlem başarısız"].flat().join(", ");
+const errMsg = (err: unknown) => {
+  // Axios hata gövdesi (ör. kontör yetersiz → 402) response.data.message'da gelir.
+  const data = (err as { response?: { data?: { message?: string | string[] } } })?.response?.data;
+  const msg = data?.message ?? (err as { message?: string | string[] })?.message ?? "İşlem başarısız";
+  return [msg].flat().join(", ");
+};
 
 /**
  * Sade AI asistan: metin yaz ya da en fazla 3 fotoğraf (ehliyet / kimlik / ruhsat) ekle.

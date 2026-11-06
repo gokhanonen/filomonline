@@ -45,6 +45,8 @@ export const navigation: NavigationTree[] = [
     childs: [
       { id: "users", type: "item", path: "/users", title: "Kullanıcılar", icon: "users" },
       { id: "catalog", type: "item", path: "/catalog", title: "Tanımlar", icon: "catalog" },
+      { id: "subscription", type: "item", path: "/subscription", title: "Abonelik", icon: "subscription" },
+      { id: "billing", type: "item", path: "/billing", title: "Kontör", icon: "credits" },
       { id: "settings", type: "item", path: "/settings", title: "Ayarlar", icon: "settings" },
     ],
   },

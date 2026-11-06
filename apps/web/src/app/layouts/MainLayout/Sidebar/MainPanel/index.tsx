@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { SetStateAction, Dispatch } from "react";
 
 // Local Imports
-import Logo from "@/assets/appLogo.svg?react";
+import { BrandLogo } from "@/components/shared/BrandLogo";
 import { Menu } from "./Menu";
 import { Item } from "./Menu/item";
 import { Profile } from "../../Profile";
@@ -40,7 +40,7 @@ export function MainPanel({
         {/* Application Logo */}
         <div className="flex pt-3.5">
           <Link to="/">
-            <Logo className="text-primary-600 dark:text-primary-400 size-10" />
+            <BrandLogo className="size-10 shadow-xs transition-transform hover:scale-105" />
           </Link>
         </div>
 

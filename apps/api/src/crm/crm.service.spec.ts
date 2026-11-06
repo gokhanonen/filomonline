@@ -3,6 +3,7 @@ import { CrmService } from "./crm.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { ActivityService } from "../activity/activity.service";
 import { ClaudeService } from "../ai/claude.service";
+import { CreditsService } from "../credits/credits.service";
 import { LeadSource, LeadStatus } from "@prisma/client";
 
 describe("CrmService", () => {
@@ -63,6 +64,11 @@ describe("CrmService", () => {
     }),
   };
 
+  const mockCredits = {
+    spend: jest.fn().mockResolvedValue({ transactionId: "t1", balanceAfter: 99 }),
+    refund: jest.fn().mockResolvedValue(undefined),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -70,6 +76,7 @@ describe("CrmService", () => {
         { provide: PrismaService, useValue: mockPrisma },
         { provide: ActivityService, useValue: mockActivity },
         { provide: ClaudeService, useValue: mockClaude },
+        { provide: CreditsService, useValue: mockCredits },
       ],
     }).compile();
 

@@ -68,6 +68,27 @@ Mimari kararlar ve tenant kuralları: `ARCHITECTURE.md` (ÖNCE ONU OKU).
 - Platform geneli tek SMTP hesabı: Süper Admin > E-posta (SMTP) sekmesi (`/admin/mail/*`, ayar `system` / `integrations.smtp`, şifre maskeli). Gönderim `MailService.send` (global `MailModule`); gönderen adı firma adı, `replyTo` gönderen kullanıcı.
 - Müşteriye giden linklerin kökü `WEB_URL` (yoksa `CORS_ORIGIN`'in ilki). Üretimde `WEB_URL` mutlaka tanımlanmalı.
 
+## Ödeme (KK tahsilat) — `payments` modülü
+- **Ürün-bağımsız** altyapı (global `PaymentsModule`). `PaymentProvider` arabirimi; şimdilik yalnız `MockPaymentProvider` (gerçek çekim YOK). Gerçek sağlayıcıya geçiş = `payments/providers/` altına adaptör (iyzico/PayTR/Stripe) + `PAYMENT_PROVIDER`'ı ona bağla; üst katman değişmez.
+- `Payment` kaydı `productType` taşır (ör. `"CREDITS"`, `"SUBSCRIPTION"`). Başarılı ödemede ilgili ürün modülünün kaydettiği **fulfillment** kancası AYNI transaction'da çağrılır (idempotent). Dev: `POST /payments/:id/mock-complete`.
+
+## Kontör (AI kredisi) — `credits` modülü
+- Cüzdan **firma (Company) bazlı** (`CreditWallet`). **Lot** tabanlı: her hediye/satın alma bir lot; harcama **FIFO** (önce bu ayın ücretsiz/süreli lotu, biterse ücretli/süresiz lot). Bakiye önbellek, defter `CreditTransaction` (GRANT/PURCHASE/SPEND/REFUND/EXPIRE) — **silinmez** (SOFT_DELETE listesinde değil).
+- Aylık hediye **tembel**: cüzdana her erişimde o ayın hediyesi garanti edilir (cron yok), geçmiş ay süre dolmuş sayılır. Miktar = tenant planının `monthlyFreeCredits`'i.
+- AI işlemleri işlem başına 1 kontör harcar (harca → çalıştır → hata olursa iade): `POST /ai/assist`, `POST /ai/claude/query`, CRM `ai-message`. Süper admin "bağlantı testi" harcamaz.
+- UI: `/billing` (Kontör) — bakiye + paket satın alma (mock ödeme) + hareketler. Süper admin: Platform Yönetimi > "Kontör Paketleri".
+
+## Abonelik — `subscription` modülü
+- **Tenant (holding) başına tek abonelik** (`Subscription`). **Sabit kademe** modeli: `SubscriptionPlan` dahil kotaları (kullanıcı/lokasyon/aktif araç), fiyatları (liste/kampanya, yıllık `annualMonthsCharged` ile "10 öde 12 kullan"), `freeTransactionLimit` (Free) ve aylık AI kontörü (`monthlyFreeCredits`) taşır. Kuponlar: `Coupon` (yüzde/sabit/ücretsiz ay).
+- **Kota gating** (`QuotaService`): kullanım tenant genelinde toplanır; **grace = kota × (1 + graceOveragePct/100), yukarı yuvarla** → kota ile hard arası `WARN` (sürekli uyarı), hard üstü `BLOCK` (402 `QUOTA_EXCEEDED`). Uygulanan yerler: `vehicles.create` (aktif araç + işlem tetikleyicisi), `invoices.createSales` (işlem tetikleyicisi). Her alış=1, her satış=1 işlem.
+- Abone olma ödeme üzerinden (`productType="SUBSCRIPTION"`); ücretsiz plan doğrudan aktive. Aktivasyonda `Tenant.subscriptionPlanId` senkronlanır (kontör hediyesi plana bağlı çalışsın). UI: `/subscription` + uygulama geneli `QuotaWarningBanner`. Süper admin: "Abonelik & Planlar" (plan/kupon/firma atama).
+
+## Yetkilendirme — `authz` + roller
+- Merkezi katalog `authz/permission-catalog.ts` (tek doğruluk kaynağı; frontend `GET /authz/catalog` ile çeker): modüller × `read/write/delete` + **hassas-veri scope'ları** (`data.cost.view`, `data.profit.view`, `data.finance.view`, `data.salePrice.view`, `data.contact.view`) + **hazır rol şablonları** (Yönetici/Satış Danışmanı/Muhasebe/Görüntüleyici). Yeni kullanıcı varsayılanı: **Satış Danışmanı**.
+- **Çoklu rol + bireysel override:** `CompanyMembership.permissionsGrant/Deny` (JSON string[]). **Etkin izin = (roller ∪ grant) − deny**, deny kazanır — aynı mantık `CompanyGuard` (backend) ve `auth/Provider` `can()` (frontend). `isAdmin`/`isSuperAdmin`/`"*"` tüm kontrolleri bypass eder.
+- **Hassas-veri gizleme sunucu-tarafında** (`FieldVisibilityInterceptor`, global `APP_INTERCEPTOR`): scope'u OLMAYAN kullanıcıdan ilgili alanlar API yanıtından çıkarılır (iç içe dahil). Alan eşlemesi `SCOPE_FIELDS`, muaf yollar `VISIBILITY_SKIP_PREFIXES` (auth/users/credits/subscription…). Yeni hassas alan eklerken `SCOPE_FIELDS`'e yaz.
+- UI: Kullanıcılar sayfası > "Roller & Yetkiler" (izin matrisi + şablon) ve kullanıcı formunda firma başına çoklu rol chip'leri + tek-tık hassas-veri switch'leri (grant/deny hesabı otomatik).
+
 ## Komutlar
 ```bash
 npm run prisma:migrate   # şema değişikliği sonrası migration
@@ -75,6 +96,9 @@ npm --workspace apps/api run seed   # süper admin + demo tenant
 npx ts-node prisma/seed-catalog.ts  # (apps/api) katalog + ilan kaynakları (Sahibinden/Arabam/DOD)
 npx ts-node prisma/seed-extras.ts   # (apps/api) demo ilan linkleri + opsiyonlar
 npx ts-node prisma/seed-finance.ts  # (apps/api) demo kasa/banka/POS/KK hesapları, tahsilat/ödeme, çek/senet
+npx ts-node prisma/seed-credits.ts  # (apps/api) abonelik kademeleri + kontör paketleri + tenant'lara varsayılan plan
+npx ts-node prisma/seed-roles.ts    # (apps/api) her tenant'a hazır rol şablonları (Yönetici/Satış Danışmanı/Muhasebe/Görüntüleyici)
 npm run build:api
 ```
+> Not: Üretim/uzak DB'de migration `npx prisma migrate deploy` ile uygulanır (yerelde `migrate dev` yok; uzak DB geçmişi korunur).
 

@@ -6,6 +6,7 @@ import { Outlet } from "react-router";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { useAuthContext } from "@/app/contexts/auth/context";
+import { QuotaWarningBanner } from "@/components/shared/QuotaWarningBanner";
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +21,7 @@ export default function MainLayout() {
         key={activeCompanyId ?? "no-company"}
         className={clsx("main-content transition-content grid grid-cols-1")}
       >
+        <QuotaWarningBanner />
         <Outlet />
       </main>
       <Sidebar />

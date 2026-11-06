@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { PencilSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, PlusIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
 import { Page } from "@/components/shared/Page";
@@ -18,11 +18,13 @@ import {
 import type { AdminUser } from "@/@types/userAdmin";
 import { listUsers } from "@/services/userService";
 import { UserForm } from "./UserForm";
+import { RolesManagerModal } from "./RolesManagerModal";
 
 export default function UsersPage() {
   const [items, setItems] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [rolesOpen, setRolesOpen] = useState(false);
   const [editing, setEditing] = useState<AdminUser | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -48,19 +50,29 @@ export default function UsersPage() {
             <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">Kullanıcılar</h2>
             <p className="text-sm text-gray-400 dark:text-dark-300">Toplam {items.length} kullanıcı</p>
           </div>
-          <Button
-            color="primary"
-            isIcon
-            onClick={() => {
-              setEditing(null);
-              setFormOpen(true);
-            }}
-            className="size-9.5 rounded-lg shrink-0 shadow-xs"
-            title="Yeni Kullanıcı"
-            aria-label="Yeni Kullanıcı"
-          >
-            <PlusIcon className="size-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outlined"
+              className="gap-1.5"
+              onClick={() => setRolesOpen(true)}
+              title="Roller & Yetkiler"
+            >
+              <ShieldCheckIcon className="size-5" /> Roller & Yetkiler
+            </Button>
+            <Button
+              color="primary"
+              isIcon
+              onClick={() => {
+                setEditing(null);
+                setFormOpen(true);
+              }}
+              className="size-9.5 rounded-lg shrink-0 shadow-xs"
+              title="Yeni Kullanıcı"
+              aria-label="Yeni Kullanıcı"
+            >
+              <PlusIcon className="size-5" />
+            </Button>
+          </div>
         </div>
 
         <Card className="mt-4 p-4">
@@ -129,6 +141,7 @@ export default function UsersPage() {
       </div>
 
       <UserForm open={formOpen} onClose={() => setFormOpen(false)} onSaved={fetchData} user={editing} />
+      <RolesManagerModal open={rolesOpen} onClose={() => setRolesOpen(false)} onRolesChanged={fetchData} />
     </Page>
   );
 }
