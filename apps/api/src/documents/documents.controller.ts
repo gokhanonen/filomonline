@@ -1,5 +1,6 @@
 import {
   Body,
+  NotFoundException,
   Controller,
   Delete,
   Get,
@@ -32,6 +33,7 @@ import {
   generateDocHtmlView,
   generateDocSvgThumbnail,
 } from "./demo-document-generator";
+import { verifyDocSig } from "./doc-sign";
 
 @ApiTags("documents")
 @ApiBearerAuth()
@@ -125,7 +127,8 @@ export class DocumentsController {
   @Public()
   @Throttle({ default: { limit: 120, ttl: 60_000 } })
   @Get("thumb/:id")
-  async renderThumb(@Param("id") id: string, @Res() res: Response) {
+  async renderThumb(@Param("id") id: string, @Query("t") t: string, @Res() res: Response) {
+    if (!verifyDocSig(id, t)) throw new NotFoundException("Doküman bulunamadı");
     const { ctx } = await this.documents.getDocumentWithVehicle(id);
     const svg = generateDocSvgThumbnail(ctx);
     res.setHeader("Content-Type", "image/svg+xml");
@@ -136,7 +139,8 @@ export class DocumentsController {
   @Public()
   @Throttle({ default: { limit: 120, ttl: 60_000 } })
   @Get("view/:id")
-  async renderView(@Param("id") id: string, @Res() res: Response) {
+  async renderView(@Param("id") id: string, @Query("t") t: string, @Res() res: Response) {
+    if (!verifyDocSig(id, t)) throw new NotFoundException("Doküman bulunamadı");
     const { ctx } = await this.documents.getDocumentWithVehicle(id);
     const html = generateDocHtmlView(ctx);
     res.setHeader("Content-Type", "text/html; charset=utf-8");

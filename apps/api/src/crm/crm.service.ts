@@ -89,6 +89,8 @@ export class CrmService {
             },
           },
         },
+        // Teklif durumu filtresi için (liste hafif kalsın diye yalnız status)
+        quotes: { where: { deletedAt: null }, select: { status: true } },
         _count: {
           select: {
             testDrives: { where: { deletedAt: null } },

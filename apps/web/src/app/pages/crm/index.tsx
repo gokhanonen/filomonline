@@ -10,6 +10,7 @@ import {
   CalendarDaysIcon,
   DocumentCheckIcon,
   CheckCircleIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import clsx from "clsx";
@@ -25,7 +26,7 @@ import { KanbanView } from "./KanbanView";
 import { TableView } from "./TableView";
 import { NewLeadModal } from "./NewLeadModal";
 import { LeadDetailModal } from "./LeadDetailModal";
-import { LEAD_SOURCE_CONFIG, LEAD_STATUS_CONFIG } from "./constants";
+import { LEAD_SOURCE_CONFIG, LEAD_STATUS_CONFIG, QUOTE_STATUS_CONFIG } from "./constants";
 
 export default function CrmPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -38,6 +39,7 @@ export default function CrmPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [sourceFilter, setSourceFilter] = useState<string>("ALL");
+  const [quoteFilter, setQuoteFilter] = useState<string>("ALL");
 
   // Modallar
   const [showNewLeadModal, setShowNewLeadModal] = useState(false);
@@ -72,6 +74,7 @@ export default function CrmPage() {
     return leads.filter((lead) => {
       if (statusFilter !== "ALL" && lead.status !== statusFilter) return false;
       if (sourceFilter !== "ALL" && lead.source !== sourceFilter) return false;
+      if (quoteFilter !== "ALL" && !lead.quotes?.some((q) => q.status === quoteFilter)) return false;
       if (search.trim()) {
         const term = search.toLowerCase();
         const inName = lead.fullName.toLowerCase().includes(term);
@@ -88,7 +91,7 @@ export default function CrmPage() {
       }
       return true;
     });
-  }, [leads, search, statusFilter, sourceFilter]);
+  }, [leads, search, statusFilter, sourceFilter, quoteFilter]);
 
   // KPI İstatistikleri
   const totalCount = leads.length;
@@ -100,6 +103,7 @@ export default function CrmPage() {
     (l) => l.status === "QUOTE_SENT" || l.status === "NEGOTIATION",
   ).length;
   const convertedCount = leads.filter((l) => l.status === "CONVERTED").length;
+  const rejectedQuoteCount = leads.filter((l) => l.quotes?.some((q) => q.status === "REJECTED")).length;
 
   return (
     <Page title="CRM">
@@ -133,7 +137,7 @@ export default function CrmPage() {
         </div>
 
         {/* KPI Sayaç Kartları */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           <Card className="flex items-center gap-3.5 p-4 bg-white dark:bg-dark-750 border border-gray-200/80 dark:border-dark-600 shadow-2xs rounded-xl">
             <div className="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-300">
               <UserGroupIcon className="size-6" />
@@ -189,6 +193,29 @@ export default function CrmPage() {
               </div>
             </div>
           </Card>
+
+          <Card
+            onClick={() => setQuoteFilter((f) => (f === "REJECTED" ? "ALL" : "REJECTED"))}
+            className={clsx(
+              "flex cursor-pointer items-center gap-3.5 p-4 bg-white dark:bg-dark-750 border shadow-2xs rounded-xl transition hover:shadow-sm",
+              quoteFilter === "REJECTED"
+                ? "border-red-400 ring-1 ring-red-300 dark:border-red-500/60"
+                : "border-gray-200/80 dark:border-dark-600",
+            )}
+            title="Reddedilen teklifi olan potansiyelleri göster"
+          >
+            <div className="flex size-11 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-300">
+              <XCircleIcon className="size-6" />
+            </div>
+            <div>
+              <div className="text-xs font-medium text-gray-500 dark:text-dark-300">
+                Reddedilen Teklif
+              </div>
+              <div className="text-lg font-bold text-red-600 dark:text-red-400">
+                {rejectedQuoteCount}
+              </div>
+            </div>
+          </Card>
         </div>
 
         {/* Kontrol & Filtre Araç Çubuğu */}
@@ -223,6 +250,19 @@ export default function CrmPage() {
               data={[
                 { value: "ALL", label: "Tüm Kaynaklar" },
                 ...Object.entries(LEAD_SOURCE_CONFIG).map(([val, cfg]) => ({
+                  value: val,
+                  label: cfg.label,
+                })),
+              ]}
+            />
+
+            <Select
+              className="w-40 text-xs"
+              value={quoteFilter}
+              onChange={(e) => setQuoteFilter(e.target.value)}
+              data={[
+                { value: "ALL", label: "Tüm Teklifler" },
+                ...Object.entries(QUOTE_STATUS_CONFIG).map(([val, cfg]) => ({
                   value: val,
                   label: cfg.label,
                 })),

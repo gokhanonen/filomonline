@@ -92,4 +92,5 @@ export const KANBAN_STAGES: LeadStatus[] = [
   "QUOTE_SENT",
   "NEGOTIATION",
   "CONVERTED",
+  "LOST",
 ];

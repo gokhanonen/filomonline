@@ -17,6 +17,7 @@ import {
 } from "./dto/document-meta.dto";
 import { DemoVehicleDocContext } from "./demo-document-generator";
 import { createOrRestore, softDeleteData } from "../prisma/soft-delete";
+import { signDocId } from "./doc-sign";
 
 /** Varsayılan evrak yapısı ("Varsayılanları Yükle") */
 export const DEFAULT_DOCUMENT_STRUCTURE: {
@@ -235,8 +236,9 @@ export class DocumentsService {
         let url: string;
         let thumbUrl: string | null = null;
         if (d.fileKey.startsWith("demo-doc:")) {
-          url = `/api/v1/documents/view/${d.id}`;
-          thumbUrl = `/api/v1/documents/thumb/${d.id}`;
+          const sig = signDocId(d.id);
+          url = `/api/v1/documents/view/${d.id}?t=${sig}`;
+          thumbUrl = `/api/v1/documents/thumb/${d.id}?t=${sig}`;
         } else if (d.fileKey.startsWith("http://") || d.fileKey.startsWith("https://")) {
           url = d.fileKey;
           thumbUrl = d.thumbKey ?? d.fileKey;
