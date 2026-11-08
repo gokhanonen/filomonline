@@ -87,6 +87,7 @@ export class CompanyGuard implements CanActivate {
     const allowedLocationIds = Array.isArray(membership.locationIds)
       ? (membership.locationIds as string[])
       : null;
+    user.allowedLocationIds = allowedLocationIds;
     await this.resolveLocation(request, user, companyId, allowedLocationIds);
     return true;
   }

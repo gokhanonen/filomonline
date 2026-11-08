@@ -71,8 +71,9 @@ Mimari kararlar ve tenant kuralları: `ARCHITECTURE.md` (ÖNCE ONU OKU).
 - Raporlar (`/reports/*`) `reports.read` ile korunur; İÇERİK de yetkiye göre sınırlanır.
 - **Scope-bazlı gizleme (güvenlik):** `reports/report-visibility.ts` rapor alan adlarını (Türkçe toplu alanlar dahil: `brutKar, stokMaliyeti, toplamSatis, totalProfit, totalRevenue…`) scope'lara eşler; `stripReport` scope'u OLMAYAN kullanıcıdan ilgili alanları (iç içe dahil) **sunucuda** çıkarır. (FieldVisibilityInterceptor yalnız standart İngilizce alanları yakalıyordu; bu boşluğu kapatır.)
 - **Kendi/Hepsi:** yeni özel izin **`reports.all`** (`SPECIAL_PERMISSIONS`, rol editöründe switch). Yoksa kullanıcı raporlarda yalnız kendi (`salesRepId = user.id`) verisini görür; varsa/`isAdmin`/`*` → tüm temsilciler. Muhasebe şablonunda var.
-- Frontend güvenlik ağı: `money()` undefined'da "—" (NaN yerine); dashboard hassas kartları `can("data.*.view")` ile gizli. (Rapor sayfasında tam kart/sütun/grafik gizleme + grafik format bug'ı sonraki faz.)
-- **Lokasyon kısıtı raporlara henüz uygulanmadı** (sonraki faz).
+- **Frontend gizleme (Faz 2):** `money()` undefined'da "—"; `dashboard` + `reports` sayfasında hassas KPI kartları, kârlılık özet şeridi ve trend grafiği `can("data.cost/profit/salePrice.view")` ile gizli. Tablolarda stripped alanlar "—" gösterir (leak yok; sütun sütun gizleme yapılmadı — gereksiz risk). `data.finance.view` finans sayfalarında.
+- **Grafik format bug'ı (`120.0000000000`):** gerçek FilomOnline kodunda YOK — o ekran görüntüleri eski Turgut uygulamasının referansı. `finance/dashboard` apexcharts grafiği zaten `compactTl` formatlı.
+- **Kalan (sonraki faz):** rapor `summary`/detaylarına **lokasyon kısıtı** (kullanıcı yalnız izinli lokasyonlar). Guard `request.user.allowedLocationIds`'i dolduruyor; reports servisine henüz bağlanmadı (summary'nin çok-sorgulu yapısı + tutarlılık nedeniyle tek seferde yapılacak).
 
 ## Finans modülü
 - Tek hareket tablosu `FinanceMovement`: her satır bir ana kaydı etkiler (`CashRegister` = Kasa/Banka/POS/Kredi Kartı, ya da `Cheque`). Çok bacaklı işlemler (virman, POS→banka, KK ödemesi, çek tahsil) ortak `groupId` taşır; silme grup bazında.

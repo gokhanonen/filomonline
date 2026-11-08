@@ -14,6 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Page } from "@/components/shared/Page";
+import { useAuthContext } from "@/app/contexts/auth/context";
 import { Button, Card, Input, Spinner, Table, TBody, Td, Th, THead, Tr } from "@/components/ui";
 import {
   getMonthlyTrends,
@@ -36,6 +37,12 @@ function money(v: number | null | undefined): string {
 type TabType = "overview" | "profitability" | "salesReps";
 
 export default function ReportsPage() {
+  const { can } = useAuthContext();
+  // Hassas-veri scope'ları: yoksa ilgili kart/sütun/grafik gizlenir (backend de alanı çıkarır).
+  const showCost = can("data.cost.view");
+  const showProfit = can("data.profit.view");
+  const showSale = can("data.salePrice.view");
+
   const [activeTab, setActiveTab] = useState<TabType>("overview");
 
   // Veri durumları
@@ -229,6 +236,7 @@ export default function ReportsPage() {
               <>
                 {/* 4 Ana KPI Kartı */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {showSale && (
                   <Card className="p-5 border-l-4 border-l-primary relative overflow-hidden">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-300">
@@ -245,7 +253,9 @@ export default function ReportsPage() {
                       Toplam {summary.vehicles.satildi} satılan araç
                     </div>
                   </Card>
+                  )}
 
+                  {showProfit && (
                   <Card className="p-5 border-l-4 border-l-emerald-500 relative overflow-hidden">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-300">
@@ -264,7 +274,9 @@ export default function ReportsPage() {
                         : "Henüz satış yok"}
                     </div>
                   </Card>
+                  )}
 
+                  {showCost && (
                   <Card className="p-5 border-l-4 border-l-blue-500 relative overflow-hidden">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-300">
@@ -281,7 +293,9 @@ export default function ReportsPage() {
                       Liste Değeri: {money(summary.stokListeDeğeri)}
                     </div>
                   </Card>
+                  )}
 
+                  {showCost && (
                   <Card className="p-5 border-l-4 border-l-amber-500 relative overflow-hidden">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-300">
@@ -298,11 +312,13 @@ export default function ReportsPage() {
                       {summary.cariSayisi} aktif cari hesap kaydı
                     </div>
                   </Card>
+                  )}
                 </div>
 
                 {/* Grafikler & Tablo Dağılımı */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                   {/* Son 6 Ay Satış Trendi Bar Grafiği */}
+                  {showSale && (
                   <Card className="p-6 lg:col-span-2">
                     <div className="flex items-center justify-between mb-4">
                       <div>
@@ -318,10 +334,12 @@ export default function ReportsPage() {
                           <span className="size-3 rounded bg-primary" />
                           <span className="text-gray-600 dark:text-dark-300">Ciro</span>
                         </div>
+                        {showProfit && (
                         <div className="flex items-center gap-1.5">
                           <span className="size-3 rounded bg-emerald-500" />
                           <span className="text-gray-600 dark:text-dark-300">Kâr</span>
                         </div>
+                        )}
                       </div>
                     </div>
 
@@ -347,6 +365,7 @@ export default function ReportsPage() {
                                   </span>
                                 </div>
                                 {/* Kâr Çubuğu */}
+                                {showProfit && (
                                 <div
                                   style={{ height: `${profitHeight}px` }}
                                   className="w-4 sm:w-6 rounded-t bg-emerald-500/80 group-hover:bg-emerald-500 transition-all relative flex justify-center"
@@ -356,6 +375,7 @@ export default function ReportsPage() {
                                     {money(t.profit)}
                                   </span>
                                 </div>
+                                )}
                               </div>
                               <span className="text-[11px] font-medium text-gray-600 dark:text-dark-300 text-center">
                                 {t.month}
@@ -369,6 +389,7 @@ export default function ReportsPage() {
                       </div>
                     )}
                   </Card>
+                  )}
 
                   {/* Filo Dağılımı ve Özet */}
                   <Card className="p-6 flex flex-col justify-between">
@@ -523,33 +544,41 @@ export default function ReportsPage() {
                   </div>
                 </div>
 
+                {showCost && (
                 <div className="rounded-xl bg-gray-50 p-3.5 dark:bg-dark-800 border border-gray-200 dark:border-dark-700">
                   <div className="text-[11px] font-medium text-gray-500 dark:text-dark-400">Toplam Alış</div>
                   <div className="mt-1 text-base font-bold text-gray-900 dark:text-white">
                     {money(profitabilitySummary.totalPurchases)}
                   </div>
                 </div>
+                )}
 
+                {showCost && (
                 <div className="rounded-xl bg-amber-50/50 p-3.5 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40">
                   <div className="text-[11px] font-medium text-amber-700 dark:text-amber-400">Toplam Masraflar</div>
                   <div className="mt-1 text-base font-bold text-amber-900 dark:text-amber-300">
                     {money(profitabilitySummary.totalExpenses)}
                   </div>
                 </div>
+                )}
 
+                {showSale && (
                 <div className="rounded-xl bg-blue-50/50 p-3.5 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/40">
                   <div className="text-[11px] font-medium text-blue-700 dark:text-blue-400">Satış Cirosu</div>
                   <div className="mt-1 text-base font-bold text-blue-900 dark:text-blue-300">
                     {money(profitabilitySummary.totalSalesRevenue)}
                   </div>
                 </div>
+                )}
 
+                {showProfit && (
                 <div className="rounded-xl bg-emerald-50/60 p-3.5 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40">
                   <div className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">Toplam Net Kâr</div>
                   <div className="mt-1 text-base font-bold text-emerald-800 dark:text-emerald-300">
                     {money(profitabilitySummary.totalNetProfit)}
                   </div>
                 </div>
+                )}
 
                 <div className="rounded-xl bg-gray-50 p-3.5 dark:bg-dark-800 border border-gray-200 dark:border-dark-700">
                   <div className="text-[11px] font-medium text-gray-500 dark:text-dark-400">Ort. Stokta Kalma</div>
