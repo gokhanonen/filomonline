@@ -90,7 +90,7 @@ export default function UsersPage() {
                   <Tr>
                     <Th>Ad Soyad</Th>
                     <Th>E-posta</Th>
-                    <Th>Firmalar</Th>
+                    <Th>Rol</Th>
                     <Th>Durum</Th>
                     <Th className="text-right">İşlem</Th>
                   </Tr>
@@ -101,21 +101,39 @@ export default function UsersPage() {
                       <Td className="font-medium text-gray-800 dark:text-dark-100">{u.name}</Td>
                       <Td>{u.email}</Td>
                       <Td>
-                        <div className="flex flex-wrap gap-1">
-                          {u.memberships.length === 0 ? (
-                            <span className="text-gray-400">—</span>
-                          ) : (
-                            u.memberships.map((m) => (
-                              <Tag key={m.id} color="info" className="text-xs">
-                                {m.company.name} ·{" "}
-                                {m.isAdmin
-                                  ? "Yönetici"
-                                  : m.roles.map((r) => r.name).join(", ") ||
-                                    "rol yok"}
-                              </Tag>
-                            ))
-                          )}
-                        </div>
+                        {u.memberships.length === 0 ? (
+                          <span className="text-gray-400">—</span>
+                        ) : (
+                          (() => {
+                            // Firmalar arası rolleri tekilleştir (admin → "Yönetici").
+                            const roleSet = new Set<string>();
+                            u.memberships.forEach((m) => {
+                              if (m.isAdmin) roleSet.add("Yönetici");
+                              else m.roles.forEach((r) => roleSet.add(r.name));
+                            });
+                            const roles = [...roleSet];
+                            return (
+                              <div className="flex flex-wrap items-center gap-1">
+                                {roles.length === 0 ? (
+                                  <span className="text-xs text-gray-400">rol yok</span>
+                                ) : (
+                                  roles.map((r) => (
+                                    <Tag
+                                      key={r}
+                                      color={r === "Yönetici" ? "primary" : "info"}
+                                      className="text-xs"
+                                    >
+                                      {r}
+                                    </Tag>
+                                  ))
+                                )}
+                                <span className="text-tiny text-gray-400 dark:text-dark-300">
+                                  · {u.memberships.length} firma
+                                </span>
+                              </div>
+                            );
+                          })()
+                        )}
                       </Td>
                       <Td>
                         <Tag color={u.isActive ? "success" : "neutral"}>
