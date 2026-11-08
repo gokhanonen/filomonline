@@ -104,7 +104,14 @@ export class AuthService {
     const companyIds = user.memberships.map((m) => m.company.id);
     const locations = companyIds.length
       ? await this.prisma.location.findMany({
-          where: { companyId: { in: companyIds }, isActive: true },
+          // Seçicide YALNIZ satış/galeri lokasyonları (araç kaydı/satışı yapılan).
+          // Dış servis lokasyonları (kaporta, boyacı, bakım, yıkama — isExternal) çıkmaz;
+          // onlara araçlar transfer akışıyla gönderilir, aktif çalışma lokasyonu olmazlar.
+          where: {
+            companyId: { in: companyIds },
+            isActive: true,
+            isExternal: false,
+          },
           select: {
             id: true,
             companyId: true,

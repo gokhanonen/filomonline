@@ -19,7 +19,7 @@ export function LocationCard({ location: l, onEdit, onDelete }: Props) {
           <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
             <span className="font-mono text-tiny text-gray-400">{l.code}</span>
             <span className={`rounded px-1.5 py-0.5 text-tiny font-medium ${l.isExternal ? "bg-warning/15 text-warning" : "bg-info/15 text-info"}`}>
-              {l.isExternal ? "Dış" : "İç"}
+              {l.isExternal ? "Dış Servis" : "Satış / Galeri"}
             </span>
             {!l.isActive && <span className="text-tiny text-error">Pasif</span>}
           </div>

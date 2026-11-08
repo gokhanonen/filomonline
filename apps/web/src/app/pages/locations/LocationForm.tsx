@@ -86,7 +86,17 @@ export function LocationForm({ open, onClose, onSaved, location }: Props) {
           <Input label="İşyeri Bilgisi (ERP)" {...register("workplaceInfo")} />
           <Input label="Depo Bilgisi (ERP)" {...register("warehouseInfo")} />
         </div>
-        <Checkbox label="Dış lokasyon (kaporta, boyacı vb. — transfer onayı gerektirmez)" {...register("isExternal")} />
+        <div className="rounded-lg border border-gray-200 p-3 dark:border-dark-500">
+          <Checkbox
+            label="Dış servis lokasyonu (kaporta, boyacı, bakım, yıkama…)"
+            {...register("isExternal")}
+          />
+          <p className="mt-1.5 pl-7 text-tiny text-gray-400 dark:text-dark-300">
+            İşaretlenirse bu lokasyonda araç kaydı/satışı yapılmaz ve sağ üstteki
+            Firma→Lokasyon seçicisinde çıkmaz; araçlar buraya yalnız transfer ile
+            gönderilir (onay gerektirmez). Satış/galeri lokasyonları için işaretlemeyin.
+          </p>
+        </div>
 
         <div className="flex justify-end gap-3 pt-2">
           <Button type="button" variant="outlined" onClick={onClose}>
