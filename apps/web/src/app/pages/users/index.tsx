@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { PencilSquareIcon, PlusIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { useSearchParams } from "react-router";
+import { PencilSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 
 import { Page } from "@/components/shared/Page";
+import { AuthzNav } from "@/components/shared/AuthzNav";
+import { RolesManagerPanel } from "./RolesManagerPanel";
 import {
   Button,
   Card,
@@ -18,13 +21,13 @@ import {
 import type { AdminUser } from "@/@types/userAdmin";
 import { listUsers } from "@/services/userService";
 import { UserForm } from "./UserForm";
-import { RolesManagerModal } from "./RolesManagerModal";
 
 export default function UsersPage() {
+  const [searchParams] = useSearchParams();
+  const tab = searchParams.get("tab") === "roles" ? "roles" : "users";
   const [items, setItems] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [rolesOpen, setRolesOpen] = useState(false);
   const [editing, setEditing] = useState<AdminUser | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -43,22 +46,20 @@ export default function UsersPage() {
   }, [fetchData]);
 
   return (
-    <Page title="Kullanıcılar">
-      <div className="w-full px-(--margin-x) py-6">
+    <Page title="Yetkilendirme">
+      <div className="w-full space-y-4 px-(--margin-x) py-5">
+        <AuthzNav activeId={tab} />
+
+        {tab === "roles" ? (
+          <RolesManagerPanel />
+        ) : (
+          <>
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-medium text-gray-800 dark:text-dark-50">Kullanıcılar</h2>
             <p className="text-sm text-gray-400 dark:text-dark-300">Toplam {items.length} kullanıcı</p>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outlined"
-              className="gap-1.5"
-              onClick={() => setRolesOpen(true)}
-              title="Roller & Yetkiler"
-            >
-              <ShieldCheckIcon className="size-5" /> Roller & Yetkiler
-            </Button>
             <Button
               color="primary"
               isIcon
@@ -138,10 +139,11 @@ export default function UsersPage() {
             )}
           </div>
         </Card>
+          </>
+        )}
       </div>
 
       <UserForm open={formOpen} onClose={() => setFormOpen(false)} onSaved={fetchData} user={editing} />
-      <RolesManagerModal open={rolesOpen} onClose={() => setRolesOpen(false)} onRolesChanged={fetchData} />
     </Page>
   );
 }

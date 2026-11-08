@@ -43,8 +43,7 @@ export const navigation: NavigationTree[] = [
     title: "Yönetim",
     icon: "settings",
     childs: [
-      { id: "companies", type: "item", path: "/companies", title: "Firmalar", icon: "companies" },
-      { id: "users", type: "item", path: "/users", title: "Kullanıcılar", icon: "users" },
+      { id: "users", type: "item", path: "/users", title: "Yetkilendirme", icon: "users" },
       { id: "catalog", type: "item", path: "/catalog", title: "Tanımlar", icon: "catalog" },
       { id: "subscription", type: "item", path: "/subscription", title: "Abonelik", icon: "subscription" },
       { id: "billing", type: "item", path: "/billing", title: "Kontör", icon: "credits" },

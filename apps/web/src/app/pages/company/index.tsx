@@ -1,14 +1,241 @@
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import {
+  BuildingOffice2Icon,
+  CheckBadgeIcon,
+  PlusIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+
 import { Page } from "@/components/shared/Page";
 import { DefinitionsNav } from "@/components/shared/DefinitionsNav";
+import { Button, Card, Input, Spinner } from "@/components/ui";
 import { CompanySettingsCard } from "@/app/pages/settings/components/CompanySettingsCard";
+import { useAuthContext } from "@/app/contexts/auth/context";
+import {
+  AdminCompany,
+  createHoldingCompany,
+  listHoldingCompanies,
+} from "@/services/adminService";
+
+const emptyForm = {
+  name: "",
+  taxNumber: "",
+  taxOffice: "",
+  phone: "",
+  email: "",
+  address: "",
+};
 
 export default function CompanyPage() {
+  const {
+    holdingName,
+    activeCompanyId,
+    switchCompany,
+    isCompanyAdmin,
+    isSuperAdmin,
+    refreshUser,
+  } = useAuthContext();
+  const canManage = isCompanyAdmin || isSuperAdmin;
+
+  const [items, setItems] = useState<AdminCompany[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ ...emptyForm });
+
+  const load = async () => {
+    try {
+      setLoading(true);
+      setItems(await listHoldingCompanies());
+    } catch {
+      toast.error("Firmalar yüklenemedi.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void load();
+  }, []);
+
+  const submit = async () => {
+    if (form.name.trim().length < 2) {
+      toast.error("Firma adı en az 2 karakter olmalı.");
+      return;
+    }
+    try {
+      setSaving(true);
+      await createHoldingCompany({
+        name: form.name.trim(),
+        taxNumber: form.taxNumber.trim() || undefined,
+        taxOffice: form.taxOffice.trim() || undefined,
+        phone: form.phone.trim() || undefined,
+        email: form.email.trim() || undefined,
+        address: form.address.trim() || undefined,
+      });
+      toast.success("Firma oluşturuldu. Merkez + Şube lokasyonları hazır.");
+      setForm({ ...emptyForm });
+      setShowForm(false);
+      await load();
+      await refreshUser();
+    } catch (e) {
+      toast.error(
+        (e as { message?: string })?.message ?? "Firma oluşturulamadı.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const activeName =
+    items.find((c) => c.id === activeCompanyId)?.name ?? "Firma";
+
   return (
-    <Page title="Tanımlar - Firma">
-      <div className="w-full px-(--margin-x) py-4 space-y-4">
+    <Page title="Tanımlar - Firmalar">
+      <div className="w-full space-y-5 px-(--margin-x) py-4">
         <DefinitionsNav activeId="company" />
-        <div className="max-w-5xl">
-          <CompanySettingsCard />
+
+        {/* Başlık + Yeni Firma */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-lg font-semibold text-gray-800 dark:text-dark-50">
+              Firmalar
+            </h1>
+            <p className="text-sm text-gray-400 dark:text-dark-300">
+              {holdingName ?? "Holding"} altındaki firmalar — bir firma seçip düzenleyin
+              veya yeni firma açın.
+            </p>
+          </div>
+          {canManage && (
+            <Button color="primary" onClick={() => setShowForm((s) => !s)}>
+              {showForm ? (
+                <XMarkIcon className="size-5" />
+              ) : (
+                <PlusIcon className="size-5" />
+              )}
+              <span>{showForm ? "Vazgeç" : "Yeni Firma"}</span>
+            </Button>
+          )}
+        </div>
+
+        {/* Yeni firma formu */}
+        {showForm && canManage && (
+          <Card className="space-y-4 p-5">
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-dark-100">
+              Yeni Firma
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <Input
+                  label="Firma Adı *"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  placeholder="Örn. Kaleli Oto Kiralama A.Ş."
+                />
+              </div>
+              <Input
+                label="Vergi No"
+                value={form.taxNumber}
+                onChange={(e) => setForm({ ...form, taxNumber: e.target.value })}
+              />
+              <Input
+                label="Vergi Dairesi"
+                value={form.taxOffice}
+                onChange={(e) => setForm({ ...form, taxOffice: e.target.value })}
+              />
+              <Input
+                label="Telefon"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              />
+              <Input
+                label="E-posta"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+              <div className="sm:col-span-2">
+                <Input
+                  label="Adres"
+                  value={form.address}
+                  onChange={(e) => setForm({ ...form, address: e.target.value })}
+                />
+              </div>
+            </div>
+            <p className="text-tiny text-gray-400">
+              Firma açılınca otomatik olarak yönetici olursunuz ve Merkez + Şube
+              lokasyonları kurulur. Logo, resmi ünvan, MERSİS gibi detayları
+              oluşturduktan sonra aşağıdan düzenleyebilirsiniz.
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button variant="outlined" onClick={() => setShowForm(false)}>
+                İptal
+              </Button>
+              <Button color="primary" onClick={submit} disabled={saving}>
+                {saving ? <Spinner className="size-4" /> : "Oluştur"}
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {/* Firma kartları — tıklayınca o firma seçilir (düzenleme aşağıda açılır) */}
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <Spinner className="size-7" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((c) => {
+              const active = c.id === activeCompanyId;
+              return (
+                <Card
+                  key={c.id}
+                  onClick={() => !active && switchCompany(c.id)}
+                  className={
+                    "flex items-center gap-3 p-4 transition " +
+                    (active
+                      ? "border-primary-500 ring-1 ring-primary-500"
+                      : "cursor-pointer hover:border-primary-400 hover:shadow-md")
+                  }
+                  title={active ? "Seçili firma" : "Bu firmayı seç ve düzenle"}
+                >
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-400">
+                    <BuildingOffice2Icon className="size-6" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-gray-800 dark:text-dark-50">
+                      {c.name}
+                    </p>
+                    <p className="truncate text-tiny text-gray-400 dark:text-dark-300">
+                      {c.taxNumber ? `VKN ${c.taxNumber}` : "VKN yok"}
+                      {c._count ? ` · ${c._count.memberships} kullanıcı` : ""}
+                    </p>
+                  </div>
+                  {active ? (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded bg-primary-100 px-1.5 py-0.5 text-tiny font-medium text-primary-700 dark:bg-primary-500/20 dark:text-primary-300">
+                      <CheckBadgeIcon className="size-4" /> Seçili
+                    </span>
+                  ) : (
+                    !c.isActive && (
+                      <span className="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 text-tiny text-gray-500 dark:bg-dark-600 dark:text-dark-200">
+                        Pasif
+                      </span>
+                    )
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Seçili firmanın detay/düzenleme formu (logo, resmi ünvan, MERSİS, adres…) */}
+        <div className="pt-2">
+          <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-dark-100">
+            Seçili Firma: {activeName}
+          </h2>
+          <div className="max-w-5xl">
+            <CompanySettingsCard />
+          </div>
         </div>
       </div>
     </Page>

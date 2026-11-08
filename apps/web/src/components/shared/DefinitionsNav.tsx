@@ -29,7 +29,7 @@ export const DEFINITION_TABS: DefinitionTabItem[] = [
   { id: "documents", label: "Evrak Tanımları", to: "/catalog?tab=documents", icon: DocumentTextIcon },
   { id: "accounts", label: "Cariler", to: "/accounts", icon: UserGroupIcon },
   { id: "products", label: "Malzeme & Hizmetler", to: "/products", icon: CubeIcon },
-  { id: "company", label: "Firma", to: "/company", icon: BuildingOffice2Icon },
+  { id: "company", label: "Firmalar", to: "/company", icon: BuildingOffice2Icon },
   { id: "locations", label: "Lokasyonlar", to: "/locations", icon: MapPinIcon },
 ];
 

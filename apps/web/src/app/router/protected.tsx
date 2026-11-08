@@ -187,10 +187,9 @@ const protectedRoutes: RouteObject = {
           }),
         },
         {
+          // Eski /companies linkleri Tanımlar > Firmalar'a yönlensin
           path: "companies",
-          lazy: async () => ({
-            Component: (await import("@/app/pages/companies")).default,
-          }),
+          element: <Navigate to="/company" replace />,
         },
         {
           path: "definitions",
