@@ -917,7 +917,10 @@ export class VehiclesService {
       await this.prisma.vehicle
         .update({
           where: { id: vehicleId },
-          data: { purchaseLocationId: dto.toLocationId },
+          data: {
+            purchaseLocationId: dto.toLocationId,
+            currentLocationId: dto.toLocationId,
+          },
         })
         .catch(() => void 0);
 
@@ -1020,6 +1023,7 @@ export class VehiclesService {
           supplierId: null,
         },
       });
+      await this.syncVehicleCurrentLocation(vehicleId, dto.toLocationId);
 
       return {
         success: true,
@@ -1060,6 +1064,20 @@ export class VehiclesService {
     };
   }
 
+  /**
+   * Denormalize `Vehicle.currentLocationId`'yi aracın onaylı (AT_LOCATION) lokasyonuyla
+   * eşitler. Lokasyon bazlı liste filtresi bu alana baktığı için transfer/taşıma/dönüş
+   * onaylandığında güncel tutulmalı. (Hata yutulur; ana akışı bozmaz.)
+   */
+  private async syncVehicleCurrentLocation(
+    vehicleId: string,
+    locationId: string,
+  ): Promise<void> {
+    await this.prisma.vehicle
+      .update({ where: { id: vehicleId }, data: { currentLocationId: locationId } })
+      .catch(() => void 0);
+  }
+
   async confirmTransfer(
     companyId: string,
     userId: string,
@@ -1095,6 +1113,7 @@ export class VehiclesService {
         pendingTransferId: null,
       },
     });
+    await this.syncVehicleCurrentLocation(vehicleId, transfer.toLocationId);
 
     return { success: true, message: "Araç teslim alındı ve transfer onaylandı" };
   }
@@ -1196,6 +1215,7 @@ export class VehiclesService {
         supplierId: null,
       },
     });
+    await this.syncVehicleCurrentLocation(vehicleId, returnLocId);
 
     return {
       success: true,
