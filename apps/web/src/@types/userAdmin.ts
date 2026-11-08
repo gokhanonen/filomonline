@@ -13,6 +13,7 @@ export interface AdminMembership {
   roles: { id: string; name: string; permissions?: string[] }[];
   permissionsGrant?: string[] | null;
   permissionsDeny?: string[] | null;
+  locationIds?: string[] | null;
 }
 
 export interface AdminUser {
@@ -33,6 +34,7 @@ export interface MembershipInput {
   roleIds?: string[];
   permissionsGrant?: string[];
   permissionsDeny?: string[];
+  locationIds?: string[];
   isAdmin?: boolean;
   isDefault?: boolean;
 }

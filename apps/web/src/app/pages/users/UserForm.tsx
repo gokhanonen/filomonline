@@ -45,6 +45,7 @@ interface MembershipRow {
   roleIds: string[];
   grant: string[]; // bireysel eklenen scope/izin
   deny: string[]; // bireysel kaldırılan scope/izin
+  locationIds: string[]; // erişebileceği lokasyonlar (boş = tümü)
   isAdmin: boolean;
 }
 
@@ -111,6 +112,7 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
         roleIds: m?.roles.map((r) => r.id) ?? [],
         grant: m?.permissionsGrant ?? [],
         deny: m?.permissionsDeny ?? [],
+        locationIds: m?.locationIds ?? [],
         isAdmin: m?.isAdmin ?? false,
       };
     });
@@ -147,6 +149,21 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
       };
     });
 
+  const toggleLocation = (companyId: string, locationId: string) =>
+    setRows((prev) => {
+      const row = prev[companyId];
+      const has = row.locationIds.includes(locationId);
+      return {
+        ...prev,
+        [companyId]: {
+          ...row,
+          locationIds: has
+            ? row.locationIds.filter((l) => l !== locationId)
+            : [...row.locationIds, locationId],
+        },
+      };
+    });
+
   /** Seçili rollerin bu scope'u verip vermediği. */
   const rolesHave = (roleIds: string[], key: string) =>
     roleIds.some((rid) => {
@@ -177,6 +194,7 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
       roleIds: rows[c.id].roleIds,
       permissionsGrant: rows[c.id].grant,
       permissionsDeny: rows[c.id].deny,
+      locationIds: rows[c.id].isAdmin ? [] : rows[c.id].locationIds,
       isAdmin: rows[c.id].isAdmin,
       isDefault: i === 0,
     }));
@@ -346,6 +364,39 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
                           <span className="text-tiny text-gray-400">Rol tanımlı değil.</span>
                         )}
                       </div>
+
+                      {/* Lokasyon erişimi (boş = tüm lokasyonlar) */}
+                      {(c.locations?.length ?? 0) > 0 && (
+                        <div className="space-y-1.5">
+                          <p className="text-tiny font-medium text-gray-500 dark:text-dark-300">
+                            Lokasyon erişimi{" "}
+                            <span className="font-normal text-gray-400">
+                              ({row.locationIds.length === 0
+                                ? "tüm lokasyonlar"
+                                : `${row.locationIds.length} lokasyon`})
+                            </span>
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {c.locations!.map((l) => {
+                              const on = row.locationIds.includes(l.id);
+                              return (
+                                <button
+                                  key={l.id}
+                                  type="button"
+                                  onClick={() => toggleLocation(c.id, l.id)}
+                                  className={
+                                    on
+                                      ? "rounded-full bg-emerald-600 px-2.5 py-0.5 text-tiny font-semibold text-white"
+                                      : "rounded-full border border-gray-300 px-2.5 py-0.5 text-tiny font-semibold text-gray-600 hover:border-emerald-500 dark:border-dark-500 dark:text-dark-200"
+                                  }
+                                >
+                                  {l.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
 
                       {/* Hassas veri — tek tık */}
                       {catalog && (

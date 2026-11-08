@@ -31,6 +31,7 @@ const userSelect = {
       isDefault: true,
       permissionsGrant: true,
       permissionsDeny: true,
+      locationIds: true,
       company: { select: { id: true, name: true } },
       roles: { select: { id: true, name: true, permissions: true } },
     },
@@ -131,6 +132,7 @@ export class UsersService {
       isDefault: m.isDefault ?? false,
       permissionsGrant: m.permissionsGrant?.length ? m.permissionsGrant : undefined,
       permissionsDeny: m.permissionsDeny?.length ? m.permissionsDeny : undefined,
+      locationIds: m.locationIds?.length ? m.locationIds : undefined,
       roles: m.roleIds?.length
         ? { connect: m.roleIds.map((rid) => ({ id: rid })) }
         : undefined,

@@ -33,6 +33,13 @@ export class MembershipDto {
   @IsString({ each: true })
   permissionsDeny?: string[];
 
+  // Erişebileceği lokasyonlar; boş/verilmezse firmadaki TÜM lokasyonlar.
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsString({ each: true })
+  locationIds?: string[];
+
   @IsOptional() @IsBoolean() isAdmin?: boolean;
   @IsOptional() @IsBoolean() isDefault?: boolean;
 }

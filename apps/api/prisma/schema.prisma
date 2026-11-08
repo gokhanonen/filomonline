@@ -142,6 +142,7 @@ model CompanyMembership {
   // Etkin izin = (roller ∪ permissionsGrant) − permissionsDeny
   permissionsGrant Json? // string[] — kişiye özel eklenen izinler/scope'lar
   permissionsDeny  Json? // string[] — kişiye özel kaldırılan izinler/scope'lar (ör. "maliyet görmesin")
+  locationIds      Json? // string[] — erişebileceği lokasyonlar; boş/null = firmadaki TÜM lokasyonlar
   createdAt        DateTime @default(now())
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)

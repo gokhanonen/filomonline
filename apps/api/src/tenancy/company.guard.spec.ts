@@ -78,4 +78,65 @@ describe("CompanyGuard — lokasyon çözümlemesi", () => {
     await expect(guard.canActivate(ctx)).resolves.toBe(true);
     expect(user.locationId).toBeUndefined();
   });
+
+  // Lokasyon kısıtlı üye: membership.locationIds dışındaki lokasyon 403.
+  function memberGuard(locationIds: string[] | null) {
+    const reflector = { getAllAndOverride: () => false } as unknown as Reflector;
+    const prisma = {
+      companyMembership: {
+        findUnique: jest.fn().mockResolvedValue({
+          isAdmin: false,
+          roles: [{ permissions: ["vehicles.read"] }],
+          permissionsGrant: [],
+          permissionsDeny: [],
+          locationIds,
+          company: { isActive: true, tenantId: TENANT },
+        }),
+      },
+      location: {
+        findFirst: jest.fn().mockResolvedValue({ id: LOCATION }),
+      },
+    } as never;
+    return new CompanyGuard(reflector, prisma);
+  }
+
+  const member = (): AuthUser => ({
+    id: "u_2",
+    tenantId: TENANT,
+    isSuperAdmin: false,
+  });
+
+  it("izinli lokasyonda üye geçer", async () => {
+    const guard = memberGuard([LOCATION]);
+    const user = member();
+    const ctx = makeContext(user, {
+      "x-company-id": COMPANY,
+      "x-location-id": LOCATION,
+    });
+    await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    expect(user.locationId).toBe(LOCATION);
+  });
+
+  it("izinli olmayan lokasyonda üye 403 alır", async () => {
+    const guard = memberGuard(["loc_baska"]);
+    const user = member();
+    const ctx = makeContext(user, {
+      "x-company-id": COMPANY,
+      "x-location-id": LOCATION,
+    });
+    await expect(guard.canActivate(ctx)).rejects.toBeInstanceOf(
+      ForbiddenException,
+    );
+  });
+
+  it("locationIds boşsa (tümü) üye her lokasyonda geçer", async () => {
+    const guard = memberGuard([]);
+    const user = member();
+    const ctx = makeContext(user, {
+      "x-company-id": COMPANY,
+      "x-location-id": LOCATION,
+    });
+    await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    expect(user.locationId).toBe(LOCATION);
+  });
 });

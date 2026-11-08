@@ -90,6 +90,7 @@ export class AuthService {
             isAdmin: true,
             permissionsGrant: true,
             permissionsDeny: true,
+            locationIds: true,
             company: {
               select: { id: true, name: true, logoUrl: true, isActive: true },
             },
@@ -131,18 +132,22 @@ export class AuthService {
 
     return {
       ...user,
-      memberships: user.memberships.map((m) => ({
-        ...m,
-        company: {
-          ...m.company,
-          locations: (byCompany.get(m.company.id) ?? []).map((l) => ({
+      memberships: user.memberships.map((m) => {
+        // Lokasyon kısıtı: üyelikte locationIds doluysa yalnız o lokasyonlar (admin hariç).
+        const allowed =
+          !m.isAdmin && Array.isArray(m.locationIds) && m.locationIds.length > 0
+            ? new Set(m.locationIds as string[])
+            : null;
+        const locs = (byCompany.get(m.company.id) ?? [])
+          .filter((l) => !allowed || allowed.has(l.id))
+          .map((l) => ({
             id: l.id,
             name: l.name,
             code: l.code,
             isExternal: l.isExternal,
-          })),
-        },
-      })),
+          }));
+        return { ...m, company: { ...m.company, locations: locs } };
+      }),
     };
   }
 

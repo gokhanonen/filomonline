@@ -84,7 +84,10 @@ export class CompanyGuard implements CanActivate {
     user.permissions = expandImpliedPermissions(
       [...new Set([...fromRoles, ...grant])].filter((p) => !deny.has(p)),
     );
-    await this.resolveLocation(request, user, companyId);
+    const allowedLocationIds = Array.isArray(membership.locationIds)
+      ? (membership.locationIds as string[])
+      : null;
+    await this.resolveLocation(request, user, companyId, allowedLocationIds);
     return true;
   }
 
@@ -98,6 +101,7 @@ export class CompanyGuard implements CanActivate {
     request: { headers: Record<string, unknown> },
     user: AuthUser,
     companyId: string,
+    allowedLocationIds?: string[] | null,
   ): Promise<void> {
     const locationId = request.headers["x-location-id"] as string | undefined;
     if (!locationId) {
@@ -112,6 +116,14 @@ export class CompanyGuard implements CanActivate {
       throw new ForbiddenException(
         "Seçili lokasyon bu firmaya ait değil veya pasif",
       );
+    }
+    // Kullanıcı belirli lokasyonlara kısıtlıysa (boş liste = tümü) aktif lokasyon izinli olmalı.
+    if (
+      allowedLocationIds &&
+      allowedLocationIds.length > 0 &&
+      !allowedLocationIds.includes(location.id)
+    ) {
+      throw new ForbiddenException("Bu lokasyona erişim yetkiniz yok");
     }
     user.locationId = location.id;
   }
