@@ -57,6 +57,32 @@ export async function updateCompany(id: string, patch: { name?: string; isActive
   return data;
 }
 
+// --- Holding self-servis (firma yöneticisi kendi holding'inde firma açar/listeler) ---
+
+export interface CreateHoldingCompanyInput {
+  name: string;
+  legalName?: string;
+  taxOffice?: string;
+  taxNumber?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+}
+
+export async function listHoldingCompanies(): Promise<AdminCompany[]> {
+  const { data } = await axios.get<Paginated<AdminCompany>>("/companies/holding", {
+    params: { pageSize: 100 },
+  });
+  return data.items;
+}
+
+export async function createHoldingCompany(
+  input: CreateHoldingCompanyInput,
+): Promise<AdminCompany> {
+  const { data } = await axios.post<AdminCompany>("/companies/holding", input);
+  return data;
+}
+
 export interface CompanyDetails {
   id: string;
   tenantId: string;

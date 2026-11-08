@@ -31,6 +31,12 @@ const protectedRoutes: RouteObject = {
           }),
         },
         {
+          path: "holding/vehicles",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/holding/vehicles")).default,
+          }),
+        },
+        {
           path: "vehicles",
           lazy: async () => ({
             Component: (await import("@/app/pages/vehicles")).default,
@@ -178,6 +184,12 @@ const protectedRoutes: RouteObject = {
           path: "company",
           lazy: async () => ({
             Component: (await import("@/app/pages/company")).default,
+          }),
+        },
+        {
+          path: "companies",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/companies")).default,
           }),
         },
         {

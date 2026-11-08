@@ -17,7 +17,11 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { AuthUser } from "../auth/auth.types";
 import { CompanyId } from "../tenancy/company-id.decorator";
 import { CompaniesService } from "./companies.service";
-import { CreateCompanyDto, UpdateCompanyDto } from "./dto/company.dto";
+import {
+  CreateCompanyDto,
+  CreateCompanyForHoldingDto,
+  UpdateCompanyDto,
+} from "./dto/company.dto";
 
 @ApiTags("companies")
 @ApiBearerAuth()
@@ -37,6 +41,41 @@ export class CompaniesController {
   @Get()
   findAll(@Query() q: PaginationDto, @Query("tenantId") tenantId?: string) {
     return this.companies.findAll(q, tenantId);
+  }
+
+  /**
+   * Holding yöneticisi kendi holding'i altında firma açar.
+   * CompanyGuard aktif tenant'ı (activeTenantId) + isCompanyAdmin'i doldurur.
+   */
+  @Post("holding")
+  createForHolding(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: CreateCompanyForHoldingDto,
+  ) {
+    if (!user.isSuperAdmin && !user.isCompanyAdmin) {
+      throw new ForbiddenException(
+        "Firma açmak için holding/firma yöneticisi olmalısınız",
+      );
+    }
+    const tenantId = user.activeTenantId ?? user.tenantId;
+    if (!tenantId) throw new ForbiddenException("Aktif holding bağlamı yok");
+    return this.companies.createForHolding(tenantId, user.id, dto);
+  }
+
+  /** Holding (tenant) içindeki firmaları listeler — firma yöneticisi self-servis. */
+  @Get("holding")
+  findAllForHolding(
+    @CurrentUser() user: AuthUser,
+    @Query() q: PaginationDto,
+  ) {
+    if (!user.isSuperAdmin && !user.isCompanyAdmin) {
+      throw new ForbiddenException(
+        "Firma listesi için holding/firma yöneticisi olmalısınız",
+      );
+    }
+    const tenantId = user.activeTenantId ?? user.tenantId;
+    if (!tenantId) throw new ForbiddenException("Aktif holding bağlamı yok");
+    return this.companies.findAllForTenant(tenantId, q);
   }
 
   /** Aktif şirketin bilgilerini getirir (firma yöneticisi veya üye) */

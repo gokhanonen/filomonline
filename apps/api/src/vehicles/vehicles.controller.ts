@@ -66,6 +66,21 @@ export class VehiclesController {
     return this.vehicles.findAll(companyId, q, locationId);
   }
 
+  /** Konsolide (Tüm Firmalar) araç listesi — firma bağlamı gerektirmez. */
+  @SkipCompany()
+  @Get("holding")
+  findAllHolding(
+    @CurrentUser() user: AuthUser,
+    @Query() q: QueryVehiclesDto,
+  ) {
+    return this.vehicles.findAllHolding(
+      user.id,
+      user.isSuperAdmin,
+      user.tenantId,
+      q,
+    );
+  }
+
   @RequirePermissions("vehicles.read")
   @Get(":id")
   findOne(@CompanyId() companyId: string, @Param("id") id: string) {

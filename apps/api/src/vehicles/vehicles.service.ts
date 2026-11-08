@@ -227,6 +227,96 @@ export class VehiclesService {
     return { items, total, page: q.page, pageSize: q.pageSize };
   }
 
+  /**
+   * Konsolide (Tüm Firmalar) araç listesi — kullanıcının erişebildiği TÜM firmalardaki
+   * araçları firma + lokasyon rozetiyle döner. Hafif (ağır presign yok); amacı hepsini
+   * birlikte görüp bir araca tıklayınca o aracın firma/lokasyonuna geçmek.
+   */
+  async findAllHolding(
+    userId: string,
+    isSuperAdmin: boolean,
+    tenantId: string | null | undefined,
+    q: QueryVehiclesDto,
+  ): Promise<Paginated<unknown>> {
+    const memberships = await this.prisma.companyMembership.findMany({
+      where: { userId },
+      select: { companyId: true },
+    });
+    let companyIds = memberships.map((m) => m.companyId);
+    // Süper admin + üyelik yoksa: holding'deki tüm firmalar.
+    if (!companyIds.length && isSuperAdmin && tenantId) {
+      const comps = await this.prisma.company.findMany({
+        where: { tenantId, isActive: true },
+        select: { id: true },
+      });
+      companyIds = comps.map((c) => c.id);
+    }
+    if (!companyIds.length) {
+      return { items: [], total: 0, page: q.page, pageSize: q.pageSize };
+    }
+
+    const where: Prisma.VehicleWhereInput = {
+      companyId: { in: companyIds },
+      ...(q.status ? { status: q.status } : {}),
+      ...(q.onlyActive ? { isActive: true } : {}),
+      ...(q.search
+        ? {
+            OR: [
+              { plate: { contains: q.search } },
+              { brandName: { contains: q.search } },
+              { modelName: { contains: q.search } },
+              { chassisNo: { contains: q.search } },
+            ],
+          }
+        : {}),
+    };
+    const [vehicles, total] = await this.prisma.$transaction([
+      this.prisma.vehicle.findMany({
+        where,
+        orderBy: [{ companyId: "asc" }, { createdAt: "desc" }],
+        skip: (q.page - 1) * q.pageSize,
+        take: q.pageSize,
+        select: {
+          id: true,
+          companyId: true,
+          currentLocationId: true,
+          plate: true,
+          brandName: true,
+          modelName: true,
+          year: true,
+          km: true,
+          status: true,
+          listPrice: true,
+          saleAmount: true,
+        },
+      }),
+      this.prisma.vehicle.count({ where }),
+    ]);
+
+    // Firma + lokasyon adlarını tek sorguda çöz (rozetler için).
+    const [companies, locations] = await Promise.all([
+      this.prisma.company.findMany({
+        where: { id: { in: companyIds } },
+        select: { id: true, name: true },
+      }),
+      this.prisma.location.findMany({
+        where: { companyId: { in: companyIds } },
+        select: { id: true, name: true },
+      }),
+    ]);
+    const compMap = new Map(companies.map((c) => [c.id, c.name]));
+    const locMap = new Map(locations.map((l) => [l.id, l.name]));
+
+    const items = vehicles.map((v) => ({
+      ...v,
+      companyName: compMap.get(v.companyId) ?? null,
+      locationName: v.currentLocationId
+        ? locMap.get(v.currentLocationId) ?? null
+        : null,
+    }));
+    return { items, total, page: q.page, pageSize: q.pageSize };
+  }
+
   async findOne(companyId: string, id: string) {
     const vehicle = await this.prisma.vehicle.findFirst({
       where: { id, companyId },

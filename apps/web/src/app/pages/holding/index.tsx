@@ -79,25 +79,36 @@ export default function HoldingDashboard() {
   return (
     <Page title="Holding — Konsolide">
       <div className="w-full space-y-6 px-(--margin-x) py-6">
-        <div className="flex items-center gap-3">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-400">
-            <TbBuildingSkyscraper className="size-6" />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-11 items-center justify-center rounded-xl bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-400">
+              <TbBuildingSkyscraper className="size-6" />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold text-gray-800 dark:text-dark-50">
+                {data.holdingName} — Konsolide
+              </h1>
+              <p className="text-sm text-gray-400 dark:text-dark-300">
+                {data.companyCount} firmanın birleşik özeti
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-dark-50">
-              {data.holdingName} — Konsolide
-            </h1>
-            <p className="text-sm text-gray-400 dark:text-dark-300">
-              {data.companyCount} firmanın birleşik özeti
-            </p>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/holding/vehicles")}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+          >
+            <TbCar className="size-5" />
+            Tüm Firmalar — Araçlar
+          </button>
         </div>
 
         <div className="flex items-center gap-2 rounded-xl border border-info/30 bg-info/10 px-4 py-2.5 text-sm text-info">
           <TbInfoCircle className="size-5 shrink-0" />
           <span>
-            Bu ekran <b>salt-okunur</b> konsolide görünümdür. İşlem yapmak (araç girişi, satış,
-            tahsilat…) için aşağıdan ya da sağ üstteki seçiciden bir firma seçin.
+            Konsolide <b>özet</b> ekranıdır. Tüm firmaların araçlarını birlikte görüp işlem
+            yapmak için <b>“Tüm Firmalar — Araçlar”</b>a girin; bir araca tıklayınca o aracın
+            firma ve lokasyonuna geçersiniz.
           </span>
         </div>
 

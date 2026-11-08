@@ -96,6 +96,33 @@ export async function listVehicles(
   return data;
 }
 
+/** Konsolide (Tüm Firmalar) araç satırı — firma/lokasyon rozetli hafif kart. */
+export interface HoldingVehicle {
+  id: string;
+  companyId: string;
+  currentLocationId: string | null;
+  plate: string | null;
+  brandName: string | null;
+  modelName: string | null;
+  year: number | null;
+  km: number | null;
+  status: VehicleStatus;
+  listPrice: number | null;
+  saleAmount: number | null;
+  companyName: string | null;
+  locationName: string | null;
+}
+
+export async function listHoldingVehicles(
+  params: ListVehiclesParams = {},
+): Promise<Paginated<HoldingVehicle>> {
+  const { data } = await axios.get<Paginated<HoldingVehicle>>(
+    "/vehicles/holding",
+    { params: clean(params) },
+  );
+  return data;
+}
+
 export async function getVehicle(id: string): Promise<Vehicle> {
   const { data } = await axios.get<Vehicle>(`/vehicles/${id}`);
   return data;
