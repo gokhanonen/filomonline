@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import clsx from "clsx";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import {
   TbCamera,
   TbCar,
   TbCircleCheck,
+  TbCoins,
   TbMicrophone,
   TbPhoto,
   TbSearch,
@@ -33,6 +34,7 @@ import {
   type AiAssistResult,
   type AiDocumentType,
 } from "@/services/aiService";
+import { getWallet, type CreditWallet } from "@/services/creditsService";
 import { createAccount, listAccounts } from "@/services/accountService";
 import { createLead, listLeads } from "@/services/crmService";
 import { createVehicle, listVehicles } from "@/services/vehicleService";
@@ -125,6 +127,20 @@ export function AiAssistantModal({ open, onClose }: Props) {
   const recognitionRef = useRef<{ stop: () => void; abort: () => void } | null>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+  const [wallet, setWallet] = useState<CreditWallet | null>(null);
+  const [loadingWallet, setLoadingWallet] = useState(false);
+
+  const loadWallet = useCallback(async () => {
+    try {
+      setLoadingWallet(true);
+      const w = await getWallet();
+      setWallet(w);
+    } catch {
+      // sessizce geç
+    } finally {
+      setLoadingWallet(false);
+    }
+  }, []);
 
   const reset = () => {
     setPrompt("");
@@ -137,9 +153,13 @@ export function AiAssistantModal({ open, onClose }: Props) {
   };
 
   useEffect(() => {
-    if (open) reset();
-    else recognitionRef.current?.abort();
-  }, [open]);
+    if (open) {
+      reset();
+      void loadWallet();
+    } else {
+      recognitionRef.current?.abort();
+    }
+  }, [open, loadWallet]);
 
   // ---- Girdi ----
 
@@ -234,6 +254,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
       setError(errMsg(err));
     } finally {
       setLoading(false);
+      void loadWallet();
     }
   };
 
@@ -432,10 +453,37 @@ export function AiAssistantModal({ open, onClose }: Props) {
           <TbX className="size-5" />
         </button>
 
-        {/* Başlık */}
-        <div className="mb-5 flex items-center justify-center gap-2">
-          <TbSparkles className="size-7 text-primary-500" />
-          <span className="bg-linear-to-r from-primary-600 to-purple-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Filomonline AI</span>
+        {/* Başlık & Kalan Kontör */}
+        <div className="mb-5 flex flex-col items-center justify-center gap-2">
+          <div className="flex items-center gap-2">
+            <TbSparkles className="size-7 text-primary-500" />
+            <span className="bg-linear-to-r from-primary-600 to-purple-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Filomonline AI</span>
+          </div>
+
+          {wallet !== null ? (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                navigate("/billing");
+              }}
+              title={`Aylık Kalan: ${wallet.freeBalance.toLocaleString("tr-TR")} · Satın Alınan Kalan: ${wallet.paidBalance.toLocaleString("tr-TR")} (Yüklemek için tıklayın)`}
+              className={clsx(
+                "group inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-medium transition cursor-pointer",
+                wallet.balance > 0
+                  ? "border border-purple-200/80 bg-purple-50/70 text-purple-700 hover:border-purple-300 hover:bg-purple-100 hover:text-purple-800 dark:border-purple-800/60 dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-900/60"
+                  : "border border-error/30 bg-error/10 text-error hover:bg-error/20",
+              )}
+            >
+              <TbCoins className="size-3.5 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform" />
+              <span>
+                Kalan: <b>{wallet.balance.toLocaleString("tr-TR")}</b> kontör
+              </span>
+              <span className="text-[10px] opacity-70">· Yükle</span>
+            </button>
+          ) : loadingWallet ? (
+            <div className="h-5 w-28 animate-pulse rounded-full bg-gray-100 dark:bg-dark-600" />
+          ) : null}
         </div>
 
         {/* Arama kutusu */}
@@ -508,9 +556,25 @@ export function AiAssistantModal({ open, onClose }: Props) {
 
         {/* Hata */}
         {error && (
-          <div className="mt-5 flex items-start gap-2 rounded-2xl bg-error/10 px-4 py-3 text-sm text-error">
-            <TbAlertTriangle className="mt-0.5 size-4 shrink-0" />
-            <span>{error}</span>
+          <div className="mt-5 flex flex-col gap-2 rounded-2xl bg-error/10 px-4 py-3 text-sm text-error">
+            <div className="flex items-start gap-2">
+              <TbAlertTriangle className="mt-0.5 size-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+            {error.toLocaleLowerCase("tr-TR").includes("kontör") && (
+              <div className="pt-0.5">
+                <Button
+                  color="primary"
+                  className="h-8 px-3 text-xs"
+                  onClick={() => {
+                    onClose();
+                    navigate("/billing");
+                  }}
+                >
+                  Kontör Satın Al
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
@@ -710,7 +774,7 @@ export function AiAssistantModal({ open, onClose }: Props) {
 
         {!result && !loading && !error && (
           <p className="mt-4 text-center text-xs text-gray-400">
-            En fazla {MAX_PHOTOS} fotoğraf · ön ve arka yüz birlikte okunur · ne açılacağına AI karar verir, siz onaylarsınız
+            En fazla {MAX_PHOTOS} fotoğraf · ön ve arka yüz birlikte okunur · her işlem 1 kontör harcar
           </p>
         )}
       </div>

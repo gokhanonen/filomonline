@@ -87,6 +87,19 @@ export const DATA_SCOPES: DataScopeDef[] = [
   },
 ];
 
+/**
+ * Özel yetkiler — modül CRUD'una ya da hassas-veri scope'una girmeyen, davranış
+ * genişleten izinler (rol editöründe switch olarak gösterilir).
+ */
+export const SPECIAL_PERMISSIONS: DataScopeDef[] = [
+  {
+    key: "reports.all",
+    label: "Tüm temsilcilerin raporu",
+    description:
+      "Raporlarda yalnız kendi verisi yerine TÜM satış temsilcilerinin verisini görür. Yoksa kullanıcı raporlarda yalnız kendi performansını görür.",
+  },
+];
+
 /** API yanıtından, scope yoksa çıkarılacak alan adları (scope → alanlar). */
 export const SCOPE_FIELDS: Record<string, string[]> = {
   "data.cost.view": [
@@ -143,7 +156,8 @@ export const VISIBILITY_SKIP_PREFIXES = [
 export function allPermissionKeys(): string[] {
   const actions = MODULES.flatMap((m) => m.actions.map((a) => `${m.key}.${a}`));
   const scopes = DATA_SCOPES.map((s) => s.key);
-  return [...actions, ...scopes];
+  const special = SPECIAL_PERMISSIONS.map((s) => s.key);
+  return [...actions, ...scopes, ...special];
 }
 
 export interface RolePreset {
@@ -191,6 +205,7 @@ export const ROLE_PRESETS: RolePreset[] = [
       "accounts.read",
       "accounts.write",
       "reports.read",
+      "reports.all",
       "vehicles.read",
       "data.cost.view",
       "data.profit.view",

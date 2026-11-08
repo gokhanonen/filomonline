@@ -28,6 +28,7 @@ export function RoleEditorModal({ role, catalog, onClose, onSaved }: Props) {
     () => [
       ...catalog.modules.flatMap((m) => m.actions.map((a) => `${m.key}.${a}`)),
       ...catalog.dataScopes.map((s) => s.key),
+      ...(catalog.specialPermissions ?? []).map((s) => s.key),
     ],
     [catalog],
   );
@@ -184,6 +185,26 @@ export function RoleEditorModal({ role, catalog, onClose, onSaved }: Props) {
             ))}
           </div>
         </div>
+
+        {/* Özel yetkiler (ör. tüm temsilcilerin raporu) */}
+        {(catalog.specialPermissions?.length ?? 0) > 0 && (
+          <div>
+            <p className="mb-2 text-xs font-semibold text-gray-600 dark:text-dark-200">
+              Özel Yetkiler
+            </p>
+            <div className="space-y-2">
+              {catalog.specialPermissions!.map((s) => (
+                <Card key={s.key} className="flex items-center justify-between p-3">
+                  <div className="min-w-0 pr-3">
+                    <p className="text-sm font-medium text-gray-800 dark:text-dark-50">{s.label}</p>
+                    <p className="text-tiny text-gray-500 dark:text-dark-300">{s.description}</p>
+                  </div>
+                  <Switch checked={has(s.key)} onChange={() => toggle(s.key)} />
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-end gap-2 border-t border-gray-150 pt-3 dark:border-dark-600">
           <Button variant="outlined" onClick={onClose}>Vazgeç</Button>

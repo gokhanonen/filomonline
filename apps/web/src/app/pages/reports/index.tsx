@@ -27,8 +27,10 @@ import {
   type VehicleProfitabilitySummary,
 } from "@/services/reportService";
 
-function money(v: number): string {
-  return (v || 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₺";
+function money(v: number | null | undefined): string {
+  // Yetki yoksa alan API'den çıkarılmış olabilir → "—" (gerçek 0 korunur).
+  if (v == null) return "—";
+  return v.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₺";
 }
 
 type TabType = "overview" | "profitability" | "salesReps";

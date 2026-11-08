@@ -15,7 +15,9 @@ import { Card, Spinner } from "@/components/ui";
 import { useAuthContext } from "@/app/contexts/auth/context";
 import { getSummary, type ReportSummary } from "@/services/reportService";
 
-function money(v: number): string {
+function money(v: number | null | undefined): string {
+  // Yetki yoksa alan API'den çıkarılmış olabilir → "—" göster (NaN/çökme yerine).
+  if (v == null) return "—";
   return v.toLocaleString("tr-TR", { maximumFractionDigits: 0 }) + " ₺";
 }
 
@@ -41,7 +43,7 @@ function Stat({ label, value, Icon, color }: StatProps) {
 }
 
 export default function DashboardPage() {
-  const { companies, activeCompanyId } = useAuthContext();
+  const { companies, activeCompanyId, can } = useAuthContext();
   const [data, setData] = useState<ReportSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -79,10 +81,18 @@ export default function DashboardPage() {
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat label="Stok Maliyeti" value={money(data.stokMaliyeti)} Icon={TbBuildingWarehouse} color="bg-secondary/15 text-secondary" />
-              <Stat label="Toplam Satış" value={money(data.toplamSatis)} Icon={TbReportMoney} color="bg-success/15 text-success" />
-              <Stat label="Brüt Kâr" value={money(data.brutKar)} Icon={TbReportMoney} color="bg-primary-100 text-primary-600 dark:bg-primary-500/20" />
-              <Stat label="Toplam Masraf" value={money(data.toplamMasraf)} Icon={TbReceipt} color="bg-error/15 text-error" />
+              {can("data.cost.view") && (
+                <Stat label="Stok Maliyeti" value={money(data.stokMaliyeti)} Icon={TbBuildingWarehouse} color="bg-secondary/15 text-secondary" />
+              )}
+              {can("data.salePrice.view") && (
+                <Stat label="Toplam Satış" value={money(data.toplamSatis)} Icon={TbReportMoney} color="bg-success/15 text-success" />
+              )}
+              {can("data.profit.view") && (
+                <Stat label="Brüt Kâr" value={money(data.brutKar)} Icon={TbReportMoney} color="bg-primary-100 text-primary-600 dark:bg-primary-500/20" />
+              )}
+              {can("data.cost.view") && (
+                <Stat label="Toplam Masraf" value={money(data.toplamMasraf)} Icon={TbReceipt} color="bg-error/15 text-error" />
+              )}
             </div>
           </>
         )}

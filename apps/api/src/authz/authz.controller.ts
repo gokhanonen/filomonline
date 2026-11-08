@@ -5,6 +5,7 @@ import {
   DATA_SCOPES,
   MODULES,
   ROLE_PRESETS,
+  SPECIAL_PERMISSIONS,
   DEFAULT_NEW_USER_ROLE,
 } from "./permission-catalog";
 
@@ -19,6 +20,7 @@ export class AuthzController {
     return {
       modules: MODULES,
       dataScopes: DATA_SCOPES,
+      specialPermissions: SPECIAL_PERMISSIONS,
       rolePresets: ROLE_PRESETS,
       defaultRole: DEFAULT_NEW_USER_ROLE,
     };

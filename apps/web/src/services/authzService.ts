@@ -19,6 +19,7 @@ export interface RolePreset {
 export interface PermissionCatalog {
   modules: ModuleDef[];
   dataScopes: DataScopeDef[];
+  specialPermissions?: DataScopeDef[];
   rolePresets: RolePreset[];
   defaultRole: string;
 }

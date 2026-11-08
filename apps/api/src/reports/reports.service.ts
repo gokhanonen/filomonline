@@ -241,11 +241,15 @@ export class ReportsService {
   /** Araç bazlı kârlılık raporu: Alış + Masraflar vs Satış ve Net Kâr dökümü */
   async getVehicleProfitability(
     companyId: string,
-    filter?: { status?: string; search?: string },
+    filter?: { status?: string; search?: string; salesRepId?: string },
   ) {
     const whereClause: any = { companyId, isActive: true };
     if (filter?.status && filter.status !== "ALL") {
       whereClause.status = filter.status;
+    }
+    // "Kendi" kapsamı: yalnız bu temsilcinin araçları.
+    if (filter?.salesRepId) {
+      whereClause.salesRepId = filter.salesRepId;
     }
     if (filter?.search) {
       const q = filter.search.trim();
@@ -381,12 +385,17 @@ export class ReportsService {
   }
 
   /** Satış Temsilcisi Performans Raporu */
-  async getSalesRepPerformance(companyId: string) {
+  async getSalesRepPerformance(
+    companyId: string,
+    opts?: { onlyUserId?: string },
+  ) {
     const [soldVehicles, users, expenseGroups] = await Promise.all([
       this.prisma.vehicle.findMany({
         where: {
           companyId,
           status: "SATILDI",
+          // "Kendi" kapsamı: yalnız bu temsilcinin satışları.
+          ...(opts?.onlyUserId ? { salesRepId: opts.onlyUserId } : {}),
         },
         select: {
           id: true,
@@ -490,6 +499,7 @@ export class ReportsService {
 
     // Sadece satışı olan veya şirkette kayıtlı olan temsilcileri listele
     const performanceList = Array.from(repStats.values())
+      .filter((s) => !opts?.onlyUserId || s.user.id === opts.onlyUserId)
       .filter((s) => s.soldCount > 0 || s.user.id !== "unassigned")
       .map((s) => ({
         user: s.user,
@@ -509,7 +519,7 @@ export class ReportsService {
   }
 
   /** Son 6 aylık satış & kâr trendleri (Grafik/BI gösterimi için) */
-  async getMonthlyTrends(companyId: string) {
+  async getMonthlyTrends(companyId: string, opts?: { salesRepId?: string }) {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
     sixMonthsAgo.setDate(1);
@@ -520,6 +530,8 @@ export class ReportsService {
         companyId,
         status: "SATILDI",
         updatedAt: { gte: sixMonthsAgo },
+        // "Kendi" kapsamı: yalnız bu temsilcinin satışları.
+        ...(opts?.salesRepId ? { salesRepId: opts.salesRepId } : {}),
       },
       select: {
         id: true,
