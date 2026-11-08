@@ -107,8 +107,11 @@ export default function UsersPage() {
                           ) : (
                             u.memberships.map((m) => (
                               <Tag key={m.id} color="info" className="text-xs">
-                                {m.company.name}
-                                {m.isAdmin ? " (yön.)" : ""}
+                                {m.company.name} ·{" "}
+                                {m.isAdmin
+                                  ? "Yönetici"
+                                  : m.roles.map((r) => r.name).join(", ") ||
+                                    "rol yok"}
                               </Tag>
                             ))
                           )}

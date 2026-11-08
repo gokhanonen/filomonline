@@ -310,9 +310,13 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
         </div>
 
         <div>
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+          <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
             Firma Erişimi ve Roller
           </h3>
+          <p className="mb-2 text-tiny text-gray-500 dark:text-dark-300">
+            1) Firmayı işaretle &nbsp;→&nbsp; 2) Rol(ler)e tıkla &nbsp;→&nbsp; 3) (ops.) lokasyon
+            seç. <b>Yönetici</b> işaretliyse tüm yetkiler verilir, ayrı rol gerekmez.
+          </p>
           <div className="space-y-2 rounded-lg border border-gray-200 p-3 dark:border-dark-500">
             {companies.length === 0 && (
               <p className="text-sm text-gray-400">Erişilebilir firma yok.</p>
@@ -417,6 +421,13 @@ export function UserForm({ open, onClose, onSaved, user }: Props) {
                         </div>
                       )}
                     </div>
+                  )}
+
+                  {row.included && row.isAdmin && (
+                    <p className="mt-2 border-t border-gray-100 pt-2 text-tiny text-gray-500 dark:border-dark-700 dark:text-dark-300">
+                      Yönetici — bu firmada tüm yetkiler. Belirli rol/lokasyon atamak
+                      için “Yönetici”yi kapatın.
+                    </p>
                   )}
                 </div>
               );
