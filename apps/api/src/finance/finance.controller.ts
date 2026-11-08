@@ -80,7 +80,7 @@ export class FinanceController {
     return this.finance.getAccount(companyId, id);
   }
 
-  @RequirePermissions("finance.write")
+  @RequirePermissions("finance.create")
   @Post("accounts")
   createAccount(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Body() dto: CreateFinanceAccountDto) {
     return this.finance.createAccount(companyId, user.id, dto);
@@ -100,25 +100,25 @@ export class FinanceController {
 
   // ---- İşlemler ----
 
-  @RequirePermissions("finance.write")
+  @RequirePermissions("finance.create")
   @Post("collections")
   collection(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Body() dto: CollectionDto) {
     return this.finance.collection(companyId, user.id, dto);
   }
 
-  @RequirePermissions("finance.write")
+  @RequirePermissions("finance.create")
   @Post("payments")
   payment(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Body() dto: PaymentDto) {
     return this.finance.payment(companyId, user.id, dto);
   }
 
-  @RequirePermissions("finance.write")
+  @RequirePermissions("finance.create")
   @Post("transfers")
   transfer(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Body() dto: TransferDto) {
     return this.finance.transfer(companyId, user.id, dto);
   }
 
-  @RequirePermissions("finance.write")
+  @RequirePermissions("finance.create")
   @Post("pos-settlements")
   posSettle(@CompanyId() companyId: string, @CurrentUser() user: AuthUser, @Body() dto: PosSettlementDto) {
     return this.finance.posSettle(companyId, user.id, dto);

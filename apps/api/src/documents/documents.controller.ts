@@ -106,7 +106,7 @@ export class DocumentsController {
     return this.documents.list(companyId, q);
   }
 
-  @RequirePermissions("documents.write")
+  @RequirePermissions("documents.create")
   @Post()
   create(
     @CompanyId() companyId: string,

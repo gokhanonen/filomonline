@@ -24,7 +24,7 @@ import {
 export class AccountsController {
   constructor(private readonly accounts: AccountsService) {}
 
-  @RequirePermissions("accounts.write")
+  @RequirePermissions("accounts.create")
   @Post()
   create(@CompanyId() companyId: string, @Body() dto: CreateAccountDto) {
     return this.accounts.create(companyId, dto);

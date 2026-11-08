@@ -37,7 +37,7 @@ export class LocationsController {
     return this.locations.listCashRegisters(companyId, locationId);
   }
 
-  @RequirePermissions("locations.write")
+  @RequirePermissions("locations.create")
   @Post("cash-registers")
   createCashRegister(
     @CompanyId() companyId: string,
@@ -58,7 +58,7 @@ export class LocationsController {
 
   // --- Lokasyonlar ---
 
-  @RequirePermissions("locations.write")
+  @RequirePermissions("locations.create")
   @Post("locations")
   create(@CompanyId() companyId: string, @Body() dto: CreateLocationDto) {
     return this.locations.create(companyId, dto);

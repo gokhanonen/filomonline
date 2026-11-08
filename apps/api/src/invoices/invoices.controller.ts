@@ -56,7 +56,7 @@ export class InvoicesController {
     return this.invoices.findOne(companyId, type, id);
   }
 
-  @RequirePermissions("invoices.write")
+  @RequirePermissions("invoices.create")
   @Post("purchase")
   createPurchase(
     @CompanyId() companyId: string,
@@ -66,7 +66,7 @@ export class InvoicesController {
     return this.invoices.createPurchase(companyId, dto, locationId);
   }
 
-  @RequirePermissions("invoices.write")
+  @RequirePermissions("invoices.create")
   @Post("sales")
   createSales(
     @CompanyId() companyId: string,

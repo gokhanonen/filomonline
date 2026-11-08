@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
+import { TbEye, TbPlus, TbPencil, TbTrash } from "react-icons/tb";
 
 import { Button, Card, Input, Spinner, Switch } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
@@ -16,9 +16,12 @@ interface Props {
 
 const ACTION_META: Record<string, { label: string; Icon: React.ElementType }> = {
   read: { label: "Görüntüle", Icon: TbEye },
+  create: { label: "Ekle", Icon: TbPlus },
   write: { label: "Düzenle", Icon: TbPencil },
   delete: { label: "Sil", Icon: TbTrash },
 };
+
+const ACTION_ORDER = ["read", "create", "write", "delete"] as const;
 
 export function RoleEditorModal({ role, catalog, onClose, onSaved }: Props) {
   const allKeys = useMemo(
@@ -103,19 +106,22 @@ export function RoleEditorModal({ role, catalog, onClose, onSaved }: Props) {
           </div>
         )}
 
-        {/* İzin matrisi */}
+        {/* İzin matrisi — Görüntüle / Ekle / Düzenle / Sil. Düzenle, Ekle'yi kapsar. */}
         <Card className="overflow-hidden p-0">
           <div className="grid grid-cols-[1fr_auto] items-center gap-2 border-b border-gray-150 bg-gray-50 px-3 py-2 text-tiny font-semibold text-gray-500 dark:border-dark-600 dark:bg-dark-800">
             <span>Modül</span>
-            <span className="flex gap-4 pr-1">
-              <span className="w-16 text-center">Görüntüle</span>
-              <span className="w-14 text-center">Düzenle</span>
-              <span className="w-10 text-center">Sil</span>
+            <span className="flex pr-1">
+              {ACTION_ORDER.map((a) => (
+                <span key={a} className="w-14 text-center">
+                  {ACTION_META[a].label}
+                </span>
+              ))}
             </span>
           </div>
           {catalog.modules.map((m) => {
             const moduleKeys = m.actions.map((a) => `${m.key}.${a}`);
             const allOn = moduleKeys.every((k) => sel.has(k));
+            const writeOn = has(`${m.key}.write`);
             return (
               <div
                 key={m.key}
@@ -129,22 +135,32 @@ export function RoleEditorModal({ role, catalog, onClose, onSaved }: Props) {
                 >
                   {m.label}
                 </button>
-                <span className="flex items-center gap-4 pr-1">
-                  {(["read", "write", "delete"] as const).map((a) => (
-                    <span key={a} className="flex w-16 justify-center last:w-10 [&:nth-child(2)]:w-14">
-                      {m.actions.includes(a) ? (
-                        <input
-                          type="checkbox"
-                          className="size-4 accent-primary-600"
-                          checked={has(`${m.key}.${a}`)}
-                          onChange={() => toggle(`${m.key}.${a}`)}
-                          aria-label={`${m.label} ${ACTION_META[a].label}`}
-                        />
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </span>
-                  ))}
+                <span className="flex items-center pr-1">
+                  {ACTION_ORDER.map((a) => {
+                    // Düzenle (write) seçiliyse Ekle (create) örtük olarak açıktır.
+                    const impliedCreate = a === "create" && writeOn;
+                    return (
+                      <span key={a} className="flex w-14 justify-center">
+                        {m.actions.includes(a) ? (
+                          <input
+                            type="checkbox"
+                            className="size-4 accent-primary-600 disabled:opacity-60"
+                            checked={impliedCreate || has(`${m.key}.${a}`)}
+                            disabled={impliedCreate}
+                            onChange={() => toggle(`${m.key}.${a}`)}
+                            aria-label={`${m.label} ${ACTION_META[a].label}`}
+                            title={
+                              impliedCreate
+                                ? "Düzenle yetkisi Ekle'yi de kapsar"
+                                : ACTION_META[a].label
+                            }
+                          />
+                        ) : (
+                          <span className="text-gray-300">—</span>
+                        )}
+                      </span>
+                    );
+                  })}
                 </span>
               </div>
             );

@@ -37,13 +37,13 @@ export function Modal({
       >
         <DialogPanel
           className={clsx(
-            "w-full rounded-xl bg-white shadow-xl dark:bg-dark-700",
+            "flex max-h-[calc(100dvh-1rem)] w-full flex-col overflow-hidden rounded-xl bg-white shadow-xl dark:bg-dark-700 sm:max-h-[calc(100dvh-2rem)]",
             !className?.includes("max-w-") && "max-w-2xl",
             className,
           )}
         >
           {showHeader && (
-            <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-dark-500">
+            <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-dark-500">
               <DialogTitle className="text-base font-medium text-gray-800 dark:text-dark-50">
                 {title}
               </DialogTitle>
@@ -56,7 +56,14 @@ export function Modal({
               </button>
             </div>
           )}
-          {noPadding ? children : <div className="px-5 py-4">{children}</div>}
+          <div
+            className={clsx(
+              "min-h-0 flex-1 overflow-y-auto",
+              !noPadding && "px-5 py-4",
+            )}
+          >
+            {children}
+          </div>
         </DialogPanel>
       </div>
     </Dialog>

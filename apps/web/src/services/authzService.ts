@@ -4,7 +4,7 @@ import type { AdminRole } from "@/@types/userAdmin";
 export interface ModuleDef {
   key: string;
   label: string;
-  actions: ("read" | "write" | "delete")[];
+  actions: ("read" | "create" | "write" | "delete")[];
 }
 export interface DataScopeDef {
   key: string;

@@ -9,6 +9,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { AuthUser } from "../auth/auth.types";
 import { IS_PUBLIC_KEY } from "../auth/decorators/public.decorator";
 import { SKIP_COMPANY_KEY } from "./skip-company.decorator";
+import { expandImpliedPermissions } from "../authz/permission-catalog";
 
 /**
  * X-Company-Id header'ını doğrular:
@@ -79,8 +80,9 @@ export class CompanyGuard implements CanActivate {
     );
     const grant = (membership.permissionsGrant as string[] | null) ?? [];
     const deny = new Set((membership.permissionsDeny as string[] | null) ?? []);
-    user.permissions = [...new Set([...fromRoles, ...grant])].filter(
-      (p) => !deny.has(p),
+    // Etkin izin = (roller ∪ grant) − deny; sonra write ⇒ create genişlet.
+    user.permissions = expandImpliedPermissions(
+      [...new Set([...fromRoles, ...grant])].filter((p) => !deny.has(p)),
     );
     await this.resolveLocation(request, user, companyId);
     return true;

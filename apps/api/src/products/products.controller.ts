@@ -24,7 +24,7 @@ import {
 export class ProductsController {
   constructor(private readonly products: ProductsService) {}
 
-  @RequirePermissions("products.write")
+  @RequirePermissions("products.create")
   @Post()
   create(@CompanyId() companyId: string, @Body() dto: CreateProductDto) {
     return this.products.create(companyId, dto);

@@ -25,7 +25,7 @@ import {
 export class ExpensesController {
   constructor(private readonly expenses: ExpensesService) {}
 
-  @RequirePermissions("expenses.write")
+  @RequirePermissions("expenses.create")
   @Post()
   create(
     @CompanyId() companyId: string,

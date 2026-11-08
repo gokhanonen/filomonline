@@ -141,6 +141,15 @@ function resolveActiveLocation(
   return locs[0]?.id ?? null;
 }
 
+/** write ⇒ create: düzenleyebilen ekleyebilir de (backend ile aynı kural). */
+function expandImplied(perms: string[]): string[] {
+  const set = new Set(perms);
+  for (const p of perms) {
+    if (p.endsWith(".write")) set.add(p.slice(0, -".write".length) + ".create");
+  }
+  return [...set];
+}
+
 /** Aktif şirketteki izinleri topla. */
 function permissionsFor(user: User, companyId: string | null): string[] {
   if (user.isSuperAdmin) return ["*"];
@@ -149,12 +158,14 @@ function permissionsFor(user: User, companyId: string | null): string[] {
   ) as Membership | undefined;
   if (!membership) return [];
   if (membership.isAdmin) return ["*"];
-  // Etkin izin = (roller ∪ grant) − deny. Deny kazanır.
+  // Etkin izin = (roller ∪ grant) − deny. Deny kazanır. Sonra write ⇒ create.
   const grant = membership.permissionsGrant ?? [];
   const deny = new Set(membership.permissionsDeny ?? []);
-  return [
-    ...new Set([...membership.roles.flatMap((r) => r.permissions), ...grant]),
-  ].filter((p) => !deny.has(p));
+  return expandImplied(
+    [
+      ...new Set([...membership.roles.flatMap((r) => r.permissions), ...grant]),
+    ].filter((p) => !deny.has(p)),
+  );
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

@@ -9,7 +9,7 @@
  *     Scope YOKSA ilgili alanlar API yanıtından çıkarılır (sunucu) ve UI'da gizlenir.
  */
 
-export type ActionKey = "read" | "write" | "delete";
+export type ActionKey = "read" | "create" | "write" | "delete";
 
 export interface ModuleDef {
   key: string;
@@ -17,22 +17,40 @@ export interface ModuleDef {
   actions: ActionKey[];
 }
 
-/** Eylem izinli modüller. */
+/**
+ * Eylem izinli modüller. Eylemler: read (görüntüle) · create (ekle) · write (düzenle) · delete (sil).
+ * KURAL: `write` (düzenle) `create`'i (ekle) KAPSAR — düzenleyebilen ekleyebilir de
+ * (CompanyGuard + frontend can() bunu otomatik genişletir). `create`-only rol, yalnız
+ * ekleyip düzenleyemeyen kullanıcılar için.
+ */
 export const MODULES: ModuleDef[] = [
-  { key: "vehicles", label: "Araçlar / Operasyon", actions: ["read", "write", "delete"] },
-  { key: "crm", label: "CRM / Potansiyeller", actions: ["read", "write", "delete"] },
-  { key: "accounts", label: "Cari (Müşteri/Tedarikçi)", actions: ["read", "write", "delete"] },
-  { key: "invoices", label: "Faturalar (Alış/Satış)", actions: ["read", "write", "delete"] },
-  { key: "expenses", label: "Masraflar", actions: ["read", "write", "delete"] },
-  { key: "finance", label: "Finans (Kasa/Banka/Çek)", actions: ["read", "write", "delete"] },
-  { key: "rentals", label: "Kiralama", actions: ["read", "write", "delete"] },
-  { key: "contracts", label: "Sözleşmeler", actions: ["read", "write", "delete"] },
-  { key: "products", label: "Hizmet / Ürün / Parça", actions: ["read", "write", "delete"] },
-  { key: "locations", label: "Lokasyonlar", actions: ["read", "write"] },
-  { key: "documents", label: "Evraklar", actions: ["read", "write", "delete"] },
+  { key: "vehicles", label: "Araçlar / Operasyon", actions: ["read", "create", "write", "delete"] },
+  { key: "crm", label: "CRM / Potansiyeller", actions: ["read", "create", "write", "delete"] },
+  { key: "accounts", label: "Cari (Müşteri/Tedarikçi)", actions: ["read", "create", "write", "delete"] },
+  { key: "invoices", label: "Faturalar (Alış/Satış)", actions: ["read", "create", "write", "delete"] },
+  { key: "expenses", label: "Masraflar", actions: ["read", "create", "write", "delete"] },
+  { key: "finance", label: "Finans (Kasa/Banka/Çek)", actions: ["read", "create", "write", "delete"] },
+  { key: "rentals", label: "Kiralama", actions: ["read", "create", "write", "delete"] },
+  { key: "contracts", label: "Sözleşmeler", actions: ["read", "create", "write", "delete"] },
+  { key: "products", label: "Hizmet / Ürün / Parça", actions: ["read", "create", "write", "delete"] },
+  { key: "locations", label: "Lokasyonlar", actions: ["read", "create", "write"] },
+  { key: "documents", label: "Evraklar", actions: ["read", "create", "write", "delete"] },
   { key: "reports", label: "Raporlar", actions: ["read"] },
-  { key: "catalog", label: "Tanımlar (Katalog)", actions: ["write"] },
+  { key: "catalog", label: "Tanımlar (Katalog)", actions: ["create", "write"] },
 ];
+
+/**
+ * `write` ⇒ `create` genişletmesi. Bir kullanıcının etkin izinleri hesaplandıktan sonra,
+ * `X.write` varsa `X.create` de eklenir. Hem CompanyGuard (backend) hem auth/Provider (frontend)
+ * aynı fonksiyonu kullanır ki eski roller (yalnız write) create endpoint'lerinde kırılmasın.
+ */
+export function expandImpliedPermissions(perms: string[]): string[] {
+  const set = new Set(perms);
+  for (const p of perms) {
+    if (p.endsWith(".write")) set.add(p.slice(0, -".write".length) + ".create");
+  }
+  return [...set];
+}
 
 export interface DataScopeDef {
   key: string;

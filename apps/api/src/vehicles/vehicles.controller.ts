@@ -46,7 +46,7 @@ export class VehiclesController {
     return this.vehicles.ocrRegistration(body);
   }
 
-  @RequirePermissions("vehicles.write")
+  @RequirePermissions("vehicles.create")
   @Post()
   create(
     @CompanyId() companyId: string,

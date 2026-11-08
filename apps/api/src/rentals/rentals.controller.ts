@@ -25,7 +25,7 @@ import {
 export class RentalsController {
   constructor(private readonly rentals: RentalsService) {}
 
-  @RequirePermissions("rentals.write")
+  @RequirePermissions("rentals.create")
   @Post()
   create(
     @CompanyId() companyId: string,
