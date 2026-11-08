@@ -34,13 +34,18 @@ export class ExpensesService {
     };
   }
 
-  async create(companyId: string, dto: CreateExpenseDto) {
-    const { lines, ...header } = dto;
+  async create(
+    companyId: string,
+    dto: CreateExpenseDto,
+    activeLocationId?: string,
+  ) {
+    const { lines, locationId, ...header } = dto;
     const t = this.totals(lines);
     const expense = await this.prisma.expense.create({
       data: {
         ...header,
         companyId,
+        locationId: locationId ?? activeLocationId ?? null,
         ...t,
         lines: {
           create: lines.map((l, i) => ({
@@ -75,9 +80,11 @@ export class ExpensesService {
   async findAll(
     companyId: string,
     q: QueryExpensesDto,
+    activeLocationId?: string,
   ): Promise<Paginated<unknown>> {
     const where: Prisma.ExpenseWhereInput = {
       companyId,
+      ...(activeLocationId ? { locationId: activeLocationId } : {}),
       ...(q.invoiceType ? { invoiceType: q.invoiceType } : {}),
       ...(q.vehicleId ? { vehicleId: q.vehicleId } : {}),
       ...(q.search

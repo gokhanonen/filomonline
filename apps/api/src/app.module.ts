@@ -37,6 +37,7 @@ import { PaymentsModule } from "./payments/payments.module";
 import { CreditsModule } from "./credits/credits.module";
 import { SubscriptionModule } from "./subscription/subscription.module";
 import { AuthzModule } from "./authz/authz.module";
+import { PartyModule } from "./party/party.module";
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { AuthzModule } from "./authz/authz.module";
     CreditsModule,
     SubscriptionModule,
     AuthzModule,
+    PartyModule,
     AiModule,
     ChatModule,
     AuthModule,

@@ -11,6 +11,7 @@ import {
 import { Throttle } from "@nestjs/throttler";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
+import { LocationId } from "../tenancy/location-id.decorator";
 import { RequirePermissions } from "../tenancy/permissions.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { AuthUser } from "../auth/auth.types";
@@ -47,14 +48,22 @@ export class VehiclesController {
 
   @RequirePermissions("vehicles.write")
   @Post()
-  create(@CompanyId() companyId: string, @Body() dto: CreateVehicleDto) {
-    return this.vehicles.create(companyId, dto);
+  create(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Body() dto: CreateVehicleDto,
+  ) {
+    return this.vehicles.create(companyId, dto, locationId);
   }
 
   @RequirePermissions("vehicles.read")
   @Get()
-  findAll(@CompanyId() companyId: string, @Query() q: QueryVehiclesDto) {
-    return this.vehicles.findAll(companyId, q);
+  findAll(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Query() q: QueryVehiclesDto,
+  ) {
+    return this.vehicles.findAll(companyId, q, locationId);
   }
 
   @RequirePermissions("vehicles.read")

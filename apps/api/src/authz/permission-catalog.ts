@@ -110,6 +110,8 @@ export const VISIBILITY_SKIP_PREFIXES = [
   "roles",
   "authz",
   "admin",
+  "holding",
+  "party",
   "credits",
   "subscription",
   "payments",

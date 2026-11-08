@@ -25,6 +25,12 @@ const protectedRoutes: RouteObject = {
           }),
         },
         {
+          path: "holding",
+          lazy: async () => ({
+            Component: (await import("@/app/pages/holding")).default,
+          }),
+        },
+        {
           path: "vehicles",
           lazy: async () => ({
             Component: (await import("@/app/pages/vehicles")).default,

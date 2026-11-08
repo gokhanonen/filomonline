@@ -87,14 +87,22 @@ export class VehiclesService {
     };
   }
 
-  async create(companyId: string, dto: CreateVehicleDto) {
+  async create(
+    companyId: string,
+    dto: CreateVehicleDto,
+    activeLocationId?: string,
+  ) {
     // Abonelik kotası: aktif araç limiti + (Free) işlem tetikleyicisi (grace ile).
     await this.quota.assertCanCreate(companyId, "vehicle");
     const { photos, tramerSet, listingUrls, installments, ...scalars } = dto;
+    // Aracın güncel lokasyonu: alış lokasyonu varsa o, yoksa aktif lokasyon.
+    const currentLocationId =
+      dto.purchaseLocationId ?? activeLocationId ?? null;
     const vehicle = await this.prisma.vehicle.create({
       data: {
         ...scalars,
         companyId,
+        currentLocationId,
         photos: photos?.length ? { create: photos } : undefined,
         tramerSet: tramerSet?.length ? { create: tramerSet } : undefined,
         listingUrls: listingUrls?.length ? { create: listingUrls } : undefined,
@@ -150,9 +158,12 @@ export class VehiclesService {
   async findAll(
     companyId: string,
     q: QueryVehiclesDto,
+    activeLocationId?: string,
   ): Promise<Paginated<unknown>> {
     const where: Prisma.VehicleWhereInput = {
       companyId,
+      // Aktif lokasyon seçiliyse yalnız o lokasyondaki araçlar (lokasyon bazlı görünüm).
+      ...(activeLocationId ? { currentLocationId: activeLocationId } : {}),
       ...(q.status ? { status: q.status } : {}),
       ...(q.vehicleTypeId ? { vehicleTypeId: q.vehicleTypeId } : {}),
       ...(q.onlyActive ? { isActive: true } : {}),

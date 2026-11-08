@@ -59,3 +59,4 @@ deploy/env/*
 !deploy/env/*.example
 # Üretim web build ayarı güvenli (yalnız göreli API yolu) — izinli
 !apps/web/.env.production
+backups/

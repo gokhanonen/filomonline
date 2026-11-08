@@ -10,4 +10,5 @@ export const STORAGE_KEYS = {
   accessToken: "fo.accessToken",
   refreshToken: "fo.refreshToken",
   activeCompanyId: "fo.activeCompanyId",
+  activeLocationId: "fo.activeLocationId",
 } as const;

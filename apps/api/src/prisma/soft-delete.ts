@@ -7,6 +7,7 @@ import { Prisma } from "@prisma/client";
  * Seed betikleri düz PrismaClient kullandığı için etkilenmez.
  */
 export const SOFT_DELETE_MODELS = new Set<Prisma.ModelName>([
+  "Party",
   "Lead",
   "LeadQuote",
   "LeadTestDrive",

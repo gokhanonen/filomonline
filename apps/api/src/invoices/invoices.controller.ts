@@ -10,6 +10,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
+import { LocationId } from "../tenancy/location-id.decorator";
 import { RequirePermissions } from "../tenancy/permissions.decorator";
 import { InvoicesService } from "./invoices.service";
 import {
@@ -28,8 +29,12 @@ export class InvoicesController {
 
   @RequirePermissions("invoices.read")
   @Get()
-  findAll(@CompanyId() companyId: string, @Query() q: QueryInvoicesDto) {
-    return this.invoices.findAll(companyId, q);
+  findAll(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Query() q: QueryInvoicesDto,
+  ) {
+    return this.invoices.findAll(companyId, q, locationId);
   }
 
   @RequirePermissions("invoices.read")
@@ -53,14 +58,22 @@ export class InvoicesController {
 
   @RequirePermissions("invoices.write")
   @Post("purchase")
-  createPurchase(@CompanyId() companyId: string, @Body() dto: CreatePurchaseInvoiceDto) {
-    return this.invoices.createPurchase(companyId, dto);
+  createPurchase(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Body() dto: CreatePurchaseInvoiceDto,
+  ) {
+    return this.invoices.createPurchase(companyId, dto, locationId);
   }
 
   @RequirePermissions("invoices.write")
   @Post("sales")
-  createSales(@CompanyId() companyId: string, @Body() dto: CreateSalesInvoiceDto) {
-    return this.invoices.createSales(companyId, dto);
+  createSales(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Body() dto: CreateSalesInvoiceDto,
+  ) {
+    return this.invoices.createSales(companyId, dto, locationId);
   }
 
   @RequirePermissions("invoices.write")

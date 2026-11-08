@@ -32,6 +32,7 @@ export interface Account {
   isPotential: boolean;
   isActive: boolean;
   balance: string; // Prisma Decimal -> string
+  partyId?: string | null; // holding-global kimlik
   createdAt: string;
   updatedAt: string;
 }

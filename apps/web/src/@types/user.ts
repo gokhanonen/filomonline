@@ -1,10 +1,19 @@
 // /auth/me yanıtına karşılık gelen tipler
 
+export interface LocationSummary {
+  id: string;
+  name: string;
+  code: string;
+  isExternal: boolean;
+}
+
 export interface CompanySummary {
   id: string;
   name: string;
   logoUrl?: string | null;
   isActive: boolean;
+  /** Firma→Lokasyon ağacı için aktif lokasyonlar (/auth/me doldurur) */
+  locations?: LocationSummary[];
 }
 
 export interface RoleSummary {
@@ -31,5 +40,6 @@ export interface User {
   avatarUrl?: string | null;
   isSuperAdmin: boolean;
   tenantId: string | null;
+  tenant?: { name: string } | null;
   memberships: Membership[];
 }

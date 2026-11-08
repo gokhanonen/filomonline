@@ -40,3 +40,14 @@ export const setActiveCompanyId = (companyId?: string | null) => {
     localStorage.setItem(STORAGE_KEYS.activeCompanyId, companyId);
   else localStorage.removeItem(STORAGE_KEYS.activeCompanyId);
 };
+
+// --- Aktif lokasyon (X-Location-Id) ---
+
+export const getActiveLocationId = () =>
+  localStorage.getItem(STORAGE_KEYS.activeLocationId);
+
+export const setActiveLocationId = (locationId?: string | null) => {
+  if (locationId)
+    localStorage.setItem(STORAGE_KEYS.activeLocationId, locationId);
+  else localStorage.removeItem(STORAGE_KEYS.activeLocationId);
+};

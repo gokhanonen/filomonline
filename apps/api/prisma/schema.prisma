@@ -69,6 +69,7 @@ model Tenant {
   companies        Company[]
   users            User[]
   roles            Role[]
+  parties          Party[]
 
   brands             Brand[]
   vehicleCategories  VehicleCategory[]
@@ -445,6 +446,7 @@ model CashRegister {
 model FinanceMovement {
   id             String              @id @default(cuid())
   companyId      String
+  locationId     String? // hareketin lokasyonu (kasadan türetilir; lokasyon bazlı filtre)
   groupId        String
   date           DateTime
   type           FinanceMovementType
@@ -548,11 +550,16 @@ model Account {
   isPotential     Boolean            @default(false)
   isActive        Boolean            @default(true)
   balance         Decimal            @default(0) @db.Decimal(15, 2)
+  // Holding-global kimlik (Party). Bu Account = Party'nin bu firmadaki ilişkisi+bakiyesi.
+  partyId         String?
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 
+  party Party? @relation(fields: [partyId], references: [id])
+
   @@index([companyId])
   @@index([companyId, name])
+  @@index([partyId])
 }
 
 model Product {
@@ -640,6 +647,7 @@ model Vehicle {
   purchasedFrom              String? // Satın alınan yer/kişi (serbest)
   supplierId                 String? // Satıcı cari
   purchaseLocationId         String?
+  currentLocationId          String? // aracın GÜNCEL bulunduğu lokasyon (transfer ile güncellenir, lokasyon bazlı filtre)
   purchaseInvoiceNo          String?
   purchaseInvoiceDate        DateTime?
   purchaseInvoiceDescription String?   @db.Text
@@ -984,6 +992,7 @@ model ExpenseLine {
 model RentalContract {
   id              String               @id @default(cuid())
   companyId       String
+  locationId      String? // sözleşmenin lokasyonu (lokasyon bazlı filtre)
   vehicleId       String
   customerId      String? // Account
   customerName    String // Snapshot
@@ -1198,6 +1207,7 @@ model ActivityLog {
 model Lead {
   id                 String     @id @default(cuid())
   companyId          String
+  locationId         String? // lead'in bağlı olduğu lokasyon (lokasyon bazlı filtre)
   fullName           String // Ad Soyad
   phone              String?
   email              String?
@@ -1209,10 +1219,13 @@ model Lead {
   assignedUserId     String? // İlgilenen satış danışmanı
   convertedAccountId String? // Dönüştüğü Cari ID (Account)
   convertedAt        DateTime?
+  // Holding-global kimlik (Party). Lead firma bazlı kalır, kişi Party'de tekildir.
+  partyId            String?
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
   deletedAt          DateTime? // silme yok: gizlenir (bkz. PrismaService soft delete)
 
+  party              Party?                  @relation(fields: [partyId], references: [id])
   interestedVehicles LeadInterestedVehicle[]
   testDrives         LeadTestDrive[]
   quotes             LeadQuote[]
@@ -1221,6 +1234,7 @@ model Lead {
   @@index([companyId])
   @@index([companyId, status])
   @@index([companyId, createdAt])
+  @@index([partyId])
 }
 
 model LeadInterestedVehicle {
@@ -1839,4 +1853,43 @@ model Payment {
   @@index([companyId, createdAt])
   @@index([provider, providerRef])
   @@index([status])
+}
+
+// ============================================================================
+// PARTY (Taraf/Kişi) — HOLDING-GLOBAL KİMLİK (Faz 1)
+// ----------------------------------------------------------------------------
+// Hiyerarşi: Holding (Tenant) > Firma (Company) > Lokasyon (Location) > Hareket.
+// Party = tenant genelinde TEKİL kişi/kurum kimliği (telefon/email/VKN ile dedup).
+// Account (cari) ve Lead bu kimliğe bağlanır; bakiye/işlemler firma (ileride lokasyon)
+// bazında kalır. Faz 1: yalnız model + nullable FK'ler (davranış değişmez).
+// ============================================================================
+model Party {
+  id            String     @id @default(cuid())
+  tenantId      String
+  entityType    EntityType // INDIVIDUAL / CORPORATE
+  name          String // Ad Soyad / Firma unvanı
+  phone         String? // normalize edilmiş (dedup anahtarı)
+  email         String? // (dedup anahtarı)
+  taxNumber     String? // VKN (kurumsal dedup)
+  tckn          String? // bireysel
+  taxOffice     String?
+  contactPerson String?
+  address       String?    @db.Text
+  neighborhood  String?
+  city          String?
+  district      String?
+  postalCode    String?
+  notes         String?    @db.Text
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  deletedAt     DateTime? // silme yok: gizlenir
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  accounts Account[]
+  leads    Lead[]
+
+  @@index([tenantId])
+  @@index([tenantId, phone])
+  @@index([tenantId, email])
+  @@index([tenantId, taxNumber])
 }

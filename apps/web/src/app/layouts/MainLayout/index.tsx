@@ -13,12 +13,12 @@ import { QuotaWarningBanner } from "@/components/shared/QuotaWarningBanner";
 export default function MainLayout() {
   // Firma değişince (switchCompany) tüm sayfa ağacını yeniden kur ki
   // veriler aktif firmaya göre tekrar çekilsin.
-  const { activeCompanyId } = useAuthContext();
+  const { activeCompanyId, activeLocationId } = useAuthContext();
   return (
     <>
       <Header />
       <main
-        key={activeCompanyId ?? "no-company"}
+        key={`${activeCompanyId ?? "no-company"}:${activeLocationId ?? "no-loc"}`}
         className={clsx("main-content transition-content grid grid-cols-1")}
       >
         <QuotaWarningBanner />

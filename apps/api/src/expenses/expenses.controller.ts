@@ -10,6 +10,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
+import { LocationId } from "../tenancy/location-id.decorator";
 import { RequirePermissions } from "../tenancy/permissions.decorator";
 import { ExpensesService } from "./expenses.service";
 import {
@@ -26,14 +27,22 @@ export class ExpensesController {
 
   @RequirePermissions("expenses.write")
   @Post()
-  create(@CompanyId() companyId: string, @Body() dto: CreateExpenseDto) {
-    return this.expenses.create(companyId, dto);
+  create(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Body() dto: CreateExpenseDto,
+  ) {
+    return this.expenses.create(companyId, dto, locationId);
   }
 
   @RequirePermissions("expenses.read")
   @Get()
-  findAll(@CompanyId() companyId: string, @Query() q: QueryExpensesDto) {
-    return this.expenses.findAll(companyId, q);
+  findAll(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Query() q: QueryExpensesDto,
+  ) {
+    return this.expenses.findAll(companyId, q, locationId);
   }
 
   @RequirePermissions("expenses.read")

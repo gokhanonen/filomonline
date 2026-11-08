@@ -16,11 +16,16 @@ export class RentalsService {
     private readonly activity: ActivityService,
   ) {}
 
-  async create(companyId: string, dto: CreateRentalContractDto) {
+  async create(
+    companyId: string,
+    dto: CreateRentalContractDto,
+    activeLocationId?: string,
+  ) {
     const res = await this.prisma.rentalContract.create({
       data: {
         companyId,
         ...dto,
+        locationId: activeLocationId ?? null,
         drivers: dto.drivers ?? [],
         currency: dto.currency ?? "TRY",
         vatRate: dto.vatRate ?? 20,
@@ -43,9 +48,11 @@ export class RentalsService {
   async findAll(
     companyId: string,
     q: QueryRentalsDto,
+    activeLocationId?: string,
   ): Promise<Paginated<unknown>> {
     const where: Prisma.RentalContractWhereInput = {
       companyId,
+      ...(activeLocationId ? { locationId: activeLocationId } : {}),
       ...(q.status ? { status: q.status } : {}),
       ...(q.vehicleId ? { vehicleId: q.vehicleId } : {}),
       ...(q.search

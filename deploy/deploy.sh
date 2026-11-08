@@ -24,7 +24,7 @@ trap cleanup EXIT
 echo "==> Kod kopyalanıyor (rsync) → ${SSH_USER}@${SSH_HOST}:${APP_DIR}"
 rsync -az --delete -e "ssh ${SSH_OPTS}" \
   --exclude ".git" --exclude "node_modules" --exclude "dist" \
-  --exclude "logs" --exclude "scratchpad" --exclude "secure.md" \
+  --exclude "logs" --exclude "scratchpad" --exclude "secure.md" --exclude "backups" \
   --exclude "apps/api/.env" --exclude "apps/api/dist" --exclude "apps/web/dist" \
   ./ "${SSH_USER}@${SSH_HOST}:${APP_DIR}/"
 

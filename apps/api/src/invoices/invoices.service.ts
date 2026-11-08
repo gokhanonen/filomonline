@@ -40,7 +40,11 @@ export class InvoicesService {
   }
 
   // ---- Alış Faturası ----
-  async createPurchase(companyId: string, dto: CreatePurchaseInvoiceDto) {
+  async createPurchase(
+    companyId: string,
+    dto: CreatePurchaseInvoiceDto,
+    activeLocationId?: string,
+  ) {
     await this.assertVehicle(companyId, dto.vehicleId);
     const other = dto.otherAmount ?? 0;
     const base = dto.notaryAmount + other;
@@ -66,7 +70,7 @@ export class InvoicesService {
         vatAmount,
         specialBaseAmount,
         specialBaseServiceFee,
-        locationId: dto.locationId,
+        locationId: dto.locationId ?? activeLocationId ?? null,
         notaryJournalNo: dto.notaryJournalNo,
         description: dto.description,
         integrationStatus: "BEKLIYOR",
@@ -104,7 +108,11 @@ export class InvoicesService {
 
   // ---- Satış Faturası ----
 
-  async createSales(companyId: string, dto: CreateSalesInvoiceDto) {
+  async createSales(
+    companyId: string,
+    dto: CreateSalesInvoiceDto,
+    activeLocationId?: string,
+  ) {
     // Abonelik kotası: (Free) tamamlanan alış+satış işlemi tetikleyicisi (grace ile).
     await this.quota.assertCanCreate(companyId, "sale");
     const vehicle = await this.prisma.vehicle.findFirst({
@@ -151,12 +159,13 @@ export class InvoicesService {
         saleType: dto.saleType ?? "Normal",
         notaryJournalNo: dto.notaryJournalNo,
         description: dto.description,
-        locationId: dto.locationId,
+        locationId: dto.locationId ?? activeLocationId ?? null,
         integrationStatus: "BEKLIYOR",
       },
     });
 
-    // Araç: satış alanları + durum SATILDI
+    // Araç: satış alanları + durum SATILDI. Satış yapılan lokasyon aracın güncel lokasyonu olur.
+    const saleLocationId = dto.locationId ?? activeLocationId ?? null;
     await this.prisma.vehicle.update({
       where: { id: dto.vehicleId },
       data: {
@@ -167,7 +176,8 @@ export class InvoicesService {
         saleInvoiceNo: dto.invoiceNo,
         saleInvoiceDate: dto.invoiceDate,
         customerId: dto.accountId,
-        saleLocationId: dto.locationId,
+        saleLocationId,
+        currentLocationId: saleLocationId ?? undefined,
         salesIntegrationStatus: "BEKLIYOR",
       },
     });
@@ -471,12 +481,13 @@ export class InvoicesService {
   }
 
   // ---- Birleşik liste ----
-  async findAll(companyId: string, q: QueryInvoicesDto): Promise<Paginated<unknown>> {
+  async findAll(companyId: string, q: QueryInvoicesDto, activeLocationId?: string): Promise<Paginated<unknown>> {
     const vehFilter = q.vehicleId ? { vehicleId: q.vehicleId } : {};
+    const locFilter = activeLocationId ? { locationId: activeLocationId } : {};
     const [purchases, sales, rentals] = await this.prisma.$transaction([
-      this.prisma.purchaseInvoice.findMany({ where: { companyId, ...vehFilter } }),
-      this.prisma.salesInvoice.findMany({ where: { companyId, ...vehFilter } }),
-      this.prisma.rentalInvoice.findMany({ where: { companyId, ...vehFilter } }),
+      this.prisma.purchaseInvoice.findMany({ where: { companyId, ...vehFilter, ...locFilter } }),
+      this.prisma.salesInvoice.findMany({ where: { companyId, ...vehFilter, ...locFilter } }),
+      this.prisma.rentalInvoice.findMany({ where: { companyId, ...vehFilter, ...locFilter } }),
     ]);
 
     type Row = {

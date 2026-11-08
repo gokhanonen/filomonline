@@ -9,6 +9,7 @@ import {
   clearTokens,
   getAccessToken,
   getActiveCompanyId,
+  getActiveLocationId,
   getRefreshToken,
   setTokens,
 } from "@/utils/jwt";
@@ -22,6 +23,8 @@ axiosInstance.interceptors.request.use(
     if (token) config.headers.Authorization = `Bearer ${token}`;
     const companyId = getActiveCompanyId();
     if (companyId) config.headers["X-Company-Id"] = companyId;
+    const locationId = getActiveLocationId();
+    if (locationId) config.headers["X-Location-Id"] = locationId;
     return config;
   },
 );

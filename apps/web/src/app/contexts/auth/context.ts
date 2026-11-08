@@ -1,4 +1,4 @@
-import { CompanySummary, User } from "@/@types/user";
+import { CompanySummary, LocationSummary, User } from "@/@types/user";
 import { createSafeContext } from "@/utils/createSafeContext";
 
 export interface LoginCredentials {
@@ -15,8 +15,14 @@ export interface AuthContextType {
 
   /** Kullanıcının erişebildiği şirketler (firma seçici) */
   companies: CompanySummary[];
+  /** Holding (tenant) adı — firma seçicide üst başlık olarak gösterilir */
+  holdingName: string | null;
   /** Aktif şirket id'si (X-Company-Id olarak gönderilir) */
   activeCompanyId: string | null;
+  /** Aktif lokasyon id'si (X-Location-Id olarak gönderilir) */
+  activeLocationId: string | null;
+  /** Aktif lokasyonun özeti (başlık/rozet için) */
+  activeLocation: LocationSummary | null;
   /** Aktif şirkette geçerli izin anahtarları (süper admin/şirket admini → ["*"]) */
   permissions: string[];
   isSuperAdmin: boolean;
@@ -25,6 +31,8 @@ export interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
   switchCompany: (companyId: string) => void;
+  /** Aktif lokasyonu değiştirir (gerekiyorsa firmayı da ayarlar) */
+  switchLocation: (companyId: string, locationId: string) => void;
   /** Kullanıcı ve firma bilgilerini API'den tekrar yükler */
   refreshUser: () => Promise<void>;
   /** Belirli bir izne sahip mi (["*"] her şeye izin verir) */

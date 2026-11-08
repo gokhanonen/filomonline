@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
+import { LocationId } from "../tenancy/location-id.decorator";
 import { RequirePermissions } from "../tenancy/permissions.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { AuthUser } from "../auth/auth.types";
@@ -127,8 +128,12 @@ export class FinanceController {
 
   @RequirePermissions("finance.read")
   @Get("movements")
-  movements(@CompanyId() companyId: string, @Query() q: QueryMovementsDto) {
-    return this.finance.movements(companyId, q);
+  movements(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Query() q: QueryMovementsDto,
+  ) {
+    return this.finance.movements(companyId, q, locationId);
   }
 
   @RequirePermissions("finance.read")

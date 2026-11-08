@@ -9,12 +9,12 @@ import { useAuthContext } from "@/app/contexts/auth/context";
 // ----------------------------------------------------------------------
 
 export default function Sideblock() {
-  const { activeCompanyId } = useAuthContext();
+  const { activeCompanyId, activeLocationId } = useAuthContext();
   return (
     <>
       <Header />
       <main
-        key={activeCompanyId ?? "no-company"}
+        key={`${activeCompanyId ?? "no-company"}:${activeLocationId ?? "no-loc"}`}
         className="main-content transition-content grid grid-cols-1"
       >
         <Outlet />

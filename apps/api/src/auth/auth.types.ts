@@ -14,6 +14,8 @@ export interface AuthUser {
   companyId?: string;
   /** CompanyGuard doldurur: aktif şirketin tenant'ı (tenant kapsamlı yönetim için) */
   activeTenantId?: string;
+  /** CompanyGuard doldurur: aktif lokasyon (X-Location-Id). Hareketler buna damgalanır. */
+  locationId?: string;
   /** CompanyGuard doldurur: aktif şirketteki izin anahtarları */
   permissions?: string[];
   /** CompanyGuard doldurur: şirket yöneticisi mi */

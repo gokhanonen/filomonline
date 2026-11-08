@@ -6,13 +6,20 @@ import {
   clearTokens,
   getAccessToken,
   getActiveCompanyId,
+  getActiveLocationId,
   isTokenValid,
   setActiveCompanyId,
+  setActiveLocationId,
   setTokens,
 } from "@/utils/jwt";
 import { AuthProvider as AuthContext } from "./context";
 import type { AuthContextType, LoginCredentials } from "./context";
-import { CompanySummary, Membership, User } from "@/@types/user";
+import {
+  CompanySummary,
+  LocationSummary,
+  Membership,
+  User,
+} from "@/@types/user";
 
 interface State {
   isAuthenticated: boolean;
@@ -21,14 +28,30 @@ interface State {
   errorMessage: string | null;
   user: User | null;
   activeCompanyId: string | null;
+  activeLocationId: string | null;
 }
 
 type Action =
-  | { type: "INITIALIZE"; user: User | null; activeCompanyId: string | null }
+  | {
+      type: "INITIALIZE";
+      user: User | null;
+      activeCompanyId: string | null;
+      activeLocationId: string | null;
+    }
   | { type: "LOGIN_REQUEST" }
-  | { type: "LOGIN_SUCCESS"; user: User; activeCompanyId: string | null }
+  | {
+      type: "LOGIN_SUCCESS";
+      user: User;
+      activeCompanyId: string | null;
+      activeLocationId: string | null;
+    }
   | { type: "LOGIN_ERROR"; errorMessage: string }
-  | { type: "SWITCH_COMPANY"; activeCompanyId: string }
+  | {
+      type: "SWITCH_COMPANY";
+      activeCompanyId: string;
+      activeLocationId: string | null;
+    }
+  | { type: "SWITCH_LOCATION"; activeCompanyId: string; activeLocationId: string }
   | { type: "LOGOUT" };
 
 const initialState: State = {
@@ -38,6 +61,7 @@ const initialState: State = {
   errorMessage: null,
   user: null,
   activeCompanyId: null,
+  activeLocationId: null,
 };
 
 function reducer(state: State, action: Action): State {
@@ -49,6 +73,7 @@ function reducer(state: State, action: Action): State {
         isAuthenticated: !!action.user,
         user: action.user,
         activeCompanyId: action.activeCompanyId,
+        activeLocationId: action.activeLocationId,
       };
     case "LOGIN_REQUEST":
       return { ...state, isLoading: true, errorMessage: null };
@@ -59,11 +84,22 @@ function reducer(state: State, action: Action): State {
         isAuthenticated: true,
         user: action.user,
         activeCompanyId: action.activeCompanyId,
+        activeLocationId: action.activeLocationId,
       };
     case "LOGIN_ERROR":
       return { ...state, isLoading: false, errorMessage: action.errorMessage };
     case "SWITCH_COMPANY":
-      return { ...state, activeCompanyId: action.activeCompanyId };
+      return {
+        ...state,
+        activeCompanyId: action.activeCompanyId,
+        activeLocationId: action.activeLocationId,
+      };
+    case "SWITCH_LOCATION":
+      return {
+        ...state,
+        activeCompanyId: action.activeCompanyId,
+        activeLocationId: action.activeLocationId,
+      };
     case "LOGOUT":
       return { ...initialState, isInitialized: true };
     default:
@@ -84,6 +120,25 @@ function companiesOf(user: User): CompanySummary[] {
   return user.memberships
     .filter((m) => m.company.isActive)
     .map((m) => m.company);
+}
+
+/** Bir firmanın aktif lokasyonları. */
+function locationsOf(user: User, companyId: string | null): LocationSummary[] {
+  if (!companyId) return [];
+  const company = companiesOf(user).find((c) => c.id === companyId);
+  return company?.locations ?? [];
+}
+
+/** Aktif firma için varsayılan lokasyonu seç: depolanan geçerliyse o, değilse ilk lokasyon. */
+function resolveActiveLocation(
+  user: User,
+  companyId: string | null,
+): string | null {
+  const locs = locationsOf(user, companyId);
+  if (!locs.length) return null;
+  const stored = getActiveLocationId();
+  if (stored && locs.some((l) => l.id === stored)) return stored;
+  return locs[0]?.id ?? null;
 }
 
 /** Aktif şirketteki izinleri topla. */
@@ -109,7 +164,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: user } = await axios.get<User>("/auth/me");
     const activeCompanyId = resolveActiveCompany(user);
     setActiveCompanyId(activeCompanyId);
-    return { user, activeCompanyId };
+    const activeLocationId = resolveActiveLocation(user, activeCompanyId);
+    setActiveLocationId(activeLocationId);
+    return { user, activeCompanyId, activeLocationId };
   }, []);
 
   useEffect(() => {
@@ -117,20 +174,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const token = getAccessToken();
         if (!token || !isTokenValid(token)) {
-          dispatch({ type: "INITIALIZE", user: null, activeCompanyId: null });
+          dispatch({
+            type: "INITIALIZE",
+            user: null,
+            activeCompanyId: null,
+            activeLocationId: null,
+          });
           return;
         }
-        const { user, activeCompanyId } = await loadMe();
-        dispatch({ type: "INITIALIZE", user, activeCompanyId });
+        const { user, activeCompanyId, activeLocationId } = await loadMe();
+        dispatch({
+          type: "INITIALIZE",
+          user,
+          activeCompanyId,
+          activeLocationId,
+        });
       } catch {
         clearTokens();
-        dispatch({ type: "INITIALIZE", user: null, activeCompanyId: null });
+        dispatch({
+          type: "INITIALIZE",
+          user: null,
+          activeCompanyId: null,
+          activeLocationId: null,
+        });
       }
     };
     void init();
 
     const onExpired = () =>
-      dispatch({ type: "INITIALIZE", user: null, activeCompanyId: null });
+      dispatch({
+        type: "INITIALIZE",
+        user: null,
+        activeCompanyId: null,
+        activeLocationId: null,
+      });
     window.addEventListener("fo:session-expired", onExpired);
     return () => window.removeEventListener("fo:session-expired", onExpired);
   }, [loadMe]);
@@ -144,8 +221,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           refreshToken: string;
         }>("/auth/login", { email, password });
         setTokens(data.accessToken, data.refreshToken);
-        const { user, activeCompanyId } = await loadMe();
-        dispatch({ type: "LOGIN_SUCCESS", user, activeCompanyId });
+        const { user, activeCompanyId, activeLocationId } = await loadMe();
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          user,
+          activeCompanyId,
+          activeLocationId,
+        });
       } catch (err) {
         const message =
           (err as { message?: string })?.message ??
@@ -159,6 +241,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     clearTokens();
     setActiveCompanyId(null);
+    setActiveLocationId(null);
     dispatch({ type: "LOGOUT" });
   }, []);
 
@@ -167,7 +250,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!state.user) return;
       if (!companiesOf(state.user).some((c) => c.id === companyId)) return;
       setActiveCompanyId(companyId);
-      dispatch({ type: "SWITCH_COMPANY", activeCompanyId: companyId });
+      // Firma değişince o firmanın ilk lokasyonunu aktif yap.
+      const locs = locationsOf(state.user, companyId);
+      const locationId = locs[0]?.id ?? null;
+      setActiveLocationId(locationId);
+      dispatch({
+        type: "SWITCH_COMPANY",
+        activeCompanyId: companyId,
+        activeLocationId: locationId,
+      });
+    },
+    [state.user],
+  );
+
+  const switchLocation = useCallback(
+    (companyId: string, locationId: string) => {
+      if (!state.user) return;
+      if (!companiesOf(state.user).some((c) => c.id === companyId)) return;
+      if (!locationsOf(state.user, companyId).some((l) => l.id === locationId))
+        return;
+      setActiveCompanyId(companyId);
+      setActiveLocationId(locationId);
+      dispatch({
+        type: "SWITCH_LOCATION",
+        activeCompanyId: companyId,
+        activeLocationId: locationId,
+      });
     },
     [state.user],
   );
@@ -183,6 +291,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [permissions],
   );
 
+  const activeLocation = useMemo<LocationSummary | null>(() => {
+    if (!state.user) return null;
+    return (
+      locationsOf(state.user, state.activeCompanyId).find(
+        (l) => l.id === state.activeLocationId,
+      ) ?? null
+    );
+  }, [state.user, state.activeCompanyId, state.activeLocationId]);
+
   const isCompanyAdmin = useMemo(() => {
     if (!state.user) return false;
     if (state.user.isSuperAdmin) return true;
@@ -192,8 +309,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      const { user, activeCompanyId } = await loadMe();
-      dispatch({ type: "INITIALIZE", user, activeCompanyId });
+      const { user, activeCompanyId, activeLocationId } = await loadMe();
+      dispatch({ type: "INITIALIZE", user, activeCompanyId, activeLocationId });
     } catch (err) {
       console.error("Failed to refresh user:", err);
     }
@@ -206,13 +323,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     errorMessage: state.errorMessage,
     user: state.user,
     companies: state.user ? companiesOf(state.user) : [],
+    holdingName: state.user?.tenant?.name ?? null,
     activeCompanyId: state.activeCompanyId,
+    activeLocationId: state.activeLocationId,
+    activeLocation,
     permissions,
     isSuperAdmin: state.user?.isSuperAdmin ?? false,
     isCompanyAdmin,
     login,
     logout,
     switchCompany,
+    switchLocation,
     refreshUser,
     can,
   };

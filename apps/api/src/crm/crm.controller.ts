@@ -10,6 +10,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CompanyId } from "../tenancy/company-id.decorator";
+import { LocationId } from "../tenancy/location-id.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { AuthUser } from "../auth/auth.types";
 import { CrmService } from "./crm.service";
@@ -36,17 +37,22 @@ export class CrmController {
   // --- LEADS ---
 
   @Get("leads")
-  listLeads(@CompanyId() companyId: string, @Query() q: QueryLeadsDto) {
-    return this.crm.listLeads(companyId, q);
+  listLeads(
+    @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
+    @Query() q: QueryLeadsDto,
+  ) {
+    return this.crm.listLeads(companyId, q, locationId);
   }
 
   @Post("leads")
   createLead(
     @CompanyId() companyId: string,
+    @LocationId() locationId: string | undefined,
     @CurrentUser() user: AuthUser,
     @Body() dto: CreateLeadDto,
   ) {
-    return this.crm.createLead(companyId, user.id, dto);
+    return this.crm.createLead(companyId, user.id, dto, locationId);
   }
 
   @Get("leads/:id")

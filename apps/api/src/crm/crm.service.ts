@@ -7,6 +7,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { ActivityService } from "../activity/activity.service";
 import { ClaudeService } from "../ai/claude.service";
 import { CreditsService } from "../credits/credits.service";
+import { PartyService } from "../party/party.service";
 import {
   ConvertLeadDto,
   CreateLeadActivityDto,
@@ -28,6 +29,7 @@ export class CrmService {
     private readonly activity: ActivityService,
     private readonly claude: ClaudeService,
     private readonly credits: CreditsService,
+    private readonly party: PartyService,
   ) {}
 
   private async getUserName(userId?: string): Promise<string | undefined> {
@@ -43,8 +45,15 @@ export class CrmService {
   // LEAD (Potansiyel Müşteri)
   // =========================================================================
 
-  async listLeads(companyId: string, q?: QueryLeadsDto) {
+  async listLeads(
+    companyId: string,
+    q?: QueryLeadsDto,
+    activeLocationId?: string,
+  ) {
     const where: any = { companyId };
+    if (activeLocationId) {
+      where.locationId = activeLocationId;
+    }
 
     if (q?.status) {
       where.status = q.status;
@@ -181,14 +190,25 @@ export class CrmService {
     companyId: string,
     userId: string,
     dto: CreateLeadDto,
+    activeLocationId?: string,
   ) {
     const userName = await this.getUserName(userId);
     const { interestedVehicleIds, ...data } = dto;
+
+    // Holding-global kimlik: kişiyi tenant genelinde tekilleştir (lead firma bazlı kalır).
+    const party = await this.party.forCompany(companyId, {
+      entityType: "INDIVIDUAL",
+      name: dto.fullName,
+      phone: dto.phone,
+      email: dto.email,
+    });
 
     const lead = await this.prisma.lead.create({
       data: {
         ...data,
         companyId,
+        locationId: activeLocationId ?? null,
+        partyId: party?.id,
         assignedUserId: dto.assignedUserId || userId,
         interestedVehicles: interestedVehicleIds?.length
           ? {

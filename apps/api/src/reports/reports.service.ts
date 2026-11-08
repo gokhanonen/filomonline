@@ -179,6 +179,65 @@ export class ReportsService {
     };
   }
 
+  /**
+   * Holding (konsolide) özeti: verilen firmaların her birinin summary()'si toplanır
+   * (hesap mantığı tek firma ile birebir aynı) + firma bazında döküm. Salt-okunur.
+   */
+  async holdingSummary(companies: { id: string; name: string }[]) {
+    const per = await Promise.all(companies.map((c) => this.summary(c.id)));
+
+    const totals = {
+      vehicles: { stokta: 0, kiralamada: 0, satildi: 0, icKullanim: 0, kullanimDisi: 0, toplam: 0 },
+      stokMaliyeti: 0,
+      stokListeDegeri: 0,
+      toplamSatis: 0,
+      brutKar: 0,
+      toplamMasraf: 0,
+      cariSayisi: 0,
+      aktifKiraGeliri: 0,
+      aktifKiraAdedi: 0,
+      documentCount: 0,
+      photoCount: 0,
+    };
+
+    const breakdown = companies.map((c, i) => {
+      const s = per[i];
+      totals.vehicles.stokta += s.vehicles.stokta;
+      totals.vehicles.kiralamada += s.vehicles.kiralamada;
+      totals.vehicles.satildi += s.vehicles.satildi;
+      totals.vehicles.icKullanim += s.vehicles.icKullanim;
+      totals.vehicles.kullanimDisi += s.vehicles.kullanimDisi;
+      totals.vehicles.toplam += s.vehicles.toplam;
+      totals.stokMaliyeti += s.stokMaliyeti;
+      totals.stokListeDegeri += s.stokListeDeğeri;
+      totals.toplamSatis += s.toplamSatis;
+      totals.brutKar += s.brutKar;
+      totals.toplamMasraf += s.toplamMasraf;
+      totals.cariSayisi += s.cariSayisi;
+      totals.aktifKiraGeliri += s.aktifKiraGeliri;
+      totals.aktifKiraAdedi += s.aktifKiraAdedi;
+      totals.documentCount += s.documentCount;
+      totals.photoCount += s.photoCount;
+      return {
+        companyId: c.id,
+        companyName: c.name,
+        stokta: s.vehicles.stokta,
+        kiralamada: s.vehicles.kiralamada,
+        satildi: s.vehicles.satildi,
+        stokMaliyeti: s.stokMaliyeti,
+        toplamSatis: s.toplamSatis,
+        brutKar: s.brutKar,
+        toplamMasraf: s.toplamMasraf,
+        cariSayisi: s.cariSayisi,
+      };
+    });
+
+    return {
+      totals: { ...totals, stokMaliyeti: Number(totals.stokMaliyeti.toFixed(2)), brutKar: Number(totals.brutKar.toFixed(2)) },
+      companies: breakdown,
+    };
+  }
+
   /** Araç bazlı kârlılık raporu: Alış + Masraflar vs Satış ve Net Kâr dökümü */
   async getVehicleProfitability(
     companyId: string,

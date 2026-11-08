@@ -96,6 +96,43 @@ export async function getSummary(): Promise<ReportSummary> {
   return data;
 }
 
+// --- Holding (konsolide) ---
+
+export interface HoldingCompanyRow {
+  companyId: string;
+  companyName: string;
+  stokta: number;
+  kiralamada: number;
+  satildi: number;
+  stokMaliyeti: number;
+  toplamSatis: number;
+  brutKar: number;
+  toplamMasraf: number;
+  cariSayisi: number;
+}
+
+export interface HoldingSummary {
+  holdingName: string;
+  companyCount: number;
+  totals: {
+    vehicles: { stokta: number; kiralamada: number; satildi: number; icKullanim: number; kullanimDisi: number; toplam: number };
+    stokMaliyeti: number;
+    stokListeDegeri: number;
+    toplamSatis: number;
+    brutKar: number;
+    toplamMasraf: number;
+    cariSayisi: number;
+    aktifKiraGeliri: number;
+    aktifKiraAdedi: number;
+  };
+  companies: HoldingCompanyRow[];
+}
+
+export async function getHoldingSummary(): Promise<HoldingSummary> {
+  const { data } = await axios.get<HoldingSummary>("/holding/dashboard");
+  return data;
+}
+
 export async function getVehicleProfitability(params?: {
   status?: string;
   search?: string;

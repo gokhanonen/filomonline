@@ -13,6 +13,7 @@ import { useBreakpointsContext } from "@/app/contexts/breakpoint/context";
 import { Profile } from "../Profile";
 import { Search } from "@/components/template/Search";
 import { AiAssistantButton } from "@/components/template/AiAssistant";
+import { CompanySwitcher } from "@/components/shared/CompanySwitcher";
 import { useThemeContext } from "@/app/contexts/theme/context";
 
 // ----------------------------------------------------------------------
@@ -78,6 +79,7 @@ export function Header() {
           />
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <CompanySwitcher />
           <AiAssistantButton />
           <Notifications />
           <RightSidebar />

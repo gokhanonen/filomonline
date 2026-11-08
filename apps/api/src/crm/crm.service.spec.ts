@@ -4,6 +4,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { ActivityService } from "../activity/activity.service";
 import { ClaudeService } from "../ai/claude.service";
 import { CreditsService } from "../credits/credits.service";
+import { PartyService } from "../party/party.service";
 import { LeadSource, LeadStatus } from "@prisma/client";
 
 describe("CrmService", () => {
@@ -77,6 +78,7 @@ describe("CrmService", () => {
         { provide: ActivityService, useValue: mockActivity },
         { provide: ClaudeService, useValue: mockClaude },
         { provide: CreditsService, useValue: mockCredits },
+        { provide: PartyService, useValue: { forCompany: jest.fn().mockResolvedValue({ id: "party1" }) } },
       ],
     }).compile();
 
@@ -113,6 +115,69 @@ describe("CrmService", () => {
           companyId: "comp-1",
         }),
       );
+    });
+
+    it("aktif lokasyonu lead'e damgalar", async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({ name: "Satış Danışmanı" });
+      mockPrisma.lead.create.mockResolvedValue({ id: "lead-2" });
+
+      await service.createLead(
+        "comp-1",
+        "user-1",
+        { fullName: "Mehmet Demir", phone: "05330001122", source: LeadSource.WALK_IN },
+        "loc-merkez",
+      );
+
+      expect(mockPrisma.lead.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ locationId: "loc-merkez" }),
+        }),
+      );
+    });
+
+    it("lokasyon seçilmemişse locationId null damgalanır", async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({ name: "Satış Danışmanı" });
+      mockPrisma.lead.create.mockResolvedValue({ id: "lead-3" });
+
+      await service.createLead("comp-1", "user-1", {
+        fullName: "Ayşe Kaya",
+        phone: "05330002233",
+        source: LeadSource.WALK_IN,
+      });
+
+      expect(mockPrisma.lead.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ locationId: null }),
+        }),
+      );
+    });
+  });
+
+  describe("listLeads — lokasyon filtresi", () => {
+    it("aktif lokasyon verilince where'e locationId ekler", async () => {
+      mockPrisma.lead.findMany.mockResolvedValue([]);
+      mockPrisma.lead.count.mockResolvedValue(0);
+
+      await service.listLeads("comp-1", undefined, "loc-merkez");
+
+      expect(mockPrisma.lead.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            companyId: "comp-1",
+            locationId: "loc-merkez",
+          }),
+        }),
+      );
+    });
+
+    it("aktif lokasyon yoksa locationId filtresi eklenmez", async () => {
+      mockPrisma.lead.findMany.mockResolvedValue([]);
+      mockPrisma.lead.count.mockResolvedValue(0);
+
+      await service.listLeads("comp-1");
+
+      const callArg = mockPrisma.lead.findMany.mock.calls[0][0];
+      expect(callArg.where.locationId).toBeUndefined();
     });
   });
 

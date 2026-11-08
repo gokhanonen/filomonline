@@ -83,6 +83,7 @@ export class AuthService {
         avatarUrl: true,
         isSuperAdmin: true,
         tenantId: true,
+        tenant: { select: { name: true } },
         memberships: {
           select: {
             isDefault: true,
@@ -97,7 +98,45 @@ export class AuthService {
         },
       },
     });
-    return user;
+
+    // Firma→Lokasyon ağacı için her firmanın aktif lokasyonlarını iliştir.
+    // (Location↔Company arasında Prisma relation yok, companyId skaları ile sorgula.)
+    const companyIds = user.memberships.map((m) => m.company.id);
+    const locations = companyIds.length
+      ? await this.prisma.location.findMany({
+          where: { companyId: { in: companyIds }, isActive: true },
+          select: {
+            id: true,
+            companyId: true,
+            name: true,
+            code: true,
+            isExternal: true,
+          },
+          orderBy: { name: "asc" },
+        })
+      : [];
+    const byCompany = new Map<string, typeof locations>();
+    for (const l of locations) {
+      const arr = byCompany.get(l.companyId);
+      if (arr) arr.push(l);
+      else byCompany.set(l.companyId, [l]);
+    }
+
+    return {
+      ...user,
+      memberships: user.memberships.map((m) => ({
+        ...m,
+        company: {
+          ...m.company,
+          locations: (byCompany.get(m.company.id) ?? []).map((l) => ({
+            id: l.id,
+            name: l.name,
+            code: l.code,
+            isExternal: l.isExternal,
+          })),
+        },
+      })),
+    };
   }
 
   /** Kullanıcının kendi profilini (avatarUrl, name, phone vb.) güncellemesi */

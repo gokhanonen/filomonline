@@ -56,6 +56,7 @@ export class CompanyGuard implements CanActivate {
       user.activeTenantId = company.tenantId;
       user.isCompanyAdmin = true;
       user.permissions = ["*"];
+      await this.resolveLocation(request, user, companyId);
       return true;
     }
 
@@ -81,6 +82,35 @@ export class CompanyGuard implements CanActivate {
     user.permissions = [...new Set([...fromRoles, ...grant])].filter(
       (p) => !deny.has(p),
     );
+    await this.resolveLocation(request, user, companyId);
     return true;
+  }
+
+  /**
+   * X-Location-Id header'ını (varsa) doğrular ve request.user.locationId'ye yazar.
+   * - Lokasyon aktif şirkete ait ve aktif olmalı; değilse 403.
+   * - Header yoksa locationId tanımsız kalır (lokasyon gerektiren işlemler LocationId
+   *   decorator'ında reddeder). Böylece lokasyon bağlamı gerektirmeyen uçlar etkilenmez.
+   */
+  private async resolveLocation(
+    request: { headers: Record<string, unknown> },
+    user: AuthUser,
+    companyId: string,
+  ): Promise<void> {
+    const locationId = request.headers["x-location-id"] as string | undefined;
+    if (!locationId) {
+      user.locationId = undefined;
+      return;
+    }
+    const location = await this.prisma.location.findFirst({
+      where: { id: locationId, companyId, isActive: true },
+      select: { id: true },
+    });
+    if (!location) {
+      throw new ForbiddenException(
+        "Seçili lokasyon bu firmaya ait değil veya pasif",
+      );
+    }
+    user.locationId = location.id;
   }
 }

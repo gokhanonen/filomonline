@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { Paginated } from "../common/dto/pagination.dto";
 import { ActivityService } from "../activity/activity.service";
+import { PartyService } from "../party/party.service";
 import {
   CreateAccountDto,
   QueryAccountsDto,
@@ -14,10 +15,29 @@ export class AccountsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly activity: ActivityService,
+    private readonly party: PartyService,
   ) {}
 
   async create(companyId: string, dto: CreateAccountDto) {
-    const res = await this.prisma.account.create({ data: { ...dto, companyId } });
+    // Holding-global kimlik: kişiyi tenant genelinde tekilleştir, Account'u ona bağla.
+    const party = await this.party.forCompany(companyId, {
+      entityType: dto.entityType,
+      name: dto.name,
+      phone: dto.phone,
+      email: dto.email,
+      taxNumber: dto.taxNumber,
+      tckn: dto.tckn,
+      taxOffice: dto.taxOffice,
+      contactPerson: dto.contactPerson,
+      address: dto.address,
+      neighborhood: dto.neighborhood,
+      city: dto.city,
+      district: dto.district,
+      postalCode: dto.postalCode,
+    });
+    const res = await this.prisma.account.create({
+      data: { ...dto, companyId, partyId: party?.id },
+    });
     void this.activity.log({
       companyId,
       type: "ACCOUNT_NEW",

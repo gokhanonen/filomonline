@@ -114,14 +114,33 @@ export class FinanceService {
   }
 
   /** Bir işlemi (aynı groupId'li satırlar) ve eşleştirmelerini yazar, etkilenen cari bakiyelerini günceller */
-  async post(tx: Tx, companyId: string, userId: string | undefined, date: Date, lines: LineInput[], groupId = randomUUID()) {
+  async post(tx: Tx, companyId: string, userId: string | undefined, date: Date, lines: LineInput[], groupId = randomUUID(), activeLocationId?: string) {
     const created = [];
+    // Her hareketin lokasyonu: kasasının lokasyonu (varsa), yoksa aktif lokasyon.
+    const regIds = [
+      ...new Set(lines.map((l) => l.cashRegisterId).filter(Boolean) as string[]),
+    ];
+    const regLoc = regIds.length
+      ? new Map(
+          (
+            await tx.cashRegister.findMany({
+              where: { id: { in: regIds }, companyId },
+              select: { id: true, locationId: true },
+            })
+          ).map((r) => [r.id, r.locationId]),
+        )
+      : new Map<string, string | null>();
     for (const l of lines) {
+      const locationId =
+        (l.cashRegisterId ? regLoc.get(l.cashRegisterId) : null) ??
+        activeLocationId ??
+        null;
       const m = await tx.financeMovement.create({
         data: {
           companyId,
           groupId,
           date,
+          locationId,
           type: l.type,
           module: l.module,
           direction: l.direction,
@@ -612,9 +631,10 @@ export class FinanceService {
   // Hareket listesi
   // =========================================================
 
-  async movements(companyId: string, q: QueryMovementsDto): Promise<Paginated<unknown>> {
+  async movements(companyId: string, q: QueryMovementsDto, activeLocationId?: string): Promise<Paginated<unknown>> {
     const where: Prisma.FinanceMovementWhereInput = {
       companyId,
+      ...(activeLocationId ? { locationId: activeLocationId } : {}),
       ...(q.cashRegisterId ? { cashRegisterId: q.cashRegisterId } : {}),
       ...(q.chequeId ? { chequeId: q.chequeId } : {}),
       ...(q.accountId ? { accountId: q.accountId } : {}),

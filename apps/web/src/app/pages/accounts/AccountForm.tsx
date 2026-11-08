@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { Button, Input, Select } from "@/components/ui";
 import { Modal } from "@/components/shared/Modal";
+import { PartyOverviewPanel } from "@/components/shared/PartyOverviewPanel";
 import { AddressSelect } from "@/components/shared/AddressSelect";
 import {
   ACCOUNT_TYPE_LABELS,
@@ -125,6 +126,9 @@ export function AccountForm({ open, onClose, onSaved, account }: Props) {
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? "Cari Düzenle" : "Yeni Cari"}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Holding-geneli kimlik (bu kişi/kurum grubun hangi firmalarında var) */}
+        {isEdit && account?.partyId && <PartyOverviewPanel partyId={account.partyId} />}
+
         {/* Cari tipi + Tür */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Controller
